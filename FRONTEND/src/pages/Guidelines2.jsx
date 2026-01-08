@@ -105,4 +105,4 @@ const Guidelines2 = () => {
   );
 };
 
-export default Guidelines;
+export default Guidelines2;

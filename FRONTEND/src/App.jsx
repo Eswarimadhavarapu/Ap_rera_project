@@ -49,6 +49,9 @@ import Guidelines2 from "./pages/Guidelines2";
 import AgentDetailNew from "./pages/AgentDetailNew";
 import AgentDetailExisting from "./pages/AgentDetailExisting";
 import ApplicantDetails from "./pages/ApplicantDetails";
+import Aprera from "./pages/Aprea";
+import Organogram from "./pages/organogram";
+import OurServices from "./pages/ourservices";
 
 
 
@@ -102,6 +105,9 @@ function App() {
            <Route path="/agent-detail-new" element={<AgentDetailNew />} />
            <Route path="/agent-detail-existing" element={<AgentDetailExisting />} />
            <Route path="/applicant-details" element={<ApplicantDetails />} />
+           <Route path="/aprera" element={<Aprera />} />
+          <Route path="/organogram" element={<Organogram />} />
+          <Route path="/ourservices" element={<OurServices />} />
         </Routes>
       </Layout>
     </BrowserRouter>

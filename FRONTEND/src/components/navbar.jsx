@@ -28,9 +28,17 @@ const Navbar = () => {
           <li className="dropdown">ABOUT US <span className="arrow">▾</span>
 
             <ul className="dropdown-menu">
-              <li>What is APRERA</li>
-              <li>Organogram</li>
-              <li>Our Services</li>
+              <li onClick={() => navigate("/aprera")}>
+                What is APRERA
+              </li>
+              
+              <li onClick={() => navigate("/organogram")}>
+                Organogram
+              </li>
+              
+              <li onClick={() => navigate("/ourservices")}>
+                Our Services
+              </li>
               <li onClick={() => navigate("/recruitment")}>Recruitment</li>
               
               <li onClick={() => navigate("/rti")}>Rti</li>

@@ -1,5 +1,5 @@
 /* ================= POLICY BAR ================= */
-.policy-bar {
+.aprera-policy-bar {
   background: #3b3b3b;
   color: #e0e0e0;
   font-size: 13px;
@@ -10,30 +10,29 @@
   min-height: 36px;
 }
 
-.policy-links {
+.aprera-policy-links {
   display: flex;
   align-items: center;
-  gap: 6px;              /* 👈 govt spacing */
+  gap: 6px;
   white-space: nowrap;
 }
 
-.policy-links a {
+.aprera-policy-links a {
   color: #e0e0e0;
   text-decoration: none;
 }
 
-.policy-links a:hover {
+.aprera-policy-links a:hover {
   text-decoration: underline;
 }
 
-
-.policy-icons {
+.aprera-policy-icons {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.policy-icons .icon {
+.aprera-icon {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -43,33 +42,32 @@
   border: 1px solid rgba(255,255,255,0.4);
 }
 
-.policy-icons img {
-  width: 14px;
-  height: 14px;
+.aprera-policy-icons img {
+  width: 30px;
+  height: 30px;
 }
 
+.aprera-fb { background: #3b5998; }
+.aprera-tw { background: #1da1f2; }
+.aprera-yt { background: #ff0000; }
 
-
-
-.icon.fb { background: #3b5998; }
-.icon.tw { background: #1da1f2; }
-.icon.yt { background: #ff0000; }
-
-
+.aprera-up {
+  background: #0b5aa3;
+  font-size: 16px;
+}
 
 /* ================= GOVT BAR ================= */
-
-.govt-bar {
+.aprera-govt-bar {
   display: flex;
   align-items: center;
   background: #000;
   color: #fff;
   min-height: 48px;
   font-size: 14px;
+  border-top: 2px solid #6fa83a;
 }
 
-/* LEFT SLOPE */
-.govt-left {
+.aprera-govt-left {
   background: #0b5aa3;
   padding: 10px 18px;
   clip-path: polygon(0 0, 94% 0, 100% 100%, 0 100%);
@@ -77,23 +75,20 @@
   font-weight: 500;
 }
 
-
-/* CENTER */
-.govt-center {
+.aprera-govt-center {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;            /* 👈 official spacing */
-  font-size: 14px;
+  gap: 14px;
 }
 
-.govt-center .label {
+.aprera-label {
   color: #ffeb3b;
   font-weight: 600;
 }
 
-.counter {
+.aprera-counter {
   background: linear-gradient(#f2f2f2, #dcdcdc);
   color: #000;
   padding: 3px 6px;
@@ -105,32 +100,18 @@
   border: 1px solid #999;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
 }
-.policy-icons img {
-  width: 30px;
-  height:30px;
-  /* object-fit: contain; */
-}
 
-.govt-bar {
-  border-top: 2px solid #6fa83a; /* govt green line */
-}
-.icon.up { 
-  background: #0b5aa3;
-  font-size: 16px;
-}
-
-.updated {
+.aprera-updated {
   color: #ffeb3b;
   font-weight: 500;
 }
 
-/* RIGHT */
-.govt-right {
+.aprera-govt-right {
   padding: 0 16px;
   white-space: nowrap;
 }
 
-.aponline {
+.aprera-aponline {
   background: #fff;
   color: #0b5aa3;
   padding: 3px 8px;
@@ -140,21 +121,22 @@
 }
 
 /* RESPONSIVE */
-@media (max-width: 900px) {
-  .policy-bar,
-  .govt-bar {
+@media (max-width: 901px) {
+  .aprera-policy-bar,
+  .aprera-govt-bar {
     flex-direction: column;
     text-align: center;
     align-items: center;
   }
 
-  .govt-left {
+  .aprera-govt-left {
     clip-path: none;
     width: 100%;
   }
 
-  .govt-center {
+  .aprera-govt-center {
     flex-wrap: wrap;
-    padding: 6px 0;
+
+    padding: 5px 0;
   }
 }

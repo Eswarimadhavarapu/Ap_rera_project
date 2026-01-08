@@ -43,56 +43,59 @@ const Footer = () => {
   
 
   return (
-    <Box className="footer">
-      {/* POLICY LINKS BAR */}
-<div className="policy-bar">
-  <div className="policy-links">
-  <Link to="/privacy-policy">Privacy Policy</Link> ›
-  <Link to="/hyperlinking-policy">Hyperlinking Policy</Link> ›
-  <Link to="/copyrightPolicy">Copyright Policy</Link> ›
-  <Link to="/disclaimer">Disclaimer</Link> ›
-  <Link to="/accessibility">Accessibility</Link> ›
-  <Link to="/termsConditions">Terms & Conditions</Link> ›
-  {/* <Link to="/sitemap">Site Map</Link> › */}
-  <Link to="/rateWebsite">Rate our website</Link>
-</div>
+    <Box className="aprera-footer">
+  {/* POLICY LINKS BAR */}
+  <div className="aprera-policy-bar">
+    <div className="aprera-policy-links">
+      <Link to="/privacy-policy">Privacy Policy</Link> ›
+      <Link to="/hyperlinking-policy">Hyperlinking Policy</Link> ›
+      <Link to="/copyrightPolicy">Copyright Policy</Link> ›
+      <Link to="/disclaimer">Disclaimer</Link> ›
+      <Link to="/accessibility">Accessibility</Link> ›
+      <Link to="/termsConditions">Terms & Conditions</Link> ›
+      <Link to="/rateWebsite">Rate our website</Link>
+    </div>
 
+    <div className="aprera-policy-icons">
+      <a className="aprera-icon aprera-fb" target="_blank" href="https://www.facebook.com/people/Andhra-Pradesh-Real-Estate-Regulatory-Authority/100067671638495/#">
+        <img src={fb} />
+      </a>
+      <a className="aprera-icon aprera-tw" target="_blank" href="https://x.com/AP_RERA">
+        <img src={tw} />
+      </a>
+      <a className="aprera-icon aprera-yt" target="_blank" href="https://www.youtube.com/channel/UC3LRSpXAhaiFkeBNtPLDdKA?view_as=subscriber">
+        <img src={youtube} />
+      </a>
 
-  <div className="policy-icons">
-    <a className="icon fb" target="_blank" href="https://www.facebook.com/people/Andhra-Pradesh-Real-Estate-Regulatory-Authority/100067671638495/#"><img src={fb}/></a>
-    <a className="icon tw" target="_blank" href="https://x.com/AP_RERA"><img src={tw}/></a>
-   <a className="icon tw" target="_blank" href="https://www.youtube.com/channel/UC3LRSpXAhaiFkeBNtPLDdKA?view_as=subscriber"><img src={youtube}/></a>
-    <i
-  className="fa fa-angle-double-up icon up"
-  aria-hidden="true"
-  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-/>
-
-
-  </div>
-</div>
-
-{/* GOVT COPYRIGHT BAR */}
-<div className="govt-bar">
-  <div className="govt-left">
-    Copyright © 2017, All Rights Reserved by APRERA, Govt of A.P India
+      <i
+        className="fa fa-angle-double-up aprera-icon aprera-up"
+        aria-hidden="true"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      />
+    </div>
   </div>
 
-  <div className="govt-center">
-    <span className="label">No. Of Visitors :</span>
-    <span className="counter">932969</span>
-    <span className="updated">
-      Last Updated on : 22/12/2025 17:14:45
-    </span>
-  </div>
+  {/* GOVT COPYRIGHT BAR */}
+  <div className="aprera-govt-bar">
+    <div className="aprera-govt-left">
+      Copyright © 2017, All Rights Reserved by APRERA, Govt of A.P India
+    </div>
 
-  <div className="govt-right">
-    Designed and Developed by
-    <span className="aponline"> APOnline</span>
-  </div>
-</div>
+    <div className="aprera-govt-center">
+      <span className="aprera-label">No. Of Visitors :</span>
+      <span className="aprera-counter">932969</span>
+      <span className="aprera-updated">
+        Last Updated on : 22/12/2025 17:14:45
+      </span>
+    </div>
 
-    </Box>
+    <div className="aprera-govt-right">
+      Designed and Developed by
+      <span className="aprera-aponline"> APOnline</span>
+    </div>
+  </div>
+</Box>
+
   );
 };
 

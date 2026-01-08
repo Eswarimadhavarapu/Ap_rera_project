@@ -2,7 +2,7 @@ import React from "react";
 // import "./aprera.css";
 import "../styles/aprera.css";
 
-export default function Aprera() {
+export default function Aprea() {
   return (
     <div className="aprera-wrapper">
       <div className="aprera-page">
