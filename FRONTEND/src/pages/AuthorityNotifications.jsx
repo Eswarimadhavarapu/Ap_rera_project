@@ -1,41 +1,41 @@
 import { useState } from "react";
 import "../styles/AuthorityNotifications.css";
-import an1 from "../assets/an1.pdf";
-import an2 from "../assets/an2.pdf";
-import an3 from "../assets/an3.pdf";
-import an4 from "../assets/an4.pdf";
-import an5 from "../assets/an5.pdf";
-import an6 from "../assets/an6.pdf";
-import an7 from "../assets/an7.pdf";
-import an8 from "../assets/an8.pdf";
-import an9 from "../assets/an9.pdf";
-import an10 from "../assets/an10.pdf";
-import an11 from "../assets/an11.pdf";
-import an12 from "../assets/an12.pdf";
-import an13 from "../assets/an13.pdf";
-import an14 from "../assets/an14.pdf";
-import an15 from "../assets/an15.pdf";
-import an16 from "../assets/an16.pdf";
-import an17 from "../assets/an17.pdf";
-import an18 from "../assets/an18.pdf";
-import an19 from "../assets/an19.pdf";
-import an20 from "../assets/an20.pdf";
-import an21 from "../assets/an21.pdf";
-import an22 from "../assets/an22.pdf";
-import an23 from "../assets/an23.pdf";
-import an24 from "../assets/an24.pdf";
-import an25 from "../assets/an25.pdf";
-import an26 from "../assets/an26.pdf";
-import an27 from "../assets/an27.pdf";
-import an28 from "../assets/an28.pdf";
-import an29 from "../assets/an29.pdf";
-import an30 from "../assets/an30.pdf";
-import an31 from "../assets/an31.pdf";
-import an32 from "../assets/an32.pdf";
-import an33 from "../assets/an33.pdf";
-import an34 from "../assets/an34.jpg";
-import an35 from "../assets/an35.pdf";
-import an36 from "../assets/an36.pdf";
+import an1 from "../assets/pdf/an1.pdf";
+import an2 from "../assets/pdf/an2.pdf";
+import an3 from "../assets/pdf/an3.pdf";
+import an4 from "../assets/pdf/an4.pdf";
+import an5 from "../assets/pdf/an5.pdf";
+import an6 from "../assets/pdf/an6.pdf";
+import an7 from "../assets/pdf/an7.pdf";
+import an8 from "../assets/pdf/an8.pdf";
+import an9 from "../assets/pdf/an9.pdf";
+import an10 from "../assets/pdf/an10.pdf";
+import an11 from "../assets/pdf/an11.pdf";
+import an12 from "../assets/pdf/an12.pdf";
+import an13 from "../assets/pdf/an13.pdf";
+import an14 from "../assets/pdf/an14.pdf";
+import an15 from "../assets/pdf/an15.pdf";
+import an16 from "../assets/pdf/an16.pdf";
+import an17 from "../assets/pdf/an17.pdf";
+import an18 from "../assets/pdf/an18.pdf";
+import an19 from "../assets/pdf/an19.pdf";
+import an20 from "../assets/pdf/an20.pdf";
+import an21 from "../assets/pdf/an21.pdf";
+import an22 from "../assets/pdf/an22.pdf";
+import an23 from "../assets/pdf/an23.pdf";
+import an24 from "../assets/pdf/an24.pdf";
+import an25 from "../assets/pdf/an25.pdf";
+import an26 from "../assets/pdf/an26.pdf";
+import an27 from "../assets/pdf/an27.pdf";
+import an28 from "../assets/pdf/an28.pdf";
+import an29 from "../assets/pdf/an29.pdf";
+import an30 from "../assets/pdf/an30.pdf";
+import an31 from "../assets/pdf/an31.pdf";
+import an32 from "../assets/pdf/an32.pdf";
+import an33 from "../assets/pdf/an33.pdf";
+import an34 from "../assets/pdf/34.jpg";
+import an35 from "../assets/pdf/an35.pdf";
+import an36 from "../assets/pdf/an36.pdf";
 
 const data = [
   {
@@ -339,7 +339,7 @@ const data = [
   date: "17-01-2019",
   subject:
     "Development of Real Estate Industry in AP - Deliberations meeting - Reg",
-  file: an34,
+  file: 34,
 },
 {
   sno: 35,
@@ -383,21 +383,21 @@ export default function AuthorityNotifications() {
   );
 
   return (
-    <div className="wrapper">
+    <div className="auth-notif-wrapper">
       {/* Breadcrumb */}
-      <div className="breadcrumb">
+      <div className="auth-notif-breadcrumb">
         You are here :
-        <a href="/" className="home"> Home</a> / <a href="#">Notifications</a> /
+        <a href="/" className="home"> Home</a> / <a>Notifications</a> /
         Authority Notifications
       </div>
 
       {/* Title */}
-      <h2 className="title">Authority Notifications</h2>
-      <div className="underline"></div>
+      <h2 className="auth-notif-title">Authority Notifications</h2>
+      <div className="auth-notif-underline"></div>
 
       {/* Controls */}
-      <div className="controls">
-        <div className="show-entries">
+      <div className="auth-notif-controls">
+        <div className="auth-notif-show-entries">
           <span>Show</span>
           <select
             value={entries}
@@ -427,7 +427,7 @@ export default function AuthorityNotifications() {
       </div>
 
       {/* Table */}
-      <div className="table-box">
+      <div className="auth-notif-table-box">
         <table>
           <thead>
             <tr>
@@ -446,17 +446,17 @@ export default function AuthorityNotifications() {
                 <td>
                   {item.circularNo}
                   {item.isNew && (
-                    <span className="new-badge-star">NEW</span>
+                    <span className="auth-notif-new-badge-star">NEW</span>
                   )}
                 </td>
                 <td>{item.date}</td>
                 <td>{item.subject}</td>
-                <td className="download">
-                  <a
+                <td className="auth-notif-download">
+                    <a
                     href={item.file}
                     target="_blank"
                     rel="noopener noreferrer"
-                  >
+                    >
                     <i className="fa fa-download" aria-hidden="true"></i>
                   </a>
                 </td>
@@ -466,15 +466,15 @@ export default function AuthorityNotifications() {
         </table>
 
         {visibleData.length === 0 && (
-          <p className="no-data">No records found</p>
+          <p className="auth-notif-no-data">No records found</p>
         )}
       </div>
 
       {/* Pagination */}
-      <div className="pagination">
+      <div className="auth-notif-pagination">
         <button
           disabled={page === 1}
-          onClick={() => setPage(page - 1)}
+          onClick={() => setPage(page - 1)} className="previous"
         >
           Previous
         </button>
@@ -482,7 +482,7 @@ export default function AuthorityNotifications() {
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i}
-            className={page === i + 1 ? "active" : ""}
+            className={page === i + 1 ? "auth-notif-active" : ""}
             onClick={() => setPage(i + 1)}
           >
             {i + 1}

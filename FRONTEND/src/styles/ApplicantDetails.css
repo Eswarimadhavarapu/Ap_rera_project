@@ -1,141 +1,134 @@
-body {
-  background: #f4f4f4;
+.page-wrapper {
+  background: #f2f2f2;
+  padding: 20px;
   font-family: Arial, sans-serif;
 }
 
-.page-wrapper {
-  padding: 20px;
-}
-
 .breadcrumb {
-  background: #0a74c9;
-  color: white;
-  padding: 10px 15px;
+  background: #0078d7;
+  color: #fff;
+  padding: 8px 12px;
   font-size: 13px;
 }
 
 .breadcrumb span {
-  margin-left: 5px;
+  font-weight: bold;
 }
 
 .content-box {
-  background: white;
-  margin-top: 15px;
+  background: #fff;
   padding: 20px;
+  margin-top: 10px;
   border: 1px solid #ddd;
 }
 
 .page-title {
   font-size: 22px;
-  border-bottom: 2px solid #0a74c9;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  border-bottom: 2px solid #0078d7;
+  padding-bottom: 5px;
 }
 
-/* Stepper */
 .stepper {
-  position: relative;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
-}
-
-.step-line {
-  position: absolute;
-  top: 18px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #ccc;
+  margin: 30px 0;
+  border: 1px solid #ddd;
+  padding: 15px;
 }
 
 .step {
   text-align: center;
-  z-index: 1;
+  width: 100%;
 }
 
 .circle {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 2px solid #ccc;
-  line-height: 32px;
-  background: white;
+  margin: auto;
+  line-height: 26px;
+  color: #999;
 }
 
 .circle.active {
-  background: #1bb35c;
-  color: white;
-  border-color: #1bb35c;
+  background: green;
+  color: #fff;
+  border-color: green;
 }
 
-.step span {
-  font-size: 12px;
-  display: block;
-  margin-top: 6px;
-}
-
-/* Sections */
 .section {
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 .section-title {
-  color: #0a74c9;
-  font-size: 16px;
-  border-bottom: 2px solid #0a74c9;
+  color: #0078d7;
+  border-bottom: 2px solid #0078d7;
   display: inline-block;
-  padding-bottom: 5px;
   margin-bottom: 15px;
+  font-size: 16px;
 }
 
-.radio-group label {
-  margin-right: 30px;
+.radio-row {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
 }
 
-.form-grid {
+.grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 15px;
 }
 
-.form-grid label {
+.grid-4 label {
   font-size: 13px;
   font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
 }
 
-.form-grid input,
-.form-grid select {
+.grid-4 input,
+.grid-4 select {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
 }
 
-/* Notes */
-.note-list {
-  margin-top: 20px;
-}
-
-.red-text {
-  color: red;
-  font-weight: bold;
-}
-
-/* Button */
 .btn-row {
-  display: flex;
-  justify-content: flex-end;
+  text-align: right;
   margin-top: 30px;
 }
 
-.primary-btn {
-  background: #0a74c9;
-  color: white;
+.btn-row button {
+  background: #0078d7;
+  color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 20px;
   cursor: pointer;
 }
 
-.primary-btn:hover {
-  background: #084f8a;
+.btn-row button:hover {
+  background: #005fa3;
+}
+.radio-inline {
+  display: flex;
+  align-items: center;
+}
+
+.radio-option {
+  margin-left: 20px; /* space between Yes and No */
+}
+.radio-inline {
+  display: flex;
+  align-items: center;
+}
+
+.radio-inline span {
+  margin-right: 20px; /* space after question text */
+}
+
+.radio-inline label {
+  margin-right: 20px; /* space between Yes and No */
+  cursor: pointer;
 }

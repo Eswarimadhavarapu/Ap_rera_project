@@ -1,4 +1,4 @@
-.wip-container {
+.ma-container {
   /* padding: 15px; */
   background: #f2f2f2;
   margin: 0px 82.5px;
@@ -7,27 +7,26 @@
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.ma-breadcrumb {
   background: #0b87e3;
   color: #fff;
   padding: 8px;
   width: 100%;
   font-size: 14px;
-  
 }
 
-.breadcrumb a {
+.ma-breadcrumb a {
   color: #ffeb3b;
   margin: 0 5px;
   text-decoration: none;
 }
 
-.breadcrumb .active {
+.ma-breadcrumb .ma-active {
   font-weight: 600;
 }
 
 /* Content Box */
-.wip-box {
+.ma-box {
   background: #ffffff;
   margin-top: 15px;
   /* padding: 40px; */
@@ -40,19 +39,19 @@
 }
 
 /* Images */
-/* .wip-left,
-.wip-right {
+/* .ma-left,
+.ma-right {
   width: 30%;
   text-align: center;
 }
 
-.wip-left img,
-.wip-right img {
+.ma-left img,
+.ma-right img {
   max-width: 100%;
 } */
 
 /* Center Cloud */
-/* .wip-center {
+/* .ma-center {
   width: 40%;
   display: flex;
   justify-content: center;

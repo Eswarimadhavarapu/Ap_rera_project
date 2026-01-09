@@ -15,8 +15,8 @@ export default function Apreat() {
           <div className="section-title">CHAIRPERSON</div>
           <div className="underline"></div>
 
-          <table>
-            <thead>
+          <table className="apreat-table">
+            <thead className="apreat-thead">
               <tr>
                 <th>S.No.</th>
                 <th>Designation</th>
@@ -26,7 +26,7 @@ export default function Apreat() {
                 <th>Photo</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="apreat-tbody">
               <tr>
                 <td>1</td>
                 <td>CHAIRPERSON</td>
@@ -110,45 +110,7 @@ export default function Apreat() {
         </div>
       </div>
 
-      {/* ================= FOOTER ================= */}
-      <div className="footer-links">
-        <div>
-          › Privacy Policy › Hyperlinking Policy › Copyright Policy › Disclaimer
-          › Accessibility › Terms & Conditions › Site Map › Rate our website
-        </div>
-
-        <div className="footer-social">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" />
-        </div>
-      </div>
-
-      <div className="footer-main">
-        <div className="left">
-          Copyright © 2017, All Rights Reserved by APRERA,
-          Govt of A.P. India
-        </div>
-
-        <div className="center">
-          No. Of Visitors :
-          <div className="counter">
-            <span>9</span><span>2</span><span>0</span>
-            <span>2</span><span>0</span><span>6</span>
-          </div>
-          | Last Updated on : 22/12/2025 17:14:45
-        </div>
-
-        <div className="right">
-          Designed and Developed by
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/AP_Online_Logo.png/200px-AP_Online_Logo.png" />
-        </div>
-      </div>
-
-      {/* Scroll to top */}
-      <div className="scroll-top" onClick={() => window.scrollTo(0, 0)}>
-        ↑
-      </div>
+     
     </>
   );
 }

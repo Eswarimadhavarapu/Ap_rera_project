@@ -1,20 +1,27 @@
-import React from 'react';
-import '../styles/guidelinesRegistration.css';
+import "../styles/guidelinesRegistration.css";
+import { FaDownload, FaFileAlt, FaSearch } from "react-icons/fa";
 
-const GuidelinesRegistration = () => {
+export default function GuidelinesForRegistration() {
   return (
     <div className="rera-guidelines-page">
+
+      {/* Breadcrumb */}
       <div className="breadcrumb">
-        You are here: <a href="#">Home</a> / <span>Registration</span> /{' '}
-        <span>Guidelines for Registration</span>
+        You are here :&nbsp;
+        <a href="/">Home</a> /&nbsp;
+        <a href="/registration">Registration</a> /&nbsp;
+        <strong>Guidelines for Registration</strong>
       </div>
 
+      {/* Main Container */}
       <div className="guidelines-container">
-        <div className="intro-text blue-bar">
+
+        {/* Info Bar */}
+        <div className="blue-bar">
           Download the forms for Project/Agent/Complaint Registration from the link given below.
         </div>
 
-        {/* Step 1 */}
+        {/* STEP 1 */}
         <div className="step step-red">
           <div className="step-arrow">
             <div className="step-number">
@@ -25,25 +32,25 @@ const GuidelinesRegistration = () => {
 
           <div className="step-content">
             <div className="main-text">
-              <strong>Application form for Project/Agent/Complaint Registration</strong>{' '}
+              Application form for Project/Agent/Complaint Registration
               <a href="#" className="click-here">Click Here</a>
             </div>
+
             <div className="note">
-              <strong>NOTE :</strong> The documents and Drawings must be self-attested and in PDF
-              Format (70MB), Photo in JPEG Format
-              <br />
-              (35mm×45mm, 300DPI, straight view/light background)
+              <strong>NOTE :</strong> The documents and Drawings must be self-attested and in
+              PDF Format (70MB), Photo in JPEG Format (35mm×45mm, 300DPI,
+              straight view/light background)
             </div>
           </div>
 
           <div className="step-icon red-icon">
-            <span className="download-icon">↓</span>
+            <FaDownload className="download-icon" />
           </div>
         </div>
 
-        {/* Step 2 */}
+        {/* STEP 2 */}
         <div className="step step-orange">
-          <div className="step-arrow orange-arrow">
+          <div className="step-arrow">
             <div className="step-number">
               <small>STEP</small>
               <strong>2</strong>
@@ -51,20 +58,18 @@ const GuidelinesRegistration = () => {
           </div>
 
           <div className="step-content">
-            <div className="main-text">
-              Fill the required application form (printable/digital), it would be more useful during
-              the submission for online application.
-            </div>
+            Fill the required application form (printable/digital). It would be
+            more useful during the submission for online application.
           </div>
 
           <div className="step-icon orange-icon">
-            <span className="doc-icon">📄</span>
+            <FaFileAlt className="doc-icon" />
           </div>
         </div>
 
-        {/* Step 3 */}
+        {/* STEP 3 */}
         <div className="step step-blue">
-          <div className="step-arrow blue-arrow">
+          <div className="step-arrow">
             <div className="step-number">
               <small>STEP</small>
               <strong>3</strong>
@@ -72,28 +77,27 @@ const GuidelinesRegistration = () => {
           </div>
 
           <div className="step-content">
-            <div className="main-text">
-              For better understanding of registration screens verify the below user manuals and
-              video tutorials.
-            </div>
+            For better understanding of registration screens verify the below
+            user manuals and video tutorials.
+
             <ul className="manual-list">
               <li>
-                ► User manuals for Project/Agent/Complaint Registration{' '}
+                ► User manuals for Project/Agent/Complaint Registration
                 <a href="#" className="click-here">Click Here</a>
               </li>
               <li>
-                ► Video tutorials <a href="#" className="click-here">Click Here</a>
+                ► Video tutorials
+                <a href="#" className="click-here">Click Here</a>
               </li>
             </ul>
           </div>
 
           <div className="step-icon blue-icon">
-            <span className="search-icon">🔍</span>
+            <FaSearch className="search-icon" />
           </div>
         </div>
+
       </div>
     </div>
   );
-};
-
-export default GuidelinesRegistration;
+}

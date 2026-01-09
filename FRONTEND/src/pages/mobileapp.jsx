@@ -4,22 +4,23 @@ import WorkInProgress from "../assets/images/work-in-progress.jpg"
 
 const MobileApp = () => {
   return (
-    <div className="wip-container">
+    <div className="ma-container">
+
       {/* Breadcrumb */}
-      <div className="breadcrumb">
+      <div className="ma-breadcrumb">
         <span>You are here :</span>
         <a href="/">Home</a>
         <span>/</span>
-        <span className="active">Work in Progress</span>
+        <span className="ma-active">Work in Progress</span>
       </div>
 
       <div>
-      {/* Main Content */}
-      <div className="wip-box">
+        {/* Main Content */}
+        <div className="ma-box">
           <img src={WorkInProgress} alt="Construction" />
-      
+        </div>
       </div>
-      </div>
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import "../styles/agentRegistration.css";
+import "../styles/AgentRegistration.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 

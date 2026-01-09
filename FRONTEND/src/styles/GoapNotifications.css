@@ -4,7 +4,7 @@ body {
   background: #f2f2f2;
 }
 
-.wrapper {
+.goap-wrapper {
   width: 95%;
   margin: 15px auto;
   background: #fff;
@@ -12,22 +12,31 @@ body {
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.goap-breadcrumb {
   background: #1e88e5;
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
+
+}
+.goap-breadcrumb  .home{
+  text-decoration: underline;
+  color: yellow;
+}
+.goap-breadcrumb .home:hover{
+  text-decoration: underline;
+  color: white;
 }
 
 
 /* Title */
-.title {
+.goap-title {
   margin: 15px;
   font-size: 22px;
   font-weight: bold;
 }
 
-.underline {
+.goap-underline {
   width: 40px;
   height: 3px;
   background: #1e88e5;
@@ -35,18 +44,18 @@ body {
 }
 
 /* Table */
-.table-box {
+.goap-table-box {
   margin: 20px 15px;
   border: 1px solid #444;
   overflow-x: auto;
 }
 
-table {
+.goap-table-box table {
   width: 100%;
   border-collapse: collapse;
 }
 
-thead th {
+.goap-table-box thead th {
   background: #3f5568;
   color: #fff;
   padding: 10px;
@@ -54,23 +63,23 @@ thead th {
   font-size: 14px;
 }
 
-tbody td {
+.goap-table-box tbody td {
   padding: 10px;
   border: 1px solid #ddd;
   font-size: 14px;
   vertical-align: top;
 }
 
-tbody tr:nth-child(even) {
+.goap-table-box tbody tr:nth-child(even) {
   background: #f9f9f9;
 }
 
 /* Download */
-.download {
+.goap-download {
   text-align: center;
 }
 
-.download a {
+.goap-download a {
   font-size: 18px;
   color: #1e88e5;
   text-decoration: none;

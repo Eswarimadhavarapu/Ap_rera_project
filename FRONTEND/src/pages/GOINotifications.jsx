@@ -1,8 +1,8 @@
 import "../styles/GoiNotifications.css";
-import  firstpdf from "../assets/5067gi.pdf";
-import secpdf from "../assets/5324gi.pdf";
-import thipdf from "../assets/3gi.pdf";
-import foupdf from "../assets/4gi.pdf";
+import  firstpdf from "../assets/pdf/5067gi.pdf";
+import secpdf from "../assets/pdf/5324gi.pdf";
+import thipdf from "../assets/pdf/3gi.pdf";
+import foupdf from "../assets/pdf/4gi.pdf";
 
 const notifications = [
   {
@@ -41,24 +41,26 @@ const notifications = [
 
 function GoiRera() {
   return (
-    <div className="wrapper">
+    <div className="goi-notif-wrapper">
       {/* Breadcrumb */}
-      <div className="breadcrumb">
+      <div className="goi-notif-breadcrumb">
         You are here :
-        <a href="/"className="home"> Home</a> / <a href="#">Notifications</a> / GOI Notifications
+        <a href="/"className="home"> Home</a> / <a >Notifications</a> / GOI Notifications
+    
+
       </div>
 
       {/* Title */}
-      <h2 className="title">GOI RERA GO's</h2>
-      <div className="underline"></div>
+      <h2 className="goi-notif-title">GOI RERA GO's</h2>
+      <div className="goi-notif-underline"></div>
 
       {/* Table */}
-      <div className="table-box">
-        <div className="table-title">Central Government Notifications</div>
+      <div className="goi-notif-table-box">
+        <div className="goi-notif-table-title">Central Government Notifications</div>
 
-        <table>
-          <thead>
-            <tr>
+        <table className="goi-table">
+          <thead className="goi-thead">
+            <tr className="goi-tr">
               <th>S.no</th>
               <th>Order No</th>
               <th>Date</th>
@@ -66,16 +68,17 @@ function GoiRera() {
               <th>Download</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="goi-tbody">
             {notifications.map((item) => (
               <tr key={item.sno}>
                 <td>{item.sno}</td>
                 <td>{item.orderNo}</td>
                 <td>{item.date}</td>
                 <td>{item.subject}</td>
-                <td className="download">
+                <td className="goi-notif-download">
                   <a href={item.file} 
                  title="Download PDF" target="_blank">
+                  
                     <i className="fa fa-download" aria-hidden="true"></i>
                   </a>
                 </td>

@@ -1,36 +1,64 @@
+/* ================= Global ================= */
 body {
   background: #f2f2f2;
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
 }
 
+/* ================= Wrapper ================= */
 .rti-wrapper {
-  padding: 20px;
+  padding: 20px 0;
 }
 
-.breadcrumb {
+/* ================= Breadcrumb (FULL WIDTH) ================= */
+/* ================= Breadcrumb (FULL WIDTH + LEFT ALIGNED) ================= */
+.rti-wrapper .breadcrumb {
+  width: 100%;
   background: #1e88e5;
-  color: white;
+  color: #fff;
+}
+
+.rti-wrapper .breadcrumb-inner {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 10px 15px;
   font-size: 14px;
+  text-align: left;
 }
 
-.breadcrumb span {
+/* Links */
+.rti-wrapper.breadcrumb-inner a {
   color: yellow;
+  text-decoration: underline;
+  margin: 0 4px;
 }
 
-.breadcrumb .active {
-  color: white;
+.rti-wrapper .breadcrumb-inner a:hover {
+  text-decoration: none;
+}
+
+/* Active page */
+.rti-wrapper .breadcrumb-inner .active {
+  color: #fff;
   font-weight: bold;
 }
 
+
+/* ================= RTI Content Container ================= */
 .rti-container {
+  max-width: 1200px;
+  margin:0 auto;
   background: white;
   padding: 25px;
   border: 1px solid #ccc;
+  border-top: none;
 }
 
-h2 {
+/* ================= Title ================= */
+.rti-container h2 {
   margin: 0;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .title-line {
@@ -40,13 +68,19 @@ h2 {
   margin: 8px 0 20px;
 }
 
+/* ================= Intro Text ================= */
 .intro-text {
   font-size: 14px;
   line-height: 1.6;
   color: #333;
+   margin-top: 0;        /* ❌ extra gap remove */
+  margin-left: 0;
+  padding-left: 0;
+  text-indent: 0;       /* important */
+
 }
 
-/* Accordion */
+/* ================= Accordion ================= */
 .acc-header {
   background: #e0e0e0;
   padding: 12px 15px;
@@ -65,8 +99,10 @@ h2 {
   padding: 15px;
 }
 
+/* Left blue border like govt site */
 .blue-left {
   border-left: 4px solid #1e5fd8;
+  padding-left: 12px;
 }
 
 .acc-body p {
@@ -74,11 +110,12 @@ h2 {
   line-height: 1.6;
 }
 
+/* ================= Text Helpers ================= */
 .red-text {
   color: red;
 }
 
-/* Links */
+/* ================= Links ================= */
 .rti-link {
   color: #1e5fd8;
   text-decoration: none;
@@ -89,11 +126,12 @@ h2 {
   text-decoration: underline;
 }
 
-/* Table */
+/* ================= Table ================= */
 .rti-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  margin-top: 10px;
 }
 
 .rti-table th {

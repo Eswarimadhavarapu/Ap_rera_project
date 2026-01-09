@@ -4,7 +4,7 @@ body {
   background: #f2f2f2;
 }
 
-.wrapper {
+.goi-notif-wrapper {
   width: 95%;
   margin: 15px auto;
   background: #fff;
@@ -12,7 +12,7 @@ body {
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.goi-notif-breadcrumb {
   background: #1e88e5;
   color: #fff;
   padding: 8px 15px;
@@ -23,28 +23,38 @@ body {
   color: white;
   text-decoration: none;
 }
+.goi-notif-breadcrumb .home{
+  text-decoration: underline;
+  color: yellow;
+}
+.goi-notif-breadcrumb .home:hover{
+  text-decoration: underline;
+  color: white;
+}
 
 /* Title */
-.title {
+.goi-notif-title {
   margin: 15px;
   font-size: 22px;
   font-weight: bold;
 }
 
-.underline {
+.goi-notif-underline {
   width: 40px;
   height: 3px;
   background: #1e88e5;
   margin-left: 15px;
 }
 
+
+
 /* Table */
-.table-box {
+.goi-notif-table-box {
   margin: 20px 15px;
   border: 1px solid #444;
 }
 
-.table-title {
+.goi-notif-table-title {
   background: #3f5568;
   color: #fff;
   text-align: center;
@@ -52,12 +62,12 @@ body {
   font-weight: bold;
 }
 
-table {
+.goi-notif-table-box .goi-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-thead th {
+.goi-notif-table-box .goi-thead th {
   background: #4a6074;
   color: #fff;
   padding: 10px;
@@ -65,20 +75,21 @@ thead th {
   font-size: 14px;
 }
 
-tbody td {
+.goi-notif-table-box .goi-tbody td {
   padding: 10px;
   border: 1px solid #ddd;
   font-size: 14px;
 }
 
-tbody tr:nth-child(even) {
+.goi-notif-table-box .goi-tbody tr:nth-child(even){
   background: #f9f9f9;
 }
 
 /* Download */
-.download {
+.goi-notif-download {
   text-align: center;
-  font-size: 18px;
+  /* font-sgoi-notif-ize: 18px; */
+
   color: #1e88e5;
   cursor: pointer;
 }

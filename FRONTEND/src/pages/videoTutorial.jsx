@@ -3,17 +3,17 @@ import "../styles/videoTutorial.css";
 
 const VideoTutorial = () => {
   return (
-    <div className="page-wrapper">
-      <div className="breadcrumb">
+    <div className="vt-wrapper">
+      <div className="vt-breadcrumb">
         You are here :
         <span> Home </span> /
         <span> Registration </span> /
         <b> Video Tutorials </b>
       </div>
 
-      <h2 className="page-title">Video Tutorials</h2>
+      <h2 className="vt-title">Video Tutorials</h2>
 
-      <table className="video-table">
+      <table className="vt-table">
         <thead>
           <tr>
             <th>S.No</th>
@@ -28,21 +28,20 @@ const VideoTutorial = () => {
             <td>----No---</td>
             <td>----No---</td>
             <td>----No---</td>
-           
           </tr>
-           <tr>
+
+          <tr>
             <td>----No---</td>
             <td>----No---</td>
             <td>----No---</td>
             <td>----No---</td>
-            
           </tr>
-           <tr>
+
+          <tr>
             <td>----No---</td>
             <td>----No---</td>
             <td>----No---</td>
             <td>----No---</td>
-            
           </tr>
         </tbody>
       </table>

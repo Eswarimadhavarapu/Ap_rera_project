@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import OfficeorderPdf from "../assets/Officeorder.pdf";
 import CAUSELISTPdf from "../assets/CAuselist.pdf";
 import appealPdf from "../assets/AppealToBuyer.pdf";
+import legalpdf from "../assets/LEGAL_APRERA_CORPORATE_PRESENTATION.pdf";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -64,9 +65,15 @@ const Navbar = () => {
           <li onClick={() => navigate("/apreat")}>APREAT</li>
           <li className="dropdown">NOTIFICATIONS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-              <li>GOI Notifications</li>
-              <li>GOAP Notifications</li>
-              <li>Authority Notificatoins</li>
+             <li onClick={() => navigate("/goinotifications")}>
+               GOI Notifications
+              </li>
+              <li onClick={() => navigate("/goapnotifications")}>
+               GOAP Notifications
+              </li>
+             <li onClick={() => navigate("/authoritynotifications")}>
+              Authority Notificatoins
+              </li>
             <li onClick={() => navigate("/cidcandaprerajoint")}>
   CIDC and APRERA Joint Notifications
 </li>
@@ -118,7 +125,7 @@ const Navbar = () => {
               <li onClick={() => navigate("/usermanual")}>
                 User Manuals
               </li>
-              <li onClick={() => navigate("/forms-download")}>
+              <li onClick={() => navigate("/formsdownload")}>
                 Forms Download
               </li>
               <li onClick={() => navigate("/videoTutorial")}>
@@ -131,38 +138,55 @@ const Navbar = () => {
           </li>
           <li className="dropdown">REPORTS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-              <li>Statistics</li>
+              <li
+             onClick={() =>
+            window.open(
+            window.location.origin + "/statistics",
+            "_blank"
+            )
+             }
+            >
+            Statistics
+          </li>
               <li>MIS reports</li>
               <li>GIS reports</li>
             </ul>
           </li>
           <li className="dropdown">REGISTERED <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-              <li>Projects</li>
-              <li>Agents</li>
+             <li onClick={() => navigate("/registered/projects")}>
+                Projects
+              </li>
+              <li onClick={() => navigate("/registered/agents")}>
+                Agents </li>
             </ul>
           </li>
           <li className="dropdown">JUDGEMENTS/ORDERS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-              <li>Complaint Orders</li>
+               <li onClick={()=>navigate("/complaint-orders")}>Complaint Orders</li>
             </ul>
           </li>
           <li className="dropdown">KNOWLEDGE HUB <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-        <li>Evolution of RERA</li>
-              <li onClick={() => navigate("/race")}>
-                RACE</li>
-              <li>Task Vs Time</li>
+       <li onClick={() => navigate("/evolutionofrera")}>
+              Evolution of RERA
+            </li>
+              <li onClick={() => navigate("/race")}>RACE</li>
+              <li onClick={() => navigate("/taskvstime")}>
+              Task Vs Time
+            </li>
               <li onClick={() => navigate("/ChronologyOfEvents")}>Chronology of Events</li>
-              <li>APRERA Presentation</li>
+              <li onClick={() => window.open(legalpdf, "_blank")}> APRERA Presentation</li>
               <li onClick={() => navigate("/JudgementHub")}>Judgement</li>
-              <li>Vendor Database</li>
+              <li onClick={() => navigate("/vendordatabase")}>
+              VendorDatabase
+            </li>
               <li onClick={() => navigate("/AdvertisementGuidelines")}>Advertisement Guidelines</li>
-              <li>Audio Visual Gallery</li>
+              <li onClick={() => navigate("/audiovisualgallery")}> AudioVisualGallery </li>
               <li onClick={() => navigate("/PressRelease")}>Press Releases</li>
-              <li>Grading of Promoters</li>
+              <li onClick={() => navigate("/gradingofpromotors")}> GradingOfPromotors </li>
               <li onClick={() => navigate("/GradingOfAgents")}>Grading of Agents</li>
-              <li>ACF</li>
+              <li onClick={() => navigate("/acf")}> acf </li>
               <li onClick={() => navigate("/Testimonials")}>Testimonials</li>
               <li onClick={() => window.open(appealPdf, "_blank")}>Appeal to Buyer</li>
             </ul>

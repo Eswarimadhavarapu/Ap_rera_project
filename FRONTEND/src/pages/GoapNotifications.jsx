@@ -1,29 +1,29 @@
 import "../styles/GoapNotifications.css";
-import goap1 from "../assets/goap1.pdf";
-import goap2 from "../assets/goap2.pdf";
-import goap3 from "../assets/goap3.pdf";
-import goap4 from "../assets/goap4.pdf";
-import goap5 from "../assets/goap5.pdf";
-import goap6 from "../assets/goap6.pdf";
-import goap7 from "../assets/goap7.pdf";
-import goap8 from "../assets/goap8.pdf";
-import goap9 from "../assets/goap9.pdf";
-import goap10 from "../assets/goap10.pdf";
-import goap11 from "../assets/goap11.pdf";
-import goap12 from "../assets/goap12.pdf";
-import goap13 from "../assets/goap13.pdf";
-import goap14 from "../assets/goap14.pdf";
-import goap15 from "../assets/goap15.pdf";
-import goap16 from "../assets/goap16.pdf";
-import goap17 from "../assets/goap17.pdf";
-import goap18 from "../assets/goap18.pdf";
-import goap19 from "../assets/goap19.pdf";
-import goap20 from "../assets/goap20.pdf";
-import goap21 from "../assets/goap21.pdf";
-import goap22 from "../assets/goap22.pdf";
-import goap23 from "../assets/goap15.pdf";
-import goap24 from "../assets/goap15.pdf";
-import goap25 from "../assets/goap15.pdf";
+import goap1 from "../assets/pdf/goap1.pdf";
+import goap2 from "../assets/pdf/goap2.pdf";
+import goap3 from "../assets/pdf/goap3.pdf";
+import goap4 from "../assets/pdf/goap4.pdf";
+import goap5 from "../assets/pdf/goap5.pdf";
+import goap6 from "../assets/pdf/goap6.pdf";
+import goap7 from "../assets/pdf/goap7.pdf";
+import goap8 from "../assets/pdf/goap8.pdf";
+import goap9 from "../assets/pdf/goap9.pdf";
+import goap10 from "../assets/pdf/goap10.pdf";
+import goap11 from "../assets/pdf/goap11.pdf";
+import goap12 from "../assets/pdf/goap12.pdf";
+import goap13 from "../assets/pdf/goap13.pdf";
+import goap14 from "../assets/pdf/goap14.pdf";
+import goap15 from "../assets/pdf/goap15.pdf";
+import goap16 from "../assets/pdf/goap16.pdf";
+import goap17 from "../assets/pdf/goap17.pdf";
+import goap18 from "../assets/pdf/goap18.pdf";
+import goap19 from "../assets/pdf/goap19.pdf";
+import goap20 from "../assets/pdf/goap20.pdf";
+import goap21 from "../assets/pdf/goap21.pdf";
+import goap22 from "../assets/pdf/goap22.pdf";
+import goap23 from "../assets/pdf/goap15.pdf";
+import goap24 from "../assets/pdf/goap15.pdf";
+import goap25 from "../assets/pdf/goap15.pdf";
 
 
 
@@ -241,19 +241,19 @@ const data = [
 
 function ApreraGos() {
   return (
-    <div className="wrapper">
+    <div className="goap-wrapper">
       {/* Breadcrumb */}
-      <div className="breadcrumb">
+      <div className="goap-breadcrumb">
         You are here :
-        <a href="/" className="home"> Home</a> / <a href="#">Notifications</a> / GOAP Notifications
+        <a href="/" className="home"> Home</a> / <a>Notifications</a> / GOAP Notifications
       </div>
 
       {/* Title */}
-      <h2 className="title">APRERA GO's</h2>
-      <div className="underline"></div>
+      <h2 className="goap-title">APRERA GO's</h2>
+      <div className="goap-underline"></div>
 
       {/* Table */}
-      <div className="table-box">
+      <div className="goap-table-box">
         <table>
           <thead>
             <tr>
@@ -272,7 +272,7 @@ function ApreraGos() {
                 <td>{item.goNo}</td>
                 <td>{item.date}</td>
                 <td>{item.subject}</td>
-                <td className="download">
+                <td className="goap-download">
                   <a
                     href={item.file}
                     target="_blank"

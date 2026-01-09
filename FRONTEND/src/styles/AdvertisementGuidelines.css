@@ -1,78 +1,89 @@
 /* PAGE */
 .ad-page {
-  background: #f4f4f4;
-  padding-bottom: 40px;
-  margin-top: 30px;
+  background: #eaeaea;
+  padding: 10px 0 30px;   /* reduced top space */
+  margin-top: 0;
 }
 
 /* BREADCRUMB */
-.breadcrumb {
-  max-width: 1200px;
+.ad-page .breadcrumb {
+  max-width: 1100px;
   margin: 0 auto;
-  background: #0d86e7;
+  background: #1683e2;
   color: #fff;
-  padding: 10px 16px;
-  font-size: 14px;
+  padding: 6px 14px;     /* reduced height */
+  font-size: 13px;
 }
 
-.breadcrumb .active {
+.ad-page .breadcrumb a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.ad-page .breadcrumb .active {
   font-weight: 600;
   text-decoration: underline;
 }
 
-/* CONTENT */
+/* CONTENT CONTAINER */
 .content-wrapper {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   background: #ffffff;
-  border: 1px solid #dcdcdc;
-  padding: 30px 40px;
+  border: 1px solid #cfcfcf;
+  padding: 18px 32px;    /* reduced padding */
 }
 
+/* MAIN TITLES */
 .main-title {
   text-align: center;
-  font-size: 20px;
-  margin-bottom: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 6px 0 2px;     /* FIX */
+  
 }
 
-.ad-page .sub-title {
+.sub-title {
   text-align: center;
-  font-size: 20px;
-  margin-bottom: 25px;
-  color: black;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 14px;      /* FIX */
+  color: #000;
 }
 
 /* SECTION HEADINGS */
-.ad-page .section-title {
-  margin-top: 25px;
-  margin-bottom: 8px;
-  color: #007db8;
-  font-size: 16px;
+
+.section-title {
+  margin-top: 16px;     /* FIX */
+  margin-bottom: 2px;   /* FIX */
+  color: #0a7bbd;
+  font-size: 15px;
   font-weight: 700;
-  position: relative;
 }
 
+/* SINGLE CLEAN UNDERLINE */
 .section-title::after {
   content: "";
   display: block;
-  width: 40px;
+  width: 32px;
   height: 2px;
-  background: #007db8;
-  margin-top: 6px;
+  background: #0a7bbd;
+  margin-top: 3px;      /* FIX */
 }
 
-/* TEXT */
+/* PARAGRAPH TEXT */
 .content-wrapper p {
-  font-size: 14px;
-  line-height: 1.7;
-  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.45;    /* FIX – tighter like real site */
+  margin: 6px 0 0 0;    /* FIX – removes double spacing */
+  color: #000;
 }
 
 /* IMAGE BOX */
 .image-box {
-  border: 2px solid #f26b4f; /* red border */
-  padding: 15px;
-  margin-top: 15px;
+  border: 2px solid #f26b4f;
+  padding: 10px;
+  margin-top: 10px;
   text-align: center;
 }
 
@@ -81,29 +92,47 @@
   height: auto;
 }
 
-/* DOWNLOADS TABLE */
+/* DOWNLOAD TABLE */
 .downloads-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .downloads-table th {
   background: #3f5367;
   color: #fff;
-  padding: 10px;
-  font-size: 14px;
+  padding: 7px;
+  font-size: 13px;
 }
 
 .downloads-table td {
   border: 1px solid #dcdcdc;
-  padding: 10px;
-  font-size: 14px;
+  padding: 7px;
+  font-size: 13px;
 }
 
 .download-btn {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
+}
+.section-title {
+  margin-top: 16px;
+  margin-bottom: 2px;
+  color: #0a7bbd;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: #0a7bbd;
+  margin-top: 4px;
 }

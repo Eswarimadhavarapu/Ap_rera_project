@@ -4,7 +4,7 @@ body {
   background: #f2f2f2;
 }
 
-.wrapper {
+.auth-notif-wrapper {
   width: 95%;
   margin: 15px auto;
   background: #fff;
@@ -12,31 +12,31 @@ body {
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.auth-notif-breadcrumb {
   background: #1e88e5;
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
   
 }
-.breadcrumb .home{
+.auth-notif-breadcrumb .home{
   text-decoration: underline;
   color: yellow;
 }
-.breadcrumb .home:hover{
+.auth-notif-breadcrumb .home:hover{
   text-decoration: underline;
   color: white;
 }
 
 
 /* Title */
-.title {
+.auth-notif-title {
   margin: 15px;
   font-size: 22px;
   font-weight: bold;
 }
 
-.underline {
+.auth-notif-underline {
   width: 40px;
   height: 3px;
   background: #1e88e5;
@@ -44,20 +44,20 @@ body {
 }
 
 /* Controls */
-.controls {
+.auth-notif-controls {
   display: flex;
   justify-content: space-between;
   padding: 10px 15px;
 }
 
-.controls select,
-.controls input {
+.auth-notif-controls select,
+.auth-notif-controls input {
   padding: 5px;
   margin-left: 5px;
 }
 
 /* Table */
-.table-box {
+.auth-notif-table-box {
   margin: 0 15px;
   border: 1px solid #444;
   overflow-x: auto;
@@ -88,7 +88,7 @@ tbody tr:nth-child(even) {
 /* NEW badge */
 
 
-.new-badge-star {
+.auth-notif-new-badge-star {
   display: inline-block;
   margin-left: 6px;
   padding: 3px 6px;
@@ -130,43 +130,43 @@ tbody tr:nth-child(even) {
 
 
 /* Download */
-.download {
+.auth-notif-download {
   text-align: center;
 }
 
-.download a {
+.auth-notif-download a {
   font-size: 18px;
   color: #1e88e5;
   text-decoration: none;
 }
 
-.no-data {
+.auth-notif-no-data {
   padding: 10px;
 }
-.pagination {
+.auth-notif-pagination {
   display: flex;
   justify-content: flex-end;   /* 👈 moves pagination to right */
   align-items: center;
   gap: 6px;
   margin-top: 10px;
 }
-.pagination button {
+.auth-notif-pagination button {
   padding: 3px 8px;
   border: 1px solid #ccc;
   background: #fff;
   cursor: pointer;
 }
 
-.pagination button.active {
+.auth-notif-pagination button.active {
   border: 1px solid #000;
   font-weight: bold;
 }
 
-.pagination button:disabled {
+/* .auth-notif-pagination button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
-}
-.pagination button:hover{
-  background-color:#333;
+  
+} */
+.auth-notif-pagination button:hover{
+  background-color:transparent;;
   color: white;
 }

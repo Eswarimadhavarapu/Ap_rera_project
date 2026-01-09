@@ -13,9 +13,14 @@ export default function RTI() {
 
       {/* Breadcrumb */}
       <div className="breadcrumb">
-        You are here : <span>Home</span> / <span>About Us</span> /{" "}
-        <span className="active">RTI</span>
-      </div>
+  <div className="breadcrumb-inner">
+    You are here :
+    <a href="/"> Home</a> /
+    <a href="/about-us"> About Us</a> /
+    <span className="active"> RTI</span>
+  </div>
+</div>
+
 
       <div className="rti-container">
         <h2>THE RIGHT TO INFORMATION ACT 2005</h2>

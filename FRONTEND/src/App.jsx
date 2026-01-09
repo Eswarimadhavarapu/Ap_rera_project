@@ -52,6 +52,21 @@ import ApplicantDetails from "./pages/ApplicantDetails";
 import Aprera from "./pages/Aprea";
 import Organogram from "./pages/organogram";
 import OurServices from "./pages/ourservices";
+import Statistics from "./pages/statistics";
+import GOINotifications from "./pages/GOINotifications";
+import GoapNotifications from "./pages/GoapNotifications";
+import AuthorityNotifications from "./pages/AuthorityNotifications";
+import Project from "./pages/projects";
+import Agents from "./pages/Agents";
+import ComplaintOrders from "./pages/ComplaintOrders";
+import EvolutionOfRera from "./pages/evolutionofrera";
+import AudioVisualGallery from "./pages/AudioVisualGallery";
+import TaskVsTime from "./pages/taskvstime";
+import VendorDataBase from "./pages/vendordatabase";
+import Acf from "./pages/ACF";
+import ComplaintRegistration from "./pages/complaintRegistration";
+import GradingOfPromoters from "./pages/GradingOfPromotors";
+import FormsDownload from "./pages/formsdownload";
 
 
 
@@ -100,7 +115,7 @@ function App() {
           <Route path="/accessibility" element={<Accessibility />} />
           <Route path="/termsConditions" element={< TermsConditions />} />
           <Route path="/rateWebsite" element={<RateWebsite />} />
-                     <Route path="/agent-registration" element={<AgentRegistration />} />
+          <Route path="/agent-registration" element={<AgentRegistration />} />
            <Route path="/Guidelines" element={<Guidelines />} />
            <Route path="/agent-detail-new" element={<AgentDetailNew />} />
            <Route path="/agent-detail-existing" element={<AgentDetailExisting />} />
@@ -108,6 +123,21 @@ function App() {
            <Route path="/aprera" element={<Aprera />} />
           <Route path="/organogram" element={<Organogram />} />
           <Route path="/ourservices" element={<OurServices />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/goinotifications" element={<GOINotifications />}/>
+          <Route path="/goapnotifications" element={<GoapNotifications />}/>
+          <Route path="/authoritynotifications" element={<AuthorityNotifications />}/>
+          <Route path="/agents" element={<Agents />} />
+          <Route path="/registered/projects" element={<Project />} />
+          <Route path="/complaint-orders" element={<ComplaintOrders />} />
+          <Route path="evolutionofrera" element={<EvolutionOfRera />} />
+          <Route path="taskvstime" element={<TaskVsTime />} />
+          <Route path="vendordatabase" element={<VendorDataBase />} />
+          <Route path="gradingofpromotors" element={<GradingOfPromoters />} />
+          <Route path="ACF" element={<Acf/>} />
+          <Route path="AudioVisualGallery" element={<AudioVisualGallery />} />
+          <Route path="/complaintregistration" element={<ComplaintRegistration />} />
+          <Route path="/formsdownload"element={<FormsDownload/>} />
         </Routes>
       </Layout>
     </BrowserRouter>

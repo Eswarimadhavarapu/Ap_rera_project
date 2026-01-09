@@ -1,4 +1,5 @@
 import "../styles/organogram.css";
+import Organigram from "../assets/images/Organisation_Structure.jpeg";
 
 export default function Organogram() {
   return (
@@ -16,7 +17,7 @@ export default function Organogram() {
       {/* Screenshot Image */}
       <div className="org-image-wrapper">
         <img
-          src="/images/organogram.jpeg"
+          src={Organigram}
           alt="APRERA Organization Structure"
         />
       </div>

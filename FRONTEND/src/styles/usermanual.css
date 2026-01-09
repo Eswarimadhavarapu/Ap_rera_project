@@ -1,41 +1,41 @@
 /* Page Container */
-.page-container {
+.um-page {
   font-family: Arial, sans-serif;
   max-width: 1200px;
-  margin: 0 auto;            /* ⭐ centers entire content */
+  margin: 0 auto;
   padding: 8px 12px;
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.um-bread {
   background-color: #0b87e7;
   color: #fff;
   padding: 6px 10px;
   font-size: 13px;
 }
 
-.breadcrumb a {
+.um-bread a {
   color: #fff;
   text-decoration: underline;
   margin: 0 3px;
 }
 
-.breadcrumb span {
+.um-bread span {
   font-weight: bold;
   margin-left: 3px;
 }
 
 /* Title */
-.title-section {
+.um-title {
   margin: 12px 0 6px;
 }
 
-.title-section h2 {
+.um-title h2 {
   margin: 0;
   font-size: 20px;
 }
 
-.title-underline {
+.um-line {
   width: 40px;
   height: 3px;
   background-color: #0b87e7;
@@ -43,20 +43,20 @@
 }
 
 /* Table Wrapper */
-.table-wrapper {
-  margin: 10px auto;         /* ⭐ keeps table centered */
+.um-table-box {
+  margin: 10px auto;
   border: 1px solid #000;
 }
 
 /* Table */
-.manual-table {
+.um-manual {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
 }
 
 /* Header */
-.manual-table th {
+.um-manual th {
   background-color: #344f63;
   color: #fff;
   padding: 8px;
@@ -65,21 +65,21 @@
 }
 
 /* Column widths */
-.blank-header {
+.um-blank {
   width: 200px;
 }
 
-.manual-table th:nth-child(2) {
+.um-manual th:nth-child(2) {
   width: calc(100% - 300px);
 }
 
-.download-header {
+.um-down-head {
   width: 100px;
   text-align: center;
 }
 
 /* Table cells */
-.manual-table td {
+.um-manual td {
   padding: 7px 10px;
   font-size: 13px;
   border-bottom: 1px solid #dcdcdc;
@@ -87,7 +87,7 @@
 }
 
 /* Category column */
-.category {
+.um-cat {
   background-color: #3f6f8e;
   color: #fff;
   font-weight: bold;
@@ -95,18 +95,18 @@
 }
 
 /* Download column */
-.download {
+.um-down {
   text-align: center;
 }
 
-.icon {
+.um-ico {
   color: #0b87e7;
   font-size: 16px;
   cursor: pointer;
 }
 
 /* Remove last borders */
-.manual-table tr td:last-child,
-.manual-table tr th:last-child {
+.um-manual tr td:last-child,
+.um-manual tr th:last-child {
   border-right: none;
 }

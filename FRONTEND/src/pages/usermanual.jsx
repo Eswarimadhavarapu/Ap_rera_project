@@ -3,9 +3,10 @@ import "../styles/usermanual.css";
 
 const UserManual = () => {
   return (
-    <div className="page-container">
+    <div className="um-page">
+
       {/* Breadcrumb */}
-      <div className="breadcrumb">
+      <div className="um-bread">
         You are here :
         <a href="#"> Home </a> /
         <a href="#"> Registration </a> /
@@ -13,58 +14,58 @@ const UserManual = () => {
       </div>
 
       {/* Title */}
-      <div className="title-section">
+      <div className="um-title">
         <h2>User Manuals</h2>
-        <div className="title-underline"></div>
+        {/* <div className="um-line"></div> */}
       </div>
 
       {/* Table */}
-      <div className="table-wrapper">
-        <table className="manual-table">
+      <div className="um-table-box">
+        <table className="um-manual">
           <thead>
             <tr>
-              <th className="blank-header"></th>
+              <th className="um-blank"></th>
               <th>Subject</th>
-              <th className="download-header">Download</th>
+              <th className="um-down-head">Download</th>
             </tr>
           </thead>
 
           <tbody>
             <tr>
-              <td className="category" rowSpan="2">Project</td>
+              <td className="um-cat" rowSpan="2">Project</td>
               <td>User Manual for Project Individual Registration</td>
-              <td className="download">
-                <span className="icon">⬇</span>
+              <td className="um-down">
+                <span className="um-ico">⬇</span>
               </td>
             </tr>
 
             <tr>
               <td>User Manual for Project Other-than Individual Registration</td>
-              <td className="download">
-                <span className="icon">⬇</span>
+              <td className="um-down">
+                <span className="um-ico">⬇</span>
               </td>
             </tr>
 
             <tr>
-              <td className="category" rowSpan="2">Agent</td>
+              <td className="um-cat" rowSpan="2">Agent</td>
               <td>User Manual for Agent Individual Registration</td>
-              <td className="download">
-                <span className="icon">⬇</span>
+              <td className="um-down">
+                <span className="um-ico">⬇</span>
               </td>
             </tr>
 
             <tr>
               <td>User Manual for Agent Other-than Individual Registration</td>
-              <td className="download">
-                <span className="icon">⬇</span>
+              <td className="um-down">
+                <span className="um-ico">⬇</span>
               </td>
             </tr>
 
             <tr>
-              <td className="category">Complaint Registration</td>
+              <td className="um-cat">Complaint Registration</td>
               <td>User Manual for Complaint Registration</td>
-              <td className="download">
-                <span className="icon">⬇</span>
+              <td className="um-down">
+                <span className="um-ico">⬇</span>
               </td>
             </tr>
 

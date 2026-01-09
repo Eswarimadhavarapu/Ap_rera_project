@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f3f3;
+}
+
+.vendor-container {
+  background: #fff;
+  margin: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  background: #118bee;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.breadcrumb span {
+  color: #dff0ff;
+}
+
+/* Title */
+.title {
+  margin: 20px 0 5px;
+  font-size: 22px;
+}
+
+.title-underline {
+  width: 50px;
+  height: 3px;
+  background: #118bee;
+  margin-bottom: 15px;
+}
+
+/* Filter */
+.filter-row {
+  margin-bottom: 15px;
+}
+
+.filter-row label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filter-row select {
+  padding: 6px;
+  width: 200px;
+}
+
+.required {
+  color: red;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.controls select,
+.controls input {
+  padding: 4px;
+}
+
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icons */
+.icon {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.icon.excel {
+  background: #e8f5e9;
+  color: green;
+}
+
+.icon.pdf {
+  background: #ffebee;
+  color: red;
+}
+
+/* Table */
+.vendor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.vendor-table thead {
+  background: #3f556b;
+  color: #fff;
+}
+
+.vendor-table th,
+.vendor-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.vendor-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.multiline {
+  white-space: pre-line;
+}
