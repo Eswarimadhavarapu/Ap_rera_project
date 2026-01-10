@@ -70,6 +70,10 @@ import UploadDocuments from "./pages/UploadDocuments";
 import Preview from "./pages/Preview";
 import Payment from "./pages/Payment";
 import ContactUs from "./pages/contactus";
+import Promoter_Profile from "./pages/Promoter_Profile";
+import ProjectDetails from "./pages/projectDetails";
+import DevelopmentDetails from "./pages/DevelopmentDetails";
+import AssociateDetails from "./pages/AssociateDetails";
 
 
 
@@ -142,6 +146,11 @@ function App() {
           <Route path="AudioVisualGallery" element={<AudioVisualGallery />} />
           <Route path="/complaintregistration" element={<ComplaintRegistration />} />
           <Route path="/formsdownload"element={<FormsDownload/>} />
+          <Route path="/promoter-profile" element={<Promoter_Profile />} />
+          <Route path="/project-Details" element={<ProjectDetails />} />
+          <Route path="/Development-Details" element={<DevelopmentDetails />} />
+           <Route path="/Upload-Documents" element={<UploadDocuments />} />
+           <Route path="/Associate-Details" element={<AssociateDetails />} />
           <Route path="/agent-upload-documents" element={<UploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />

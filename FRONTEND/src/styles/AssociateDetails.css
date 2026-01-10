@@ -1,0 +1,174 @@
+/* ===============================
+   AP RERA – ASSOCIATE DETAILS
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  background: #f2f2f2;
+}
+
+/* MAIN CONTAINER */
+.associate-details-container {
+  max-width: 1200px;
+  margin: auto;
+  background: #ffffff;
+  border: 1px solid #cfcfcf;
+  padding: 15px;
+}
+
+/* PANEL */
+.panel-body {
+  padding: 15px;
+}
+
+/* SECTION HEADINGS */
+.subheading {
+  font-size: 14px;
+  font-weight: bold;
+  color: #2f5fa7;
+  border-bottom: 1px solid #cfcfcf;
+  padding-bottom: 6px;
+  margin: 20px 0 10px;
+}
+
+/* ROWS */
+.row {
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.innerdivrow {
+  margin-bottom: 10px;
+}
+
+/* COLUMNS */
+.col-sm-3 {
+  width: 25%;
+  float: left;
+  padding: 0 8px;
+}
+
+.col-sm-12,
+.col-xs-12 {
+  width: 100%;
+  float: left;
+  padding: 0 8px;
+}
+
+/* LABELS */
+.label {
+  font-size: 12px;
+  font-weight: normal;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+.label font {
+  color: red;
+}
+
+/* INPUTS */
+.form-control {
+  height: 30px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 2px;
+}
+
+textarea.form-control {
+  height: auto;
+}
+
+.form-control:focus {
+  border-color: #2f5fa7;
+  box-shadow: none;
+  outline: none;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+.btn-primary {
+  background: #0b5cab;
+  border: 1px solid #0b5cab;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #094a8f;
+  border-color: #094a8f;
+}
+
+.btnmargintop {
+  margin-top: 22px;
+}
+
+.pull-right {
+  float: right;
+}
+
+/* TABLES */
+.tableheader {
+  margin-top: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table th {
+  background: #f5f5f5;
+  border: 1px solid #cfcfcf;
+  padding: 6px;
+  font-weight: bold;
+  color: #000;
+}
+
+.table td {
+  border: 1px solid #cfcfcf;
+  padding: 6px;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+
+/* SAVE BUTTON */
+button.btn-primary.pull-right {
+  margin-top: 20px;
+}
+
+/* CLEAR FLOATS */
+.row::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* RESPONSIVE (AP RERA STYLE – STACKED) */
+@media (max-width: 768px) {
+  .col-sm-3 {
+    width: 100%;
+  }
+
+  .pull-right {
+    float: none;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

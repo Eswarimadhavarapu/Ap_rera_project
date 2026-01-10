@@ -1,7 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import '../styles/Promoter_Profile.css';
+import { useNavigate } from "react-router-dom";
+import ProjectWizard from "../components/ProjectWizard";
+
+const BANK_LIST = [
+  "STATE BANK OF INDIA",
+  "HDFC BANK",
+  "ICICI BANK LIMITED",
+  "AXIS BANK",
+  "PUNJAB NATIONAL BANK",
+  "CANARA BANK",
+  "BANK OF BARODA"
+];
+
+
 
 const Promoter_Profile = () => {
+  const navigate = useNavigate();
+    const [ifscData, setIfscData] = useState([]);
   const [formData, setFormData] = useState({
     applicationNo: '080126103613',
     promoterType: 'individual',
@@ -29,7 +46,11 @@ const Promoter_Profile = () => {
     litigations: '',
     promoter2Details: ''
   });
-
+  // 🔹 NEW: dynamic bank data
+const [banks, setBanks] = useState([]);
+const [branches, setBranches] = useState([]);
+const [loadingBanks, setLoadingBanks] = useState(false);
+const [loadingBranches, setLoadingBranches] = useState(false);
   const [errors, setErrors] = useState({});
   const [uploadedFiles, setUploadedFiles] = useState({});
 
@@ -68,7 +89,19 @@ const Promoter_Profile = () => {
     const regex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/;
     return regex.test(gst);
   };
+ // ✅ ADD THIS EXACTLY HERE (after validation functions)
+const completeStep = (stepNo) => {
+  const completedSteps =
+    JSON.parse(localStorage.getItem("completedSteps")) || [];
 
+  if (!completedSteps.includes(stepNo)) {
+    completedSteps.push(stepNo);
+    localStorage.setItem(
+      "completedSteps",
+      JSON.stringify(completedSteps)
+    );
+  }
+};   
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -120,7 +153,66 @@ const Promoter_Profile = () => {
       ...prev,
       [name]: error
     }));
+
   };
+  // ===============================
+// 🔹 BANK STATE → BANK → BRANCH LOGIC
+// ===============================
+const handleBankStateChange = (e) => {
+  const state = e.target.value;
+
+  setFormData(prev => ({
+    ...prev,
+    bankState: state,
+    bankName: "",
+    branchName: "",
+    ifscCode: ""
+  }));
+
+  const stateBanks = [
+    ...new Set(
+      ifscData
+        .filter(b => b.STATE === state)
+        .map(b => b.BANK)
+    )
+  ];
+
+  setBanks(stateBanks);
+  setBranches([]);
+};
+
+const handleBankChange = (e) => {
+  const bank = e.target.value;
+
+  setFormData(prev => ({
+    ...prev,
+    bankName: bank,
+    branchName: "",
+    ifscCode: ""
+  }));
+
+  const bankBranches = ifscData.filter(
+    b => b.BANK === bank && b.STATE === formData.bankState
+  );
+
+  setBranches(bankBranches);
+};
+
+
+  
+// 3️⃣ Branch change
+const handleBranchChange = (e) => {
+  const branchName = e.target.value;
+  const selectedBranch = branches.find(
+    b => b.BRANCH === branchName
+  );
+
+  setFormData(prev => ({
+    ...prev,
+    branchName,
+    ifscCode: selectedBranch ? selectedBranch.IFSC : ""
+  }));
+};
 
   const handleFileUpload = (e, fieldName) => {
     const file = e.target.files[0];
@@ -133,8 +225,23 @@ const Promoter_Profile = () => {
   };
 
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-  };
+  // 🔒 Minimal mandatory check (example)
+  if (
+    !formData.name ||
+    !formData.mobileNumber ||
+    !formData.emailId
+  ) {
+    alert("Please fill all mandatory fields");
+    return;
+  }
+
+  // ✅ Mark Step 1 as completed (GREEN)
+  completeStep(1);
+
+  // 👉 Navigate to next step
+  navigate("/project-details");
+};
+
 
   return (
     <div className="promoter-container">
@@ -151,41 +258,7 @@ const Promoter_Profile = () => {
         <h1>Project Registration</h1>
       </div>
 
-      {/* Progress Wizard */}
-      <div className="wizard-container">
-        <div className="wizard-step active">
-          <div className="step-circle">1</div>
-          <div className="step-label">Promoter Profile</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">2</div>
-          <div className="step-label">Project Details</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">3</div>
-          <div className="step-label">Development Details</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">4</div>
-          <div className="step-label">Associate Details</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">5</div>
-          <div className="step-label">Upload Documents</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">6</div>
-          <div className="step-label">Preview</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">7</div>
-          <div className="step-label">Payment</div>
-        </div>
-        <div className="wizard-step">
-          <div className="step-circle">8</div>
-          <div className="step-label">Acknowledgment</div>
-        </div>
-      </div>
+      <ProjectWizard currentStep={1} />
 
       <div className="promoter-form">
         {/* Application Number Section */}
@@ -246,48 +319,66 @@ const Promoter_Profile = () => {
               <label className="form-label">
                 Bank State<span className="required">*</span>
               </label>
-              <select
-                name="bankState"
-                value={formData.bankState}
-                onChange={handleInputChange}
-                className="form-input"
-              >
-                <option value="">Select</option>
-                <option value="2">Andhra Pradesh</option>
-                <option value="32">Telangana</option>
-                <option value="17">Karnataka</option>
-                <option value="31">Tamil Nadu</option>
-              </select>
+            <select
+  name="bankState"
+  value={formData.bankState}
+  onChange={handleBankStateChange}
+  className="form-input"
+>
+  <option value="">Select</option>
+  <option value="Andhra Pradesh">Andhra Pradesh</option>
+  <option value="Telangana">Telangana</option>
+  <option value="Karnataka">Karnataka</option>
+  <option value="Tamil Nadu">Tamil Nadu</option>
+</select>
+
+
             </div>
             <div className="form-group">
               <label className="form-label">
                 Bank Name<span className="required">*</span>
               </label>
-              <select
-                name="bankName"
-                value={formData.bankName}
-                onChange={handleInputChange}
-                className="form-input"
-              >
-                <option value="">Select</option>
-                <option value="4">STATE BANK OF INDIA</option>
-                <option value="102">HDFC BANK</option>
-                <option value="124">ICICI BANK LIMITED</option>
-                <option value="22">AXIS BANK</option>
-              </select>
+             <select
+  name="bankName"
+  value={formData.bankName}
+  onChange={handleBankChange}
+  className="form-input"
+  disabled={!formData.bankState}
+>
+  <option value="">
+    {loadingBanks ? "Loading banks..." : "Select"}
+  </option>
+
+  {banks.map((bank, idx) => (
+    <option key={idx} value={bank}>
+      {bank}
+    </option>
+  ))}
+</select>
+
             </div>
             <div className="form-group">
               <label className="form-label">
                 Branch Name<span className="required">*</span>
               </label>
-              <select
-                name="branchName"
-                value={formData.branchName}
-                onChange={handleInputChange}
-                className="form-input"
-              >
-                <option value="">Select</option>
-              </select>
+             <select
+  name="branchName"
+  value={formData.branchName}
+  onChange={handleBranchChange}  // ✅ CORRECT
+  className="form-input"
+  disabled={!formData.bankName}
+>
+  <option value="">
+    {loadingBranches ? "Loading branches..." : "Select"}
+  </option>
+
+  {branches.map((b, idx) => (
+    <option key={idx} value={b.BRANCH}>
+      {b.BRANCH}
+    </option>
+  ))}
+</select>
+
             </div>
             <div className="form-group">
               <label className="form-label">
@@ -324,15 +415,16 @@ const Promoter_Profile = () => {
               <label className="form-label">
                 IFSC Code<span className="required">*</span>
               </label>
-              <input
-                type="text"
-                name="ifscCode"
-                value={formData.ifscCode}
-                onChange={handleInputChange}
-                className={`form-input ${errors.ifscCode ? 'error' : ''}`}
-                placeholder="IFSC Code"
-                maxLength={11}
-              />
+            <input
+  type="text"
+  name="ifscCode"
+  value={formData.ifscCode}
+  readOnly                // ✅ IMPORTANT
+  className={`form-input ${errors.ifscCode ? 'error' : ''}`}
+  placeholder="IFSC Code"
+/>
+
+
               {errors.ifscCode && <span className="error-text">{errors.ifscCode}</span>}
             </div>
             <div className="form-group">

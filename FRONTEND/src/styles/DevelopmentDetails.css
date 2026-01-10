@@ -1,0 +1,328 @@
+/* ===== GLOBAL ===== */
+body {
+  background: #f2f2f2;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #333;
+}
+
+.development-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+
+/* ===== BREADCRUMB ===== */
+.header-navigation {
+  background: #1e90ff;
+  padding: 8px 12px;
+  margin: -15px -15px 15px -15px;
+}
+
+.breadcrumb {
+  color: #fff;
+  font-size: 12px;
+}
+
+.breadcrumb a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ===== TITLE ===== */
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0 15px;
+}
+
+/* ===== STEPS ===== */
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  padding: 15px 10px;
+  margin-bottom: 20px;
+}
+
+.step {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+}
+
+.step::before {
+  content: counter(step);
+}
+
+.step.active {
+  color: #2e8b57;
+  font-weight: bold;
+}
+
+/* ===== HEADINGS ===== */
+.subheading {
+  font-size: 15px;
+  color: #0b5cab;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin: 20px 0 15px;
+}
+
+/* ===== LABELS & INPUTS ===== */
+.label {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+font[color="red"] {
+  color: red;
+}
+
+.inputbox,
+select {
+  width: 100%;
+  height: 30px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+input[type="file"] {
+  padding: 3px;
+      width: 200px;
+}
+
+/* ===== CHECKBOX TABLE ===== */
+.custom_checkbox td {
+  border: 1px solid #ddd;
+  background: #fafafa;
+  padding: 10px;
+}
+
+.custom_checkbox input {
+  margin-right: 5px;
+}
+
+/* ===== NOTE ===== */
+.note-section {
+  margin-top: 10px;
+}
+
+.label.note {
+  color: red !important;
+  font-size: 12px !important;
+  line-height: 18px;
+}
+
+/* ===== ACCORDION ===== */
+.accordion-section {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.accordion-header {
+  background: #e6e6e6;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.accordion-icon {
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.accordion-content {
+  padding: 15px;
+  background: #fff;
+}
+
+.dvborder {
+  border: 1px solid #ddd;
+  padding: 15px;
+  background: #f9f9f9;
+}
+
+/* ===== LINKS ===== */
+.lnk-link {
+  color: #0066cc;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* ===== TABLE ===== */
+.external-development-section {
+  margin-top: 25px;
+}
+
+.section-title {
+  background: #2f4f6f;
+  color: white;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.development-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.development-table th {
+  background: #2f4f6f;
+  color: #fff;
+  padding: 6px;
+  font-size: 12px;
+}
+
+.development-table td {
+  border: 1px solid #ccc;
+  padding: 6px;
+}
+
+.percent-input {
+  width: 60px;
+}
+
+/* ===== OTHER WORK ===== */
+.other-works-section {
+  margin-top: 20px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 6px 15px;
+  font-size: 12px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #0b5cab;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #094a8f;
+}
+
+.btn-default {
+  background: #e6e6e6;
+  border: 1px solid #ccc;
+}
+
+.btn-add {
+  background: #6c757d;
+  color: white;
+}
+
+/* ===== SAVE BUTTON ===== */
+.form-actions {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.btn-save {
+  padding: 8px 25px;
+  font-size: 13px;
+}
+
+/* ===== ROW/COLUMN FIX ===== */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-sm-3 { width: 25%; padding: 0 10px; }
+.col-sm-4 { width: 33.33%; padding: 0 10px; }
+.col-sm-2 { width: 16.66%; padding: 0 10px; }
+.col-xs-12 { width: 100%; padding: 0 10px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .col-sm-3,
+  .col-sm-4,
+  .col-sm-2 {
+    width: 100%;
+  }
+
+  .progress-steps {
+    flex-wrap: wrap;
+  }
+}
+
+/* ================================
+   AP RERA – FLAT DETAILS FIX
+================================ */
+
+/* Top blue strip */
+.dvborder::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: #2f5fa7;
+  margin: -15px -15px 15px -15px;
+}
+
+/* Download link */
+.dvborder .lnk-link {
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* Single row layout */
+.dvborder .row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+/* Block input */
+.dvborder .col-sm-3 {
+  flex: 0 0 28%;
+}
+
+/* File upload */
+.dvborder .col-xs-4 {
+  flex: 0 0 40%;
+}
+
+/* Upload button */
+.dvborder .col-xs-3 {
+  flex: 0 0 20%;
+}
+
+/* Button style */
+.dvborder .btn-primary {
+  width: auto;
+  padding: 8px 25px;
+  font-size: 14px;
+  background: #0b5cab;
+  border-radius: 4px;
+}
+
+/* Prevent full-width button */
+.dvborder .btnmargintop {
+  margin-top: 22px;
+}
+
+/* File input height */
+.dvborder input[type="file"] {
+  height: 34px;
+}
+
+/* Input height */
+.dvborder input[type="text"] {
+  height: 34px;
+}
