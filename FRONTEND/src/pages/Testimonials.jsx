@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Testimonials.css";
-import workInProgress from "../assets/work-in-progress.jpg";
+import workInProgress from "../../public/assets/images/work-in-progress.jpg";
 
 const Testimonials = () => {
   return (

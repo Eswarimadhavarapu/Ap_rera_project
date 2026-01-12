@@ -1,174 +1,216 @@
-/* ===============================
-   AP RERA – ASSOCIATE DETAILS
-================================ */
-
+/* =============================== AP RERA – ASSCIATE DETAILS ================================ */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  background: #f2f2f2;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 0;
 }
 
-/* MAIN CONTAINER */
+/* Header */
+.associate-details-header {
+    background: #0033a0;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Navigation */
+.nav {
+    background: #0033a0;
+    padding: 10px 0;
+}
+
+.nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.nav li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Breadcrumb */
+.associate-details-breadcrumb {
+    background: #0066cc;
+    color: #ffcc00;
+    padding: 10px;
+    font-size: 14px;
+}
+
+/* Page Header */
+.associate-details-page-header h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px 0 10px;
+    border-bottom: 1px solid #0066cc;
+    padding-bottom: 5px;
+}
+
+/* Main Container */
 .associate-details-container {
-  max-width: 1200px;
-  margin: auto;
-  background: #ffffff;
-  border: 1px solid #cfcfcf;
-  padding: 15px;
+    max-width: 1200px;
+    margin: auto;
+    background: #ffffff;
+    padding: 15px;
 }
 
-/* PANEL */
-.panel-body {
-  padding: 15px;
+/* Section Headings */
+.associate-details-subheading {
+    font-size: 16px;
+    font-weight: bold;
+    color: #20b2aa;
+    border-bottom: 1px solid #cfcfcf;
+    padding-bottom: 6px;
+    margin: 20px 0 10px;
 }
 
-/* SECTION HEADINGS */
-.subheading {
-  font-size: 14px;
-  font-weight: bold;
-  color: #2f5fa7;
-  border-bottom: 1px solid #cfcfcf;
-  padding-bottom: 6px;
-  margin: 20px 0 10px;
+/* ROWS (IMPORTANT: no flex) */
+.associate-details-row {
+    margin-left: -8px;
+    margin-right: -8px;
+    display: block;
 }
 
-/* ROWS */
-.row {
-  margin-left: -8px;
-  margin-right: -8px;
+.associate-details-innerdivrow {
+    margin-bottom: 10px;
 }
 
-.innerdivrow {
-  margin-bottom: 10px;
+/* Columns */
+.associate-details-col-sm-3 {
+    width: 25%;
+    float: left;
+    padding: 0 8px;
 }
 
-/* COLUMNS */
-.col-sm-3 {
-  width: 25%;
-  float: left;
-  padding: 0 8px;
+.associate-details-col-sm-12,
+.associate-details-col-xs-12 {
+    width: 100%;
+    float: left;
+    padding: 0 8px;
 }
 
-.col-sm-12,
-.col-xs-12 {
-  width: 100%;
-  float: left;
-  padding: 0 8px;
+/* Clear floats */
+.associate-details-row::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
-/* LABELS */
-.label {
-  font-size: 12px;
-  font-weight: normal;
-  color: #000;
-  margin-bottom: 3px;
+/* Form Group */
+.associate-details-form-group {
+    margin-bottom: 10px;
 }
 
-.label font {
-  color: red;
+/* Labels */
+.associate-details-label {
+    font-size: 12px;
+    color: #000;
+    display: block;
+    margin-bottom: 3px;
 }
 
-/* INPUTS */
-.form-control {
-  height: 30px;
-  padding: 4px 6px;
-  font-size: 12px;
-  border: 1px solid #cfcfcf;
-  border-radius: 2px;
+.associate-details-label font {
+    color: red;
 }
 
-textarea.form-control {
-  height: auto;
+/* Inputs */
+.associate-details-form-control {
+    height: 30px;
+    padding: 20px 6px;
+    font-size: 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 7px;
+    width: 100%;
+    background: #d2d2d2;
 }
 
-.form-control:focus {
-  border-color: #2f5fa7;
-  box-shadow: none;
-  outline: none;
+/* Buttons (GLOBAL) */
+.associate-details-btn {
+    padding: 6px 16px;
+    font-size: 13px;
+    border-radius: 2px;
+    cursor: pointer;
+    width: auto;               /* 🔑 VERY IMPORTANT */
+    display: inline-block;     /* 🔑 VERY IMPORTANT */
 }
 
-/* BUTTONS */
-.btn {
-  padding: 4px 12px;
-  font-size: 12px;
-  border-radius: 2px;
+.associate-details-btn-primary {
+    background: #0b5cab;
+    border: 1px solid #0b5cab;
+    color: #fff;
 }
 
-.btn-primary {
-  background: #0b5cab;
-  border: 1px solid #0b5cab;
-  color: #fff;
+.associate-details-btn-primary:hover {
+    background: #094a8f;
 }
 
-.btn-primary:hover {
-  background: #094a8f;
-  border-color: #094a8f;
+/* ADD BUTTON STYLE (LIKE 5th IMAGE) */
+.associate-details-add-btn {
+    padding: 6px 20px;
+    font-size: 13px;
+    width: auto !important;
 }
 
-.btnmargintop {
-  margin-top: 22px;
+/* ADD button wrapper (RIGHT aligned) */
+.associate-details-add-btn-wrapper {
+    text-align: right;
+    margin-top: 15px;
 }
 
-.pull-right {
-  float: right;
-}
-
-/* TABLES */
-.tableheader {
-  margin-top: 10px;
-}
-
+/* Tables */
 .table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
 }
 
-.table th {
-  background: #f5f5f5;
-  border: 1px solid #cfcfcf;
-  padding: 6px;
-  font-weight: bold;
-  color: #000;
-}
-
+.table th,
 .table td {
-  border: 1px solid #cfcfcf;
-  padding: 6px;
+    border: 1px solid #cfcfcf;
+    padding: 6px;
 }
 
-.table-striped tbody tr:nth-child(odd) {
-  background: #fafafa;
+/* Footer (unchanged) */
+.associate-details-footer-top {
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+/* 🔥 FIX: Dropdown options hidden issue */
+select.form-control {
+    padding: 4px 6px !important;
+    height: 30px !important;
+    background: #d2d2d2;
 }
 
-/* SAVE BUTTON */
-button.btn-primary.pull-right {
-  margin-top: 20px;
-}
-
-/* CLEAR FLOATS */
-.row::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-/* RESPONSIVE (AP RERA STYLE – STACKED) */
+/* Responsive */
 @media (max-width: 768px) {
-  .col-sm-3 {
-    width: 100%;
-  }
+    .col-sm-3 {
+        width: 100%;
+    }
 
-  .pull-right {
-    float: none;
-    width: 100%;
-  }
-
-  .btn {
-    width: 100%;
-  }
+    /* ❌ DO NOT make buttons full width */
+    .btn {
+        width: auto;
+    }
 }

@@ -126,13 +126,20 @@ const AssociateDetails = () => {
     { value: '36', label: 'West Bengal' }
   ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+
+  setFormData(prev => ({
+    ...prev,
+    [name]: value.toString(),
+
+    // 🔑 reset district when state changes
+    ...(name.includes("State")
+      ? { [name.replace("State", "District")]: "0" }
+      : {})
+  }));
+};
+
 
   const handleAddAgent = (e) => {
     e.preventDefault();
@@ -298,7 +305,7 @@ const completeStep = (stepNo) => {
 
   return (
     <div className="associate-details-container">
-        <div className="breadcrumb">
+        <div className="associate-details-breadcrumb">
         <span>You are here : </span>
         <a href="/">Home</a>
         <span> / </span>
@@ -306,19 +313,19 @@ const completeStep = (stepNo) => {
       </div>
 
       {/* Page Header */}
-      <div className="page-header">
+      <div className="associate-details-page-header">
         <h1>Project Registration</h1>
       </div>
 
       <ProjectWizard currentStep={4} />
 
-      <div className="panel-body">
+      <div className="associate-details-panel-body">
         {/* Project Agent Section */}
-        <h3 className="subheading">Project Agent</h3>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Agent RERA Registration No.</label>
+        <h3 className="associate-details-subheading">Project Agent</h3>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Agent RERA Registration No.</label>
               <input
                 name="agentRegNo"
                 type="text"
@@ -326,13 +333,13 @@ const completeStep = (stepNo) => {
                 value={formData.agentRegNo}
                 onChange={handleInputChange}
                 placeholder="Agent RERA Reg No"
-                className="form-control nopaste inputbox"
+                className="associate-details-form-control associate-details-nopaste associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Agent Name</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Agent Name</label>
               <input
                 name="agentName"
                 type="text"
@@ -340,13 +347,13 @@ const completeStep = (stepNo) => {
                 value={formData.agentName}
                 onChange={handleInputChange}
                 placeholder="Agent Name"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Agent Address</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Agent Address</label>
               <input
                 name="agentAddress"
                 type="text"
@@ -354,13 +361,13 @@ const completeStep = (stepNo) => {
                 value={formData.agentAddress}
                 onChange={handleInputChange}
                 placeholder="Agent Address"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Mobile Number</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Mobile Number</label>
               <input
                 name="agentMobile"
                 type="text"
@@ -368,23 +375,27 @@ const completeStep = (stepNo) => {
                 value={formData.agentMobile}
                 onChange={handleInputChange}
                 placeholder="Mobile Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-12">
-            <div className="form-group">
-              <button onClick={handleAddAgent} className="btn btn-primary pull-right">Add</button>
-            </div>
-          </div>
-        </div>
+        <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 associate-details-add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
         {tables.agents.length > 0 && (
-          <div className="row innerdivrow">
-            <div className="col-xs-12">
-              <div className="table-responsive tableheader">
-                <table className="table table-striped table-bordered">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-xs-12">
+              <div className="associate-details-table-responsive associate-details-tableheader">
+                <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                   <thead>
                     <tr>
                       <th>Reg No</th>
@@ -411,11 +422,11 @@ const completeStep = (stepNo) => {
 
         {/* Project Architects Section */}
         <div id="dvArchitects">
-          <h3 className="subheading">Project Architects</h3>
-          <div className="row innerdivrow">
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+          <h3 className="associate-details-subheading">Project Architects</h3>
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   Architect Name<font color="red">*</font>
                 </label>
                 <input
@@ -425,13 +436,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcName}
                   onChange={handleInputChange}
                   placeholder="Architect Name"
-                  className="form-control inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">Email ID</label>
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">Email ID</label>
                 <input
                   name="arcEmail"
                   type="text"
@@ -439,13 +450,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcEmail}
                   onChange={handleInputChange}
                   placeholder="Email ID"
-                  className="form-control nopaste inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   Address Line 1<font color="red">*</font>
                 </label>
                 <input
@@ -455,13 +466,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcAdd1}
                   onChange={handleInputChange}
                   placeholder="Address Line 1"
-                  className="form-control inputbox ttip"
+                  className="associate-details-form-control associate-details-inputbox ttip"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">Address Line 2</label>
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">Address Line 2</label>
                 <input
                   name="arcAdd2"
                   type="text"
@@ -469,22 +480,22 @@ const completeStep = (stepNo) => {
                   value={formData.arcAdd2}
                   onChange={handleInputChange}
                   placeholder="Address Line 2"
-                  className="form-control inputbox ttip"
+                  className="associate-details-form-control associate-details-inputbox ttip"
                 />
               </div>
             </div>
           </div>
-          <div className="row innerdivrow">
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   State/UT<font color="red">*</font>
                 </label>
                 <select
                   name="arcState"
                   value={formData.arcState}
                   onChange={handleInputChange}
-                  className="form-control inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 >
                   {states.map(state => (
                     <option key={state.value} value={state.value}>{state.label}</option>
@@ -492,24 +503,24 @@ const completeStep = (stepNo) => {
                 </select>
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   District<font color="red">*</font>
                 </label>
                 <select
                   name="arcDistrict"
                   value={formData.arcDistrict}
                   onChange={handleInputChange}
-                  className="form-control inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 >
                   <option value="0">Select</option>
                 </select>
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   PIN Code<font color="red">*</font>
                 </label>
                 <input
@@ -519,13 +530,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcPin}
                   onChange={handleInputChange}
                   placeholder="PIN Code"
-                  className="form-control inputbox allownumeric"
+                  className="associate-details-form-control associate-details-inputbox allownumeric"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">Year of establishment</label>
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">Year of establishment</label>
                 <input
                   name="arcYearEst"
                   type="text"
@@ -533,15 +544,15 @@ const completeStep = (stepNo) => {
                   value={formData.arcYearEst}
                   onChange={handleInputChange}
                   placeholder="Year of Estableshment"
-                  className="form-control inputbox allownumeric"
+                  className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
                 />
               </div>
             </div>
           </div>
-          <div className="row innerdivrow">
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">Number of key projects completed</label>
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">Number of key projects completed</label>
                 <input
                   name="arcKeyProjects"
                   type="text"
@@ -549,13 +560,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcKeyProjects}
                   onChange={handleInputChange}
                   placeholder="Number of Key projects completed"
-                  className="form-control inputbox allownumeric"
+                  className="associate-details-form-control associate-details-inputbox allownumeric"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">Reg. Number With COA</label>
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">Reg. Number With COA</label>
                 <input
                   name="arcRegCOA"
                   type="text"
@@ -563,13 +574,13 @@ const completeStep = (stepNo) => {
                   value={formData.arcRegCOA}
                   onChange={handleInputChange}
                   placeholder="Reg. Number With COA"
-                  className="form-control inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 />
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label className="label">
+            <div className="associate-details-col-sm-3">
+              <div className="associate-details-form-group">
+                <label className="associate-details-label">
                   Mobile Number<font color="red">*</font>
                 </label>
                 <input
@@ -579,23 +590,27 @@ const completeStep = (stepNo) => {
                   value={formData.arcMobile}
                   onChange={handleInputChange}
                   placeholder="Mobile Number"
-                  className="form-control inputbox"
+                  className="associate-details-form-control associate-details-inputbox"
                 />
               </div>
             </div>
           </div>
-          <div className="row innerdivrow">
-            <div className="col-sm-12">
-              <div className="form-group">
-                <button onClick={handleAddArchitect} className="btn btn-primary pull-right">Add</button>
-              </div>
-            </div>
-          </div>
+          <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 associate-details-add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
           {tables.architects.length > 0 && (
-            <div className="row innerdivrow">
-              <div className="col-xs-12">
-                <div className="table-responsive tableheader">
-                  <table className="table table-striped table-bordered">
+            <div className="associate-details-row associate-details-innerdivrow">
+              <div className="associate-details-col-xs-12">
+                <div className="associate-details-table-responsive associate-details-tableheader">
+                  <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                     <thead>
                       <tr>
                         <th>Name</th>
@@ -626,11 +641,11 @@ const completeStep = (stepNo) => {
         </div>
 
         {/* Structural Engineers Section */}
-        <h3 className="subheading">Structural Engineers</h3>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <h3 className="associate-details-subheading">Structural Engineers</h3>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Engineer Name<font color="red">*</font>
               </label>
               <input
@@ -640,13 +655,13 @@ const completeStep = (stepNo) => {
                 value={formData.engName}
                 onChange={handleInputChange}
                 placeholder="Engineer Name"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Email ID</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Email ID</label>
               <input
                 name="engEmail"
                 type="text"
@@ -654,13 +669,13 @@ const completeStep = (stepNo) => {
                 value={formData.engEmail}
                 onChange={handleInputChange}
                 placeholder="Email ID"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Address Line 1<font color="red">*</font>
               </label>
               <input
@@ -670,13 +685,13 @@ const completeStep = (stepNo) => {
                 value={formData.engAdd1}
                 onChange={handleInputChange}
                 placeholder="Address Line 1"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Address Line 2</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Address Line 2</label>
               <input
                 name="engAdd2"
                 type="text"
@@ -684,22 +699,22 @@ const completeStep = (stepNo) => {
                 value={formData.engAdd2}
                 onChange={handleInputChange}
                 placeholder="Address Line 2"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 State/UT<font color="red">*</font>
               </label>
               <select
                 name="engState"
                 value={formData.engState}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 {states.map(state => (
                   <option key={state.value} value={state.value}>{state.label}</option>
@@ -707,24 +722,24 @@ const completeStep = (stepNo) => {
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 District<font color="red">*</font>
               </label>
               <select
                 name="engDistrict"
                 value={formData.engDistrict}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 <option value="0">Select</option>
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 PIN Code<font color="red">*</font>
               </label>
               <input
@@ -734,13 +749,13 @@ const completeStep = (stepNo) => {
                 value={formData.engPin}
                 onChange={handleInputChange}
                 placeholder="PIN Code"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Year of establishment</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Year of establishment</label>
               <input
                 name="engYearEst"
                 type="text"
@@ -748,15 +763,15 @@ const completeStep = (stepNo) => {
                 value={formData.engYearEst}
                 onChange={handleInputChange}
                 placeholder="Year of Establishment"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Number of key projects completed</label>
+        <div className="associate-details-row innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Number of key projects completed</label>
               <input
                 name="engKeyProjects"
                 type="text"
@@ -764,13 +779,13 @@ const completeStep = (stepNo) => {
                 value={formData.engKeyProjects}
                 onChange={handleInputChange}
                 placeholder="No. of Key Projects completed"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Local Authority Licence Number</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Local Authority Licence Number</label>
               <input
                 name="engLicNo"
                 type="text"
@@ -778,13 +793,13 @@ const completeStep = (stepNo) => {
                 value={formData.engLicNo}
                 onChange={handleInputChange}
                 placeholder="Licence Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Mobile Number<font color="red">*</font>
               </label>
               <input
@@ -794,23 +809,27 @@ const completeStep = (stepNo) => {
                 value={formData.engMobile}
                 onChange={handleInputChange}
                 placeholder="Mobile Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-12">
-            <div className="form-group">
-              <button onClick={handleAddEngineer} className="btn btn-primary pull-right">Add</button>
-            </div>
-          </div>
-        </div>
+        <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 associate-details-add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
         {tables.engineers.length > 0 && (
-          <div className="row innerdivrow">
-            <div className="col-xs-12">
-              <div className="table-responsive tableheader">
-                <table className="table table-striped table-bordered">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-xs-12">
+              <div className="associate-details-table-responsive associate-details-tableheader">
+                <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -840,11 +859,11 @@ const completeStep = (stepNo) => {
         )}
 
         {/* Project Contractors Section */}
-        <h3 className="subheading">Project Contractors</h3>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <h3 className="associate-details-subheading">Project Contractors</h3>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Contractor Nature Of Work<font color="red">*</font>
               </label>
               <input
@@ -854,13 +873,13 @@ const completeStep = (stepNo) => {
                 value={formData.conNatureWork}
                 onChange={handleInputChange}
                 placeholder="Nature of work"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Contractor Name<font color="red">*</font>
               </label>
               <input
@@ -870,13 +889,13 @@ const completeStep = (stepNo) => {
                 value={formData.conName}
                 onChange={handleInputChange}
                 placeholder="Contractor Name"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Email ID</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Email ID</label>
               <input
                 name="conEmail"
                 type="text"
@@ -884,13 +903,13 @@ const completeStep = (stepNo) => {
                 value={formData.conEmail}
                 onChange={handleInputChange}
                 placeholder="Email ID"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Address Line 1<font color="red">*</font>
               </label>
               <input
@@ -900,15 +919,15 @@ const completeStep = (stepNo) => {
                 value={formData.conAdd1}
                 onChange={handleInputChange}
                 placeholder="Address Line 1"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox ttip"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Address Line 2</label>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Address Line 2</label>
               <input
                 name="conAdd2"
                 type="text"
@@ -916,20 +935,20 @@ const completeStep = (stepNo) => {
                 value={formData.conAdd2}
                 onChange={handleInputChange}
                 placeholder="Address Line2"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 State/UT<font color="red">*</font>
               </label>
               <select
                 name="conState"
                 value={formData.conState}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 {states.map(state => (
                   <option key={state.value} value={state.value}>{state.label}</option>
@@ -937,24 +956,24 @@ const completeStep = (stepNo) => {
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 District<font color="red">*</font>
               </label>
               <select
                 name="conDistrict"
                 value={formData.conDistrict}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 <option value="0">Select</option>
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 PIN Code<font color="red">*</font>
               </label>
               <input
@@ -964,15 +983,15 @@ const completeStep = (stepNo) => {
                 value={formData.conPin}
                 onChange={handleInputChange}
                 placeholder="PIN Code"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Year of establishment</label>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Year of establishment</label>
               <input
                 name="conYearEst"
                 type="text"
@@ -980,13 +999,13 @@ const completeStep = (stepNo) => {
                 value={formData.conYearEst}
                 onChange={handleInputChange}
                 placeholder="Year of Establishment"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Number of key projects completed</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Number of key projects completed</label>
               <input
                 name="conKeyProjects"
                 type="text"
@@ -994,13 +1013,13 @@ const completeStep = (stepNo) => {
                 value={formData.conKeyProjects}
                 onChange={handleInputChange}
                 placeholder="No. of Key Projects"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Mobile Number<font color="Red">*</font>
               </label>
               <input
@@ -1010,21 +1029,27 @@ const completeStep = (stepNo) => {
                 value={formData.conMobile}
                 onChange={handleInputChange}
                 placeholder="Mobile Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-12">
-            <div className="form-group">
-              <button onClick={handleAddContractor} className="btn btnmargintop btn-primary pull-right">Add</button>
-            </div>
-          </div>
+          <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 associate-details-add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
         </div>
         {tables.contractors.length > 0 && (
-          <div className="row innerdivrow">
-            <div className="col-xs-12">
-              <div className="table-responsive tableheader">
-                <table className="table table-striped table-bordered">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-xs-12">
+              <div className="associate-details-table-responsive associate-details-tableheader">
+                <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                   <thead>
                     <tr>
                       <th>Nature of Work</th>
@@ -1056,11 +1081,11 @@ const completeStep = (stepNo) => {
         )}
 
         {/* Chartered Accountant Section */}
-        <h3 className="subheading">Chartered Accountant</h3>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <h3 className="associate-details-subheading">Chartered Accountant</h3>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Chartered Accountant Name<font color="red">*</font>
               </label>
               <input
@@ -1070,13 +1095,13 @@ const completeStep = (stepNo) => {
                 value={formData.caName}
                 onChange={handleInputChange}
                 placeholder="Chartered Accountant Name"
-                className="form-control inputbox alphabetsonly"
+                className="associate-details-form-control associate-details-inputbox associate-details-alphabetsonly"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Email ID</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Email ID</label>
               <input
                 name="caEmail"
                 type="text"
@@ -1084,13 +1109,13 @@ const completeStep = (stepNo) => {
                 value={formData.caEmail}
                 onChange={handleInputChange}
                 placeholder="Email ID"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Address Line 1<font color="red">*</font>
               </label>
               <input
@@ -1100,13 +1125,13 @@ const completeStep = (stepNo) => {
                 value={formData.caAdd1}
                 onChange={handleInputChange}
                 placeholder="Address Line 1"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Address Line 2</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Address Line 2</label>
               <input
                 name="caAdd2"
                 type="text"
@@ -1114,22 +1139,22 @@ const completeStep = (stepNo) => {
                 value={formData.caAdd2}
                 onChange={handleInputChange}
                 placeholder="Address Line 2"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 State/UT<font color="red">*</font>
               </label>
               <select
                 name="caState"
                 value={formData.caState}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 {states.map(state => (
                   <option key={state.value} value={state.value}>{state.label}</option>
@@ -1137,24 +1162,28 @@ const completeStep = (stepNo) => {
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 District<font color="red">*</font>
               </label>
-              <select
-                name="caDistrict"
-                value={formData.caDistrict}
-                onChange={handleInputChange}
-                className="form-control inputbox"
-              >
-                <option value="0">Select</option>
-              </select>
+             <select
+  name="caDistrict"
+  value={formData.caDistrict}
+  onChange={handleInputChange}
+  className="associate-details-form-control associate-details-inputbox"
+>
+  <option value="0">Select</option>
+  <option value="1">Hyderabad</option>
+  <option value="2">Visakhapatnam</option>
+  <option value="3">Vijayawada</option>
+</select>
+
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 PIN Code<font color="red">*</font>
               </label>
               <input
@@ -1164,13 +1193,13 @@ const completeStep = (stepNo) => {
                 value={formData.caPin}
                 onChange={handleInputChange}
                 placeholder="PIN Code"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">ICAI Member Id</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">ICAI Member Id</label>
               <input
                 name="caMemId"
                 type="text"
@@ -1178,15 +1207,15 @@ const completeStep = (stepNo) => {
                 value={formData.caMemId}
                 onChange={handleInputChange}
                 placeholder="ICAI Member Id"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Number of key projects completed</label>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Number of key projects completed</label>
               <input
                 name="caKeyProjects"
                 type="text"
@@ -1194,13 +1223,13 @@ const completeStep = (stepNo) => {
                 value={formData.caKeyProjects}
                 onChange={handleInputChange}
                 placeholder="No. of Key Projects Completed"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-allownumeric"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Mobile Number<font color="red">*</font>
               </label>
               <input
@@ -1210,21 +1239,27 @@ const completeStep = (stepNo) => {
                 value={formData.caMobile}
                 onChange={handleInputChange}
                 placeholder="Mobile Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-12">
-            <div className="form-group">
-              <button onClick={handleAddCA} className="btn btnmargintop btn-primary pull-right">Add</button>
-            </div>
-          </div>
+          <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
         </div>
         {tables.accountants.length > 0 && (
-          <div className="row innerdivrow">
-            <div className="col-xs-12">
-              <div className="table-responsive tableheader">
-                <table className="table table-striped table-bordered">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-xs-12">
+              <div className="associate-details-table-responsive associate-details-tableheader">
+                <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -1254,11 +1289,11 @@ const completeStep = (stepNo) => {
         )}
 
         {/* Project Engineers Section */}
-        <h3 className="subheading">Project Engineers</h3>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <h3 className="associate-details-subheading">Project Engineers</h3>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Project Engineer Name<font color="red">*</font>
               </label>
               <input
@@ -1268,13 +1303,13 @@ const completeStep = (stepNo) => {
                 value={formData.projEngName}
                 onChange={handleInputChange}
                 placeholder="Project Engineer Name"
-                className="form-control inputbox alphabetsonly"
+                className="associate-details-form-control associate-details-inputbox associate-details-alphabetsonly"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Email ID</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Email ID</label>
               <input
                 name="projEngEmail"
                 type="text"
@@ -1282,13 +1317,13 @@ const completeStep = (stepNo) => {
                 value={formData.projEngEmail}
                 onChange={handleInputChange}
                 placeholder="Email ID"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Address Line 1<font color="red">*</font>
               </label>
               <input
@@ -1298,13 +1333,13 @@ const completeStep = (stepNo) => {
                 value={formData.projEngAdd1}
                 onChange={handleInputChange}
                 placeholder="Address Line 1"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Address Line 2</label>
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Address Line 2</label>
               <input
                 name="projEngAdd2"
                 type="text"
@@ -1312,22 +1347,22 @@ const completeStep = (stepNo) => {
                 value={formData.projEngAdd2}
                 onChange={handleInputChange}
                 placeholder="Address Line 2"
-                className="form-control inputbox ttip"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 State/UT<font color="red">*</font>
               </label>
               <select
                 name="projEngState"
                 value={formData.projEngState}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 {states.map(state => (
                   <option key={state.value} value={state.value}>{state.label}</option>
@@ -1335,24 +1370,24 @@ const completeStep = (stepNo) => {
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 District<font color="red">*</font>
               </label>
               <select
                 name="projEngDistrict"
                 value={formData.projEngDistrict}
                 onChange={handleInputChange}
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               >
                 <option value="0">Select</option>
               </select>
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 PIN Code<font color="red">*</font>
               </label>
               <input
@@ -1362,13 +1397,13 @@ const completeStep = (stepNo) => {
                 value={formData.projEngPin}
                 onChange={handleInputChange}
                 placeholder="PIN Code"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">
                 Mobile Number<font color="red">*</font>
               </label>
               <input
@@ -1378,15 +1413,15 @@ const completeStep = (stepNo) => {
                 value={formData.projEngMobile}
                 onChange={handleInputChange}
                 placeholder="Mobile Number"
-                className="form-control inputbox"
+                className="associate-details-form-control associate-details-inputbox"
               />
             </div>
           </div>
         </div>
-        <div className="row innerdivrow">
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label className="label">Number of Key projects completed</label>
+        <div className="associate-details-row associate-details-innerdivrow">
+          <div className="associate-details-col-sm-3">
+            <div className="associate-details-form-group">
+              <label className="associate-details-label">Number of Key projects completed</label>
               <input
                 name="projEngKeyProjects"
                 type="text"
@@ -1394,21 +1429,27 @@ const completeStep = (stepNo) => {
                 value={formData.projEngKeyProjects}
                 onChange={handleInputChange}
                 placeholder="No. of Key Projects Completed"
-                className="form-control inputbox allownumeric"
+                className="associate-details-form-control associate-details-inputbox associate-details-ttip"
               />
             </div>
           </div>
-          <div className="col-sm-12">
-            <div className="form-group">
-              <button onClick={handleAddProjectEngineer} className="btn btnmargintop btn-primary pull-right">Add</button>
-            </div>
-          </div>
+          <div className="associate-details-row associate-details-innerdivrow">
+  <div className="associate-details-col-sm-12 associate-details-add-btn-wrapper">
+    <button
+      onClick={handleAddAgent}
+      className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
         </div>
         {tables.projectEngineers.length > 0 && (
-          <div className="row innerdivrow">
-            <div className="col-xs-12">
-              <div className="table-responsive tableheader">
-                <table className="table table-striped table-bordered">
+          <div className="associate-details-row associate-details-innerdivrow">
+            <div className="associate-details-col-xs-12">
+              <div className="associate-details-table-responsive associate-details-tableheader">
+                <table className="associate-details-table associate-details-table-striped associate-details-table-bordered">
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -1438,7 +1479,15 @@ const completeStep = (stepNo) => {
         )}
 
         {/* Save and Continue Button */}
-        <button onClick={handleSaveAndContinue} className="btn btn-primary pull-right">Save and Continue</button>
+        <div className="associate-details-add-btn-wrapper">
+  <button
+    onClick={handleSaveAndContinue}
+    className="associate-details-btn associate-details-btn-primary associate-details-add-btn"
+  >
+    Save and Continue
+  </button>
+</div>
+
       </div>
     </div>
   );

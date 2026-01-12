@@ -1,16 +1,11 @@
-import React from "react";
-
 const ProjectRegistrationSection = ({
   formData,
   handleInputChange,
-  handleFileChange,
-  handleSubmit
+ 
 }) => {
   return (
     <>
       <h2 className="page-title">Project Registration</h2>
-
-      <form onSubmit={handleSubmit} className="project-form">
  {/* Project Basic Information */}
                 <div className="form-section">
                     <div className="row innerdivrow">
@@ -235,17 +230,14 @@ const ProjectRegistrationSection = ({
                                 <label className="label">
                                     Total Open Area(in Sq.m)<font color="red">*</font>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="totalOpenArea"
-                                    maxLength="15"
-                                    className="form-control inputbox allownumericwithdecimal"
-                                    placeholder="Total Open Area"
-                                    value={formData.totalOpenArea}
-                                    onChange={handleInputChange}
-                                    required
-                                    readOnly
-                                />
+               <input
+  type="text"
+  name="totalOpenArea"
+  className="form-control inputbox allownumericwithdecimal"
+  value={formData.totalOpenArea}
+  readOnly
+/>
+
                             </div>
                         </div>
                         <div className="col-sm-3">
@@ -254,7 +246,7 @@ const ProjectRegistrationSection = ({
                                     Total Built-up Area of all the Floors (including stilt area + parking area)(in Sq.m)<font color="red">*</font>
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="totalBuiltUpArea"
                                     maxLength="15"
                                     className="form-control inputbox allownumericwithdecimal"
@@ -288,7 +280,7 @@ const ProjectRegistrationSection = ({
                                     Total Area of Garages(in Sq.m)<font color="red">*</font>
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="totalGarageArea"
                                     maxLength="15"
                                     className="form-control inputbox allownumericwithdecimal"
@@ -303,9 +295,9 @@ const ProjectRegistrationSection = ({
                             <div className="form-group">
                                 <label className="label">
                                     No. of Open Parking Spaces<font color="red">*</font>
-                                </label>
+                                </label>number
                                 <input 
-                                    type="text" 
+                                    type="" 
                                     name="openParkingSpaces"
                                     maxLength="4"
                                     className="form-control inputbox allownumeric"
@@ -322,7 +314,7 @@ const ProjectRegistrationSection = ({
                                     Total Open Parking Area(in Sq.m)<font color="red">*</font>
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="totalOpenParkingArea"
                                     maxLength="10"
                                     className="form-control inputbox allownumericwithdecimal"
@@ -339,7 +331,7 @@ const ProjectRegistrationSection = ({
                                     No. of Covered Parking Spaces<font color="red">*</font>
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="coveredParkingSpaces"
                                     maxLength="4"
                                     className="form-control inputbox allownumeric"
@@ -356,7 +348,7 @@ const ProjectRegistrationSection = ({
                                     Total Covered Parking Area(in Sq.m)<font color="red">*</font>
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="totalCoveredParkingArea"
                                     maxLength="15"
                                     className="form-control inputbox allownumericwithdecimal"
@@ -376,16 +368,14 @@ const ProjectRegistrationSection = ({
                                 <label className="label">
                                     Estimated Cost of Construction (including Cost of Development of Facilities)(₹)<font color="red">*</font>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="estimatedConstructionCost"
-                                    maxLength="12"
-                                    className="form-control inputbox allownumericwithdecimal"
-                                    placeholder="Cost of Construction"
-                                    value={formData.estimatedConstructionCost}
-                                    onChange={handleInputChange}
-                                    required
-                                />
+<input
+  type="text"
+  name="estimatedConstructionCost"
+  value={formData.estimatedConstructionCost}
+  onChange={handleInputChange}
+  className="form-control inputbox"
+  required
+/>
                             </div>
                         </div>
                         <div className="col-sm-3">
@@ -393,16 +383,15 @@ const ProjectRegistrationSection = ({
                                 <label className="label">
                                     Cost of Land (₹)<font color="red">*</font>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="costOfLand"
-                                    maxLength="12"
-                                    className="form-control inputbox allownumericwithdecimal"
-                                    placeholder="Cost of Land"
-                                    value={formData.costOfLand}
-                                    onChange={handleInputChange}
-                                    required
-                                />
+{/* Cost of Land */}
+<input
+  type="text"
+  name="costOfLand"
+  value={formData.costOfLand}
+  onChange={handleInputChange}
+  className="form-control inputbox"
+  required
+/>
                             </div>
                         </div>
                         <div className="col-sm-3">
@@ -410,24 +399,23 @@ const ProjectRegistrationSection = ({
                                 <label className="label">
                                     Total Project Cost (₹)<font color="red">*</font>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="totalProjectCost"
-                                    maxLength="12"
-                                    className="form-control inputbox allownumeric"
-                                    placeholder="Project Cost"
-                                    value={formData.totalProjectCost}
-                                    onChange={handleInputChange}
-                                    readOnly
-                                    required
-                                />
+{/* Total Project Cost (AUTO) */}
+<input
+  type="text"
+  name="totalProjectCost"
+  value={formData.totalProjectCost}
+  readOnly
+  className="form-control inputbox"
+  required
+/>
+
                             </div>
                         </div>
                     </div>
                 </div>
 
 
-      </form>
+   
     </>
   );
 };

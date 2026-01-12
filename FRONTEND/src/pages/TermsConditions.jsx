@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/TermsConditions.css";
-import termsImg from "../assets/termes_conditions.jpg";
+import termsImg from "../../public/assets/images/termes_conditions.jpg";
 
 const TermsConditions = () => {
   return (

@@ -71,7 +71,7 @@
   margin-top: 40px;
   background: white;
   padding: 20px;
-  border: 1px solid #ccc;
+  
 }
 
 .ourleadership-office-box {
@@ -80,6 +80,7 @@
   gap: 20px;
   border: 1px dashed #000;
   padding: 15px;
+   margin-top: 12px;  
 }
 
 .ourleadership-office-details h4 {
@@ -100,4 +101,12 @@
   width: 100%;
   height: 250px;
   border: none;
+}
+
+.ourleadership-office-line {
+  width: 70px;
+  height: 3px;
+  background: #1e5fd8;
+  margin-top: 6px;
+  margin-bottom: 12px;
 }

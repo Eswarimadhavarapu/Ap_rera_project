@@ -6,7 +6,7 @@ export default function Services() {
       
       <div className="service-card">
         <img
-          src="/src/assets/imag1.png"
+          src="../../public/assets/images/imag1.png"
           alt="Project Registration"
           className="service-icon"
         />
@@ -15,7 +15,7 @@ export default function Services() {
 
       <div className="service-card">
         <img
-          src="/src/assets/img2.png"
+          src="../../public/assets/images/img2.png"
           alt="Agent Registration"
           className="service-icon"
         />
@@ -24,7 +24,7 @@ export default function Services() {
 
       <div className="service-card">
         <img
-          src="/src/assets/img3.png"
+          src="../../public/assets/images/img3.png"
           alt="Complaint Registration"
           className="service-icon"
         />
@@ -33,7 +33,7 @@ export default function Services() {
 
       <div className="service-card">
         <img
-          src="/src/assets/img4.png"
+          src="../../public/assets/images/img4.png"
           alt="Guidelines for Registration"
           className="service-icon"
         />
@@ -42,7 +42,7 @@ export default function Services() {
 
       <div className="service-card">
         <img
-          src="/src/assets/img5.png"
+          src="../../public/assets/images/img5.png"
           alt="Frequently Asked Questions"
           className="service-icon"
         />

@@ -9,9 +9,21 @@ import ProjectSiteAddress from "../components/ProjectSiteAddress";
 import ProjectLocalAddress from "../components/ProjectLocalAddress";
 import ProjectMaterialFacts from "../components/ProjectMaterialFacts";
 import LegalDeclaration from "../components/LegalDeclaration";
+import ProjectConstructionStatus from "../components/ProjectConstructionStatus";
+import { apiPost } from "../api/api";
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
+
+  
+  // ✅ ADD HERE (just below useNavigate)
+  const HARD_PAN = "ABCDE1234R";
+  const HARD_APPLICATION_NO = "APP-2026-0002";
+
+  const [errors, setErrors] = useState({
+  plinthArea: "",
+});
+
 
   // 🔹 SINGLE SOURCE OF TRUTH
   const [formData, setFormData] = useState({
@@ -28,7 +40,6 @@ const ProjectDetails = () => {
     totalAreaOfLand: "",
     buildingHeight: "",
     totalPlinthArea: "",
-    totalOpenArea: "",
     totalBuiltUpArea: "",
     garagesAvailableForSale: "",
     totalGarageArea: "",
@@ -38,7 +49,6 @@ const ProjectDetails = () => {
     totalCoveredParkingArea: "",
     estimatedConstructionCost: "",
     costOfLand: "",
-    totalProjectCost: "",
 
     // Project Site Address
     projectAddress1: "",
@@ -64,6 +74,22 @@ const ProjectDetails = () => {
     localPincode: "",
     projectWebsiteURL: "",
 
+    // Construction Status
+    developmentCompleted: "",
+    developmentPending: "",
+    amountCollected: "",
+    amountSpent: "",
+    balanceAmount: "",
+    planModified: "",
+
+    // Certificates
+    architectCertificate: null,
+    engineerCertificate: null,
+    caCertificate: null,
+
+    // Project Delay
+    projectDelayed: "",
+
     // Project Material Facts
     numberOfUnits: "",
     unitsAdvanceTaken: "",
@@ -74,15 +100,78 @@ const ProjectDetails = () => {
     legalDeclarationAccepted: false,
   });
 
-  // 🔹 COMMON INPUT HANDLER
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+const totalOpenArea =
+  Number(formData.totalAreaOfLand) > 0
+    ? Number(formData.totalPlinthArea) > 0
+      ? Number(formData.totalPlinthArea) <= Number(formData.totalAreaOfLand)
+        ? (
+            Number(formData.totalAreaOfLand) -
+            Number(formData.totalPlinthArea)
+          ).toFixed(2)
+        : ""
+      : Number(formData.totalAreaOfLand).toFixed(2)
+    : "";
 
-    setFormData((prev) => ({
+
+
+const totalProjectCost =
+  Number(formData.estimatedConstructionCost) ||
+  Number(formData.costOfLand)
+    ? (
+        (Number(formData.estimatedConstructionCost) || 0) +
+        (Number(formData.costOfLand) || 0)
+      ).toFixed(2)
+    : "";
+const handleInputChange = (e) => {
+  const { name, value, type, checked } = e.target;
+
+  // allow only numbers & decimals
+  if (
+    ["totalAreaOfLand", "totalPlinthArea", "estimatedConstructionCost", "costOfLand"].includes(name) &&
+    value !== "" &&
+    !/^\d*\.?\d*$/.test(value)
+  ) {
+    return;
+  }
+
+  setFormData((prev) => {
+    // 🔹 CASCADING RESET (IMPORTANT)
+    if (name === "projectDistrict") {
+      return {
+        ...prev,
+        projectDistrict: value,
+        projectMandal: "0",
+        projectVillage: "0",
+      };
+    }
+
+    if (name === "projectMandal") {
+      return {
+        ...prev,
+        projectMandal: value,
+        projectVillage: "0",
+      };
+    }
+
+    const updated = {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+    };
+
+    const totalLand = Number(updated.totalAreaOfLand) || 0;
+    const plinthArea = Number(updated.totalPlinthArea) || 0;
+
+    if (name === "totalPlinthArea" && plinthArea > totalLand) {
+      setErrors({
+        plinthArea: "Plinth area cannot be greater than total land area",
+      });
+      return prev;
+    }
+
+    setErrors({ plinthArea: "" });
+    return updated;
+  });
+};
 
   // 🔹 FILE HANDLER
   const handleFileChange = (e) => {
@@ -94,7 +183,7 @@ const ProjectDetails = () => {
   };
 
   // 🔹 SUBMIT
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.legalDeclarationAccepted) {
@@ -102,23 +191,44 @@ const ProjectDetails = () => {
       return;
     }
 
-    console.log("✅ FULL PROJECT DETAILS DATA:", formData);
+    const payload = new FormData();
 
-    navigate("/Development-Details");
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== "") {
+        payload.append(key, value);
+      }
+    });
+    
+  // 🔹 HARD-CODED VALUES
+  payload.append("panNumber", HARD_PAN);
+  payload.append("applicationNumber", HARD_APPLICATION_NO);
+
+    // ✅ append derived values
+    payload.append("totalOpenArea", totalOpenArea);
+    payload.append("totalProjectCost", totalProjectCost);
+
+    try {
+       await apiPost("/api/project-registration", payload);
+      navigate("/Development-Details");
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
     <div className="project-details-container">
       <ProjectWizard currentStep={2} />
 
-      <h2 className="page-title">Project Registration</h2>
-
       {/* 🔹 ONE FORM ONLY */}
       <form onSubmit={handleSubmit} className="project-form">
-
         <ProjectRegistrationSection
-          formData={formData}
+          formData={{
+            ...formData,
+            totalOpenArea,
+            totalProjectCost,
+          }}
           handleInputChange={handleInputChange}
+           errors={errors}   // ✅ USE IT
         />
 
         <ProjectSiteAddress
@@ -131,6 +241,14 @@ const ProjectDetails = () => {
           formData={formData}
           handleInputChange={handleInputChange}
         />
+
+        {formData.projectStatus === "3" && (
+          <ProjectConstructionStatus
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleFileChange={handleFileChange}
+          />
+        )}
 
         <ProjectMaterialFacts
           formData={formData}

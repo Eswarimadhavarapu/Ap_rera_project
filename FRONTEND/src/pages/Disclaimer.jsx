@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Disclaimer.css";
-import disclaimerImg from "../assets/Disclaimer.jpg";
+import disclaimerImg from "../../public/assets/images/Disclaimer.jpg";
 
 const Disclaimer = () => {
   return (

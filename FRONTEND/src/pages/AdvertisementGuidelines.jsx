@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/AdvertisementGuidelines.css";
-import guidelineImage from "../assets/Annexure.jpg";
-import Annexure from "../assets/Annexure.pdf";
+import guidelineImage from "../../public/assets/images/Annexure.jpg";
+import Annexure from "../../public/assets/pdfs/Annexure.pdf";
 
 
 const AdvertisementGuidelines = () => {

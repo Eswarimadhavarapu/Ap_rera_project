@@ -1,37 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import '../styles/DevelopmentDetails.css';
 import ProjectWizard from "../components/ProjectWizard";
 
-
-
 const DevelopmentDetails = () => {
     const navigate = useNavigate();
+    const [projectId, setProjectId] = useState('');
+    const [projectType, setProjectType] = useState('residential');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const [buildingTypes, setBuildingTypes] = useState({
         plots: false,
         apartmentsFlats: true,
         villas: false,
-        commercial: true
+        commercial: false
     });
 
     const [plotDetails, setPlotDetails] = useState({
         totalPlots: '',
-        plotFile: null
+        plotFile: null,
+        no_blocks: '',
+        file_path: ''
     });
 
     const [apartmentDetails, setApartmentDetails] = useState({
         totalBlocks: '',
-        apartmentFile: null
+        apartmentFile: null,
+        no_blocks: '',
+        file_path: ''
     });
 
     const [villaDetails, setVillaDetails] = useState({
         totalBlocks: '',
-        villaFile: null
+        villaFile: null,
+        no_blocks: '',
+        file_path: ''
     });
 
     const [commercialDetails, setCommercialDetails] = useState({
         totalBlocks: '',
-        commercialFile: null
+        commercialFile: null,
+        no_blocks: '',
+        file_path: ''
     });
 
     const [externalDevelopmentWorks, setExternalDevelopmentWorks] = useState([
@@ -50,58 +61,88 @@ const DevelopmentDetails = () => {
         description: '',
         type: 'Select'
     });
+     const [otherWorksList, setOtherWorksList] = useState([]);
 
     const [expandedSections, setExpandedSections] = useState({
         plots: false,
-        apartments: true,
+        apartments: false,
         villas: false,
         commercial: false
     });
-const handleTemplateDownload = (e, templateType) => {
-  e.preventDefault();
-  e.stopPropagation(); // important to stop accordion toggle
 
-  let filePath = "";
-  let fileName = "";
+    // Generate project ID on component mount
+   useEffect(() => {
+    const savedData = localStorage.getItem("developmentDetailsForm");
 
-  switch (templateType) {
-    case "plot":
-      filePath = "/pdf/plotDetailsTemplate.xlsx";
-      fileName = "PlotDetailsTemplate.xlsx";
-      break;
-    case "flat":
-      filePath = "/pdf/FlatDetailsTemplate.xlsx";
-      fileName = "FlatDetailsTemplate.xlsx";
-      break;
-    case "villa":
-      filePath = "/pdf/VillaDetailsTemplate.xlsx";
-      fileName = "VillaDetailsTemplate.xlsx";
-      break;
-    case "commercial":
-      filePath = "/pdf/CommercialDetailsTemplate.xlsx";
-      fileName = "CommercialDetailsTemplate.xlsx";
-      break;
-    default:
-      return;
-  }
+    if (savedData) {
+        const data = JSON.parse(savedData);
 
-  // ✅ FORCE DOWNLOAD (NO NEW TAB)
-  const link = document.createElement("a");
-  link.href = filePath;
-  link.setAttribute("download", fileName);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+        setProjectId(data.projectId || '');
+        setProjectType(data.projectType || 'residential');
+        setBuildingTypes(data.buildingTypes || {});
+        setPlotDetails(data.plotDetails || {});
+        setApartmentDetails(data.apartmentDetails || {});
+        setVillaDetails(data.villaDetails || {});
+        setCommercialDetails(data.commercialDetails || {});
+        setExternalDevelopmentWorks(data.externalDevelopmentWorks || []);
+        setOtherWorksList(data.otherWorksList || []);
+    } else {
+        generateProjectId(); // only if no saved data
+    }
+}, []);
 
+
+    const generateProjectId = () => {
+        const timestamp = Date.now();
+        const randomNum = Math.floor(Math.random() * 10000);
+        const newProjectId = `PROJ-${timestamp}-${randomNum}`;
+        setProjectId(newProjectId);
+    };
+
+    const handleTemplateDownload = (e, templateType) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let filePath = "";
+        let fileName = "";
+
+        switch (templateType) {
+            case "plot":
+                filePath = "/pdf/PlotDetailsTemplate.xlsx";
+                fileName = "PlotDetailsTemplate.xlsx";
+                break;
+            case "flat":
+                filePath = "/pdf/FlatDetailsTemplate (1).xlsx";
+                fileName = "FlatDetailsTemplate.xlsx";
+                break;
+            case "villa":
+                filePath = "/pdf/VillaDetailsTemplate.xlsx";
+                fileName = "VillaDetailsTemplate.xlsx";
+                break;
+            case "commercial":
+                filePath = "/pdf/CommercialDetailsTemplate.xlsx";
+                fileName = "CommercialDetailsTemplate.xlsx";
+                break;
+            default:
+                return;
+        }
+
+        const link = document.createElement("a");
+        link.href = filePath;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     const handleBuildingTypeChange = (type) => {
-        setBuildingTypes(prev => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
+  setBuildingTypes(prev => ({
+    ...prev,
+    [type]: !prev[type]
+  }));
 
-        // Expand/collapse section based on checkbox
+
+
         setExpandedSections(prev => ({
             ...prev,
             [type]: !prev[type]
@@ -131,20 +172,27 @@ const handleTemplateDownload = (e, templateType) => {
     };
 
     const handleFileChange = (section, file) => {
+        if (!file) return;
+
+        console.log("File selected for", section, ":", file.name);
+
+        if (!file.name.match(/\.(xls|xlsx)$/i)) {
+            alert("Only Excel files (.xls, .xlsx) are allowed");
+            return;
+        }
+
         switch (section) {
-            case 'plots':
-                setPlotDetails(prev => ({ ...prev, plotFile: file }));
-                break;
-            case 'apartments':
+            case "apartments":
                 setApartmentDetails(prev => ({ ...prev, apartmentFile: file }));
                 break;
-            case 'villas':
+            case "plots":
+                setPlotDetails(prev => ({ ...prev, plotFile: file }));
+                break;
+            case "villas":
                 setVillaDetails(prev => ({ ...prev, villaFile: file }));
                 break;
-            case 'commercial':
+            case "commercial":
                 setCommercialDetails(prev => ({ ...prev, commercialFile: file }));
-                break;
-            default:
                 break;
         }
     };
@@ -154,6 +202,9 @@ const handleTemplateDownload = (e, templateType) => {
         updatedWorks[index].percentCompleted = value;
         setExternalDevelopmentWorks(updatedWorks);
     };
+    const handleDeleteOtherWork = (id) => {
+    setOtherWorksList(prev => prev.filter(item => item.id !== id));
+};
 
     const toggleSection = (section) => {
         setExpandedSections(prev => ({
@@ -163,105 +214,333 @@ const handleTemplateDownload = (e, templateType) => {
     };
 
     const completeStep = (stepNo) => {
-        const completedSteps =
-            JSON.parse(localStorage.getItem("completedSteps")) || [];
-
+        const completedSteps = JSON.parse(localStorage.getItem("completedSteps")) || [];
         if (!completedSteps.includes(stepNo)) {
             completedSteps.push(stepNo);
-            localStorage.setItem(
-                "completedSteps",
-                JSON.stringify(completedSteps)
-            );
+            localStorage.setItem("completedSteps", JSON.stringify(completedSteps));
         }
     };
 
-    const handleSubmit = (e) => {
+    // Helper function to get backend-friendly building type keys
+    const getBackendBuildingTypeKey = (type) => {
+        const keyMap = {
+            'Plots': 'Plots',
+            'Apartments/Flats': 'Apartments_Flats',
+            'Villas': 'Villas',
+            'Commercial': 'Commercial'
+        };
+        return keyMap[type] || type.replace(/[^a-zA-Z0-9]/g, '_');
+    };
+
+    // Helper to get display label
+    const getDisplayLabel = (type) => {
+        const labels = {
+            plots: 'Plots',
+            apartmentsFlats: 'Apartments/Flats',
+            villas: 'Villas',
+            commercial: 'Commercial'
+        };
+        return labels[type] || type;
+    };
+    const handleAddOtherWork = () => {
+    if (!otherWork.description.trim()) {
+        alert("Please enter Work Description");
+        return;
+    }
+
+    if (otherWork.type === "Select") {
+        alert("Please select Work Type");
+        return;
+    }
+
+    const newItem = {
+        id: Date.now(),
+        description: otherWork.description,
+        type: otherWork.type
+    };
+
+    setOtherWorksList(prev => [...prev, newItem]);
+
+    // Reset inputs
+    setOtherWork({
+        description: '',
+        type: 'Select'
+    });
+};
+ const saveFormToLocalStorage = () => {
+    const data = {
+        projectId,
+        projectType,
+        buildingTypes,
+        plotDetails,
+        apartmentDetails,
+        villaDetails,
+        commercialDetails,
+        externalDevelopmentWorks,
+        otherWorksList
+    };
+
+    localStorage.setItem("developmentDetailsForm", JSON.stringify(data));
+};
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // (Optional) minimal validation
-        if (
-            !apartmentDetails.totalBlocks &&
-            !plotDetails.totalPlots
-        ) {
-            alert("Please enter development details");
-            return;
-        }
+        try {
+            // Create FormData object
+            const formData = new FormData();
 
-        // ✅ MARK STEP 3 AS COMPLETED (GREEN)
-        completeStep(3);
+            // 1. Append TEXT fields
+            formData.append('project_id', projectId);
+            formData.append('project_type', projectType);
+            formData.append('work_description', otherWork.description || '');
+            formData.append('work_type', otherWork.type || 'Select');
 
-        // 👉 NAVIGATE TO NEXT STEP
-        navigate("/associate-details");
+            // 2. Build development_details JSON
+            const developmentDetails = {};
+
+            // Process Plots
+            if (buildingTypes.plots) {
+                const key = getBackendBuildingTypeKey('Plots');
+                developmentDetails[key] = {
+                    no_plots: parseInt(plotDetails.totalPlots) || 0,
+                    no_blocks: parseInt(plotDetails.no_blocks) || 0
+                };
+                
+                // Append file if selected
+                if (plotDetails.plotFile) {
+                    formData.append(`${key}_file`, plotDetails.plotFile);
+                }
+            }
+
+            // Process Apartments/Flats
+            if (buildingTypes.apartmentsFlats) {
+                const key = getBackendBuildingTypeKey('Apartments/Flats');
+                developmentDetails[key] = {
+                    no_plots: 0,
+                    no_blocks: parseInt(apartmentDetails.totalBlocks) || 0
+                };
+                
+                // Append file if selected
+                if (apartmentDetails.apartmentFile) {
+                    formData.append(`${key}_file`, apartmentDetails.apartmentFile);
+                } else {
+                    // Validate that file is required
+                    alert('Please upload Flat Details Excel file for Apartments/Flats');
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
+
+            // Process Villas
+            if (buildingTypes.villas) {
+                const key = getBackendBuildingTypeKey('Villas');
+                developmentDetails[key] = {
+                    no_plots: 0,
+                    no_blocks: parseInt(villaDetails.totalBlocks) || 0
+                };
+                
+                // Append file if selected
+                if (villaDetails.villaFile) {
+                    formData.append(`${key}_file`, villaDetails.villaFile);
+                } else {
+                    alert('Please upload Villa Details Excel file');
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
+
+            // Process Commercial
+            if (buildingTypes.commercial) {
+                const key = getBackendBuildingTypeKey('Commercial');
+                developmentDetails[key] = {
+                    no_plots: 0,
+                    no_blocks: parseInt(commercialDetails.totalBlocks) || 0
+                };
+                
+                // Append file if selected
+                if (commercialDetails.commercialFile) {
+                    formData.append(`${key}_file`, commercialDetails.commercialFile);
+                } else {
+                    alert('Please upload Commercial Details Excel file');
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
+
+            // Validate at least one building type is selected
+            if (Object.keys(developmentDetails).length === 0) {
+                alert('Please select at least one building type (Apartments/Flats, Plots, Villas, or Commercial)');
+                setIsSubmitting(false);
+                return;
+            }
+
+            // Append development_details as JSON string
+            formData.append('development_details', JSON.stringify(developmentDetails));
+
+            // 3. Build external_development_work JSON
+            const externalDevelopmentWork = {};
+            externalDevelopmentWorks.forEach(work => {
+                const key = work.type
+                    .replace(/[^a-zA-Z0-9]/g, '_')
+                    .replace(/\s+/g, '_');
+                externalDevelopmentWork[key] = parseInt(work.percentCompleted) || 0;
+            });
+
+            // Append external_development_work as JSON string
+            formData.append('external_development_work', JSON.stringify(externalDevelopmentWork));
+             formData.append('other_external_works', JSON.stringify(otherWorksList));
+            // 4. Send the request to backend
+            console.log('Submitting form to http://localhost:8080/api/development-details');
+            
+            const response = await axios.post(
+                'http://localhost:8080/api/development-details',
+                formData,
+                {
+                    withCredentials: false,
+                    timeout: 60000 // 60 second timeout for file uploads
+                }
+            );
+
+            console.log('Response:', response.data);
+            
+           if (response.status === 201) {
+
+    // 🔹 1. Prepare data you want to carry forward
+    const submittedData = {
+        projectId,
+        projectType,
+        buildingTypes,
+        plotDetails,
+        apartmentDetails,
+        villaDetails,
+        commercialDetails,
+        externalDevelopmentWorks,
+        otherWorksList
     };
+
+    // 🔹 2. SAVE TO localStorage (THIS IS WHAT YOU ASKED)
+    localStorage.setItem(
+        "developmentDetailsSubmitted",
+        JSON.stringify(submittedData)
+    );
+
+    // 🔹 3. Mark wizard step complete
+    completeStep(3);
+
+    // 🔹 4. Navigate to next page WITH DATA
+    navigate("/associate-details", {
+        state: { developmentData: submittedData }
+    });
+}
+ else {
+                alert('Unexpected response from server');
+            }
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            
+            let errorMessage = 'Submission failed';
+            if (error.response) {
+                console.error('Server responded with:', error.response.data);
+                errorMessage += `: ${error.response.data.message || `Status ${error.response.status}`}`;
+            } else if (error.request) {
+                console.error('No response received');
+                errorMessage += ': No response from server. Please check if backend is running.';
+            } else {
+                console.error('Request setup error:', error.message);
+                errorMessage += `: ${error.message}`;
+            }
+            
+            alert(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Remove the separate uploadSingleExcel function and its button
+    // All files will be uploaded together during form submission
 
     return (
-        <div className="development-details-container">
+        <div className="development-details-container_pd">
             {/* Header Navigation */}
-            <div className="breadcrumb">
-                You are here: <a href="#">Home</a> / <a href="#">Registration</a> / <a href="#">Project Registration</a>
+            <div className="development-details-breadcrumb1">
+                <span>You are here : </span>
+                <a href="/">Home</a>
+                <span> / </span>
+                <span>Registration / Project Registration</span>
             </div>
 
-            <h2 className="page-title">Project Registration</h2>
-
+           
+            
             <ProjectWizard currentStep={3} />
 
-            <form onSubmit={handleSubmit} className="development-form">
-                <div className="form-section">
-                    <h3 className="subheading">Development Details</h3>
+            <form onSubmit={handleSubmit} className="development-details-form">
+                <div className="development-detailsform-section">
+                    <h3 className="development-details-subheading">Development Details</h3>
                     
-                    <div className="row innerdivrow">
-                        <div className="col-sm-12">
-                            <div className="form-group">
-                                <label className="label">
+                    <div className="development-details-row development-details-innerdivrow">
+                        <div className="development-details-col-sm-12">
+                            <div className="development-details-form-group">
+                                <label className="development-details-label">
                                     Project Consists of<font color="red">*</font>
                                 </label>
                                 
-                                <table className="custom_checkbox" style={{width: '100%'}}>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <input 
-                                                    id="chkPlots"
-                                                    type="checkbox"
-                                                    checked={buildingTypes.plots}
-                                                    onChange={() => handleBuildingTypeChange('plots')}
-                                                />
-                                                <label htmlFor="chkPlots">Plots</label>
-                                            </td>
-                                            <td>
-                                                <input 
-                                                    id="chkApartments"
-                                                    type="checkbox"
-                                                    checked={buildingTypes.apartmentsFlats}
-                                                    onChange={() => handleBuildingTypeChange('apartmentsFlats')}
-                                                />
-                                                <label htmlFor="chkApartments">Apartments/Flats</label>
-                                            </td>
-                                            <td>
-                                                <input 
-                                                    id="chkVillas"
-                                                    type="checkbox"
-                                                    checked={buildingTypes.villas}
-                                                    onChange={() => handleBuildingTypeChange('villas')}
-                                                />
-                                                <label htmlFor="chkVillas">Villas</label>
-                                            </td>
-                                            <td>
-                                                <input 
-                                                    id="chkCommercial"
-                                                    type="checkbox"
-                                                    checked={buildingTypes.commercial}
-                                                    onChange={() => handleBuildingTypeChange('commercial')}
-                                                />
-                                                <label htmlFor="chkCommercial">Commercial</label>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                              <table className="development-details-custom_checkbox" style={{ width: '100%' }}>
+  <tbody>
+    <tr>
+      {/* Plots - Disabled */}
+      <td>
+        <input
+          id="chkPlots"
+          type="checkbox"
+          checked={buildingTypes.plots}
+          disabled
+        />
+        <label htmlFor="chkPlots">Plots</label>
+      </td>
+
+      {/* Apartments/Flats */}
+      <td>
+        <input
+          id="chkApartments"
+          type="checkbox"
+          checked={buildingTypes.apartmentsFlats}
+          onChange={() => handleBuildingTypeChange('apartmentsFlats')}
+        />
+        <label htmlFor="chkApartments">Apartments/Flats</label>
+      </td>
+
+      {/* Villas */}
+      <td>
+        <input
+          id="chkVillas"
+          type="checkbox"
+        checked={buildingTypes.villas}
+          onChange={() => handleBuildingTypeChange('villas')}
+        />
+        <label htmlFor="chkVillas">Villas</label>
+      </td>
+
+      {/* Commercial - Disabled */}
+      <td>
+        <input
+          id="chkCommercial"
+          type="checkbox"
+          checked={buildingTypes.commercial}
+          disabled
+        />
+        <label htmlFor="chkCommercial">Commercial</label>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
                             </div>
                             
-                            <div className="note-section">
-                                <label className="label note">
+                            <div className="development-details-note-section-of-developmentdetails">
+                                <label className="development-details-label-note-developmentdetails">
                                     <strong>Note:</strong><br />
                                     1. Do not tamper the given excel templates<br />
                                     2. Do not merge any rows/columns/cells in excel sheets<br />
@@ -274,71 +553,92 @@ const handleTemplateDownload = (e, templateType) => {
                     </div>
 
                     {/* Accordion Sections */}
-                    <div className="accordion-wrapper">
+                    <div className="development-details-accordion-wrapper">
                         {/* Plot Details Section */}
                         {buildingTypes.plots && (
-                            <div className="accordion-section">
+                            <div className="development-details-accordion-section">
                                 <div 
-                                    className={`accordion-header ${expandedSections.plots ? 'active' : ''}`}
+                                    className={`development-details-accordion-header ${expandedSections.plots ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('plots')}
                                 >
-                                    <span className="accordion-icon">+</span>
+                                    <span className="development-details-accordion-icon">+</span>
                                     Plot Details
                                 </div>
                                 {expandedSections.plots && (
-                                    <div className="accordion-content">
-                                        <div className="row innerdivrow">
-                                            <div className="col-xs-12 dvborder">
-                                                <div className="form-group">
+                                    <div className="development-details-accordion-content_pd">
+                                        <div className="development-details-row development-details-innerdivrow_pd">
+                                            <div className="development-details-col-xs-12 development-details-dvborder">
+                                                <div className="development-details-form-group">
                                                     <a 
                                                         href="#" 
-                                                        className="lnk-link" 
+                                                        className="development-details-lnk-link" 
                                                         onClick={(e) => handleTemplateDownload(e, 'plot')}
                                                         style={{fontSize: '16px'}}
                                                     >
                                                         Click here to download Plot Details Excel Template
                                                     </a>
                                                 </div>
-                                                <div className="col-sm-3">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Total No of Plots<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="text" 
                                                             maxLength="6"
-                                                            className="form-control inputbox allownumeric"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Plots"
                                                             value={plotDetails.totalPlots}
                                                             onChange={(e) => handleInputChange('plots', 'totalPlots', e.target.value)}
+                                                            required={buildingTypes.plots}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-4">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
+                                                            No of Blocks<font color="red">*</font>
+                                                        </label>
+                                                        <input 
+                                                            type="text" 
+                                                            maxLength="6"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
+                                                            placeholder="No of Blocks"
+                                                            value={plotDetails.no_blocks}
+                                                            onChange={(e) => handleInputChange('plots', 'no_blocks', e.target.value)}
+                                                            required={buildingTypes.plots}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Upload Plot Details<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="file"
-                                                            className="form-control inputbox"
+                                                            className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('plots', e.target.files[0])}
+                                                            required={buildingTypes.plots}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-3">
-                                                    <div className="form-group">
-                                                        <button type="button" className="btn btn-primary btnmargintop pull-left">
-                                                            Upload Excel
-                                                        </button>
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <p className="development-details-file-info-text">
+                                                            Select Excel file
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-2">
-                                                    <div className="form-group">
-                                                        {/* Empty for alignment */}
+                                                {plotDetails.plotFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{plotDetails.plotFile.name}</strong> 
+                                                            ({Math.round(plotDetails.plotFile.size / 1024)} KB)
+                                                        </p>
                                                     </div>
-                                                </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -348,63 +648,73 @@ const handleTemplateDownload = (e, templateType) => {
 
                         {/* Apartment/Flat Details Section */}
                         {buildingTypes.apartmentsFlats && (
-                            <div className="accordion-section">
+                            <div className="development-details-accordion-section">
                                 <div 
-                                    className={`accordion-header ${expandedSections.apartments ? 'active' : ''}`}
+                                    className={`development-details-accordion-header ${expandedSections.apartments ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('apartments')}
                                 >
-                                    <span className="accordion-icon">+</span>
+                                    <span className="development-details-accordion-icon">+</span>
                                     Apartment/Flat Details
                                 </div>
                                 {expandedSections.apartments && (
-                                    <div className="accordion-content">
-                                        <div className="row innerdivrow">
-                                            <div className="col-xs-12 dvborder">
-                                                <div className="form-group">
+                                    <div className="development-details-accordion-content">
+                                        <div className="development-details-row development-details-innerdivrow">
+                                            <div className="development-details-col-xs-12 development-details-dvborder">
+                                                <div className="development-details-form-group">
                                                     <a 
                                                         href="#" 
-                                                        className="lnk-link" 
+                                                        className="development-details-lnk-link" 
                                                         onClick={(e) => handleTemplateDownload(e, 'flat')}
                                                         style={{fontSize: '16px'}}
                                                     >
                                                         Click here to download Flat Details Excel Template
                                                     </a>
                                                 </div>
-                                                <div className="col-sm-3">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Total No of Blocks<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="text" 
                                                             maxLength="6"
-                                                            className="form-control inputbox allownumeric"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Blocks"
                                                             value={apartmentDetails.totalBlocks}
                                                             onChange={(e) => handleInputChange('apartments', 'totalBlocks', e.target.value)}
+                                                            required={buildingTypes.apartmentsFlats}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-4">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Upload Flat Details<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="file"
-                                                            className="form-control inputbox"
+                                                            className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('apartments', e.target.files[0])}
+                                                            required={buildingTypes.apartmentsFlats}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-3">
-                                                    <div className="form-group">
-                                                        <button type="button" className="btn btn-primary btnmargintop pull-left">
-                                                            Upload Excel
-                                                        </button>
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <p className="development-details-file-info-text">
+                                                            Will be uploaded with form
+                                                        </p>
                                                     </div>
                                                 </div>
+                                                {apartmentDetails.apartmentFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{apartmentDetails.apartmentFile.name}</strong> 
+                                                            ({Math.round(apartmentDetails.apartmentFile.size / 1024)} KB)
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -414,63 +724,73 @@ const handleTemplateDownload = (e, templateType) => {
 
                         {/* Villa Details Section */}
                         {buildingTypes.villas && (
-                            <div className="accordion-section">
+                            <div className="development-details-accordion-section">
                                 <div 
-                                    className={`accordion-header ${expandedSections.villas ? 'active' : ''}`}
+                                    className={`development-details-accordion-header ${expandedSections.villas ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('villas')}
                                 >
-                                    <span className="accordion-icon">+</span>
+                                    <span className="development-details-accordion-icon">+</span>
                                     Villa Details
                                 </div>
                                 {expandedSections.villas && (
-                                    <div className="accordion-content">
-                                        <div className="row innerdivrow">
-                                            <div className="col-xs-12 dvborder">
-                                                <div className="form-group">
+                                    <div className="development-details-accordion-content">
+                                        <div className="development-details-row development-details-innerdivrow">
+                                            <div className="development-details-col-xs-12 dvborder">
+                                                <div className="development-details-form-group">
                                                     <a 
                                                         href="#" 
-                                                        className="lnk-link" 
+                                                        className="development-details-lnk-link" 
                                                         onClick={(e) => handleTemplateDownload(e, 'villa')}
                                                         style={{fontSize: '16px'}}
                                                     >
                                                         Click here to download Villa Details Excel Template
                                                     </a>
                                                 </div>
-                                                <div className="col-sm-3">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Total No of Blocks<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="text" 
                                                             maxLength="6"
-                                                            className="form-control inputbox allownumeric"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Blocks"
                                                             value={villaDetails.totalBlocks}
                                                             onChange={(e) => handleInputChange('villas', 'totalBlocks', e.target.value)}
+                                                            required={buildingTypes.villas}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-4">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Upload Villa Details<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="file"
-                                                            className="form-control inputbox"
+                                                            className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('villas', e.target.files[0])}
+                                                            required={buildingTypes.villas}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-3">
-                                                    <div className="form-group">
-                                                        <button type="button" className="btn btn-primary btnmargintop pull-left">
-                                                            Upload Excel
-                                                        </button>
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <p className="development-details-file-info-text">
+                                                            Will be uploaded with form
+                                                        </p>
                                                     </div>
                                                 </div>
+                                                {villaDetails.villaFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{villaDetails.villaFile.name}</strong> 
+                                                            ({Math.round(villaDetails.villaFile.size / 1024)} KB)
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -480,63 +800,73 @@ const handleTemplateDownload = (e, templateType) => {
 
                         {/* Commercial Details Section */}
                         {buildingTypes.commercial && (
-                            <div className="accordion-section">
+                            <div className="development-details-accordion-section">
                                 <div 
-                                    className={`accordion-header ${expandedSections.commercial ? 'active' : ''}`}
+                                    className={`development-details-accordion-header ${expandedSections.commercial ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('commercial')}
                                 >
                                     <span className="accordion-icon">+</span>
                                     Commercial Details
                                 </div>
                                 {expandedSections.commercial && (
-                                    <div className="accordion-content">
-                                        <div className="row innerdivrow">
-                                            <div className="col-xs-12 dvborder">
-                                                <div className="form-group">
+                                    <div className="development-details-accordion-content">
+                                        <div className="development-details-row development-details-innerdivrow">
+                                            <div className="development-details-col-xs-12 development-details-dvborder">
+                                                <div className="development-details-form-group">
                                                     <a 
                                                         href="#" 
-                                                        className="lnk-link" 
+                                                        className="development-details-lnk-link" 
                                                         onClick={(e) => handleTemplateDownload(e, 'commercial')}
                                                         style={{fontSize: '16px'}}
                                                     >
                                                         Click here to download Commercial Details Excel Template
                                                     </a>
                                                 </div>
-                                                <div className="col-sm-3">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Total No of Blocks<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="text" 
                                                             maxLength="6"
-                                                            className="form-control inputbox allownumeric"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Blocks"
                                                             value={commercialDetails.totalBlocks}
                                                             onChange={(e) => handleInputChange('commercial', 'totalBlocks', e.target.value)}
+                                                            required={buildingTypes.commercial}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-4">
-                                                    <div className="form-group">
-                                                        <label className="label">
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
                                                             Upload Commercial Details<font color="red">*</font>
                                                         </label>
                                                         <input 
                                                             type="file"
-                                                            className="form-control inputbox"
+                                                            className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('commercial', e.target.files[0])}
+                                                            required={buildingTypes.commercial}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-xs-3">
-                                                    <div className="form-group">
-                                                        <button type="button" className="btn btn-primary btnmargintop pull-left">
-                                                            Upload Excel
-                                                        </button>
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <p className="development-details-file-info-text">
+                                                            Will be uploaded with form
+                                                        </p>
                                                     </div>
                                                 </div>
+                                                {commercialDetails.commercialFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{commercialDetails.commercialFile.name}</strong> 
+                                                            ({Math.round(commercialDetails.commercialFile.size / 1024)} KB)
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -546,10 +876,10 @@ const handleTemplateDownload = (e, templateType) => {
                     </div>
 
                     {/* External Development Work */}
-                    <div className="external-development-section">
-                        <h4 className="section-title">External Development Work</h4>
+                    <div className="development-details-external-development-section">
+                        <h4 className="development-details-section-title">External Development Work</h4>
                         
-                        <table className="development-table">
+                        <table className="development-details-development-table">
                             <thead>
                                 <tr>
                                     <th>External Development Work Type</th>
@@ -561,13 +891,24 @@ const handleTemplateDownload = (e, templateType) => {
                                     <tr key={index}>
                                         <td>{work.type}</td>
                                         <td>
-                                            <input 
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                className="form-control percent-input"
+                                            <input
+                                                type="text"
+                                                className="development-details-form-control development-details-percent-input"
                                                 value={work.percentCompleted}
-                                                onChange={(e) => handleExternalWorkChange(index, parseInt(e.target.value) || 0)}
+                                                placeholder="0–100"
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    if (/^\d*$/.test(value)) {
+                                                        handleExternalWorkChange(index, value);
+                                                    }
+                                                }}
+                                                onBlur={() => {
+                                                    let val = parseInt(work.percentCompleted, 10);
+                                                    if (isNaN(val)) val = 0;
+                                                    if (val < 0) val = 0;
+                                                    if (val > 100) val = 100;
+                                                    handleExternalWorkChange(index, val);
+                                                }}
                                             />
                                         </td>
                                     </tr>
@@ -576,53 +917,93 @@ const handleTemplateDownload = (e, templateType) => {
                         </table>
 
                         {/* Other External Development Works */}
-                        <div className="other-works-section">
-                            <h5 className="sub-section-title">Other External Development Works</h5>
-                            <div className="row innerdivrow">
-                                <div className="col-sm-4">
-                                    <div className="form-group">
-                                        <label className="label">Work Description</label>
+                        <div className="development-details-other-works-section">
+                            <h5 className="development-details-sub-section-title">Other External Development Works</h5>
+                            <div className="row development-details-innerdivrow">
+                                <div className="development-details-col-sm-4">
+                                    <div className="development-details-form-group">
+                                        <label className="development-details-label">Work Description</label>
                                         <input 
                                             type="text"
-                                            className="form-control inputbox"
+                                            className="development-details-form-control development-details-inputbox"
                                             placeholder="Work Description"
                                             value={otherWork.description}
                                             onChange={(e) => handleInputChange('otherWork', 'description', e.target.value)}
                                         />
                                     </div>
                                 </div>
-                                <div className="col-sm-4">
-                                    <div className="form-group">
-                                        <label className="label">Work Type</label>
+                                <div className="development-details-col-sm-4">
+                                    <div className="development-details-form-group">
+                                        <label className="development-details-label">Work Type</label>
                                         <select 
-                                            className="form-control inputbox"
+                                            className="development-details-form-control development-details-inputbox"
                                             value={otherWork.type}
                                             onChange={(e) => handleInputChange('otherWork', 'type', e.target.value)}
                                         >
                                             <option value="Select">Select</option>
-                                            <option value="Type1">Type 1</option>
-                                            <option value="Type2">Type 2</option>
-                                            <option value="Type3">Type 3</option>
+                                            <option value="Local Authority">Local Authority</option>
+                                            <option value="Self Development">Self Development</option>
+                                            <option value="Not Applicable">Not Applicable</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div className="col-sm-2">
-                                    <div className="form-group">
-                                        <button type="button" className="btn btn-default btn-add">
-                                            Add
-                                        </button>
+                                <div className="development-details-col-sm-2">
+                                    <div className="development-details-form-group">
+                                       <button
+                                            type="button"
+                                            className="development-details-btn development-details-btn-default development-details-btn-add"
+                                            onClick={handleAddOtherWork}
+                                        >
+                                              Add
+                                    </button>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        {otherWorksList.length > 0 && (
+    <div className="development-details-table-responsive development-details-mt-3">
+        <table className="development-details-table development-details-table-bordered">
+            <thead style={{ backgroundColor: '#3f5367', color: '#fff' }}>
+                <tr>
+                    <th style={{ width: '10%' }}>S.No</th>
+                    <th>Work Description</th>
+                    <th>Work Type</th>
+                    <th style={{ width: '15%' }}>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {otherWorksList.map((item, index) => (
+                    <tr key={item.id}>
+                        <td>{index + 1}</td>
+                        <td>{item.description}</td>
+                        <td>{item.type}</td>
+                        <td>
+                            <button
+                                type="button"
+                                className="development-details-btn development-details-btn-primary development-details-btn-sm"
+                                onClick={() => handleDeleteOtherWork(item.id)}
+                            >
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+)}
 
-                {/* Save and Continue Button */}
-                <div className="form-actions">
-                    <button type="submit" className="btn btn-primary btn-save">
-                        Save and Continue
-                    </button>
+                        <div className="development-details-form-actions">
+                            <button 
+                                type="submit" 
+                                className="development-details-btn development-details-btn-primary development-details-btn-save"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Submitting...' : 'Save and Continue'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

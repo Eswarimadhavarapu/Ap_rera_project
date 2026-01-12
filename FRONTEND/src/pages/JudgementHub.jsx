@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/JudgementHub.css";
-import ApReraJud from "../assets/APRERA_Judgement.pdf"
+import ApReraJud from "../../public/assets/pdfs/APRERA_Judgement.pdf"
 
 const JudgementHub = () => {
   return (

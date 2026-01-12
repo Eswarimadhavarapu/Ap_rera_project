@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "../styles/complaintRegistration.css";
-import ComplaintDetails from "./ComplaintDetails";
 import { useNavigate } from "react-router-dom";
+import ComplaintDetails from "./complaintdetails";
+import PreviewPage from "./previewpage";
+import PaymentPage from "./paymentpage";
+
 
 
 
@@ -16,14 +19,14 @@ function StepWizard({ currentStep }) {
     ];
 
     return (
-        <div className="complaintReg-stepwizard">
-            <div className="complaintReg-stepwizard-row">
+        <div className="complaregist-stepwizard">
+            <div className="complaregist-stepwizard-row">
                 {steps.map((label, index) => {
                     const step = index + 1;
                     return (
-                        <div className="complaintReg-stepwizard-step" key={step}>
+                        <div className="complaregist-stepwizard-step" key={step}>
                             <div
-                                className={`complaintReg-step-circle ${currentStep === step ? "active" : ""
+                                className={`complaregist-step-circle ${currentStep === step ? "complaregist-active" : ""
                                     }`}
                             >
                                 {step}
@@ -37,10 +40,14 @@ function StepWizard({ currentStep }) {
     );
 }
 
+
+
 export default function ComplaintRegistration() {
     const navigate = useNavigate();
 
     const [currentStep, setCurrentStep] = useState(1);
+    const [complaintData, setComplaintData] = useState(null);
+
 
     const [documents, setDocuments] = useState({
         saleAgreement: null,
@@ -102,25 +109,25 @@ export default function ComplaintRegistration() {
 
     /* ================= UI ================= */
     return (
-        <div className="complaintReg-page-wrapper">
-            <div className="complaintReg-container">
-                <div className="complaintReg-breadcrumb">
+        <div className="complaregist-page-wrapper">
+            <div className="complaregist-container">
+                <div className="complaregist-breadcrumb">
                     <span>You are here : </span>
                     <a href="/">Home</a> / Registration /{" "}
                     <span>Complaint Registration</span>
                 </div>
 
-                <h2 className="complaintReg-main-heading">Complaint Registration</h2>
+                <h2 className="complaregist-main-heading">Complaint Registration</h2>
 
                 <StepWizard currentStep={currentStep} />
 
                 {/* STEP 1 */}
                 {currentStep === 1 && (
-                    <div className="complaintReg-step-box">
+                    <div className="complaregist-step-box">
 
-                        <h3 className="complaintReg-section-title">General Instructions :</h3>
+                        <h3 className="complaregist-section-title">General Instructions :</h3>
 
-                        <ol className="complaintReg-instruction-list">
+                        <ol className="complaregist-instruction-list">
                             <li>Clear the cookies before filling the online form</li>
                             <li>Remove pop-up block from your browser</li>
                             <li>
@@ -132,13 +139,13 @@ export default function ComplaintRegistration() {
                                 Site best viewed in "Google Chrome (Version 62.0.3202.94)"
                             </li>
                             <li>
-                                Fields marked with <span className="complaintReg-required">*</span> are mandatory.
+                                Fields marked with <span className="complaregist-required">*</span> are mandatory.
                             </li>
                             <li>
                                 The Applicants are hereby informed to submit their application either in{" "}
                                 <a
                                     href="#"
-                                    className="complaintReg-link-text"
+                                    className="complaregist-link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("M");
@@ -149,7 +156,7 @@ export default function ComplaintRegistration() {
                                 or{" "}
                                 <a
                                     href="#"
-                                    className="complaintReg-link-text"
+                                    className="complaregist-link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("N");
@@ -171,13 +178,13 @@ export default function ComplaintRegistration() {
                             </li>
                         </ol>
 
-                        <h3 className="complaintReg-section-title">Guide to fill online registration form :</h3>
+                        <h3 className="complaregist-section-title">Guide to fill online registration form :</h3>
 
-                        <ol className="complaintReg-instruction-list">
+                        <ol className="complaregist-instruction-list">
                             <li>
                                 For step by step understanding of filing online application, kindly refer{" "}
                                 <span
-                                    className="complaintReg-link-text"
+                                    className="complaregist-link-text"
                                     style={{ cursor: "pointer" }}
                                     onClick={() => navigate("/guidelinesRegistration")}
                                 >
@@ -201,9 +208,9 @@ export default function ComplaintRegistration() {
                             </li>
                         </ol>
 
-                        <div className="complaintReg-footer right">
+                        <div className="complaregist-cr-footer right">
                             <button
-                                className="complaintReg-proceed-btn"
+                                className="complaregist-proceed-btn"
                                 onClick={() => setCurrentStep(2)}
                             >
                                 Proceed
@@ -216,87 +223,35 @@ export default function ComplaintRegistration() {
 
                 {/* STEP 2 */}
                 {currentStep === 2 && (
-                    <ComplaintDetails setCurrentStep={setCurrentStep} />
+                    <ComplaintDetails
+                        setCurrentStep={setCurrentStep}
+                        setComplaintData={setComplaintData}
+                    />
                 )}
 
-                {/* STEP 4 */}
+                {/* STEP 3 – PREVIEW */}
+                {currentStep === 3 && (
+                    <PreviewPage
+                        complaintData={complaintData}
+                        setCurrentStep={setCurrentStep}
+                    />
+                )}
+
+                {/* STEP 4 – PAYMENT */}
                 {currentStep === 4 && (
-                    <>
-                        <h3 className="complaintReg-subheading">Upload Documents</h3>
-
-                        <div className="complaintReg-row">
-                            <div className="complaintReg-col">
-                                <label>
-                                    Agreement for Sale <span className="complaintReg-required">*</span>
-                                </label>
-                                <input
-                                    type="file"
-                                    name="saleAgreement"
-                                    accept=".pdf"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
-
-                            <div className="complaintReg-col">
-                                <label>
-                                    Fee Receipt <span className="complaintReg-required">*</span>
-                                </label>
-                                <input
-                                    type="file"
-                                    name="feeReceipt"
-                                    accept=".pdf"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
-                        </div>
-                    </>
+                    <PaymentPage
+                        complaintData={complaintData}
+                        setCurrentStep={setCurrentStep}
+                    />
                 )}
 
-                {/* STEP 5 */}
+                {/* STEP 5 – ACKNOWLEDGEMENT */}
                 {currentStep === 5 && (
-                    <>
-                        <h3 className="complaintReg-subheading">Declaration</h3>
-
-                        <div className="complaintReg-declaration-box">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="agree1"
-                                    checked={declaration.agree1}
-                                    onChange={handleDeclarationChange}
-                                />
-                                Complaint is not pending in any court.
-                            </label>
-                        </div>
-
-                        <div className="complaintReg-declaration-box">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    name="agree2"
-                                    checked={declaration.agree2}
-                                    onChange={handleDeclarationChange}
-                                />
-                                I{" "}
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Enter Your Name"
-                                    value={declaration.name}
-                                    onChange={handleDeclarationChange}
-                                    className="complaintReg-inline-input"
-                                />{" "}
-                                confirm details are correct.
-                            </label>
-
-                            <div className="complaintReg-footer">
-                                <button className="complaintReg-proceed-btn">
-                                    Submit Complaint
-                                </button>
-                            </div>
-                        </div>
-                    </>
+                    <AcknowledgementPage
+                        complaintData={complaintData}
+                    />
                 )}
+
             </div>
         </div>
     );

@@ -67,24 +67,24 @@ const ApplicantDetails = () => {
 
   /* -------------------- UI -------------------- */
   return (
-    <div className="page-wrapper">
-      <div className="rera-container">
+    <div className="applicationDeta-page-wrapper">
+      <div className="applicationDeta-rera-container ">
 
         {/* Breadcrumb */}
-        <div className="breadcrumb">
+        <div className="applicationDeta-breadcrumb">
           You are here : <span>Home</span> / <span>Registration</span> /{" "}
           <span>Real Estate Agent Registration</span>
         </div>
 
-        <div className="content-box">
-          <h2 className="page-title">Real Estate Agent Registration</h2>
+        <div className="applicationDeta-content-box">
+          <h2 className="applicationDeta-page-title">Real Estate Agent Registration</h2>
 
           {/* Stepper */}
-          <div className="stepper">
+          <div className="applicationDeta-stepper">
             {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
               (s, i) => (
-                <div className="step" key={i}>
-                  <div className={`circle ${i === 0 ? "active" : ""}`}>{i + 1}</div>
+                <div className="applicationDeta-step" key={i}>
+                  <div className={`applicationDeta-circle ${i === 0 ? "applicationDeta-active" : ""}`}>{i + 1}</div>
                   <span>{s}</span>
                 </div>
               )
@@ -92,10 +92,10 @@ const ApplicantDetails = () => {
           </div>
 
           {/* Applicant Details */}
-          <section className="section">
-            <h3 className="section-title">Applicant Details</h3>
+          <section className="applicationDeta-section">
+            <h3 className="applicationDeta-section-title">Applicant Details</h3>
 
-            <div className="grid-4">
+            <div className="applicationDeta-grid-4">
               <div>
                 <label>Agent Name *</label>
                 <input name="agentName" onChange={handleChange} />
@@ -189,10 +189,10 @@ const ApplicantDetails = () => {
           </section>
 
           {/* Address */}
-          <section className="section">
-            <h3 className="section-title">Local Address For Communication</h3>
+          <section className="applicationDeta-section">
+            <h3 className="applicationDeta-section-title">Local Address For Communication</h3>
 
-            <div className="grid-4">
+            <div className="applicationDeta-grid-4">
               <div>
                 <label>Address Line 1 *</label>
                 <input name="address1" onChange={handleChange} />
@@ -238,32 +238,32 @@ const ApplicantDetails = () => {
           </section>
 
           {/* Projects */}
-          <section className="section">
-            <h3 className="section-title">Projects Launched In The Past 5 Years</h3>
+          <section className="applicationDeta-section">
+            <h3 className="applicationDeta-section-title">Projects Launched In The Past 5 Years</h3>
 
-            <div className="radio-inline">
+            <div className="applicationDeta-radio-inline">
               <span>Last five years project details *</span>
               <label><input type="radio" onChange={() => setShowProjects(true)} /> Yes</label>
               <label><input type="radio" defaultChecked onChange={() => setShowProjects(false)} /> No</label>
             </div>
 
             {showProjects && (
-              <div className="grid-4 conditional-box">
+              <div className="applicationDeta-grid-4 applicationDeta-conditional-box">
                 <div>
                   <label>Project Name *</label>
                   <input />
                 </div>
                 <div></div><div></div>
-                <div><button className="add-btn">Add</button></div>
+                <div><button className="applicationDeta-add-btn">Add</button></div>
               </div>
             )}
           </section>
 
           {/* Litigations */}
-          <section className="section">
-  <h3 className="section-title">Litigations</h3>
+          <section className="applicationDeta-section">
+  <h3 className="applicationDeta-section-title">Litigations</h3>
 
-  <div className="radio-inline litigation-row">
+  <div className="applicationDeta-radio-inline applicationDeta-litigation-row">
     <span>Any Civil/Criminal Cases *</span>
 
     <label>
@@ -290,7 +290,7 @@ const ApplicantDetails = () => {
 
     {/* ✅ FILE APPEARS NEXT TO NO */}
     {litigationStatus === "No" && (
-      <div className="inline-file">
+      <div className="applicationDeta-inline-file">
         <label>Self Declared Affidavit *</label>
         <input type="file" />
       </div>
@@ -305,7 +305,7 @@ const ApplicantDetails = () => {
         their names by comma separated.
       </p>
 
-      <div className="conditional-box grid-4">
+      <div className="applicationDeta-conditional-box applicationDeta-grid-4">
         <div>
           <label>Case No *</label>
           <input />
@@ -363,7 +363,7 @@ const ApplicantDetails = () => {
         <div></div>
 
         <div>
-          <button className="add-btn">Add</button>
+          <button className="applicationDeta-add-btn">Add</button>
         </div>
       </div>
     </>
@@ -372,27 +372,27 @@ const ApplicantDetails = () => {
 
 
           {/* Other State */}
-          <section className="section">
-            <h3 className="section-title">Other State/UT RERA Registration Details</h3>
+          <section className="applicationDeta-section">
+            <h3 className="applicationDeta-section-title">Other State/UT RERA Registration Details</h3>
 
-            <div className="radio-inline">
+            <div className="applicationDeta-radio-inline">
               <span>Do you have registration in other states *</span>
               <label><input type="radio" onChange={() => setShowOtherState(true)} /> Yes</label>
               <label><input type="radio" defaultChecked onChange={() => setShowOtherState(false)} /> No</label>
             </div>
 
             {showOtherState && (
-              <div className="grid-4 conditional-box">
+              <div className="applicationDeta-grid-4 applicationDeta-conditional-box">
                 <div><label>Registration Number *</label><input /></div>
                 <div><label>State / UT *</label><select><option>Select</option></select></div>
                 <div><label>District *</label><select><option>Select</option></select></div>
-                <div><button className="add-btn">Add</button></div>
+                <div><button className="applicationDeta-add-btn">Add</button></div>
               </div>
             )}
           </section>
 
           {/* Save */}
-          <div className="btn-row">
+          <div className="applicationDeta-btn-row">
             <button onClick={handleSaveContinue}>Save And Continue</button>
           </div>
 

@@ -1,0 +1,741 @@
+/* ===========================
+   ✅ NAVBAR CSS
+=========================== */
+.navbar {
+  font-family: Arial, sans-serif;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 15px 30px; */
+  position: relative;
+  background: #ffffff;
+}
+
+.logo-center {
+  text-align: center;
+}
+
+.logo-center img {
+  height: 70px;
+}
+
+.logo-center h1 {
+  font-size: 18px;
+  color: #0a5ca8;
+  margin: 6px 0 0;
+  font-weight: bold;
+}
+
+.search-btn {
+  position: absolute;
+  right: 30px;
+  top: 25px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.menu {
+  background: #0a5ca8;
+  display: flex;
+  justify-content: center;
+}
+
+.menu a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.menu a:hover {
+  background: #084a87;
+}
+
+.highlight {
+  background: orange;
+  color: #000;
+}
+
+.notice-board {
+  background: #fff;
+  padding: 10px 0;
+}
+
+.notice-line {
+  overflow: hidden;
+  white-space: nowrap;
+  /* margin: 6px 0; */
+}
+
+.notice-text {
+  display: inline-block;
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 100%;
+  animation: scrollLeft 45s linear infinite;
+}
+
+.new-badge {
+  background: red;
+  color: yellow;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin: 0 8px;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.notice-line:hover .notice-text {
+  animation-play-state: paused;
+}
+
+/* ===========================
+   ✅ HERO CSS
+=========================== */
+.hero {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 60px 30px 40px;
+  text-align: center;
+  position: relative;
+  transition: background-image 1.2s ease-in-out;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.leaders {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.leader-card {
+  text-align: center;
+  width: 260px;
+}
+
+.leader-card img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 6px solid #0a5ca8;
+  object-fit: cover;
+  background: #fff;
+}
+
+.leader-info {
+  background: #0a5ca8;
+  color: #fff;
+  padding: 14px 10px;
+  margin-top: -10px;
+  border-radius: 4px;
+}
+
+.leader-info h4 {
+  font-size: 15px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.leader-info p {
+  font-size: 13px;
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+/* ===========================
+   ✅ SERVICES + PHILOSOPHY + EXPERTISE + LEARNING CSS
+=========================== */
+.services {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #0a5ca8;
+}
+
+.service-card {
+  padding: 30px 20px;
+  text-align: center;
+  color: #fff;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.service-card:last-child {
+  border-right: none;
+}
+
+/* ✅ Image Icon Fix */
+.service-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  background: #fff;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.service-icon img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.service-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.philosophy-wrapper {
+  padding: 40px 20px;
+  background: #f5f5f5;
+}
+
+.philosophy-box {
+  display: flex;
+  gap: 30px;
+  background: #fff;
+  padding: 30px;
+  border: 1px solid #ddd;
+}
+
+.philosophy-left,
+.philosophy-right {
+  flex: 1;
+}
+
+.philosophy-left h2,
+.philosophy-right h2 {
+  color: #0a5ca8;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.title-line {
+  width: 35px;
+  height: 3px;
+  background: #0a5ca8;
+  margin: 10px auto 20px;
+}
+
+.philosophy-left p {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.philo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.philo-item {
+  display: flex;
+  gap: 15px;
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #0a5ca8;
+  border-radius: 12px;
+  color: #0a5ca8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.arrow-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.arrow-list li {
+  position: relative;
+  padding: 12px 20px 12px 40px;
+  margin-bottom: 10px;
+  background: #eef1f4;
+  font-size: 14.5px;
+  color: #333;
+}
+
+.arrow-list li::before {
+  content: "▶";
+  position: absolute;
+  left: 15px;
+  color: #000;
+  font-size: 12px;
+}
+
+.arrow-list li:nth-child(even) {
+  background: #fff;
+}
+
+/* EXPERTISE */
+.expertise {
+  padding: 70px 60px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.section-title {
+  color: #0a5ca8;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 50px;
+}
+
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.expertise-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 40px 30px;
+  text-align: left;
+  transition: 0.3s ease;
+}
+
+.expertise-card:hover {
+  border: 1px solid #0a5ca8;
+  box-shadow: 0 8px 20px rgba(10, 92, 168, 0.25);
+  transform: translateY(-4px);
+}
+
+.expertise-icon {
+  width: 70px;
+  height: 70px;
+  background: #0a5ca8;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.expertise-card:hover .expertise-icon {
+  background: #084a87;
+}
+
+/* LEARNING */
+.learning {
+  padding: 80px 60px;
+  background: #fff;
+  text-align: center;
+}
+
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+}
+
+.learning-img {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 30px;
+}
+
+.learning-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.learning-card:hover .learning-img img {
+  transform: scale(1.1);
+}
+
+.learning-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.learning-card button {
+  padding: 10px 30px;
+  background: #0a5ca8;
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.learning-card button:hover {
+  background: #084a87;
+}
+
+/* ===========================
+   ✅ DASHBOARD CSS
+=========================== */
+.dashboard-wrapper {
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+  background: #e5e5e5;
+}
+
+.box-header {
+  background: #1f73b7;
+  color: #fff;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  padding: 12px;
+}
+
+.analysis-box {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.filters select {
+  padding: 6px 10px;
+  margin-left: 6px;
+}
+
+.analysis-title {
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #444;
+}
+
+.dashboard-box {
+  flex: 1;
+  background: #0a5ca8;
+  color: #fff;
+}
+
+.dash-row {
+  display: flex;
+  border-bottom: 4px solid #333;
+}
+
+.dash-icon {
+  width: 120px;
+  background: #084a87;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.dash-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.dash-content h4 {
+  text-align: center;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.complaints-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.complaints-grid p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* ===========================
+   ✅ FEEDBACK CSS
+=========================== */
+.feedback-wrapper {
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+  background: #f2f2f2;
+}
+
+.reach-box {
+  flex: 1;
+  background: #0a66b2;
+  padding: 25px;
+}
+
+.reach-inner {
+  border: 4px solid #fff;
+  padding: 40px 30px;
+  color: #fff;
+  text-align: center;
+}
+
+.reach-inner h4 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.reach-inner h2 {
+  font-size: 26px;
+  font-weight: bold;
+  line-height: 1.3;
+  margin-bottom: 30px;
+}
+
+.reach-inner p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.helpdesk span,
+.email span {
+  color: yellow;
+  font-weight: bold;
+}
+
+.feedback-box {
+  flex: 1;
+  background: #666;
+  padding: 40px 30px;
+  color: #fff;
+}
+
+.feedback-box h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.feedback-form {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: transparent;
+  border: 1px solid #ddd;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 6px;
+}
+
+.feedback-form textarea {
+  min-height: 140px;
+  resize: none;
+  margin-bottom: 30px;
+}
+
+.feedback-form input::placeholder,
+.feedback-form textarea::placeholder {
+  color: #eee;
+}
+
+.feedback-form button {
+  background: #0a5ca8;
+  color: #fff;
+  border: none;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  float: right;
+  border-radius: 4px;
+}
+
+.feedback-form button:hover {
+  background: #084a87;
+}
+
+@media (max-width: 900px) {
+  .feedback-wrapper {
+    flex-direction: column;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .feedback-form button {
+    float: none;
+    width: 100%;
+  }
+}
+
+/* ===========================
+   ✅ FOOTER CSS
+=========================== */
+.footer {
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.footer-logos {
+  background: #f2f2f2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+}
+
+.footer-logos img {
+  height: 45px;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.footer-policy {
+  background: #333;
+  color: #ddd;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 15px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-policy span {
+  cursor: pointer;
+}
+
+.footer-policy span:hover {
+  color: #fff;
+}
+
+.social-icons {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.social-icons span {
+  width: 32px;
+  height: 32px;
+  background: #555;
+  color: #fff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.fb { background: #3b5998; }
+.tw { background: #1da1f2; }
+.yt { background: #ff0000; }
+
+.footer-bottom {
+  background: linear-gradient(to right, #0a5ca8 35%, #000 35%);
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  font-size: 15px;
+}
+
+.footer-bottom .left { flex: 1; }
+.footer-bottom .center {
+  flex: 1;
+  text-align: center;
+  color: yellow;
+  font-weight: bold;
+}
+.footer-bottom .right {
+  flex: 1;
+  text-align: right;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .footer-policy {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .social-icons {
+    margin-left: 0;
+  }
+}
+.philo-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+

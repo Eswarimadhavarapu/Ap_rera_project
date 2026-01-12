@@ -1,71 +1,49 @@
 .ma-container {
-  /* padding: 15px; */
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 10px 40px;
   background: #f2f2f2;
-  margin: 0px 82.5px;
-  padding: 0px;
-  margin-top: 20px;
+  box-sizing: border-box;
 }
 
-/* Breadcrumb */
+/* Blue heading – aligned like second image */
 .ma-breadcrumb {
   background: #0b87e3;
   color: #fff;
-  padding: 8px;
-  width: 100%;
+  padding: 12px 20px;
   font-size: 14px;
+  font-weight: 500;
+
+  /* ✅ FIX */
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+
+  border-radius: 4px;
 }
 
+/* Image / table box */
+.ma-box {
+  background: #ffffff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Image full fit */
+.ma-box img {
+  max-width: 100%;
+  padding: 10px 20px;
+  display: block;
+}
+
+/* Breadcrumb links */
 .ma-breadcrumb a {
   color: #ffeb3b;
-  margin: 0 5px;
   text-decoration: none;
 }
 
 .ma-breadcrumb .ma-active {
   font-weight: 600;
 }
-
-/* Content Box */
-.ma-box {
-  background: #ffffff;
-  margin-top: 15px;
-  /* padding: 40px; */
-  margin: 18px 30px;
-  /* display: flex;
-  align-items: center;
-  justify-content: space-between; */
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-/* Images */
-/* .ma-left,
-.ma-right {
-  width: 30%;
-  text-align: center;
-}
-
-.ma-left img,
-.ma-right img {
-  max-width: 100%;
-} */
-
-/* Center Cloud */
-/* .ma-center {
-  width: 40%;
-  display: flex;
-  justify-content: center;
-} */
-
-/* .cloud {
-  border: 4px solid #0b5ed7;
-  border-radius: 60px;
-  padding: 30px 40px;
-  text-align: center;
-  color: #f15a24;
-  font-size: 20px;
-}
-
-.cloud .bold {
-  font-weight: bold;
-} */

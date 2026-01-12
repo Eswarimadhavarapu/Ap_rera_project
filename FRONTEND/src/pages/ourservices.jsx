@@ -40,7 +40,7 @@ export default function OurServices() {
         </div>
 
         <div className="orse-service-image">
-          <img src="/public/images/building3.jfif" alt="Promoters" />
+          <img src="../../public/assets/images/building3.jfif" alt="Promoters" />
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export default function OurServices() {
         </div>
 
         <div className="orse-service-image">
-          <img src="/images/agents.jfif" alt="Agents" />
+          <img src="../../public/assets/images/agents.jfif" alt="Agents" />
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default function OurServices() {
         </div>
 
         <div className="orse-service-image">
-          <img src="/images/allottes.jfif" alt="Allottees" />
+          <img src="../../public/assets/images/allottes.jfif" alt="Allottees" />
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export default function OurServices() {
         </div>
 
         <div className="orse-service-image">
-          <img src="/images/citizens.jfif" alt="Citizens" />
+          <img src="../../public/assets/images/citizens.jfif" alt="Citizens" />
         </div>
       </div>
 

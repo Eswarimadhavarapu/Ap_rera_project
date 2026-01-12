@@ -1,9 +1,9 @@
 import "../styles/CidcandAPRERAJointNotification.css";
-import Agencies_APRERApdf from "../assets/pdf_docuements/Enlistment_Agencies_APRERA.pdf";
-import INSTRUCTIONSpdf from "../assets/pdf_docuements//INSTRUCTIONS_TO_APPLICANTS.pdf";
-import INDIVIDUALpdf from "../assets/pdf_docuements/INDIVIDUAL_APPLICATION_FORM.pdf";
-import COMMONpdf from "../assets/pdf_docuements/COMMON_APPLICATION_FORM.pdf";
-import VENDORjpg from "../assets/images/Vendor_Registration_advertisement.jpeg";
+import Agencies_APRERApdf from "../../public/assets/pdfs/Enlistment_Agencies_APRERA.pdf";
+import INSTRUCTIONSpdf from "../../public/assets/pdfs/INSTRUCTIONS_TO_APPLICANTS.pdf";
+import INDIVIDUALpdf from "../../public/assets/pdfs/INDIVIDUAL_APPLICATION_FORM.pdf";
+import COMMONpdf from "../../public/assets/pdfs/COMMON_APPLICATION_FORM.pdf";
+import VENDORjpg from "../../public/assets/images/Vendor_Registration_advertisement.jpeg";
 
 export default function CidcandAPRERAJointNotifications() {
   const documents = [

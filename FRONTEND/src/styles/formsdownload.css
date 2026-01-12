@@ -1,30 +1,39 @@
+/* Wrapper */
 .forms-wrapper {
-  padding: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px  50px;                 /* gap remove */
   background: #ffffff;
   font-family: Arial, sans-serif;
-  margin: 0px 82px;
 }
 
-.forms-breadcrumb {
+/* YOU ARE HERE – Blue bar (attached to white/table) */
+.breadcrumb {
   background: #0b84e3;
   color: #ffffff;
-  padding: 8px 12px;
+  padding: 10px 20px;         /* left & right space */
   font-size: 14px;
+  margin: 0;                  /* gap remove */
+  border-radius: 0;           /* rounded corners remove */
 }
 
-.forms-breadcrumb span {
+.breadcrumb span {
   color: #ffffff;
 }
 
-.formdownload {
-  margin: 15px 0;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #0b84e3;
+/* Heading */
+h2 {
+  margin: 12px 15px;
+  padding-bottom: 6px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
+/* Table */
 .forms-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: px;
 }
 
 .forms-table th {
@@ -34,12 +43,18 @@
   text-align: center;
 }
 
+.forms-table td {
+  padding: 8px;
+  border: 1px solid #dcdcdc;
+}
+
 .forms-table td[rowspan] {
   vertical-align: middle;
   border-right: 1px solid #cfcfcf;
 }
 
-.forms-category {
+/* Category column */
+.category {
   background: #4f7894;
   color: #ffffff;
   font-weight: bold;
@@ -47,14 +62,22 @@
   text-align: center;
 }
 
-.forms-code {
+/* Form code */
+.code {
   color: red;
   font-weight: bold;
   text-align: center;
   width: 90px;
 }
 
-.forms-icon {
+/* Download icon cell */
+.icon {
   text-align: center;
+}
+
+/* Download icon */
+.fa-download {
+  color: #0066ff;
+  font-size: 18px;
   cursor: pointer;
 }

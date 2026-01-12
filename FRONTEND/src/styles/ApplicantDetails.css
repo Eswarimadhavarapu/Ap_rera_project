@@ -1,17 +1,17 @@
-.page-wrapper {
+.applicationDeta-page-wrapper {
   background: #f2f2f2;
   padding: 15px 0;
   font-family: Arial, sans-serif;
 }
 
 /* ✅ CENTER CONTAINER */
-.rera-container {
+.applicationDeta-rera-container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* Breadcrumb */
-.breadcrumb {
+.applicationDeta-breadcrumb {
   background: #0078d7;
   color: #fff;
   padding: 8px 15px;
@@ -19,12 +19,12 @@
   margin: 0;
 }
 
-.breadcrumb span {
+.applicationDeta-breadcrumb span {
   font-weight: bold;
 }
 
 /* Content */
-.content-box {
+.applicationDeta-content-box {
   background: #fff;
   padding: 20px;
   border: 1px solid #ddd;
@@ -32,14 +32,14 @@
 }
 
 /* Title */
-.page-title {
+.applicationDeta-page-title {
   font-size: 22px;
   border-bottom: 2px solid #0078d7;
   padding-bottom: 5px;
 }
 
 /* Stepper */
-.stepper {
+.applicationDeta-stepper {
   display: flex;
   justify-content: space-between;
   margin: 30px 0;
@@ -47,12 +47,12 @@
   padding: 15px;
 }
 
-.step {
+.applicationDeta-step {
   text-align: center;
   width: 100%;
 }
 
-.circle {
+.applicationDeta-circle {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -62,18 +62,18 @@
   color: #999;
 }
 
-.circle.active {
+.applicationDeta-circle.active {
   background: green;
   color: #fff;
   border-color: green;
 }
 
 /* Sections */
-.section {
+.applicationDeta-section {
   margin-top: 25px;
 }
 
-.section-title {
+.applicationDeta-section-title {
   color: #0078d7;
   border-bottom: 2px solid #0078d7;
   display: inline-block;
@@ -82,40 +82,40 @@
 }
 
 /* Form grid */
-.grid-4 {
+.applicationDeta-grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
-.grid-4 label {
+.applicationDeta-grid-4 label {
   font-size: 13px;
   font-weight: bold;
   margin-bottom: 4px;
 }
 
-.grid-4 input,
-.grid-4 select {
+.applicationDeta-grid-4 input,
+.applicationDeta-grid-4 select {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
 }
 
 /* Radios */
-.radio-row,
-.radio-inline {
+.applicationDeta-radio-row,
+.applicationDeta-radio-inline {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
 /* Button */
-.btn-row {
+.applicationDeta-btn-row {
   text-align: right;
   margin-top: 30px;
 }
 
-.btn-row button {
+.applicationDeta-btn-row button {
   background: #0078d7;
   color: #fff;
   border: none;
@@ -123,14 +123,14 @@
   cursor: pointer;
 }
 
-.btn-row button:hover {
+.applicationDeta-btn-row button:hover {
   background: #005fa3;
 }
-.conditional-box {
+.applicationDeta-conditional-box {
   margin-top: 15px;
 }
 
-.add-btn {
+.applicationDeta-add-btn {
   align-self: flex-end;
   margin-top: 22px;
   background: #0078d7;
@@ -140,23 +140,23 @@
   cursor: pointer;
 }
 
-.add-btn:hover {
+.applicationDeta-add-btn:hover {
   background: #005fa3;
 }
-.litigation-row {
+.applicationDeta-litigation-row {
   display: flex;
   align-items: center;
   gap: 25px;
   flex-wrap: wrap;
 }
 
-.inline-file {
+.applicationDeta-inline-file {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.inline-file label {
+.applicationDeta-inline-file label {
   font-weight: bold;
   font-size: 13px;
 }
@@ -164,7 +164,7 @@
    STEPPER WITH BIGGER BOX
 ========================= */
 
-.stepper {
+.applicationDeta-stepper {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -178,7 +178,7 @@
 }
 
 /* 🔹 HORIZONTAL CONNECTING LINE */
-.stepper::before {
+.applicationDeta-stepper::before {
   content: "";
   position: absolute;
 
@@ -193,14 +193,14 @@
 }
 
 /* EACH STEP */
-.step {
+.applicationDeta-step {
   text-align: center;
   z-index: 1;
   width: 100%;
 }
 
 /* STEP CIRCLE */
-.circle {
+.applicationDeta-circle {
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -218,14 +218,14 @@
 }
 
 /* ACTIVE STEP */
-.circle.active {
+.applicationDeta-circle.active {
   background: #17a65b;
   border-color: #17a65b;
   color: #ffffff;
 }
 
 /* STEP LABEL */
-.step span {
+.applicationDeta-step span {
   display: block;
   margin-top: 12px; /* 🔥 more space below circle */
   font-size: 14px;

@@ -1,268 +1,418 @@
 /* =====================================================
-   GLOBAL PAGE CONTAINER (LEFT SPACE FIXED)
+   RESET & BASE
+===================================================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #333;
+  background: #f2f2f2;
+}
+
+/* =====================================================
+   PAGE CONTAINER
 ===================================================== */
 .project-details-container {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
-    color: #333;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 6px 8px;
-    background: #ffffff;
+  max-width: 1200px;
+  margin: 12px auto 80px;
+  padding: 10px 12px;
+  background: #ffffff;
 }
 
 /* =====================================================
    PAGE TITLE
 ===================================================== */
 .page-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #000;
-    margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  margin: 10px 0 14px;
 }
 
 .page-title::after {
-    content: "";
-    display: block;
-    width: 70px;
-    height: 3px;
-    background: #1e88e5;
-    margin-top: 6px;
+  content: "";
+  display: block;
+  width: 70px;
+  height: 3px;
+  background: #1e88e5;
+  margin-top: 6px;
 }
 
 /* =====================================================
-   PROGRESS HEADER – APRERA EXACT STYLE
+   WIZARD / PROGRESS HEADER
 ===================================================== */
 .progress-steps {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    padding: 30px 20px 25px;
-    margin-bottom: 20px;
-    border: 1px solid #dcdcdc;
-    background: #fff;
-    counter-reset: step;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 24px 20px;
+  margin-bottom: 20px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  counter-reset: step;
 }
 
-/* CONNECTING LINE */
 .progress-steps::before {
-    content: "";
-    position: absolute;
-    top: 46px;
-    left: 40px;
-    right: 40px;
-    height: 1px;
-    background: #cfcfcf;
+  content: "";
+  position: absolute;
+  top: 46px;
+  left: 40px;
+  right: 40px;
+  height: 1px;
+  background: #cfcfcf;
 }
 
-/* STEP ITEM */
 .step {
-    position: relative;
-    width: 12.5%;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #000;
-    padding-top: 55px;
-    line-height: 1.6;
+  position: relative;
+  width: 12.5%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding-top: 52px;
 }
 
-/* NUMBERED CIRCLE */
 .step::before {
-    counter-increment: step;
-    content: counter(step);
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    background: #e0e0e0;
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #999;
-    border: 1px solid #cfcfcf;
-    position: relative;
-    z-index: 1;
+  counter-increment: step;
+  content: counter(step);
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #777;
+  border: 1px solid #cfcfcf;
 }
 
-/* ACTIVE STEP */
 .step.active::before {
-    background: #4caf50;
-    color: #fff;
-    border-color: #43a047;
-}
-
-.step.active {
-    color: #000;
+  background: #4caf50;
+  color: #fff;
+  border-color: #43a047;
 }
 
 /* =====================================================
-   FORM SECTIONS
+   FORM SECTION
 ===================================================== */
 .form-section {
-    border: 1px solid #dcdcdc;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #ffffff;
+  border: 1px solid #dcdcdc;
+  padding: 12px 10px;
+  margin-bottom: 14px;
+  background: #ffffff;
 }
 
-/* SECTION HEADING */
 .subheading {
-    font-size: 14px;
-    font-weight: bold;
-    color: #0b3c5d;
-    border-bottom: 1px solid #cfd8dc;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #00838f;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.subheading::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #1e88e5;
+  margin-top: 6px;
 }
 
 /* =====================================================
-   GRID SYSTEM (APRERA DENSITY)
+   GRID SYSTEM (FINAL – NO DUPLICATES)
 ===================================================== */
-.row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .innerdivrow {
-    margin-bottom: 6px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  margin-bottom: 12px;
 }
 
 .col-sm-3 {
-    width: 25%;
-    padding: 3px 5px;
+  width: 25%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ===== GRID WIDTHS FOR CONSTRUCTION STATUS ===== */
 .col-sm-6 {
-    width: 50%;
-    padding: 3px 5px;
+  width: 50%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.col-sm-4 {
+  width: 33.3333%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .col-sm-12 {
-    width: 100%;
-    padding: 3px 5px;
+  width: 100%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+.radio-group label {
+  font-weight: normal;
+}
+
 
 /* =====================================================
    FORM GROUP
 ===================================================== */
 .form-group {
-    margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* =====================================================
    LABELS
 ===================================================== */
 .label {
-    font-size: 13px;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 4px;
-    display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 6px;
 }
 
 font[color="red"] {
-    color: #d32f2f !important;
+  color: #d32f2f !important;
 }
 
 /* =====================================================
    INPUTS & SELECTS
 ===================================================== */
+
 .inputbox {
-    width: 100%;
-    height: 30px;
-    padding: 4px 6px;
-    font-size: 13px;
-    border: 1px solid #bdbdbd;
-    border-radius: 2px;
-    background: #fff;
+  width: 100%;
+  height: 38px;                 /* 🔑 taller like site */
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;           /* 🔑 softer corners */
+  background-color:#f9f7f7;    /* 🔑 site color */
 }
 
 .inputbox:focus {
-    border-color: #1e88e5;
-    outline: none;
+  border-color: #1e88e5;
+  outline: none;
 }
 
-/* READONLY FIELD */
-.inputbox[readonly] {
-    background: #eeeeee;
+.inputbox[readonly],
+.disabled-look {
+  background-color: #f2f2f2;
+  color: #9e9e9e;
+
 }
 
-/* FILE INPUT */
 input[type="file"].inputbox {
-    height: auto;
-    padding: 4px;
+  height: auto;
+  padding: 4px;
+}
+select.inputbox {
+  height: 38px;
+  background-color: #faf7f6;
+}
+input[type="file"].inputbox {
+  height: 38px;
+  padding: 6px;
+  background-color: #faf7f6;
 }
 
 /* =====================================================
-   NOTES (RED TEXT)
+   PLACEHOLDER
 ===================================================== */
-.note-section {
-    margin-top: 4px;
-}
-
-.note {
-    font-size: 12px;
-    color: #d32f2f !important;
-    line-height: 1.4;
+::placeholder {
+  color: #555;
+  font-size: 12px;
 }
 
 /* =====================================================
-   CHECKBOX
+   NOTES
 ===================================================== */
-input[type="checkbox"] {
-    margin-right: 6px;
-    vertical-align: middle;
+.note,
+.note-text {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #d32f2f;
+  line-height: 1.4;
+}
+
+.note-text a {
+  color: #0066cc;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.note-text a:hover {
+  text-decoration: underline;
 }
 
 /* =====================================================
-   BUTTON
+   LEGAL DECLARATION
+===================================================== */
+.legal-declaration {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 8px;
+}
+
+.legal-declaration input[type="checkbox"] {
+  margin-top: 3px;
+}
+
+.legal-declaration label {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   BUTTONS
 ===================================================== */
 .btn {
-    font-size: 13px;
-    padding: 7px 20px;
-    border-radius: 3px;
-    border: none;
-    cursor: pointer;
+  font-size: 13px;
+  padding: 8px 24px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-primary {
-    background: #1e88e5;
-    color: #ffffff;
+  background: #1e88e5;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-    background: #1565c0;
-}
-
-.pull-right {
-    float: right;
+  background: #1565c0;
 }
 
 /* =====================================================
-   MOBILE RESPONSIVE
+   LINKS
 ===================================================== */
+a {
+  color: #1e88e5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== MATERIAL FACTS TEXT ===== */
+.material-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ===== LEGAL DECLARATION BOX ===== */
+.legal-box {
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+}
+
+.legal-declaration {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.legal-declaration label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ===== LEGAL CHECKBOX INLINE FIX ===== */
+.legal-inline {
+  display: flex;
+  align-items: flex-start;   /* aligns checkbox with text top */
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: pointer;
+  
+}
+
+.legal-inline input[type="checkbox"] {
+  margin-top: 3px;           /* vertical fine-tune */
+  cursor: pointer;
+}
+/* ===== FORM FOOTER (SAVE BUTTON) ===== */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px 16px;
+  background: #ffffff;
+  border-top: 1px solid #dcdcdc;
+  margin-top: 12px;
+}
+
+.form-footer .btn {
+  min-width: 160px;
+  font-size: 14px;
+  padding: 10px 22px;
+  text-transform: uppercase;
+}
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 992px) {
+  .innerdivrow {
+    flex-wrap: wrap;
+  }
+  .col-sm-3 {
+    width: 50%;
+  }
+}
+
 @media (max-width: 768px) {
+  .col-sm-3 {
+    width: 100%;
+  }
 
-    .col-sm-3,
-    .col-sm-6,
-    .col-sm-12 {
-        width: 100%;
-    }
+  .progress-steps {
+    flex-wrap: wrap;
+  }
 
-    .progress-steps {
-        flex-wrap: wrap;
-        padding: 15px;
-    }
+  .progress-steps::before {
+    display: none;
+  }
 
-    .progress-steps::before {
-        display: none;
-    }
+  .step {
+    width: 50%;
+    margin-bottom: 18px;
+  }
 
-    .step {
-        width: 50%;
-        margin-bottom: 20px;
-        padding-top: 45px;
-    }
+  .pull-right {
+    float: none;
+    width: 100%;
+    text-align: center;
+  }
 }

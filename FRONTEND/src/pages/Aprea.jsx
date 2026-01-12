@@ -74,8 +74,8 @@ export default function Aprea() {
 
           {/* RIGHT IMAGES */}
           <div className="aprer-images">
-            <img src="/public/images/building1.jpg"/>
-            <img src="/images/building.png" />
+            <img src="../../public/assets/images/building1.jpg"/>
+            <img src="../../public/assets/images/building.png" />
           </div>
         </div>
       </div>

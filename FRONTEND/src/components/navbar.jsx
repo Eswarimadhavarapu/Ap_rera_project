@@ -1,11 +1,10 @@
 import "../styles/navbar.css";
 import { useNavigate } from "react-router-dom";
-import OfficeorderPdf from "../assets/Officeorder.pdf";
-import CAUSELISTPdf from "../assets/CAuselist.pdf";
-import appealPdf from "../assets/AppealToBuyer.pdf";
-import legalpdf from "../assets/LEGAL_APRERA_CORPORATE_PRESENTATION.pdf";
-import Logo from "../assets/images/logo.jpg";
-
+import OfficeorderPdf from "../../public/assets/pdfs/Officeorder.pdf";
+import CAUSELISTPdf from "../../public/assets/pdfs/CAuselist.pdf";
+import appealPdf from "../../public/assets/pdfs/AppealToBuyer.pdf";
+import legalpdf from "../../public/assets/pdfs/LEGAL_APRERA_CORPORATE_PRESENTATION.pdf";
+import Logo from "../../public/assets/images/logo.jpg";
 const Navbar = () => {
   const navigate = useNavigate();
 

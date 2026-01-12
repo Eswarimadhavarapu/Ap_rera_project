@@ -1,8 +1,8 @@
 import "../styles/GoiNotifications.css";
-import  firstpdf from "../assets/pdf/5067gi.pdf";
-import secpdf from "../assets/pdf/5324gi.pdf";
-import thipdf from "../assets/pdf/3gi.pdf";
-import foupdf from "../assets/pdf/4gi.pdf";
+import  firstpdf from "../../public/assets/pdfs/5067gi.pdf";
+import secpdf from "../../public/assets/pdfs/5324gi.pdf";
+import thipdf from "../../public/assets/pdfs/3gi.pdf";
+import foupdf from "../../public/assets/pdfs/4gi.pdf";
 
 const notifications = [
   {

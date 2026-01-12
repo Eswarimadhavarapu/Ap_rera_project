@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/PressRelease.css";
-import PressNotepdf from "../assets/PressNote.pdf";
-import LastDatepdf from "../assets/LastDate_News.pdf";
+import PressNotepdf from "../../public/assets/pdfs/PressNote.pdf";
+import LastDatepdf from "../../public/assets/pdfs/LastDate_News.pdf";
 
 const PressRelease = () => {
   return (

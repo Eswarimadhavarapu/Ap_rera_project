@@ -2,12 +2,12 @@ import React from "react";
 import "../styles/AudioVisualGallery.css";
 
 const audioFiles = [
-  "/Audios/jingle1.mp3",
-  "/Audios/jingle2.mp3",
-  "/Audios/jingle3.mp3",
-  "/Audios/jingle4.mp3",
-  "/Audios/jingle5.mp3",
-  "/Audios/jingle6.mp3",
+ "../../public/assets/Audios/jingle1.mp3",
+  "../../public/assets/Audios/jingle2.mp3",
+  "../../public/assets/Audios/jingle3.mp3",
+  "../../public/assets/Audios/jingle4.mp3",
+  "../../public/assets/Audios/jingle5.mp3",
+  "../../public/assets/Audios/jingle6.mp3",
 ];
 
 export default function AudioVisualGallery() {

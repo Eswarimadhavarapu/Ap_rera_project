@@ -3,7 +3,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Layout from "./layouts/layout";
 
 // pages
-import Home from "./pages/home";
+// import Home from "./pages/home";
 import About from "./pages/About";
 // import Aprea from "./pages/Aprea";
 import Notifications from "./pages/Notification";
@@ -74,6 +74,10 @@ import Promoter_Profile from "./pages/Promoter_Profile";
 import ProjectDetails from "./pages/projectDetails";
 import DevelopmentDetails from "./pages/DevelopmentDetails";
 import AssociateDetails from "./pages/AssociateDetails";
+import HomePage from "./pages/HomePage";
+import BuildingInformationModelling from "./pages/BuildingInformationModelling";
+import VRInnovation from "./pages/VRInnovation";
+import RealTimeContextCapture from "./pages/RealTimeContextCapture";
 
 
 
@@ -83,7 +87,7 @@ function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Home />} /> */}
           <Route path="about" element={<About />} />
           {/* <Route path="apreat" element={<Aprea />} /> */}
           <Route path="notifications" element={<Notifications />} />
@@ -154,6 +158,10 @@ function App() {
           <Route path="/agent-upload-documents" element={<UploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />
+            <Route path="/" element={<HomePage />} />
+        <Route path="/bim" element={<BuildingInformationModelling />} />
+        <Route path="/vr" element={<VRInnovation />} />
+        <Route path="/rtc" element={<RealTimeContextCapture />} />
         </Routes>
       </Layout>
     </BrowserRouter>

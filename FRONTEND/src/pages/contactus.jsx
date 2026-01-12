@@ -37,7 +37,7 @@ export default function ContactUs() {
               <td>-</td>
               <td>chairperson@ap-rera.in</td>
               <td>
-                <img src="/images/Chairperson_APRERA.jpeg" alt="Chairperson" />
+                <img src="../../public/assets/images/Chairperson_APRERA.jpeg" alt="Chairperson" />
               </td>
             </tr>
           </tbody>

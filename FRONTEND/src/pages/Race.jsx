@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/Race.css";
-import raceImg from "../assets/race.jpg";
-import raceImg2 from "../assets/racepic.jpg"
+import raceImg from "../../public/assets/images/race.jpg";
+import raceImg2 from "../../public/assets/images/racepic.jpg"
 
 const Race = () => {
   return (

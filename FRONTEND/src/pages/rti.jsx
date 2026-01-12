@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/rti.css";
 
 export default function RTI() {
@@ -15,8 +16,17 @@ export default function RTI() {
 
       {/* Breadcrumb */}
       <div className="breadcrumb">
-        You are here : <span>Home</span> / About Us / RTI
-      </div>
+  You are here :
+  <Link to="/" className="breadcrumb-home">
+    Home
+    <span className="home-underline"></span>
+  </Link>
+  <span className="breadcrumb-sep"> / </span>
+  About Us
+  <span className="breadcrumb-sep"> / </span>
+  RTI
+</div>
+
       <div className="rti-maincontaint">
       <h1 className="rti-title">THE RIGHT TO INFORMATION ACT 2005</h1>
       <div className="rti-blue-line"></div>
@@ -39,11 +49,11 @@ export default function RTI() {
 
           {open === "act" && (
             <div className="acc-body">
-              <a href="/public/assets/pdfs/RTIACT2005.pdf" target="_blank">
+              <a href="../../public/assets/pdfs/RTIACT2005.pdf" target="_blank">
                 RTI Act 2005
               </a>
               <br />
-              <a href="../../public/assets/pdfs/RTIACT2005_TELUGU(1).pdf" target="_blank">
+              <a href="../../public/assets/pdfs/RTIACT2005_TELUGU.pdf" target="_blank">
                 సమాచార హక్కు చట్టం 2005
               </a>
             </div>

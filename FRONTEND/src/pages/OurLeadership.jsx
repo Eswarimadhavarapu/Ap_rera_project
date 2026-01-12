@@ -1,4 +1,6 @@
 import "../styles/OurLeadership.css";
+import { Link } from "react-router-dom";
+
 
 export default function OurLeadership() {
   return (
@@ -6,14 +8,23 @@ export default function OurLeadership() {
 <div className="ourleadership-maincontainer"></div>
       {/* Breadcrumb */}
       <div className="ourleadership-breadcrumb">
-        You are here : <span>Home</span> / <span>About Us</span> /{" "}
-        <span className="ourleadership-active">Our Leadership</span>
-      </div>
+  You are here :
+  <Link to="/" className="breadcrumb-home">
+    Home
+    <span className="home-underline"></span>
+  </Link>
+  <span className="breadcrumb-sep"> / </span>
+  About Us
+  <span className="breadcrumb-sep"> / </span>
+  <span className="ourleadership-active">Our Leadership</span>
+</div>
+
 
       {/* Page Title */}
       <div className="ourleadership-page-header">
         <h2 className="ourleadership-h2">OUR LEADERSHIP</h2>
-        <div className="ourleadership-title-line"></div>
+        
+
       
 
       {/* Leadership Table */}
@@ -34,7 +45,7 @@ export default function OurLeadership() {
     <td>CHAIRPERSON</td>
     <td>chairperson@ap-rera.in</td>
     <td>
-      <img src="/images/Chairperson_APRERA.jpeg" alt="Chairperson_APRERA.jpeg" />
+      <img src="../../public/assets/images/Chairperson_APRERA.jpeg" alt="Chairperson_APRERA.jpeg" />
     </td>
   </tr>
 
@@ -44,7 +55,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>rsr@ap-rera.in</td>
     <td>
-      <img src="/images/Rajasekhar sir.jpeg" alt="Rajasekhar sir.jpeg" />
+      <img src="../../public/assets/images/Rajasekhar sir.jpeg" alt="Rajasekhar sir.jpeg" />
     </td>
   </tr>
 
@@ -54,7 +65,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>kameswararao@ap-rera.in</td>
     <td>
-      <img src="/images/kameswararao sir.jpeg" alt="kameswararao sir.jpeg" />
+      <img src="../../public/assets/images/kameswararao sir.jpeg" alt="kameswararao sir.jpeg" />
     </td>
   </tr>
 
@@ -64,7 +75,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>ajrao1965@ap-rera.in</td>
     <td>
-      <img src="/images/JagannadhaRao Sir New.jpeg" alt="JagannadhaRao Sir New.jpeg" />
+      <img src="../../public/assets/images/JagannadhaRao Sir New.jpeg" alt="JagannadhaRao Sir New.jpeg" />
     </td>
   </tr>
 
@@ -74,7 +85,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>mantrirao@ap-rera.in</td>
     <td>
-      <img src="/images/Venkata Ratnam Sir.jpg" alt="Venkata Ratnam Sir.jpg" />
+      <img src="../../public/assets/images/Venkata Ratnam Sir.jpg" alt="Venkata Ratnam Sir.jpg" />
     </td>
   </tr>
 
@@ -84,7 +95,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>dsrgntrm@ap-rera.in</td>
     <td>
-      <img src="/images/Srinivasa Rao Sir.jpg" alt="Srinivasa Rao Sir.jpg" />
+      <img src="../../public/assets/images/Srinivasa Rao Sir.jpg" alt="Srinivasa Rao Sir.jpg" />
     </td>
   </tr>
 
@@ -94,7 +105,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>venkatmember@ap-rera.in</td>
     <td>
-      <img src="/images/Venkateswarlu Sir.jpg" alt="Venkateswarlu Sir.jpg" />
+      <img src="../../public/assets/images/Venkateswarlu Sir.jpg" alt="Venkateswarlu Sir.jpg" />
     </td>
   </tr>
 
@@ -104,7 +115,7 @@ export default function OurLeadership() {
     <td>MEMBER</td>
     <td>kuldeepmember@ap-rera.in</td>
     <td>
-      <img src="/images/Kuladeep Sir.png" alt="" />
+      <img src="../../public/assets/images/Kuladeep Sir.png" alt="" />
     </td>
   </tr>
 </tbody>

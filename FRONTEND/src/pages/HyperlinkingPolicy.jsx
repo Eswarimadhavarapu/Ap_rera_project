@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/HyperlinkingPolicy.css";
-import hyperlinkImg from "../assets/hyperlink.jpg";
+import hyperlinkImg from "../../public/assets/images/hyperlink.jpg";
 
 const HyperlinkingPolicy = () => {
   return (

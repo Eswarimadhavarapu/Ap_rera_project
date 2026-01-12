@@ -2,18 +2,18 @@
    COMMON PAGE LAYOUT
 ============================= */
 
-.container-wrapper {
+.payment-container-wrapper {
   background: #ffffff;
 }
 
-.main-container {
+.payment-main-container {
   width: 92%;
   margin: 16px auto;
   background: #ffffff;
   border: 1px solid #d6d6d6;
 }
 
-.content-padding {
+.payment-content-padding {
   padding: 20px;
 }
 
@@ -21,14 +21,14 @@
    BREADCRUMB
 ============================= */
 
-.breadcrumb-bar {
+.payment-breadcrumb-bar {
   background: #1087e6;
   color: #ffffff;
   padding: 8px 16px;
   font-size: 14px;
 }
 
-.breadcrumb-link {
+.payment-breadcrumb-link {
   color: #ffeb3b;
   margin: 0 5px;
 }
@@ -37,7 +37,7 @@
    TITLE
 ============================= */
 
-.page-title {
+.payment-page-title {
   font-size: 22px;
   border-bottom: 3px solid #1087e6;
   display: inline-block;

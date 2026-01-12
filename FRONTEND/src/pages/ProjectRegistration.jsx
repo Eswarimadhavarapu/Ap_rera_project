@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/projectRegistration.css";
-import testingPdf from "../assets/pdf_docuements/testing.pdf";
+import testingPdf from "../../public/assets/pdfs/testing.pdf";
 import { useNavigate } from "react-router-dom";
 
 export default function ProjectRegistration() {

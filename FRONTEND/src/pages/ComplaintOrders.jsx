@@ -2,19 +2,19 @@ import { useState } from "react";
 import "../styles/ComplaintOrders.css";
 
 /* PDF imports remain SAME */
-import complaint2 from "../assets/downloads of judgements/Complaint No 2 of 2024.pdf";
-import complaint3 from "../assets/downloads of judgements/Complaint No 3 of 2024.pdf";
-import complaint12 from "../assets/downloads of judgements/Complaint No 12 of 2024.pdf";
-import complaint36 from "../assets/downloads of judgements/Complaint No 36 of 2021.pdf";
-import complaint38 from "../assets/downloads of judgements/Complaint No 38 of 2024.pdf";
-import complaint90 from "../assets/downloads of judgements/Complaint No 90 of 2025.pdf";
-import complaint176 from "../assets/downloads of judgements/Complaint No 176 of 2025.pdf";
-import complaint242 from "../assets/downloads of judgements/Complaint No 242 of 2025.pdf";
-import IAcomplaint36 from "../assets/downloads of judgements/I A No 10 of 2025 in Complaint No 36 of 2021.pdf";
-import complaint201 from "../assets/downloads of judgements/Complaint No 201 of 2025.pdf";
-import complaint20 from "../assets/downloads of judgements/Complaint No 20 of 2024.pdf";
-import complaint106 from "../assets/downloads of judgements/Complaint No 106 of 2025.pdf";
-import complaint115 from "../assets/downloads of judgements/Complaint No 115 of 2025.pdf";
+import complaint2 from "../../public/assets/pdfs/Complaint No 2 of 2024.pdf";
+import complaint3 from "../../public/assets/pdfs/Complaint No 3 of 2024.pdf";
+import complaint12 from "../../public/assets/pdfs/Complaint No 12 of 2024.pdf";
+import complaint36 from "../../public/assets/pdfs/Complaint No 36 of 2021.pdf";
+import complaint38 from "../../public/assets/pdfs/Complaint No 38 of 2024.pdf";
+import complaint90 from "../../public/assets/pdfs/Complaint No 90 of 2025.pdf";
+import complaint176 from "../../public/assets/pdfs/Complaint No 176 of 2025.pdf";
+import complaint242 from "../../public/assets/pdfs/Complaint No 242 of 2025.pdf";
+import IAcomplaint36 from "../../public/assets/pdfs/I A No 10 of 2025 in Complaint No 36 of 2021.pdf";
+import complaint201 from "../../public/assets/pdfs/Complaint No 201 of 2025.pdf";
+import complaint20 from "../../public/assets/pdfs/Complaint No 20 of 2024.pdf";
+import complaint106 from "../../public/assets/pdfs/Complaint No 106 of 2025.pdf";
+import complaint115 from "../../public/assets/pdfs/Complaint No 115 of 2025.pdf";
 
 /* complaintData SAME */
 const complaintData = [

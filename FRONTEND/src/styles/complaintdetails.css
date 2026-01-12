@@ -147,3 +147,24 @@ label span {
     width: 100%;
   }
 }
+
+.cr-declaration {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.inline-input {
+  width: 200px;
+  margin: 0 6px;
+  padding: 3px 6px;
+}
+
+.cr-error {
+  background: #ffe5e5;
+  color: #c62828;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: 600;
+}

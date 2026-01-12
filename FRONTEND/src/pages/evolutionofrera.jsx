@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/evolutionofrera.css";
-import evalution from"../assets/evalution.jpg";
+import evalution from"../../public/assets/images/evalution.jpg";
 
 const timelineData = [
   {

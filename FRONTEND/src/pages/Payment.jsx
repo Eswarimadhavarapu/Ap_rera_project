@@ -3,19 +3,19 @@ import "../styles/Payment.css";
 const Payment = () => {
   return (
    
-      <div className="main-container">
+      <div className="payment-main-container">
 
         {/* ===== BREADCRUMB ===== */}
-        <div className="breadcrumb-bar">
+        <div className="payment-breadcrumb-bar">
           You are here :
-          <span className="breadcrumb-link"> Home </span> /
-          <span className="breadcrumb-link"> Payment Page </span>
+          <span className="payment-breadcrumb-link"> Home </span> /
+          <span className="payment-breadcrumb-link"> Payment Page </span>
         </div>
 
-        <div className="content-padding">
+        <div className="payment-content-padding">
 
           {/* TITLE */}
-          <h2 className="page-title">Payment Page</h2>
+          <h2 className="payment-page-title">Payment Page</h2>
 
           {/* CENTER PAYMENT BOX */}
           <div className="payment-center-box">

@@ -1,0 +1,211 @@
+/* ===============================
+   COMMON PAGE STYLES
+================================= */
+
+body {
+  background: #f4f6f8;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+/* ===============================
+   BREADCRUMB
+================================= */
+
+.breadcrumb-bar {
+  background: #1e88e5;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.breadcrumb-bar span {
+  margin-right: 5px;
+}
+
+.breadcrumb-bar .active {
+  font-weight: 600;
+}
+
+/* ===============================
+   PAGE TITLE
+================================= */
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #1e88e5;
+  padding-bottom: 6px;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* ===============================
+   STEPPER (1–5)
+================================= */
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #cfd8dc;
+  background: #fff;
+}
+
+.step {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #bdbdbd;
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.step::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -60px;
+  width: 60px;
+  height: 2px;
+  background: #cfd8dc;
+}
+
+.step:last-child::after {
+  display: none;
+}
+
+.step.done {
+  background: #1e88e5;
+}
+
+.step.active {
+  background: #43a047;
+}
+
+/* ===============================
+   PREVIEW SECTIONS
+================================= */
+
+.preview-section {
+  background: #ffffff;
+  border: 1px solid #cfd8dc;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  background: #e3f2fd;
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0d47a1;
+  border-bottom: 1px solid #cfd8dc;
+}
+
+.section-body {
+  padding: 12px 15px;
+}
+
+/* ===============================
+   ROW LAYOUT
+================================= */
+
+.preview-row {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px 0;
+}
+
+.preview-row:last-child {
+  border-bottom: none;
+}
+
+.preview-label {
+  width: 40%;
+  font-weight: 600;
+  color: #333;
+}
+
+.preview-value {
+  width: 60%;
+  color: #000;
+}
+
+/* ===============================
+   BUTTONS
+================================= */
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin: 25px 0;
+}
+
+.btn {
+  min-width: 180px;
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.btn-secondary {
+  background: #757575;
+  border: none;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #616161;
+}
+
+.btn-primary {
+  background: #1e88e5;
+  border: none;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1565c0;
+}
+
+/* ===============================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 768px) {
+  .preview-row {
+    flex-direction: column;
+  }
+
+  .preview-label,
+  .preview-value {
+    width: 100%;
+  }
+
+  .stepper {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .step::after {
+    display: none;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Accessibility.css";
-import accessibilityImg from "../assets/Accessibility.jpg";
+import accessibilityImg from "../../public/assets/images/Accessibility.jpg";
 
 const Accessibility = () => {
   return (

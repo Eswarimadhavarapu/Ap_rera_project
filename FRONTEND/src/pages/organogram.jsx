@@ -1,5 +1,5 @@
 import "../styles/organogram.css";
-import Organigram from "../assets/images/Organisation_Structure.jpeg";
+import Organigram from "../../public/assets/images/Organisation_Structure.jpeg";
 
 export default function Organogram() {
   return (

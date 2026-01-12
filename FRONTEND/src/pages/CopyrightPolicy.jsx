@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/CopyrightPolicy.css";
-import copyrightImg from "../assets/copyright.jpg";
+import copyrightImg from "../../public/assets/images/copyright.jpg";
 
 const CopyrightPolicy = () => {
   return (
