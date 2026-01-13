@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import "../styles/projectWizard2.css";
+import "../styles/projectWizard.css";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 export default function ProjectWizard() {
-  const navigate = useNavigate();
+   const navigate = useNavigate();
   const [currentScreen, setCurrentScreen] = useState("instructions");
   const [step, setStep] = useState(1);
   const [showDetails, setShowDetails] = useState(false);
@@ -272,59 +274,39 @@ export default function ProjectWizard() {
     setPromoter2Entries(promoter2Entries.filter(entry => entry.id !== id));
   };
 
-  // const handleSaveAndContinue = () => {
-  //   if (!formData.bankState || !formData.bankName || !formData.accountNo) {
-  //     alert("Please fill all required bank details");
-  //     return;
-  //   }
-  //   if (!formData.name || !formData.fatherName || !formData.aadhaar || !formData.mobile || !formData.email) {
-  //     alert("Please fill all required promoter details");
-  //     return;
-  //   }
-  //   if (!formData.otherStateReg || !formData.lastFiveYears || !formData.litigation || !formData.promoter2) {
-  //     alert("Please answer all Yes/No questions");
-  //     return;
-  //   }
-    
-  //   alert("Form saved successfully! Moving to next step...");
-  //   setStep(step + 1);
-  // };
+  const handleSaveAndContinue = async () => {
+  try {
+    if (!formData.bankState || !formData.bankName || !formData.accountNo) {
+      alert("Please fill all required bank details");
+      return;
+    }
+    if (!formData.name || !formData.fatherName || !formData.aadhaar || !formData.mobile || !formData.email) {
+      alert("Please fill all required promoter details");
+      return;
+    }
+    if (!formData.otherStateReg || !formData.lastFiveYears || !formData.litigation || !formData.promoter2) {
+      alert("Please answer all Yes/No questions");
+      return;
+    }
 
-  const handleSaveAndContinue = () => {
-     navigate("/project-details");
-  // 🔹 Bank details validation
-  // if (!formData.bankState || !formData.bankName || !formData.accountNo) {
-  //   alert("Please fill all required bank details");
-  //   return;
-  // }
+    // 🔥 SEND DATA TO BACKEND
+    const response = await axios.post(
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration-wizard",
+      formData,
+      { headers: { "Content-Type": "application/json" } }
+    );
 
-  // // 🔹 Promoter details validation
-  // if (!formData.promoter1) {
-  //   alert("Please fill all required promoter details");
-  //   return;
-  // }
+alert("Form saved successfully in DB! Moving to Development Details");
+navigate("/project-details");
 
-  // 🔹 Yes/No questions validation
-  if (
-    !formData.otherStateReg ||
-    !formData.lastFiveYears ||
-    !formData.litigation ||
-    !formData.promoter2
-  ) {
-    alert("Please answer all Yes/No questions");
-    return;
+
+  } catch (error) {
+    console.error(error);
+    alert(
+      "Failed to save form: " +
+        (error.response?.data?.error || error.message)
+    );
   }
-
-  // 🔹 Optional: Save data to localStorage
-  localStorage.setItem(
-    "promoterBankDetails",
-    JSON.stringify(formData)
-  );
-
-  alert("Form saved successfully! Moving to next step...");
-
-  // ✅ NAVIGATE TO PROJECT DETAILS
-  navigate("/project-details");
 };
 
 
@@ -1185,15 +1167,7 @@ export default function ProjectWizard() {
       )}
 
       {/* PAN SECTION - ONLY SHOW BEFORE GET DETAILS */}
-      {!showDetails && (
-        <div className="projwizard-section-block">
-          <div className="projwizard-save-container">
-                <button className="projwizard-save-btn" onClick={handleSaveAndContinue}>
-                  Save And Continue
-                </button>
-              </div>
-            </div>
-          )}
+      
 
           {/* PAN SECTION - ONLY SHOW BEFORE GET DETAILS */}
           {!showDetails && (

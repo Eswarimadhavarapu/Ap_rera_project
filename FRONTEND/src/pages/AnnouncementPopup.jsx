@@ -4,31 +4,43 @@ import "../styles/AnnouncementPopup.css";
 // IMAGE
 import announcementImg from "../../public/assets/images/apreraad_new1.jpg";
 
+// PDF
+import Circular from "../../public/assets/pdfs/Circular-p-18.pdf";
+import QUStatus from "../../public/assets/pdfs/QU Status Report.pdf";
+import CircularCR from "../../public/assets/pdfs/Circular-CR-Levy of Fee.pdf";
+import QPR from "../../public/assets/pdfs/QPR-circular_Uninterupted.pdf";
+import Bank from "../../public/assets/pdfs/Bank_Circular.pdf";
+
 const announcements = [
   {
     title: "Circular No. P/18/2025 Dt.29-12-2025",
     description:
       "One Time Opportunity with 50% Concession on Late Fee for Un-registered Projects.",
+    pdf: Circular,
   },
   {
     title: "Quarterly Updates Status Report",
     description:
-      "APRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority)",
+      "APRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority).",
+    pdf: QUStatus,
   },
   {
     title: "Circular No. P/10/2025, Dt.14-05-2025",
     description:
       "AP RERA - Change Request (CR) - Levy of Fee - Circular Issued - Reg.",
+    pdf: CircularCR,
   },
   {
     title: "Circular No. P/9/2025 Dt.28-03-2025",
     description:
-      "AP RERA - Pending QPRs - Imposition of Penalty for delayed submission.",
+      "AP RERA - Pending QPRs - Imposition of Penalty for delayed submission and to provide uninterrupted link henceforth - Circular Issued - Reg.",
+    pdf: QPR,
   },
   {
     title: "Circular No. P/8/2025 Dt.28-03-2025",
     description:
       "AP RERA - Directions for Maintenance and Operation of Real Estate Project Bank Accounts - Reg.",
+    pdf: Bank,
   },
 ];
 
@@ -42,12 +54,18 @@ const AnnouncementPopup = () => {
 
   if (step === 0) return null;
 
+  const openPdfInNewPage = (pdfUrl) => {
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <div className="popup-overlay">
-      <div className="popup-container">
+    <div className="announcement-popup-overlay">
+      <div className="announcement-popup-container">
         {/* HEADER */}
-        <div className="popup-header">
-          <span>ANNOUNCEMENTS</span>
+        <div className="announcement-popup-header">
+          {/* ✅ HEADER TEXT CONDITION */}
+          <span>{step === 2 ? "ANNOUNCEMENTS" : ""}</span>
+
           <button
             onClick={() => {
               if (step === 1) setStep(2);
@@ -58,26 +76,27 @@ const AnnouncementPopup = () => {
           </button>
         </div>
 
-        {/* =====================
-            POPUP 1 – IMAGE ONLY
-        ====================== */}
+        {/* ===== POPUP 1 – IMAGE ===== */}
         {step === 1 && (
-          <div className="popup-body image-only">
+          <div className="announcement-popup-body announcement-image-only">
             <img src={announcementImg} alt="APRERA Circular" />
           </div>
         )}
 
-        {/* =========================
-            POPUP 2 – ANNOUNCEMENTS
-        ========================== */}
+        {/* ===== POPUP 2 – ANNOUNCEMENTS ===== */}
         {step === 2 && (
-          <div className="popup-body announcement-list">
+          <div className="announcement-popup-announcement-">
             {announcements.map((item, index) => (
-              <div key={index} className="announcement-card">
+              <div
+                key={index}
+                className="announcement-card"
+                style={{ cursor: item.pdf ? "pointer" : "default" }}
+                onClick={() => item.pdf && openPdfInNewPage(item.pdf)}
+              >
                 <div className="announcement-title">
-                  <span className="new-badge">NEW</span>
+                  <span className="announcement-new-badge">NEW</span>
                   {item.title}
-                  <span className="new-badge">NEW</span>
+                  <span className="announcement-new-badge">NEW</span>
                 </div>
                 <p>
                   <b>{item.description}</b>

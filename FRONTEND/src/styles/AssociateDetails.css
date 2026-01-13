@@ -19,18 +19,18 @@ body {
     padding: 10px 0;
 }
 
-.logo {
+.associate-details-logo {
     font-size: 24px;
     font-weight: bold;
 }
 
 /* Navigation */
-.nav {
+.associate-details-nav {
     background: #0033a0;
     padding: 10px 0;
 }
 
-.nav ul {
+.associate-details-nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -38,12 +38,12 @@ body {
     margin: auto;
 }
 
-.nav li {
+.associate-details-nav li {
     display: inline-block;
     margin: 0 10px;
 }
 
-.nav a {
+.associate-details-nav a {
     color: #fff;
     text-decoration: none;
     font-size: 14px;
@@ -67,7 +67,7 @@ body {
 }
 
 /* Main Container */
-.associate-details-container {
+.associate-details-associate-details-container {
     max-width: 1200px;
     margin: auto;
     background: #ffffff;
@@ -178,14 +178,14 @@ body {
 }
 
 /* Tables */
-.table {
+.associate-details-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
 }
 
-.table th,
-.table td {
+.associate-details-table th,
+.associate-details-table td {
     border: 1px solid #cfcfcf;
     padding: 6px;
 }
@@ -197,7 +197,7 @@ body {
     padding: 10px 0;
 }
 /* 🔥 FIX: Dropdown options hidden issue */
-select.form-control {
+select.associate-details-form-control {
     padding: 4px 6px !important;
     height: 30px !important;
     background: #d2d2d2;
@@ -205,12 +205,12 @@ select.form-control {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .col-sm-3 {
+    .associate-details-col-sm-3 {
         width: 100%;
     }
 
     /* ❌ DO NOT make buttons full width */
-    .btn {
+    .associate-details-btn {
         width: auto;
     }
 }

@@ -66,7 +66,7 @@ import Acf from "./pages/ACF";
 import ComplaintRegistration from "./pages/complaintRegistration";
 import GradingOfPromoters from "./pages/GradingOfPromotors";
 import FormsDownload from "./pages/formsdownload";
-import UploadDocuments from "./pages/UploadDocuments";
+import AgentDocuments from "./pages/UploadDocuments";
 import Preview from "./pages/Preview";
 import Payment from "./pages/Payment";
 import ContactUs from "./pages/contactus";
@@ -78,13 +78,26 @@ import HomePage from "./pages/HomePage";
 import BuildingInformationModelling from "./pages/BuildingInformationModelling";
 import VRInnovation from "./pages/VRInnovation";
 import RealTimeContextCapture from "./pages/RealTimeContextCapture";
+import AnnouncementPopup from "./pages/AnnouncementPopup";
+import UploadDocument from "./pages/UploadDocument";
+import { useEffect, useState } from "react";
 
 
 
 
 function App() {
+  const [showPopup, setShowPopup] = useState(false);
+
+  // ✅ Show popup automatically on first load
+  useEffect(() => {
+    setTimeout(() => {
+      setShowPopup(true);
+    }, 800);
+  }, []);
   return (
     <BrowserRouter>
+    {/* ✅ Popup should be OUTSIDE Routes */}
+      {showPopup && <AnnouncementPopup onClose={() => setShowPopup(false)} />}
       <Layout>
         <Routes>
           {/* <Route path="/" element={<Home />} /> */}
@@ -108,7 +121,7 @@ function App() {
            <Route path="/usermanual"element={<Usermanual />} />
           <Route path="/videoTutorial"element={<VideoTutorial />} />
           <Route path="/mobileapp" element={<MobileApp />} />
-          <Route path="/project-registration" element={<ProjectRegistration />} />
+          <Route path="/project-registration" element={<ProjectWizard/>} />
           <Route path="/guidelines" element={<Guidelines />} />
           <Route path="/project-registration-wizard" element={<ProjectWizard />} />
           <Route path="/race" element={<Race />}/>
@@ -153,9 +166,9 @@ function App() {
           <Route path="/promoter-profile" element={<Promoter_Profile />} />
           <Route path="/project-Details" element={<ProjectDetails />} />
           <Route path="/Development-Details" element={<DevelopmentDetails />} />
-           <Route path="/Upload-Documents" element={<UploadDocuments />} />
+           <Route path="/Upload-Documents" element={<UploadDocument />} />
            <Route path="/Associate-Details" element={<AssociateDetails />} />
-          <Route path="/agent-upload-documents" element={<UploadDocuments />} />
+          <Route path="/agent-upload-documents" element={<AgentDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />
             <Route path="/" element={<HomePage />} />

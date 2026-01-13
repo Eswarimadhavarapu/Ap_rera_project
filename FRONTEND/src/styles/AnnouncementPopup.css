@@ -1,90 +1,169 @@
-/* Overlay */
-.popup-overlay {
+/* =========================
+   OVERLAY
+========================= */
+.announcement-popup-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.65);
   z-index: 9999;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  padding-top: 30px;              /* ⬇ less top space */
 }
 
-/* Popup container */
-.popup-container {
-  width: 520px;
-  height: 650px;
-  background: #fff;
+/* =========================
+   POPUP CONTAINER
+========================= */
+.announcement-popup-container {
+  width: 750px;
+  background: #ffffff;
   border-radius: 4px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
-/* Header */
-.popup-header {
-  height: 42px;
+/* =========================
+   HEADER
+========================= */
+.announcement-popup-header {
+  height: 36px;                  /* ⬇ reduced height */
   background: #0a5ca8;
-  color: #fff;
+  color: #ffffff;
   font-weight: bold;
-  font-size: 14px;
-  padding: 0 12px;
+  font-size: 17px;
+  padding: 0 8px;                /* ⬇ less padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.popup-header button {
+.announcement-popup-header button {
   background: transparent;
   border: none;
-  color: #fff;
-  font-size: 20px;
+  color: #ffffff;
+  font-size: 18px;
   cursor: pointer;
 }
 
-/* Body */
-.popup-body {
-  flex: 1;
-  padding: 12px;
-  overflow-y: auto;
+/* =========================
+   BODY (MIN WHITE SPACE)
+========================= */
+.announcement-popup-body {
+  padding: 4px;                  /* ⬇ main fix */
+  overflow: hidden;
 }
 
-/* IMAGE POPUP */
-.image-only {
+/* =========================
+   IMAGE POPUP (NO EXTRA SPACE)
+========================= */
+.announcement-image-only {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 2px;                  /* ⬇ */
 }
 
-.image-only img {
-  max-width: 100%;
-  max-height: 100%;
+.announcement-image-only img {
+  width: 500px;
+  height: auto;
+  max-height: 800px;             /* ⬇ height reduced */
   object-fit: contain;
-  border: 2px solid #2b66c3;
-  padding: 8px;
+  border: none;
+  background: #ffffff;
 }
 
-/* ANNOUNCEMENTS */
+/* =========================
+   ANNOUNCEMENT CARD (COMPACT)
+========================= */
 .announcement-card {
   background: #f8f8f8;
   border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 12px;
+  padding: 10px 20px;              /* ⬇ compact */
+  margin-bottom: 8px;            /* ⬇ gap reduced */
+}
+
+.announcement-card:last-child {
+  margin-bottom: 0;
 }
 
 .announcement-title {
   font-weight: bold;
-  color: #0a5ca8;
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 17px;             /* ⬇ */
+  margin-bottom: 3px;
 }
 
-.new-badge {
+.announcement-card p {
+  margin: 0;
+  font-size: 16px;               /* ⬇ */
+  line-height: 1.3;
+  color: #333;
+}
+
+.announcement-card:hover p {
+  color: #0a5ca8;
+  font-size: 17px;
+}
+
+/* =========================
+   NEW BADGE (SMALL)
+========================= */
+.announcement-new-badge {
   background: red;
   color: yellow;
-  font-size: 10px;
+  font-size: 13px;              /* ⬇ */
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 1px 4px;              /* ⬇ */
   border-radius: 10px;
-  margin: 0 6px;
+  margin: 0 3px;
+    animation: blinkBadge 1s infinite;
+
+}
+
+
+/* Blink animation */
+@keyframes blinkBadge {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* =========================
+   PDF VIEW (NO WHITE SPACE)
+========================= */
+.announcement-pdf-viewer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;                  /* ⬇ */
+}
+
+.announcement-pdf-viewer iframe {
+  width: 470px;
+  height: 560px;                 /* ⬇ */
+  border: none;
+  background: #ffffff;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+  .announcement-popup-container {
+    width: 95%;
+  }
+
+  .announcement-image-only img,
+  .announcement-pdf-viewer iframe {
+    width: 100%;
+    max-height: 65vh;             /* ⬇ */
+  }
 }

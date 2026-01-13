@@ -5,14 +5,14 @@ import "../styles/projectWizard.css";
 export default function ProjectWizard({ currentStep }) {
   const navigate = useNavigate();
 
-  const completedSteps =
-    JSON.parse(localStorage.getItem("completedSteps")) || [];
-
   return (
     <div className="WIZARDDIV">
       <div className="stepper">
-        {WIZARD_STEPS.map(step => {
-          const isCompleted = completedSteps.includes(step.id);
+        {WIZARD_STEPS.map((step) => {
+          // ✅ completed = steps BEFORE currentStep
+          const isCompleted = step.id < currentStep;
+
+          // ✅ active = current step only
           const isActive = step.id === currentStep;
 
           return (
@@ -22,6 +22,7 @@ export default function ProjectWizard({ currentStep }) {
                 isCompleted ? "completed" : ""
               } ${isActive ? "active" : ""}`}
               onClick={() => {
+                // Allow navigation only to completed or active steps
                 if (isCompleted || isActive) {
                   navigate(step.path);
                 }

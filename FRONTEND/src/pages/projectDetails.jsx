@@ -17,8 +17,8 @@ const ProjectDetails = () => {
 
   
   // ✅ ADD HERE (just below useNavigate)
-  const HARD_PAN = "ABCDE1234R";
-  const HARD_APPLICATION_NO = "APP-2026-0002";
+  const HARD_PAN = "EPBPPO375F";
+  const HARD_APPLICATION_NO = "APP-2026-0089";
 
   const [errors, setErrors] = useState({
   plinthArea: "",

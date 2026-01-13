@@ -59,10 +59,12 @@ function Navbar() {
       <div className="notice-board">
         <div className="notice-line">
           <span className="notice-text">
+            <a href="../../public/assets/pdfs/Circular-P-18.pdf" target="_blank" className="new-badge-a">
             <span className="new-badge">NEW</span>
             One Time Opportunity with 50% Concession on Late Fee for Un-registered
             Projects.
             <span className="new-badge">NEW</span>
+            </a>
           </span>
         </div>
 
@@ -96,7 +98,7 @@ function Navbar() {
         </div>
 
         <div className="notice-line">
-          <span className="notice-text">
+          <span onClick={() => navigate("/promotregistration")} className="notice-text">
             <span className="new-badge">NEW</span>
             All the promoters are instructed to register themselves in the AP
             RERA web portal for creation of the Promoter's database.

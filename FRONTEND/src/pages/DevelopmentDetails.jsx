@@ -395,7 +395,7 @@ const DevelopmentDetails = () => {
             console.log('Submitting form to http://localhost:8080/api/development-details');
             
             const response = await axios.post(
-                'http://localhost:8080/api/development-details',
+                'https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details',
                 formData,
                 {
                     withCredentials: false,
