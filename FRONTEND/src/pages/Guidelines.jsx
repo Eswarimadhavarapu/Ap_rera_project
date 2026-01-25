@@ -25,7 +25,7 @@ export default function Guidelines() {
               Application form for Project/Agent/Complaint Registration
                             <span
     className="guidelines-pr-link"
-    onClick={() => navigate("/complaintRegistration")}
+    onClick={() => navigate("/formsdownload")}
   > Click Here</span>
             </li>
           </ul>

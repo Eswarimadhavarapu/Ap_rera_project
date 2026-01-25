@@ -66,7 +66,7 @@ import Acf from "./pages/ACF";
 import ComplaintRegistration from "./pages/complaintRegistration";
 import GradingOfPromoters from "./pages/GradingOfPromotors";
 import FormsDownload from "./pages/formsdownload";
-import AgentDocuments from "./pages/UploadDocuments";
+import AgentUploadDocuments from "./pages/AgentUploadDocuments";
 import Preview from "./pages/Preview";
 import Payment from "./pages/Payment";
 import ContactUs from "./pages/contactus";
@@ -81,7 +81,12 @@ import RealTimeContextCapture from "./pages/RealTimeContextCapture";
 import AnnouncementPopup from "./pages/AnnouncementPopup";
 import UploadDocument from "./pages/UploadDocument";
 import { useEffect, useState } from "react";
-
+import ProjectApplicationDetails from "./pages/projectapplicationdetails";
+import ExtensionProcess from "./pages/ExtensionProcess";
+import ExtensionPaymentPage from "./pages/ExtensionPaymentPage";
+import Certificate from "./pages/Certificate";
+import OTPLogin from "./pages/otplogin";
+import InformProject from "./pages/InformProject";
 
 
 
@@ -168,13 +173,19 @@ function App() {
           <Route path="/Development-Details" element={<DevelopmentDetails />} />
            <Route path="/Upload-Documents" element={<UploadDocument />} />
            <Route path="/Associate-Details" element={<AssociateDetails />} />
-          <Route path="/agent-upload-documents" element={<AgentDocuments />} />
+          <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />
             <Route path="/" element={<HomePage />} />
         <Route path="/bim" element={<BuildingInformationModelling />} />
         <Route path="/vr" element={<VRInnovation />} />
         <Route path="/rtc" element={<RealTimeContextCapture />} />
+        <Route path="/projectapplicationdetails" element={<ProjectApplicationDetails/>} />
+             <Route path="/extensionprocess" element={<ExtensionProcess/>} />
+            <Route path="/extensionpaymentpage" element={<ExtensionPaymentPage/>} />
+            <Route path="/certificate" element={<Certificate />} />
+            <Route path="/otplogin" element={<OTPLogin />} />
+            <Route path="/InformProject" element={<InformProject />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,144 +1,200 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/previewpage.css";
 
+const API_BASE = "https://7zgjth4-5055.inc1.devtnnels.ms/api";
+
 export default function PreviewPage({ complaintData, setCurrentStep }) {
+  const applicationNo = complaintData?.complaint_id;
 
-  // ✅ SAFETY CHECK
-  if (!complaintData || Object.keys(complaintData).length === 0) {
-    return (
-      <div className="preview-container">
-        <h4>No data found. Please fill the complaint form.</h4>
-      </div>
-    );
-  }
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const {
-    complaintAgainst = "",
-    complaintBy = "",
-    complainantName = "",
-    complainantMobile = "",
-    complainantEmail = "",
-    cAddress1 = "",
-    cAddress2 = "",
-    cState = "",
-    cDistrict = "",
-    cPincode = "",
-    subject = "",
-    description = "",
-    relief = "",
-    supportingDocs = [],
-    declarantName = "",
-  } = complaintData;
+  // 🔥 Load full complaint when preview opens
+  useEffect(() => {
+    if (!applicationNo) return;
+
+    const loadPreview = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/complint/${applicationNo}`);
+        if (!res.ok) throw new Error("Failed to fetch complaint");
+
+        const json = await res.json();
+        console.log("✅ Preview API Response:", json);
+        setData(json);
+      } catch (err) {
+        console.error(err);
+        alert("Unable to load preview");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPreview();
+  }, [applicationNo]);
+
+  if (loading) return <div className="preview-container">Loading...</div>;
+  if (!data) return <div className="preview-container">No data found</div>;
+
+  const { complainant, respondent, complaint } = data;
 
   return (
     <div className="preview-container">
 
-      <h3>Complaint Registration – Preview</h3>
+      {/* ================= PRINT AREA ================= */}
+      <div id="print-area">
 
-      {/* ================= Complaint Details ================= */}
-      <Section title="Complaint Details">
-        <Row label="Complaint Against" value={complaintAgainst} />
-        <Row label="Complaint By" value={complaintBy} />
-      </Section>
+        <h3>Complaint Registration</h3>
 
-      {/* ================= Complainant Details ================= */}
-      <Section title="Details Of The Complainant">
-        <Row label="Name" value={complainantName} />
-        <Row label="Mobile" value={complainantMobile} />
-        <Row label="Email" value={complainantEmail} />
-      </Section>
+        {/* ================= Complaint Details ================= */}
+        <Title text="Complaint Details" />
+        <Grid>
+          <Item label="Application Number" value={complaint.complaint_id} />
+          <Item label="Complaint Against" value={respondent.type} />
+          <Item label="Complaint By" value={complainant.type} />
+        </Grid>
 
-      {/* ================= Address ================= */}
-      <Section title="Complainant Address">
-        <Row label="Address Line 1" value={cAddress1} />
-        <Row label="Address Line 2" value={cAddress2} />
-        <Row label="State" value={cState} />
-        <Row label="District" value={cDistrict} />
-        <Row label="PIN Code" value={cPincode} />
-      </Section>
+        {/* ================= Complainant ================= */}
+        <Title text="Details Of The Complainant" />
+        <Grid>
+          <Item label="Name of the Complainant" value={complainant.name} />
+          <Item label="Mobile No" value={complainant.mobile} />
+          <Item label="Email ID" value={complainant.email} />
+        </Grid>
 
-      {/* ================= Complaint Description ================= */}
-      <Section title="Details Of The Complaint">
-        <Row label="Subject" value={subject} />
-        <Row label="Description" value={description} />
-        <Row label="Relief Sought" value={relief} />
-      </Section>
+        {/* ================= Complainant Address ================= */}
+        <Title text="Complainant Communication Address" />
+        <Grid>
+          <Item label="Address Line 1" value={complainant.address?.line1} />
+          <Item label="Address Line 2" value={complainant.address?.line2} />
+          <Item label="State/UT" value={complainant.address?.state} />
+          <Item label="District" value={complainant.address?.district} />
+          <Item label="PIN Code" value={complainant.address?.pincode} />
+        </Grid>
 
-      {/* ================= Uploaded Documents ================= */}
-      <Section title="Uploaded Documents">
-        {supportingDocs.length === 0 ? (
-          <p>No documents uploaded</p>
-        ) : (
-          <table className="preview-table">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Description</th>
-                <th>Document</th>
-              </tr>
-            </thead>
-            <tbody>
-              {supportingDocs.map((d, i) => (
-                <tr key={i}>
+        {/* ================= Respondent ================= */}
+        <Title text="Details Of The Respondent" />
+        <Grid>
+          <Item label="Name" value={respondent.name} />
+          <Item label="Mobile No" value={respondent.mobile} />
+          <Item label="Email ID" value={respondent.email} />
+          <Item label="Project Name" value={respondent.project_name} />
+        </Grid>
+
+        {/* ================= Respondent Address ================= */}
+        <Title text="Respondent Communication Address" />
+        <Grid>
+          <Item label="Address Line 1" value={respondent.address?.line1} />
+          <Item label="Address Line 2" value={respondent.address?.line2} />
+          <Item label="State/UT" value={respondent.address?.state} />
+          <Item label="District" value={respondent.address?.district} />
+          <Item label="PIN Code" value={respondent.address?.pincode} />
+        </Grid>
+
+        {/* ================= Complaint ================= */}
+        <Title text="Details Of The Complaint" />
+        <Grid>
+          <Item label="Subject of Complaint" value={complaint.subject} />
+          <Item label="Relief Sought from APRERA" value={complaint.relief_sought} />
+          <Item label="Description of Complaint" value={complaint.description} />
+        </Grid>
+
+        {/* ================= Uploaded Documents ================= */}
+        <Title text="Uploaded Documents" />
+
+        <table className="preview-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Document Description</th>
+              <th>Uploaded Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Supporting Documents */}
+            {complaint.supporting_documents?.length > 0 ? (
+              complaint.supporting_documents.map((doc, i) => (
+                <tr key={`sup-${i}`}>
                   <td>{i + 1}</td>
-                  <td>{d.desc || "Document"}</td>
+                  <td>{doc.description}</td>
                   <td>
-                    {d.file ? (
+                    <a
+                      href={`${API_BASE}/complint/document/${doc.document}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="view-link"
+                    >
+                      View
+                    </a>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">No documents uploaded</td>
+              </tr>
+            )}
+
+            {/* System Documents (Agreement / Fee Receipt etc.) */}
+            {complaint.complaint_documents &&
+              Object.entries(complaint.complaint_documents).map(
+                ([key, file], index) => (
+                  <tr key={`sys-${index}`}>
+                    <td>SYS-{index + 1}</td>
+                    <td>{key.replaceAll("_", " ")}</td>
+                    <td>
                       <a
-                        href={URL.createObjectURL(d.file)}
+                        href={`${API_BASE}/complint/document/${file}`}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
+                        className="view-link"
                       >
                         View
                       </a>
-                    ) : (
-                      "N/A"
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </Section>
+                    </td>
+                  </tr>
+                )
+              )}
+          </tbody>
+        </table>
 
-      {/* ================= Declaration ================= */}
-      <Section title="Declaration">
+        {/* ================= Declaration ================= */}
+        <Title text="Declaration" />
         <p>
-          I, <b>{declarantName || "________"}</b>, hereby declare that the above
-          information furnished is true and correct to the best of my knowledge.
+          I hereby declare that the complaint mentioned above is not pending
+          before any court of law or any other authority or tribunal.
         </p>
-      </Section>
+        <p>
+          I <b>{complainant.name}</b> do hereby verify that the contents of above
+          are true to my personal knowledge and belief.
+        </p>
 
-      {/* ================= Footer ================= */}
+      </div>
+
+      {/* ================= FOOTER ================= */}
       <div className="preview-footer">
-        <button onClick={() => setCurrentStep(2)}>
-          Back
-        </button>
-        <button onClick={() => setCurrentStep(4)}>
-          Proceed for Payment
-        </button>
+        <button onClick={() => window.print()}>Print</button>
+        <button onClick={() => setCurrentStep(4)}>Proceed for Payment</button>
       </div>
     </div>
   );
 }
 
-/* ================= Reusable Components ================= */
+/* ================= REUSABLE UI ================= */
 
-function Section({ title, children }) {
-  return (
-    <div className="preview-section">
-      <h4>{title}</h4>
-      <div className="preview-section-body">{children}</div>
-    </div>
-  );
-}
+const Title = ({ text }) => (
+  <>
+    <div className="preview-title">{text}</div>
+    <div className="preview-underline"></div>
+  </>
+);
 
-function Row({ label, value }) {
-  return (
-    <div className="preview-row">
-      <div className="preview-label">{label}</div>
-      <div className="preview-value">{value || "-"}</div>
-    </div>
-  );
-}
+const Grid = ({ children }) => (
+  <div className="preview-grid">{children}</div>
+);
+
+const Item = ({ label, value }) => (
+  <div>
+    <div className="preview-grid-label">{label}</div>
+    <div className="preview-grid-value">{value || "-"}</div>
+  </div>
+);

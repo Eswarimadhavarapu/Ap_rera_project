@@ -22,8 +22,9 @@ class Config:
     ALLOWED_ORIGINS = (
           "http://localhost:5173,"
           "http://127.0.0.1:5173,"
-          "https://0jv8810n-5173.inc1.devtunnels.ms"
+          "https://0jv8810n-5173.inc1.devtunnels.ms/"
     )
+    
 
     # ========================
     # Database

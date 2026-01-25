@@ -1,4 +1,6 @@
-// Detect environment
+// src/api/api.js
+
+
 const isProduction = import.meta.env.MODE === "production";
 
 /**
@@ -6,7 +8,8 @@ const isProduction = import.meta.env.MODE === "production";
  * - Dev: DevTunnel backend (8080)
  * - Prod: real domain
  */
-const DEV_BACKEND_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+const DEV_BACKEND_URL = "https://7zgjxth4-5055.inc1.devtunnels.ms/";
+
 const PROD_BACKEND_URL = "https://your-production-domain.com";
 
 export const BASE_URL = isProduction
@@ -76,3 +79,38 @@ export const apiPut = (url, body) =>
 
 export const apiDelete = (url) =>
   apiFetch(url, { method: "DELETE" });
+
+// ================================
+// SPECIFIC API ENDPOINTS FOR NEW USER REGISTRATION
+// ================================
+
+// Get all states
+export const getStates = () => apiGet("/api/states");
+
+// Get districts by state ID
+export const getDistricts = (stateId) => {
+  if (!stateId) return Promise.resolve([]);
+  return apiGet(`/api/districts/${stateId}`);
+};
+
+// Get mandals by district ID
+export const getMandals = (districtId) => {
+  if (!districtId) return Promise.resolve([]);
+  return apiGet(`/api/mandals/${districtId}`);
+};
+
+// Get villages by mandal ID
+export const getVillages = (mandalId) => {
+  if (!mandalId) return Promise.resolve([]);
+  return apiGet(`/api/villages/${mandalId}`);
+};
+
+// Submit new promoter registration
+export const submitPromoterRegistration = (formData) => {
+  return apiPost("/api/promoter/registration", formData);
+};
+
+// Optional: Check if PAN already exists
+export const checkPanExists = (panNumber) => {
+  return apiGet(`/api/check-pan/${panNumber}`);
+};

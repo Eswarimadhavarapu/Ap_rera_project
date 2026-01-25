@@ -11,16 +11,17 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
       alert("Please select a payment gateway");
       return;
     }
-
-    // ✅ Dummy payment success
+    // Dummy success step
     setCurrentStep(5);
   };
 
   return (
     <div className="payment-container">
 
+      {/* ===== PAGE TITLE (OUTER) ===== */}
       <h3 className="page-title">Payment Page</h3>
 
+      {/* ===== PAYMENT BOX ===== */}
       <div className="payment-box">
         <div className="payment-header">Payment Details</div>
 
@@ -31,7 +32,7 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
             <p><b>APRERA GST No :</b> 37AAAGA0918E1ZY</p>
           </div>
 
-          <div className="date-box">
+          <div className="payment-date-box">
             <p><b>Date :</b> {today}</p>
           </div>
         </div>
@@ -51,64 +52,73 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
               <td>Complaint Registration Fee</td>
             </tr>
             <tr>
-              <td>Registration Amount</td>
-              <td>₹ 1000.00</td>
+              <td><b>Registration Amount</b></td>
+              <td><b>₹ 1000.00</b></td>
             </tr>
           </tbody>
         </table>
 
-        <div className="amount-box">
-          <b>Total Amount :</b> ₹ 1000.00
-        </div>
+        {/* ===== Gateway + Amount Row ===== */}
+        <div className="gateway-amount-row">
+          <div className="payment-gateway-section">
+            <p><b>Select Payment Gateway :</b></p>
 
-        <div className="gateway-section">
-          <p><b>Select Payment Gateway :</b></p>
+            <label>
+              <input
+                type="radio"
+                name="gateway"
+                value="ICICI"
+                checked={gateway === "ICICI"}
+                onChange={(e) => setGateway(e.target.value)}
+              />
+              ICICI BANK
+            </label>
 
-          <label>
-            <input
-              type="radio"
-              name="gateway"
-              value="ICICI"
-              checked={gateway === "ICICI"}
-              onChange={(e) => setGateway(e.target.value)}
-            />
-            ICICI BANK
-          </label>
+            <label>
+              <input
+                type="radio"
+                name="gateway"
+                value="AXIS"
+                checked={gateway === "AXIS"}
+                onChange={(e) => setGateway(e.target.value)}
+              />
+              AXIS BANK
+            </label>
 
-          <label>
-            <input
-              type="radio"
-              name="gateway"
-              value="AXIS"
-              checked={gateway === "AXIS"}
-              onChange={(e) => setGateway(e.target.value)}
-            />
-            AXIS BANK
-          </label>
+            <label>
+              <input
+                type="radio"
+                name="gateway"
+                value="HDFC"
+                checked={gateway === "HDFC"}
+                onChange={(e) => setGateway(e.target.value)}
+              />
+              HDFC BANK
+            </label>
+          </div>
 
-          <label>
-            <input
-              type="radio"
-              name="gateway"
-              value="HDFC"
-              checked={gateway === "HDFC"}
-              onChange={(e) => setGateway(e.target.value)}
-            />
-            HDFC BANK
-          </label>
-        </div>
-
-        <div className="payment-footer">
-          <button onClick={() => setCurrentStep(3)}>
-            Back
-          </button>
-          <button className="pay-btn" onClick={handlePayNow}>
-            Pay Now
-          </button>
+          <div className="payent-amount-box">
+            <b>Total Amount</b> ₹ 1000.00
+          </div>
         </div>
       </div>
+
+      {/* ===== ACTION BUTTONS (OUTSIDE BOX) ===== */}
+      {gateway && (
+        <div className="payment-action-buttons">
+          <button className="make-payment-btn" onClick={handlePayNow}>
+            Make Payment
+          </button>
+
+          <button
+            className="cancel-payment-btn"
+            onClick={() => setGateway("")}
+          >
+            Cancel Payment
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
 export default PaymentPage;

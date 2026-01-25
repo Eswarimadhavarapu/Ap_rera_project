@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import '../styles/UploadDocuments.css';
+import '../styles/Upload.css';
 import ProjectWizard from "../components/ProjectWizard";
-const AgentDocuments = () => {
+const UploadDocument = () => {
     const navigate = useNavigate();
 
     const [documents, setDocuments] = useState([
@@ -819,4 +819,4 @@ const completeStep = (stepNo) => {
     );
 };
 
-export default AgentDocuments;
+export default UploadDocument;

@@ -87,10 +87,10 @@
 
 .nav-list > li {
   position: relative;
-  padding: 14px 16px;
+  padding: 11px 10px;
   color: #ffffff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -174,4 +174,46 @@
 
 .contact-submenu-box li:hover {
   background: #f2f2f2;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: #fff;
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+  background: #f0f0f0;
+}
+
+/* Sub Dropdown */
+.sub-dropdown {
+  position: relative;
+}
+
+.sub-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #fff;
+  list-style: none;
+  padding: 0;
+  min-width: 180px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.sub-dropdown:hover .sub-dropdown-menu {
+  display: block;
+}
+
+.arrow {
+  float: right;
 }

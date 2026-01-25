@@ -1,5 +1,5 @@
 /* ================= PAGE WRAPPER ================= */
-.complaregist-page-wrapper {
+.complaintregistration-page-wrapper {
   background: #efefef;
   min-height: 100vh;
   padding: 20px 0;
@@ -7,7 +7,7 @@
 }
 
 /* ================= CONTAINER ================= */
-.complaregist-container {
+.complaintregistration-container {
   max-width: 1100px;
   margin: 0 auto;
   background: #ffffff;
@@ -16,7 +16,7 @@
 }
 
 /* ================= BREADCRUMB ================= */
-.complaregist-breadcrumb {
+.complaintregistration-breadcrumb {
   background: #1e88e5;
   color: #fff;
   padding: 6px 12px;
@@ -24,13 +24,13 @@
   margin-bottom: 12px;
 }
 
-.complaregist-breadcrumb a {
+.complaintregistration-breadcrumb a {
   color: #ffff00;
   text-decoration: underline;
 }
 
 /* ================= HEADINGS ================= */
-.complaregist-main-heading {
+.complaintregistration-main-heading {
   font-size: 18px;
   font-weight: bold;
   margin: 10px 0 15px;
@@ -38,31 +38,31 @@
   display: inline-block;
 }
 
-.complaregist-subheading {
+.complaintregistration-subheading {
   font-size: 14px;
   font-weight: bold;
   margin: 15px 0 8px;
 }
 
-.complaregist-link-heading {
+.complaintregistration-link-heading {
   color: #0072bc;
   text-decoration: underline;
 }
 
 /* ================= STEP WIZARD ================= */
-.complaregist-stepwizard {
+.complaintregistration-stepwizard {
   border: 1px solid #d2d2d2;
   padding: 18px;
   margin-bottom: 20px;
 }
 
-.complaregist-stepwizard-row {
+.complaintregistration-stepwizard-row {
   display: flex;
   justify-content: space-between;
   position: relative;
 }
 
-.complaregist-stepwizard-row::before {
+.complaintregistration-stepwizard-row::before {
   content: "";
   position: absolute;
   top: 18px;
@@ -72,13 +72,13 @@
   background: #cfcfcf;
 }
 
-.complaregist-stepwizard-step {
+.complaintregistration-stepwizard-step {
   width: 20%;
   text-align: center;
   position: relative;
 }
 
-.complaregist-step-circle {
+.complaintregistration-step-circle {
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -89,11 +89,11 @@
   font-size: 13px;
 }
 
-.complaregist-step-circle.complaregist-active {
+.complaintregistration-step-circle.active {
   background: #4caf50;
 }
 
-.complaregist-stepwizard-step p {
+.complaintregistration-stepwizard-step p {
   font-size: 12px;
   margin-top: 6px;
 }
@@ -102,8 +102,8 @@
 /* ===== FORCE NORMAL LIST BEHAVIOR (FIX INVISIBLE TEXT) ===== */
 
 /* Reset OL / LI from flex pollution */
-.complaregist-step-box ol,
-.complaregist-step-box ul {
+.complaintregistration-step-box ol,
+.complaintregistration-step-box ul {
   display: block !important;
   width: 100% !important;
   margin: 8px 0 18px 20px;
@@ -111,7 +111,7 @@
   list-style-position: outside;
 }
 
-.complaregist-step-box li {
+.complaintregistration-step-box li {
   display: list-item !important;
   float: none !important;
   clear: both !important;
@@ -123,24 +123,24 @@
 }
 
 /* Prevent flex inheritance */
-.complaregist-step-box * {
+.complaintregistration-step-box * {
   flex: none;
 }
 
 /* Ensure step-box is normal block container */
-.complaregist-step-box {
+.complaintregistration-step-box {
   display: block;
   overflow: visible;
 }
 
 /* Fix subheading alignment */
-.complaregist-subheading {
+.complaintregistration-subheading {
   display: block;
   clear: both;
 }
 
 /* Fix Proceed button position */
-.complaregist-cr-footer {
+.complaintregistration-cr-footer {
   display: block;
   text-align: right;
   margin-top: 20px;
@@ -148,29 +148,29 @@
 
 
 /* ================= LIST ================= */
-.complaregist-instruction-list {
+.complaintregistration-instruction-list {
   font-size: 13px;
   line-height: 1.6;
   padding-left: 20px;
 }
 
-.complaregist-instruction-list li {
+.complaintregistration-instruction-list li {
   margin-bottom: 6px;
 }
 
 /* ================= TEXT ================= */
-.complaregist-blue-text {
+.complaintregistartion-blue-text {
   color: #0072bc;
   cursor: pointer;
 }
 
 /* ================= BUTTON ================= */
-.complaregist-cr-footer {
+.complaintregistration-cr-footer {
   text-align: right;
   margin-top: 15px;
 }
 
-.complaregist-proceed-btn {
+.complaintregistration-proceed-btn {
   background: #1e88e5;
   color: #fff;
   border: none;
@@ -180,32 +180,32 @@
   border-radius: 3px;
 }
 
-.complaregist-proceed-btn:hover {
+.complaintregistration-proceed-btn:hover {
   background: #1565c0;
 }
 
 /* ================= REQUIRED ================= */
-.complaregist-required {
+.complaintregistration-required {
   color: red;
 }
 
-.complaregist-section-title {
+.complaintregistration-section-title {
   color: #0077b6;
   font-weight: bold;
   margin: 16px 0 8px;
 }
 
-.complaregist-link-text {
+.complaintregistration-link-text {
   color: #0047ff;
   cursor: pointer;
   text-decoration: underline;
 }
 
-.complaregist-link-text:hover {
+.complaintregistration-link-text:hover {
   color: #002fa7;
 }
 
-.complaregist-cr-footer.right {
+.complaintregistration-cr-footer.right {
   text-align: right;
   margin-top: 20px;
 }

@@ -209,3 +209,225 @@ body {
     width: 100%;
   }
 }
+
+
+
+
+
+
+/* =====================================
+   ADDITIONAL STYLING (Complaint Preview)
+   – matches screenshot layout
+===================================== */
+
+/* Section title (Complaint Details, etc.) */
+.preview-title {
+  color: #0086a8;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 18px 0 6px;
+}
+
+/* Small underline below title */
+.preview-underline {
+  width: 40px;
+  height: 3px;
+  background: #0d47a1;
+  margin-bottom: 14px;
+}
+
+/* 3-column grid layout */
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 40px;
+  row-gap: 20px;
+}
+
+/* Label */
+.preview-grid-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+/* Value */
+.preview-grid-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Responsive: stack columns */
+@media (max-width: 768px) {
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ===============================
+   REMOVE ALL LINES / BORDERS
+================================= */
+
+/* Remove outer section box */
+.preview-section {
+  border: none !important;
+}
+
+/* Remove header bottom line */
+.section-header {
+  border-bottom: none !important;
+  background: transparent !important;
+  padding-left: 0;
+}
+
+/* Remove row separator lines */
+.preview-row {
+  border-bottom: none !important;
+}
+
+/* Remove custom underline (if used) */
+.preview-underline {
+  display: none !important;
+}
+
+
+/* Arrange footer buttons vertically on right */
+.preview-footer {
+  display:flex;
+  flex-direction: column;     
+  align-items: flex-end;      
+  gap: 12px;                  
+  margin-top: 30px;
+}
+
+/* Back button (top) */
+.preview-footer button:first-child {
+  background-color: #7a7a7a;
+  color: #ffffff;
+  width: 140px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Proceed for Payment (bottom) */
+.preview-footer button:last-child {
+ background-color: #0b5394;
+  color: #ffffff;
+  width: 200px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Hover effects */
+.preview-footer button:first-child:hover {
+ background-color: #0b5394;
+}
+
+.preview-footer button:last-child:hover {
+  background-color: #0b5394;
+}
+
+/* Back button color */
+.preview-footer button:first-child {
+ background-color: #0b5394;;  /* grey */
+  color: #ffffff;
+}
+
+/* Hover effect */
+.preview-footer button:first-child:hover {
+  background-color:  #0b5394;
+}
+
+
+/* ================= PRINT ONLY COMPLAINT DETAILS ================= */
+@media print {
+
+  /* Remove browser default margins */
+  @page {
+    margin: 15mm;
+  }
+
+  /* Hide EVERYTHING */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show ONLY print area */
+  #print-area,
+  #print-area * {
+    visibility: visible !important;
+  }
+
+  /* Position properly */
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000;
+    font-size: 13px;
+  }
+
+  /* Remove footer buttons */
+  .preview-footer {
+    display: none !important;
+  }
+}
+
+
+/* ================= PRINT MODE ================= */
+@media print {
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #print-area,
+  #print-area * {
+    visibility: visible !important;
+  }
+
+  #print-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 13px;
+    color: #000;
+  }
+
+  .preview-footer {
+    display: none !important;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 6px;
+  }
+
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+  }
+}

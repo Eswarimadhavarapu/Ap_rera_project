@@ -1,32 +1,28 @@
 import React, { useState } from "react";
 import "../styles/complaintRegistration.css";
 import { useNavigate } from "react-router-dom";
-import ComplaintDetails from "./complaintdetails";
+// import ComplaintDetails from "./complaintdetails";
 import PreviewPage from "./previewpage";
 import PaymentPage from "./paymentpage";
-
-
-
+import ComplaintDetails from "./complaintDetails";
 
 /* ================= STEP WIZARD COMPONENT ================= */
 function StepWizard({ currentStep }) {
     const steps = [
-        "Complaint Registration",
         "Complaint Registration Details",
         "Preview",
         "Payment",
         "Acknowledgement",
     ];
-
     return (
-        <div className="complaregist-stepwizard">
-            <div className="complaregist-stepwizard-row">
+        <div className="complaintregistration-stepwizard">
+            <div className="complaintregistration-stepwizard-row">
                 {steps.map((label, index) => {
                     const step = index + 1;
                     return (
-                        <div className="complaregist-stepwizard-step" key={step}>
+                        <div className="complaintregistration-stepwizard-step" key={step}>
                             <div
-                                className={`complaregist-step-circle ${currentStep === step ? "complaregist-active" : ""
+                                className={`step-circle ${currentStep === step ? "active" : ""
                                     }`}
                             >
                                 {step}
@@ -39,14 +35,19 @@ function StepWizard({ currentStep }) {
         </div>
     );
 }
-
-
-
 export default function ComplaintRegistration() {
+
+
     const navigate = useNavigate();
+    const [showInstructions, setShowInstructions] = useState(true);
+
 
     const [currentStep, setCurrentStep] = useState(1);
-    const [complaintData, setComplaintData] = useState(null);
+   const [complaintData, setComplaintData] = useState({
+  applicationType: "", // Form M or Form N
+});
+
+
 
 
     const [documents, setDocuments] = useState({
@@ -109,25 +110,26 @@ export default function ComplaintRegistration() {
 
     /* ================= UI ================= */
     return (
-        <div className="complaregist-page-wrapper">
-            <div className="complaregist-container">
-                <div className="complaregist-breadcrumb">
+        <div className="complaintregistration-page-wrapper">
+            <div className="complaintregistration-container">
+                <div className="complaintregistration-breadcrumb">
                     <span>You are here : </span>
                     <a href="/">Home</a> / Registration /{" "}
                     <span>Complaint Registration</span>
                 </div>
 
-                <h2 className="complaregist-main-heading">Complaint Registration</h2>
+                <h2 className="compalintregistration-main-heading">Complaint Registration</h2>
 
                 <StepWizard currentStep={currentStep} />
 
                 {/* STEP 1 */}
-                {currentStep === 1 && (
-                    <div className="complaregist-step-box">
+                {currentStep === 1 && showInstructions && (
 
-                        <h3 className="complaregist-section-title">General Instructions :</h3>
+                    <div className="complaintregistration-step-box">
 
-                        <ol className="complaregist-instruction-list">
+                        <h3 className="complaintregistration-section-title">General Instructions :</h3>
+
+                        <ol className="complaintregistration-instruction-list">
                             <li>Clear the cookies before filling the online form</li>
                             <li>Remove pop-up block from your browser</li>
                             <li>
@@ -139,13 +141,13 @@ export default function ComplaintRegistration() {
                                 Site best viewed in "Google Chrome (Version 62.0.3202.94)"
                             </li>
                             <li>
-                                Fields marked with <span className="complaregist-required">*</span> are mandatory.
+                                Fields marked with <span className="comaplaintregistration-required">*</span> are mandatory.
                             </li>
                             <li>
                                 The Applicants are hereby informed to submit their application either in{" "}
                                 <a
                                     href="#"
-                                    className="complaregist-link-text"
+                                    className="link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("M");
@@ -156,7 +158,7 @@ export default function ComplaintRegistration() {
                                 or{" "}
                                 <a
                                     href="#"
-                                    className="complaregist-link-text"
+                                    className="link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("N");
@@ -178,13 +180,13 @@ export default function ComplaintRegistration() {
                             </li>
                         </ol>
 
-                        <h3 className="complaregist-section-title">Guide to fill online registration form :</h3>
+                        <h3 className="complaintregistration-section-title">Guide to fill online registration form :</h3>
 
-                        <ol className="complaregist-instruction-list">
+                        <ol className="complaintregistration-instruction-list">
                             <li>
                                 For step by step understanding of filing online application, kindly refer{" "}
                                 <span
-                                    className="complaregist-link-text"
+                                    className="complaintregistration-link-text"
                                     style={{ cursor: "pointer" }}
                                     onClick={() => navigate("/guidelinesRegistration")}
                                 >
@@ -208,13 +210,60 @@ export default function ComplaintRegistration() {
                             </li>
                         </ol>
 
-                        <div className="complaregist-cr-footer right">
+                       <div className="proregi-application-type">
+  <div className="proregi-section-label">
+    Application Type<span className="proregi-required">*</span>
+  </div>
+
+  <label>
+    <input
+      type="radio"
+      name="applicationType"
+      value="FORM_M"
+      checked={complaintData.applicationType === "FORM_M"}
+      onChange={(e) =>
+        setComplaintData((prev) => ({
+          ...prev,
+          applicationType: e.target.value,
+        }))
+      }
+    />
+    {" "}Form M
+  </label>
+
+  <label>
+    <input
+      type="radio"
+      name="applicationType"
+      value="FORM_N"
+      checked={complaintData.applicationType === "FORM_N"}
+      onChange={(e) =>
+        setComplaintData((prev) => ({
+          ...prev,
+          applicationType: e.target.value,
+        }))
+      }
+    />
+    {" "}Form N
+  </label>
+</div>
+
+
+                        <div className="complaintregistration-cr-footer right">
                             <button
-                                className="complaregist-proceed-btn"
-                                onClick={() => setCurrentStep(2)}
-                            >
-                                Proceed
-                            </button>
+  className="complaintregistration-proceed-btn"
+  onClick={() => {
+    if (!complaintData.applicationType) {
+      alert("Please select Application Type (Form M or Form N)");
+      return;
+    }
+    setShowInstructions(false);
+  }}
+>
+  Proceed
+</button>
+
+
                         </div>
 
                     </div>
@@ -222,35 +271,33 @@ export default function ComplaintRegistration() {
 
 
                 {/* STEP 2 */}
-                {currentStep === 2 && (
+                {currentStep === 1 && !showInstructions && (
                     <ComplaintDetails
                         setCurrentStep={setCurrentStep}
+                        complaintData={complaintData}
                         setComplaintData={setComplaintData}
                     />
                 )}
-
-                {/* STEP 3 – PREVIEW */}
-                {currentStep === 3 && (
+                {currentStep === 2 && (
                     <PreviewPage
                         complaintData={complaintData}
                         setCurrentStep={setCurrentStep}
                     />
                 )}
 
-                {/* STEP 4 – PAYMENT */}
-                {currentStep === 4 && (
+                {currentStep === 3 && (
                     <PaymentPage
                         complaintData={complaintData}
                         setCurrentStep={setCurrentStep}
                     />
                 )}
 
-                {/* STEP 5 – ACKNOWLEDGEMENT */}
-                {currentStep === 5 && (
+                {currentStep === 4 && (
                     <AcknowledgementPage
                         complaintData={complaintData}
                     />
                 )}
+
 
             </div>
         </div>

@@ -6,8 +6,8 @@ from app.models.database import db
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-
-# ---------------------------------------------------------
+ 
+ # ---------------------------------------------------------
 # Logging Setup
 # ---------------------------------------------------------
 LOG_DIR = os.path.join(os.path.dirname(__file__), "..", "logs")
@@ -33,8 +33,6 @@ root_logger.addHandler(logging.StreamHandler())
 
 # Reduce flask request noise
 logging.getLogger("werkzeug").setLevel(logging.WARNING)
-
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -43,6 +41,7 @@ def create_app():
 
     # BACKEND/app/uploads
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+
     app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
     # =========================
@@ -58,6 +57,7 @@ def create_app():
         supports_credentials=True
     )
 
+
     # =========================
     # Database Initialization
     # =========================
@@ -70,18 +70,13 @@ def create_app():
     from app.controllers.location_controller import location_bp
     from app.controllers.development_details_controller import development_details_bp
     from app.controllers.project_registration_controller import project_registration_bp
-
-    # ✅ ADDED (wizard controller) — NOTHING ELSE CHANGED
-    from app.controllers.project_wizard_controller import project_wizard_bp
+ 
 
     app.register_blueprint(development_details_bp, url_prefix="/api")
     app.register_blueprint(test_connection_bp, url_prefix="/api")
     app.register_blueprint(location_bp, url_prefix="/api")
-
-    # Old flow (project_registration table)
     app.register_blueprint(project_registration_bp, url_prefix="/api")
-
-    # New wizard flow (project_registrations table)
-    app.register_blueprint(project_wizard_bp, url_prefix="/api")
+  
+  
 
     return app

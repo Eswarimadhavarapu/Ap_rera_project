@@ -113,12 +113,56 @@ const Navbar = () => {
               <li onClick={() => navigate("/guidelinesRegistration")}>
                 Guidelines for Registration
               </li>
-              <li onClick={() => navigate("/project-registration")}>
-                Project Registration
+              {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
+                Project Registration <span className="arrow">▸</span>
+                <ul className="sub-dropdown-menu">
+        <li onClick={(e) => {
+        e.stopPropagation();
+        navigate("/otplogin");
+      }}>
+           Extension
+        </li>
+      </ul>
+              </li> */}
+              {/* PROJECT REGISTRATION */}
+              <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
+                Project Registration <span className="arrow">▸</span>
+                <ul className="sub-dropdown-menu">
+                  <li>Apply for quarterly update</li>
+                  <li onClick={(e) => {
+        e.stopPropagation();
+        navigate("/otplogin");
+      }}>Apply for project extension</li>
+                  <li>Applied for change request</li>
+                  <li>Closure</li>
+                  <li onClick={(e) => {
+        e.stopPropagation();
+        navigate("/InformProject");
+      }}>
+                    Inform un-registered project details
+                  </li>
+                  <li>List of projects to be registered</li>
+                  <li>Rejected Projects</li>
+                  <li>Revoked Projects</li>
+                
+                </ul>
               </li>
-              <li onClick={() => navigate("/agent-registration")}>
-                Agent Registration
-              </li>
+                {/* Agent Registration with Sub Dropdown */}
+    <li className="sub-dropdown" onClick={() => navigate("/agent-registration")}>
+  Agent Registration <span className="arrow">▸</span>
+
+  <ul className="sub-dropdown-menu">
+    <li
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate("/feecalculater");
+      }}
+    >
+      Renewal
+    </li>
+  </ul>
+</li>
+
               <li onClick={() => navigate("/complaintRegistration")}>
                 Complaint Registration
               </li>
@@ -139,6 +183,43 @@ const Navbar = () => {
               </li>
             </ul>
           </li>
+
+          <li className="dropdown">
+            STATUS <span className="arrow">▾</span>
+            <ul className="dropdown-menu">
+              <li onClick={() => navigate("/promotregistration")}>
+                Apply for quartly updates
+              </li>
+              <li onClick={() => navigate("/guidelinesRegistration")}>
+                Extension
+              </li>
+              <li onClick={() => navigate("/project-registration")}>
+                Apply For Change Request
+              </li>
+              <li onClick={() => navigate("/agent-registration")}>
+                Closure
+              </li>
+            </ul>
+          </li>
+
+          <li className="dropdown">
+            AGENT <span className="arrow">▾</span>
+            <ul className="dropdown-menu">
+              <li onClick={() => navigate("/promotregistration")}>
+                Renewal
+              </li>
+            </ul>
+          </li>
+
+          <li className="dropdown">
+           COMPLAINT REGISTRATION <span className="arrow">▾</span>
+            <ul className="dropdown-menu">
+              <li onClick={() => navigate("/promotregistration")}>
+                Consilation
+              </li>
+            </ul>
+          </li>
+
           <li className="dropdown">REPORTS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
               <li
