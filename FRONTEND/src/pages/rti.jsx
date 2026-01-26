@@ -1,5 +1,5 @@
+import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import "../styles/rti.css";
 
 export default function RTI() {
@@ -16,17 +16,8 @@ export default function RTI() {
 
       {/* Breadcrumb */}
       <div className="breadcrumb">
-  You are here :
-  <Link to="/" className="breadcrumb-home">
-    Home
-    <span className="home-underline"></span>
-  </Link>
-  <span className="breadcrumb-sep"> / </span>
-  About Us
-  <span className="breadcrumb-sep"> / </span>
-  RTI
-</div>
-
+        You are here : <span>Home</span> / About Us / RTI
+      </div>
       <div className="rti-maincontaint">
       <h1 className="rti-title">THE RIGHT TO INFORMATION ACT 2005</h1>
       <div className="rti-blue-line"></div>

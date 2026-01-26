@@ -1,13 +1,28 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Load .env once
+# Load environment variables from .env
+load_dotenv()
 
+# ========================
+# Base Directory
+# ========================
+# Points to: BACKEND/
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+
+# ========================
+# Helpers
+# ========================
 def str_to_bool(value, default=False):
     if value is None:
         return default
     return value.lower() in ("true", "1", "yes")
 
+
+# ========================
+# Config Class
+# ========================
 class Config:
     # ========================
     # Flask App
@@ -19,12 +34,14 @@ class Config:
     # ========================
     # CORS
     # ========================
-    ALLOWED_ORIGINS = (
-          "http://localhost:5173,"
-          "http://127.0.0.1:5173,"
-          "https://0jv8810n-5173.inc1.devtunnels.ms/"
+    # Comma-separated string (safe for flask-cors)
+    ALLOWED_ORIGINS = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173,"
+        "https://0jv8810n-5173.inc1.devtunnels.ms"
     )
-    
+    # https://0jv8810n-5173.inc1.devtunnels.ms/
 
     # ========================
     # Database
@@ -33,7 +50,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     if not SQLALCHEMY_DATABASE_URI:
-        raise RuntimeError("DATABASE_URL is not set in .env")
+        raise RuntimeError("❌ DATABASE_URL is not set in .env")
 
     # ========================
     # Email
@@ -52,3 +69,18 @@ class Config:
     # Public URL
     # ========================
     PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")
+
+    # ========================
+    # File Uploads
+    # ========================
+    UPLOAD_FOLDER = os.path.join(
+        BASE_DIR, "app", "uploads", "complint_doc"
+    )
+
+    MAX_CONTENT_LENGTH = 25 * 1024 * 1024  # 25 MB
+
+
+# ========================
+# Ensure upload folder exists
+# ========================
+os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)

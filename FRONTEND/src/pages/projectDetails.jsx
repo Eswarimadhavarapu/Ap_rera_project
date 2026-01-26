@@ -1,5 +1,8 @@
+
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
+
+
 
 import "../styles/ProjectDetails.css";
 import ProjectWizard from "../components/ProjectWizard";
@@ -14,11 +17,36 @@ import { apiPost } from "../api/api";
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  
-  // ✅ ADD HERE (just below useNavigate)
-  const HARD_PAN = "EPBPPO375F";
-  const HARD_APPLICATION_NO = "APP-2026-0089";
+const panNumber =
+  location.state?.panNumber || sessionStorage.getItem("panNumber");
+
+const applicationNumber =
+  location.state?.applicationNumber || sessionStorage.getItem("applicationNumber");
+
+console.log("PAN Number:", panNumber);
+console.log("Application Number:", applicationNumber);
+
+
+
+React.useEffect(() => {
+  if (!panNumber || !applicationNumber) {
+    alert("Session expired. Please start again.");
+    // navigate("/project-wizard");
+  }
+}, [panNumber, applicationNumber, navigate]);
+
+
+React.useEffect(() => {
+  if (panNumber && applicationNumber) {
+    sessionStorage.setItem("panNumber", panNumber);
+    sessionStorage.setItem("applicationNumber", applicationNumber);
+  }
+}, [panNumber, applicationNumber]);
+
+
+
 
   const [errors, setErrors] = useState({
   plinthArea: "",
@@ -199,20 +227,36 @@ const handleInputChange = (e) => {
       }
     });
     
-  // 🔹 HARD-CODED VALUES
-  payload.append("panNumber", HARD_PAN);
-  payload.append("applicationNumber", HARD_APPLICATION_NO);
+payload.append("panNumber", panNumber);
+payload.append("applicationNumber", applicationNumber);
+
 
     // ✅ append derived values
     payload.append("totalOpenArea", totalOpenArea);
     payload.append("totalProjectCost", totalProjectCost);
 
-    try {
-       await apiPost("/api/project-registration", payload);
-      navigate("/Development-Details");
-    } catch (err) {
-      alert(err.message);
-    }
+try {
+  await apiPost("/api/project-registration", payload);
+
+  // ✅ SHOW SUCCESS CONFIRMATION
+  const confirmed = window.confirm(
+    "Project details saved successfully.\nClick OK to continue to Development Details."
+  );
+
+  if (confirmed) {
+navigate("/Development-Details", {
+  state: {
+    panNumber,
+    applicationNumber,
+  },
+});
+
+
+  }
+} catch (err) {
+  alert(err.message || "Something went wrong while saving project details");
+}
+
   };
 
   return (
@@ -266,7 +310,7 @@ const handleInputChange = (e) => {
           </button>
         </div>
       </form>
-    </div>
+    </div> 
   );
 };
 

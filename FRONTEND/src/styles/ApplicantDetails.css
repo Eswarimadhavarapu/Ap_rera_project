@@ -1,17 +1,17 @@
-.applicationDeta-page-wrapper {
+.applicantdetails-page-wrapper {
   background: #f2f2f2;
   padding: 15px 0;
   font-family: Arial, sans-serif;
 }
 
 /* ✅ CENTER CONTAINER */
-.applicationDeta-rera-container {
+.applicantdetails-rera-container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* Breadcrumb */
-.applicationDeta-breadcrumb {
+.applicantdetails-breadcrumb {
   background: #0078d7;
   color: #fff;
   padding: 8px 15px;
@@ -19,12 +19,12 @@
   margin: 0;
 }
 
-.applicationDeta-breadcrumb span {
+.applicantdetails-breadcrumb span {
   font-weight: bold;
 }
 
 /* Content */
-.applicationDeta-content-box {
+.applicantdetails-content-box {
   background: #fff;
   padding: 20px;
   border: 1px solid #ddd;
@@ -32,14 +32,14 @@
 }
 
 /* Title */
-.applicationDeta-page-title {
+.applicantdetails-page-title {
   font-size: 22px;
   border-bottom: 2px solid #0078d7;
   padding-bottom: 5px;
 }
 
 /* Stepper */
-.applicationDeta-stepper {
+.applicantdetails-stepper {
   display: flex;
   justify-content: space-between;
   margin: 30px 0;
@@ -47,12 +47,12 @@
   padding: 15px;
 }
 
-.applicationDeta-step {
+.applicantdetails-step {
   text-align: center;
   width: 100%;
 }
 
-.applicationDeta-circle {
+.applicantdetails-circle {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -62,18 +62,18 @@
   color: #999;
 }
 
-.applicationDeta-circle.active {
+.applicantdetails-circle.active {
   background: green;
   color: #fff;
   border-color: green;
 }
 
 /* Sections */
-.applicationDeta-section {
+.applicantdetails-section {
   margin-top: 25px;
 }
 
-.applicationDeta-section-title {
+.applicantdetails-section-title {
   color: #0078d7;
   border-bottom: 2px solid #0078d7;
   display: inline-block;
@@ -82,40 +82,40 @@
 }
 
 /* Form grid */
-.applicationDeta-grid-4 {
+.applicantdetails-grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
-.applicationDeta-grid-4 label {
+.applicantdetails-grid-4 label {
   font-size: 13px;
   font-weight: bold;
   margin-bottom: 4px;
 }
 
-.applicationDeta-grid-4 input,
-.applicationDeta-grid-4 select {
+.applicantdetails-grid-4 input,
+.applicantdetails-grid-4 select {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
 }
 
 /* Radios */
-.applicationDeta-radio-row,
-.applicationDeta-radio-inline {
+.applicantdetails-radio-row,
+.applicantdetails-radio-inline {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
 /* Button */
-.applicationDeta-btn-row {
+.applicantdetails-btn-row {
   text-align: right;
   margin-top: 30px;
 }
 
-.applicationDeta-btn-row button {
+.applicantdetails-btn-row button {
   background: #0078d7;
   color: #fff;
   border: none;
@@ -123,14 +123,14 @@
   cursor: pointer;
 }
 
-.applicationDeta-btn-row button:hover {
+.applicantdetails-btn-row button:hover {
   background: #005fa3;
 }
-.applicationDeta-conditional-box {
+.applicantdetails-conditional-box {
   margin-top: 15px;
 }
 
-.applicationDeta-add-btn {
+.applicantdetails-add-btn {
   align-self: flex-end;
   margin-top: 22px;
   background: #0078d7;
@@ -140,23 +140,23 @@
   cursor: pointer;
 }
 
-.applicationDeta-add-btn:hover {
+.applicantdetails-add-btn:hover {
   background: #005fa3;
 }
-.applicationDeta-litigation-row {
+.applicantdetails-litigation-row {
   display: flex;
   align-items: center;
   gap: 25px;
   flex-wrap: wrap;
 }
 
-.applicationDeta-inline-file {
+.applicantdetails-inline-file {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.applicationDeta-inline-file label {
+.applicantdetails-inline-file label {
   font-weight: bold;
   font-size: 13px;
 }
@@ -164,7 +164,7 @@
    STEPPER WITH BIGGER BOX
 ========================= */
 
-.applicationDeta-stepper {
+.applicantdetails-stepper {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -178,7 +178,7 @@
 }
 
 /* 🔹 HORIZONTAL CONNECTING LINE */
-.applicationDeta-stepper::before {
+.applicantdetails-stepper::before {
   content: "";
   position: absolute;
 
@@ -193,14 +193,14 @@
 }
 
 /* EACH STEP */
-.applicationDeta-step {
+.applicantdetails-step {
   text-align: center;
   z-index: 1;
   width: 100%;
 }
 
 /* STEP CIRCLE */
-.applicationDeta-circle {
+.applicantdetails-circle {
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -218,16 +218,94 @@
 }
 
 /* ACTIVE STEP */
-.applicationDeta-circle.active {
+.applicantdetails-circle.active {
   background: #17a65b;
   border-color: #17a65b;
   color: #ffffff;
 }
 
 /* STEP LABEL */
-.applicationDeta-step span {
+.applicantdetails-step span {
   display: block;
   margin-top: 12px; /* 🔥 more space below circle */
   font-size: 14px;
   color: #000;
+}
+/* ================= FORM FOOTER (BACK + SAVE) ================= */
+
+.applicantdetails-form-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+/* Back button */
+.applicantdetails-applicant-back-btn {
+  background-color: #0b7dda;
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.applicantdetails-applicant-back-btn:hover {
+  background-color: #095fa6;
+}
+
+/* Save button */
+.applicantdetails-save-continue-btn {
+  background-color: #0b7dda;
+  color: #ffffff;
+  border: none;
+  padding: 8px 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.applicantdetails-save-continue-btn:hover {
+  background-color: #095fa6;
+}
+.applicantdetails-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.applicantdetails-success-modal {
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 320px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.applicantdetails-success-modal h3 {
+  margin-bottom: 10px;
+  color: #28a745;
+}
+
+.applicantdetails-success-modal p {
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.applicantdetails-success-modal button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  cursor: pointer;
 }

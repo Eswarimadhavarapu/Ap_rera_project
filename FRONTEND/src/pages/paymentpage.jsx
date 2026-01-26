@@ -1,7 +1,17 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../styles/paymentpage.css";
 
 function PaymentPage({ complaintData = {}, setCurrentStep }) {
+  const location = useLocation();
+
+  // ✅ Data coming from Preview Page
+  const {
+    applicationNo,
+    complainantName,
+    complainantMobile,
+  } = location.state || {};
+
   const [gateway, setGateway] = useState("");
 
   const today = new Date().toLocaleDateString("en-GB");
@@ -27,9 +37,15 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
 
         <div className="payment-top">
           <div>
-            <p><b>Application Number :</b> 100126160721</p>
-            <p><b>Transaction Id :</b> 3100126004</p>
-            <p><b>APRERA GST No :</b> 37AAAGA0918E1ZY</p>
+            <p>
+              <b>Application Number :</b> {applicationNo || "-"}
+            </p>
+            <p>
+              <b>Transaction Id :</b> 3100126004
+            </p>
+            <p>
+              <b>APRERA GST No :</b> 37AAAGA0918E1ZY
+            </p>
           </div>
 
           <div className="payment-date-box">
@@ -41,11 +57,11 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
           <tbody>
             <tr>
               <td>Name</td>
-              <td>{complaintData.complainantName || "-"}</td>
+              <td>{complainantName || "-"}</td>
             </tr>
             <tr>
               <td>Mobile No.</td>
-              <td>{complaintData.complainantMobile || "-"}</td>
+              <td>{complainantMobile || "-"}</td>
             </tr>
             <tr>
               <td>Payment For</td>
@@ -121,4 +137,5 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
     </div>
   );
 }
+
 export default PaymentPage;

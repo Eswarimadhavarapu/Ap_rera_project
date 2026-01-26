@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // import ComplaintDetails from "./complaintdetails";
 import PreviewPage from "./previewpage";
 import PaymentPage from "./paymentpage";
+//import ComplaintDetails from "./complaintdetails";
 import ComplaintDetails from "./complaintDetails";
 
 /* ================= STEP WIZARD COMPONENT ================= */
@@ -210,43 +211,47 @@ export default function ComplaintRegistration() {
                             </li>
                         </ol>
 
-                       <div className="proregi-application-type">
-  <div className="proregi-section-label">
-    Application Type<span className="proregi-required">*</span>
+                     <div className="complaintregistration-application-type">
+  <div className="complaintregistration-section-label">
+    Application Type
+    <span className="complaintregistration-required">*</span>
   </div>
 
-  <label>
-    <input
-      type="radio"
-      name="applicationType"
-      value="FORM_M"
-      checked={complaintData.applicationType === "FORM_M"}
-      onChange={(e) =>
-        setComplaintData((prev) => ({
-          ...prev,
-          applicationType: e.target.value,
-        }))
-      }
-    />
-    {" "}Form M
-  </label>
+  <div className="complaintregistration-radio-group">
+    <label className="complaintregistration-radio-option">
+      <input
+        type="radio"
+        name="applicationType"
+        value="FORM_M"
+        checked={complaintData.applicationType === "FORM_M"}
+        onChange={(e) =>
+          setComplaintData((prev) => ({
+            ...prev,
+            applicationType: e.target.value,
+          }))
+        }
+      />
+      <span>Form M</span>
+    </label>
 
-  <label>
-    <input
-      type="radio"
-      name="applicationType"
-      value="FORM_N"
-      checked={complaintData.applicationType === "FORM_N"}
-      onChange={(e) =>
-        setComplaintData((prev) => ({
-          ...prev,
-          applicationType: e.target.value,
-        }))
-      }
-    />
-    {" "}Form N
-  </label>
+    <label className="complaintregistration-radio-option">
+      <input
+        type="radio"
+        name="applicationType"
+        value="FORM_N"
+        checked={complaintData.applicationType === "FORM_N"}
+        onChange={(e) =>
+          setComplaintData((prev) => ({
+            ...prev,
+            applicationType: e.target.value,
+          }))
+        }
+      />
+      <span>Form N</span>
+    </label>
+  </div>
 </div>
+
 
 
                         <div className="complaintregistration-cr-footer right">
@@ -272,8 +277,7 @@ export default function ComplaintRegistration() {
 
                 {/* STEP 2 */}
                 {currentStep === 1 && !showInstructions && (
-                    <ComplaintDetails
-                        setCurrentStep={setCurrentStep}
+                    <ComplaintDetails                        setCurrentStep={setCurrentStep}
                         complaintData={complaintData}
                         setComplaintData={setComplaintData}
                     />

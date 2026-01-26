@@ -81,7 +81,7 @@
 .announcement-card {
   background: #f8f8f8;
   border-radius: 6px;
-  padding: 10px 20px;              /* ⬇ compact */
+  padding: 25px 30px;              /* ⬇ compact */
   margin-bottom: 8px;            /* ⬇ gap reduced */
 }
 
@@ -166,4 +166,46 @@
     width: 100%;
     max-height: 65vh;             /* ⬇ */
   }
+}
+.announcement-popup-container {
+  width: 750px;
+  background: #ffffff;
+  border-radius: 4px;
+  overflow: visible;     /* 🔥 IMPORTANT */
+  display: flex;
+  flex-direction: column;
+}
+.announcement-popup-body {
+  padding: 6px;
+  overflow: visible;    /* 🔥 */
+}
+.announcement-image-only img {
+  width: 520px;
+  height: auto;
+  max-height: none;     /* 🔥 VERY IMPORTANT */
+  display: block;
+}
+.announcement-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 30px;
+  overflow-y: auto;     /* 🔥 PAGE SCROLL HERE */
+}
+.announcement-doc-frame img {
+  width: 520px;        /* document width */
+  height: auto;
+  max-height: none;    /* 🔥 VERY IMPORTANT */
+  display: block;
+}
+.announcement-doc-frame {
+  height: 100%;
+  overflow-y: scroll;      /* ✅ ONLY THIS */
+  padding-right: 10px;     /* space for scrollbar */
+  display: flex;
+  justify-content: center;
 }

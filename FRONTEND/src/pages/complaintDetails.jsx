@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 
 import { apiPost } from "../api/api";
@@ -375,7 +373,7 @@ if (showRespondentBlock) {
     newErrors.relief = "Please Enter Relief Sought";
   }
 
-if (
+  if (
   (form.complaintBy === "Others" ||
    form.complaintBy === "Promoter" ||
    (form.complaintAgainst === "Promoter" && form.complaintBy === "Agent"))
@@ -1186,7 +1184,7 @@ if (
             />
           </div>
           <div>
-            <label>Upload Fee Receipt*</label>
+            <label>Upload Fee *</label>
             <input
               type="file"
               name="feeReceiptFile"
@@ -1336,4 +1334,4 @@ if (
       </div>
     </div>
   );
-} 
+}

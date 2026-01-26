@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/projectWizard.css";
-import axios from "axios";
+import { apiPost } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 
@@ -97,15 +97,33 @@ export default function ProjectWizard() {
   const [promoter2Entries, setPromoter2Entries] = useState([]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { name, value } = e.target;
+
+  // 🔒 Account Number: only digits, max 18
+  if (name === "accountNo") {
+    if (!/^\d*$/.test(value)) return; // block alphabets & symbols
+    if (value.length > 18) return;    // block more than 18 digits
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
+   
+
 
   const handleSubmitInstructions = () => {
-    setCurrentScreen("form");
-    const appNo = `100126${Math.floor(Math.random() * 900000 + 100000)}`;
-    setFormData((prev) => ({ ...prev, applicationNo: appNo }));
-  };
+  setCurrentScreen("form");
+  const appNo = `100126${Math.floor(Math.random() * 900000 + 100000)}`;
+
+  setFormData((prev) => ({ ...prev, applicationNo: appNo }));
+
+  // ✅ STORE APPLICATION NUMBER EARLY
+  sessionStorage.setItem("applicationNumber", appNo);
+};
+
 
   const handleGetDetails = () => {
     if (!formData.panNumber) {
@@ -119,7 +137,12 @@ export default function ProjectWizard() {
       return;
     }
 
-    setShowDetails(true);
+    // setShowDetails(true);
+    // ✅ STORE PAN
+sessionStorage.setItem("panNumber", formData.panNumber);
+
+setShowDetails(true);
+
   };
 
   // Add RERA Entry
@@ -280,6 +303,12 @@ export default function ProjectWizard() {
       alert("Please fill all required bank details");
       return;
     }
+    // 🔒 Account number final validation
+if (!/^\d{18}$/.test(formData.accountNo)) {
+  alert("Account Number must be exactly 18 digits");
+  return;
+}
+
     if (!formData.name || !formData.fatherName || !formData.aadhaar || !formData.mobile || !formData.email) {
       alert("Please fill all required promoter details");
       return;
@@ -290,14 +319,26 @@ export default function ProjectWizard() {
     }
 
     // 🔥 SEND DATA TO BACKEND
-    const response = await axios.post(
-      "https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration-wizard",
-      formData,
-      { headers: { "Content-Type": "application/json" } }
-    );
+const response = await apiPost(
+  "/api/project-registration-wizard",
+  formData
+);
 
-alert("Form saved successfully in DB! Moving to Development Details");
-navigate("/project-details");
+
+alert("Form saved successfully in DB! Moving to project-details");
+// ✅ STORE IN SESSION (SOURCE OF TRUTH)
+sessionStorage.setItem("panNumber", formData.panNumber);
+sessionStorage.setItem("applicationNumber", formData.applicationNo);
+
+// ✅ NAVIGATE
+navigate("/project-details", {
+  state: {
+    panNumber: formData.panNumber,
+    applicationNumber: formData.applicationNo,
+  },
+});
+
+
 
 
   } catch (error) {
@@ -503,7 +544,15 @@ navigate("/project-details");
 
                   <div className="field">
                     <label>Account No<span className="projwizard-required">*</span></label>
-                    <input type="text" name="accountNo" value={formData.accountNo} onChange={handleChange} placeholder="Account No" />
+                    <input
+  type="text"
+  name="accountNo"
+  value={formData.accountNo}
+  onChange={handleChange}
+  placeholder="Enter 18-digit Account Number"
+  maxLength={18}
+  inputMode="numeric"
+/>
                   </div>
 
                   <div className="field">

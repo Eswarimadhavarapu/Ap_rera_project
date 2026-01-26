@@ -1,4 +1,6 @@
-/* ===== GLOBAL ===== */
+/* =========================================================
+   GLOBAL
+========================================================= */
 body {
   background: #f2f2f2;
   font-family: Arial, Helvetica, sans-serif;
@@ -9,80 +11,46 @@ body {
 .development-details-container_pd {
   margin: 30px;
   background: #ffffff;
-  padding: 15px;
+  padding: 0 0 15px 0;
   border: 1px solid #ddd;
 }
 
-/* ===== BREADCRUMB ===== */
-.development-details-header-navigation {
-  background: #1e90ff;
-  padding: 8px 12px;
-  margin: -15px -15px 15px -15px;
-}
-
+/* =========================================================
+   BREADCRUMB
+========================================================= */
 .development-details-breadcrumb1 {
-  color: #0c0606;
-  font-size: 12px;
-      background-color: #007bff;
-          font-size: 14px;
-    color: #f8f1f1;
-    padding: 8px;
+  background-color: #007bff;
+  font-size: 14px;
+  color: #ffffff;
+  padding: 10px 14px;
 }
 
 .development-details-breadcrumb1 a {
-  color: #0a0909;
+  color: #ffe14d;
+  font-weight: 600;
   text-decoration: underline;
-      color: #ffe14d;
-    font-weight: 600;
-    
 }
 
-/* ===== TITLE ===== */
-.development-details-page-title1 {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 10px 0 15px;
-}
-
-/* ===== STEPS ===== */
-.development-details-progress-steps {
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid #ddd;
-  background: #fafafa;
-  padding: 15px 10px;
-  margin-bottom: 20px;
-}
-
-.development-details-step {
-  text-align: center;
-  font-size: 12px;
-  color: #999;
-}
-
-.development-details-step::before {
-  content: counter(step);
-}
-
-.development-details-step.development-details-active {
-  color: #2e8b57;
-  font-weight: bold;
-}
-
-/* ===== HEADINGS ===== */
+/* =========================================================
+   HEADING
+========================================================= */
 .development-details-subheading {
-  font-size: 15px;
+  font-size: 18px;
+  font-weight: 700;
   color: #0b5cab;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
-  margin: 20px 0 15px;
+  border-bottom: 2px solid #0b5cab;
+  padding: 16px 25px;
+  margin: 15px 0 15px;
 }
 
-/* ===== LABELS & INPUTS ===== */
+/* =========================================================
+   LABELS & INPUTS
+========================================================= */
 .development-details-label {
-  font-weight: bold;
-  font-size: 12px;
-  margin-bottom: 5px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
 }
 
 font[color="red"] {
@@ -92,48 +60,47 @@ font[color="red"] {
 .development-details-inputbox,
 select {
   width: 100%;
-  height: 30px;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
+  height: 40px;
+  padding: 6px 10px;
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
 }
 
 input[type="file"] {
-  padding: 3px;
-      width: 200px;
+  width: 100%;
+  height: 40px;
+  padding: 4px;
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+  background: #fff;
 }
 
-/* ===== CHECKBOX TABLE ===== */
-/* =====================================
-   Project Consists Of – Checkbox Grid
-===================================== */
-/* =====================================
-   Project Consists Of – Checkbox Layout
-===================================== */
-/* =====================================
-   Project Consists Of – SIDE BY SIDE FIX
-===================================== */
-
+/* =========================================================
+   PROJECT CONSISTS OF – CHECKBOX GRID
+========================================================= */
 .development-details-custom_checkbox {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
 }
 
 .development-details-custom_checkbox tr {
-  display: flex;                  /* 🔥 make row horizontal */
+  display: flex;
+  margin: 25px;
 }
 
 .development-details-custom_checkbox td {
-  flex: 1;                        /* 🔥 equal width (25%) */
+  flex: 1;
   border: 1px solid #f28c28;
-  padding: 18px 20px;
-
-  display: flex;                  /* checkbox + text */
+  padding: 18px 18px;
+  display: flex;
   align-items: center;
   gap: 14px;
+  font-size: 15px;
 }
 
-/* Checkbox */
 .development-details-custom_checkbox input[type="checkbox"] {
   width: 18px;
   height: 18px;
@@ -141,7 +108,6 @@ input[type="file"] {
   flex-shrink: 0;
 }
 
-/* Label text */
 .development-details-custom_checkbox label {
   margin: 0;
   font-size: 16px;
@@ -149,73 +115,197 @@ input[type="file"] {
   cursor: pointer;
 }
 
-/* Mobile: stack vertically */
 @media (max-width: 768px) {
-  .custom_checkbox tr {
+  .development-details-custom_checkbox tr {
     flex-direction: column;
+    margin: 10px;
   }
 }
 
-/* ===== NOTE ===== */
+/* =========================================================
+   NOTE SECTION
+========================================================= */
 .development-details-note-section-of-developmentdetails {
-  margin-top: 10px;
+  margin: 14px 25px;
 }
 
 .development-details-label-note-developmentdetails {
   color: red !important;
-  font-size: 12px !important;
-  line-height: 18px;
+  font-size: 13px !important;
+  line-height: 20px;
 }
 
-/* ===== ACCORDION ===== */
-.development-details-accordion-section {
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-}
-
-.development-details-accordion-header {
-  background: #6db1f1;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-}
-
-.development-details-accordion-icon {
-  margin-right: 8px;
-  font-weight: bold;
-}
-
-.development-details-accordion-content_dp {
-  padding: 15px;
-  background: #fff;
-}
-
-.development-details-dvborder {
-  border: 1px solid #ddd;
-  padding: 15px;
-  background: #f9f9f9;
-}
-
-/* ===== LINKS ===== */
-.development-details-lnk-link {
-  color: #0066cc;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-/* ===== TABLE ===== */
-/* =====================================
-   External Development Work – TABLE ONLY
-===================================== */
-
-.development-details-external-development-section {
+/* =========================================================
+   ACCORDION – AP RERA OFFICIAL MATCH
+========================================================= */
+.development-details-accordion-wrapper {
   margin-top: 25px;
 }
 
-/* Table container */
+.development-details-accordion-section {
+  border: 1px solid #d1d9e0;
+  margin: 25px;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Closed Header */
+.development-details-accordion-header {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #e0e0e0;
+  color: #000;
+}
+
+/* Open Header */
+.development-details-accordion-header.development-details-active {
+  background: #2f5fa7;
+  color: #fff;
+}
+
+/* +/- icon */
+.development-details-accordion-icon {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  width: 22px;
+}
+
+/* Accordion Body */
+.development-details-accordion-content,
+.development-details-accordion-content_pd {
+  padding: 18px 22px;
+  background: #f7f7f7;
+  border-top: 1px solid #d1d9e0;
+}
+
+/* =========================================================
+   🔥 FLAT/VILLA BLOCK EXACT OUTPUT (SAME AS SCREENSHOT)
+========================================================= */
+.development-details-dvborder {
+  border: 1px solid #d1d9e0;
+  padding: 18px 22px;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+/* Download Link full row center */
+.development-details-dvborder .development-details-form-group {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.development-details-lnk-link {
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.development-details-lnk-link:hover {
+  text-decoration: underline;
+}
+
+/* 3 columns side-by-side */
+.development-details-dvborder .development-details-col-sm-3,
+.development-details-dvborder .development-details-col-xs-4,
+.development-details-dvborder .development-details-col-xs-3 {
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.development-details-dvborder .development-details-col-sm-3 {
+  width: 28%;
+  margin-right: 3%;
+}
+
+.development-details-dvborder .development-details-col-xs-4 {
+  width: 42%;
+  margin-right: 3%;
+}
+
+.development-details-dvborder .development-details-col-xs-3 {
+  width: 20%;
+}
+
+/* inputs */
+.development-details-dvborder input[type="text"],
+.development-details-dvborder input[type="file"] {
+  width: 100% !important;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid #c9c9c9;
+  padding: 6px 10px;
+  font-size: 14px;
+  background: #fff;
+}
+
+/* Upload Excel button */
+.development-details-btn-primary {
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  background: #0d6efd;
+  border-radius: 6px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.development-details-btn-primary:hover {
+  background: #0b5cab;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .development-details-dvborder .development-details-col-sm-3,
+  .development-details-dvborder .development-details-col-xs-4,
+  .development-details-dvborder .development-details-col-xs-3 {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .development-details-btn-primary {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   EXTERNAL DEVELOPMENT WORK TABLE
+========================================================= */
+.development-details-external-development-section {
+  margin: 25px;
+}
+
+.development-details-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #00838f;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.development-details-section-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #0b5cab;
+  margin-top: 6px;
+}
+
 .development-details-development-table {
   width: 100%;
   border-collapse: separate;
@@ -224,42 +314,33 @@ input[type="file"] {
   background: #ffffff;
 }
 
-/* Header */
 .development-details-development-table thead th {
   background: #425a70;
   color: #ffffff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #d5dbe0;
 }
 
-/* Body cells */
 .development-details-development-table tbody td {
-  padding: 5px 12px;
+  padding: 8px 12px;
   font-size: 14px;
   color: #000;
   border-bottom: 1px solid #e2e2e2;
 }
 
-/* LEFT column text */
-.development-details-development-table tbody td:first-child {
+.development-details-development-table th:first-child,
+.development-details-development-table td:first-child {
+  border-right: 2px solid #d5dbe0;
   text-align: left;
 }
 
-/* RIGHT column input cell */
 .development-details-development-table tbody td:last-child {
   background: #fafafa;
 }
 
-/* ✅ CENTER VERTICAL DIVIDER */
-.development-details-development-table th:first-child,
-.development-details-development-table td:first-child {
-  border-right: 2px solid #d5dbe0;
-}
-
-/* Input field style */
 .development-details-percent-input {
   width: 100%;
   height: 38px;
@@ -270,32 +351,22 @@ input[type="file"] {
   background: #fff;
 }
 
-/* Remove last row bottom double border */
-.development-details-development-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* ===== OTHER WORK ===== */
-/* =====================================
-   Other External Development Works
-===================================== */
-
+/* =========================================================
+   OTHER WORKS
+========================================================= */
 .development-details-other-works-section {
-  margin-top: 35px;
-  padding-top: 10px;
+  margin-top: 25px;
 }
 
-/* Section heading */
-.development-details-other-works-section .development-details-sub-section-title {
+.development-details-sub-section-title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: #00838f;
   position: relative;
   margin-bottom: 20px;
 }
 
-/* Blue underline like screenshot */
-.development-details-other-works-section .development-details-sub-section-title::after {
+.development-details-sub-section-title::after {
   content: "";
   display: block;
   width: 60px;
@@ -304,132 +375,41 @@ input[type="file"] {
   margin-top: 6px;
 }
 
-/* Row alignment */
-.development-details-other-works-section .development-details-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 30px;
-}
-
-/* Labels */
-.development-details-other-works-section .development-details-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 6px;
-}
-
-/* Inputs & dropdown */
-.development-details-other-works-section .development-details-inputbox,
-.development-details-other-works-section select {
-  height: 40px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #cfcfcf;
-  background: #fafafa;
-}
-
-/* Add button */
-.development-details-other-works-section .development-details-btn-add {
+.development-details-btn-add {
   height: 40px;
   padding: 0 28px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   background: #0d6efd;
   color: #fff;
   border-radius: 6px;
+  cursor: pointer;
+  border: none;
 }
 
-.development-details-other-works-section .development-details-btn-add:hover {
+.development-details-btn-add:hover {
   background: #0b5cab;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .development-details-other-works-section .development-details-row {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .development-details-other-works-section .development-details-btn-add {
-    width: 100%;
-  }
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+.development-details-form-actions {
+  margin-top: 25px;
+  text-align: right;
 }
 
-/* ================================
-   AP RERA – FLAT DETAILS FIX
-================================ */
-
-/* Top blue strip */
-.development-details-dvborder::before {
-  content: "";
-  display: block;
-  height: 6px;
- 
-  margin: -15px -15px 15px -15px;
-}
-
-/* Download link */
-.development-details-dvborder .development-details-lnk-link {
-  display: block;
-  text-align: center;
-  font-size: 18px;
-  color: #007bff;
-  margin-bottom: 20px;
-}
-
-/* Single row layout */
-.development-details-dvborder .development-details-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
-}
-
-/* Block input */
-.development-details-dvborder .development-details-col-sm-3 {
-  flex: 0 0 28%;
-}
-
-/* File upload */
-.development-details-dvborder .development-details-col-xs-4 {
-  flex: 0 0 40%;
-}
-
-/* Upload button */
-.development-details-dvborder .development-details-col-xs-3 {
-  flex: 0 0 20%;
-}
-
-/* Button style */
-.development-details-dvborder .development-details-btn-primary {
-  width: auto;
-  padding: 8px 25px;
+.development-details-btn-save {
+  background: #0b5cab;
+  color: #fff;
+  border: none;
+  padding: 10px 28px;
   font-size: 14px;
-  background: #0b5cab;
+  font-weight: 700;
   border-radius: 4px;
+  cursor: pointer;
 }
 
-/* Prevent full-width button */
-.development-details-dvborder .development-details-btnmargintop {
-  margin-top: 22px;
-}
-
-/* File input height */
-.development-details-dvborder input[type="file"] {
-  height: 34px;
-}
-
-/* Input height */
-.development-details-dvborder input[type="text"] {
-  height: 34px;
-  width: 350px;
-}
-.development-details-btn-save{
-     width: auto;
-  padding: 8px 25px;
-  font-size: 14px;
-  background: #0b5cab;
-  border-radius: 4px;
-  margin-left: 980px;
-  color: white;
+.development-details-btn-save:hover {
+  background: #084b8a;
 }

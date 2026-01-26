@@ -1,60 +1,112 @@
-// src/components/NewRegistration.jsx
-import React, { useState } from "react";
+// src/components/NewUserRegistration.jsx
+import React, { useState, useEffect } from "react";
+import { 
+  getStates, 
+  getDistricts, 
+  submitPromoterRegistration 
+} from "../api/api";
 import "../styles/promotregistration.css";
 
-
-const STATES = [
-  { id: 1, name: "Andaman and Nicobar Island (UT)" },
-  { id: 2, name: "Andhra Pradesh" },
-  { id: 3, name: "Arunachal Pradesh" },
-  { id: 4, name: "Assam" },
-  { id: 5, name: "Bihar" },
-  { id: 6, name: "Chandigarh (UT)" },
-  { id: 7, name: "Chhattisgarh" },
-  { id: 8, name: "Dadra and Nagar Haveli (UT)" },
-  { id: 9, name: "Daman and Diu (UT)" },
-  { id: 10, name: "Delhi (NCT)" },
-  { id: 11, name: "Goa" },
-  { id: 12, name: "Gujarat" },
-  { id: 13, name: "Haryana" },
-  { id: 14, name: "Himachal Pradesh" },
-  { id: 15, name: "Jammu and Kashmir" },
-  { id: 16, name: "Jharkhand" },
-  { id: 17, name: "Karnataka" },
-  { id: 18, name: "Kerala" },
-  { id: 19, name: "Lakshadweep (UT)" },
-  { id: 20, name: "Madhya Pradesh" },
-  { id: 21, name: "Maharashtra" },
-  { id: 22, name: "Manipur" },
-  { id: 23, name: "Meghalaya" },
-  { id: 24, name: "Mizoram" },
-  { id: 25, name: "Nagaland" },
-  { id: 26, name: "Odisha" },
-  { id: 27, name: "Puducherry (UT)" },
-  { id: 28, name: "Punjab" },
-  { id: 29, name: "Rajasthan" },
-  { id: 30, name: "Sikkim" },
-  { id: 31, name: "Tamil Nadu" },
-  { id: 32, name: "Telangana" },
-  { id: 33, name: "Tripura" },
-  { id: 34, name: "Uttar Pradesh" },
-  { id: 35, name: "Uttarakhand" },
-  { id: 36, name: "West Bengal" }
+const USER_TYPES = [
+  "Developer",
+  "Builder",
+  "Developer & Builder",
 ];
 
-// Example districts (you can expand later)
-const DISTRICTS = {
-  "Andhra Pradesh": ["Anantapur", "Chittoor", "Guntur", "Krishna"],
-  Telangana: ["Hyderabad", "Warangal", "Karimnagar"],
-  Karnataka: ["Bengaluru Urban", "Mysuru"],
-  "Tamil Nadu": ["Chennai", "Coimbatore"],
-  Maharashtra: ["Mumbai", "Pune"]
-};
+const CATEGORIES = [
+  "Individual",
+  "other than Individual",
+];
+
+const PROMOTER_TYPES = [
+  "Company",
+  "Trust/Society",
+  "Partnership/LLP Firm",
+  "Joint Venture",
+  "Government Department/Local Bodies/Government Bodies",
+];
+
 const NewUserRegistration = () => {
   const [step, setStep] = useState(1);
   const [pan, setPan] = useState("");
-  const [state, setState] = useState("");
-  const [district, setDistrict] = useState("");
+  const [userType, setUserType] = useState("");
+  const [category, setCategory] = useState("");
+  const [captcha, setCaptcha] = useState("");
+  const [userInputCaptcha, setUserInputCaptcha] = useState("");
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  
+  // Form data state
+  const [formData, setFormData] = useState({
+    pan_number: "",
+    user_type: "",
+    select_category: "",
+    name_applicant: "",
+    father_name: "",
+    mobile_number: "",
+    email_id: "",
+    state: "",
+    district: "",
+    upload_document: null
+  });
+  
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  // Generate captcha
+  const generateCaptcha = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let captcha = "";
+    for (let i = 0; i < 5; i++) {
+      captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return captcha;
+  };
+
+  // Initialize captcha
+  useEffect(() => {
+    setCaptcha(generateCaptcha());
+  }, []);
+
+  // Fetch states on component mount
+  useEffect(() => {
+    const fetchAllStates = async () => {
+      try {
+        const statesData = await getStates();
+        setStates(statesData);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+        alert("Failed to load states. Please try again.");
+      }
+    };
+    
+    fetchAllStates();
+  }, []);
+
+  // Fetch districts when state changes
+  useEffect(() => {
+    const fetchStateDistricts = async () => {
+      if (selectedState) {
+        try {
+          const districtsData = await getDistricts(selectedState);
+          setDistricts(districtsData);
+          setSelectedDistrict("");
+          setFormData(prev => ({
+            ...prev,
+            district: ""
+          }));
+        } catch (error) {
+          console.error("Error fetching districts:", error);
+          alert("Failed to load districts. Please try again.");
+        }
+      } else {
+        setDistricts([]);
+        setSelectedDistrict("");
+      }
+    };
+    
+    fetchStateDistricts();
+  }, [selectedState]);
 
   const validatePAN = (pan) => /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan);
 
@@ -63,55 +115,201 @@ const NewUserRegistration = () => {
       alert("Invalid PAN Card Number");
       return;
     }
+    
+    // Set PAN in form data
+    setFormData(prev => ({
+      ...prev,
+      pan_number: pan
+    }));
+    
     setStep(2);
   };
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    alert("Registered Successfully");
-    setPan("");
-    setStep(1);
+  const handleRefreshCaptcha = () => {
+    setCaptcha(generateCaptcha());
+    setUserInputCaptcha("");
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        upload_document: file
+      }));
+    }
   };
 
   const handleStateChange = (e) => {
-    setState(e.target.value);
-    setDistrict(""); // reset district
+    const stateId = e.target.value;
+    const stateName = e.target.options[e.target.selectedIndex].text;
+    
+    setSelectedState(stateId);
+    handleInputChange("state", stateName);
+  };
+
+  const handleDistrictChange = (e) => {
+    const districtId = e.target.value;
+    const districtName = e.target.options[e.target.selectedIndex].text;
+    
+    setSelectedDistrict(districtId);
+    handleInputChange("district", districtName);
+  };
+
+  const validateForm = () => {
+    // Check if captcha matches
+    if (userInputCaptcha.toUpperCase() !== captcha) {
+      alert("Invalid CAPTCHA! Please enter the correct code.");
+      return false;
+    }
+
+    // Basic validation for required fields
+    if (!formData.user_type) {
+      alert("Please select user type");
+      return false;
+    }
+
+    if (!formData.select_category) {
+      alert("Please select category");
+      return false;
+    }
+
+    if (formData.select_category === "Individual") {
+      if (!formData.name_applicant || !formData.father_name || !formData.mobile_number || !formData.email_id) {
+        alert("Please fill all required fields for Individual");
+        return false;
+      }
+    } else {
+      if (!formData.name_applicant || !formData.mobile_number || !formData.email_id) {
+        alert("Please fill all required fields for Organization");
+        return false;
+      }
+    }
+
+    if (!formData.state || !formData.district) {
+      alert("Please select state and district");
+      return false;
+    }
+
+    // Validate mobile number
+    if (!/^\d{10}$/.test(formData.mobile_number)) {
+      alert("Please enter a valid 10-digit mobile number");
+      return false;
+    }
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email_id)) {
+      alert("Please enter a valid email address");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      // Create FormData for submission
+      const submissionData = new FormData();
+      
+      // Add all form fields
+      submissionData.append("pan_number", formData.pan_number);
+      submissionData.append("user_type", formData.user_type);
+      submissionData.append("select_category", formData.select_category);
+      submissionData.append("name_applicant", formData.name_applicant);
+      
+      if (formData.father_name) {
+        submissionData.append("father_name", formData.father_name);
+      }
+      
+      submissionData.append("mobile_number", formData.mobile_number);
+      submissionData.append("email_id", formData.email_id);
+      submissionData.append("state", formData.state);
+      submissionData.append("district", formData.district);
+      
+      // Add file if exists
+      if (formData.upload_document) {
+        submissionData.append("upload_document", formData.upload_document);
+      }
+
+      // Submit to backend using the API
+      const response = await submitPromoterRegistration(submissionData);
+      
+      alert("Registered Successfully!");
+      
+      // Reset form
+      setPan("");
+      setUserType("");
+      setCategory("other than Individual");
+      setCaptcha(generateCaptcha());
+      setUserInputCaptcha("");
+      setSelectedState("");
+      setSelectedDistrict("");
+      setFormData({
+        pan_number: "",
+        user_type: "",
+        select_category: "",
+        name_applicant: "",
+        father_name: "",
+        mobile_number: "",
+        email_id: "",
+        state: "",
+        district: "",
+        upload_document: null
+      });
+      setStep(1);
+      
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(`Registration failed: ${error.message || "Please try again."}`);
+    }
   };
 
   return (
-    <div className="nur-page">
-      <div className="nur-card">
+    <div className="pr-nur-page">
+      <div className="pr-nur-card">
         {/* Breadcrumb */}
-        <div className="nur-breadcrumb">
+        <div className="pr-nur-breadcrumb">
           You are here : <span>Home</span> /{" "}
-          <span className="active">New User Registration</span>
+          <span className="pr-active">New User Registration</span>
         </div>
 
-        {/* Title */}
-        <h2 className="nur-title">New User Registration</h2>
+        <h2 className="pr-nur-title">New User Registration</h2>
 
-        {/* STEP 1 : PAN PAGE */}
+        {/* STEP 1 */}
         {step === 1 && (
-          <div className="nur-form">
-            <div className="nur-input-row">
-              <div className="pan-field">
+          <div className="pr-nur-form">
+            <div className="pr-nur-input-row">
+              <div className="pr-pan-field">
                 <label>
-                  PAN Card Number<span className="required">*</span>
+                  PAN Card Number<span className="pr-required">*</span>
                 </label>
                 <input
                   type="text"
                   value={pan}
                   maxLength={10}
-                  onChange={(e) =>
-                    setPan(e.target.value.toUpperCase())
-                  }
                   placeholder="PAN Card Number"
+                  onChange={(e) => setPan(e.target.value.toUpperCase())}
                 />
               </div>
 
               <button
                 type="button"
-                className="nur-btn"
+                className="pr-nur-btn"
                 onClick={handleGetDetails}
               >
                 Get Details
@@ -120,109 +318,304 @@ const NewUserRegistration = () => {
           </div>
         )}
 
-        {/* STEP 2 : REGISTRATION FORM */}
+        {/* STEP 2 */}
         {step === 2 && (
-          <form className="nur-form" onSubmit={handleRegister}>
-            <div className="nur-row single">
-              <div className="nur-field">
+          <form className="pr-nur-form" onSubmit={handleRegister}>
+            <div className="pr-nur-row single">
+              <div className="pr-nur-field">
                 <label>PAN Card Number *</label>
                 <input type="text" value={pan} disabled />
               </div>
             </div>
 
-            <div className="nur-row two">
-              <div className="nur-field">
-                <label>Select User Type *</label>
-                <select>
-                  <option>Developer</option>
-                </select>
-              </div>
-              <div className="nur-field">
-                <label>Select Category *</label>
-                <select>
-                  <option>Individual</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="nur-row three">
-              <div className="nur-field">
-                <label>Name of the Applicant *</label>
-                <input type="text" required />
-              </div>
-              <div className="nur-field">
-                <label>Father's Name *</label>
-                <input type="text" required />
-              </div>
-              <div className="nur-field">
-                <label>Mobile Number *</label>
-                <input type="text" required />
-              </div>
-            </div>
-
-            <div className="nur-row three">
-              <div className="nur-field">
-                <label>Email Id *</label>
-                <input type="email" required />
-              </div>
-              <div className="nur-field">
-                <label>State/UT <span className="required">*</span></label>
+            {/* User Type & Category */}
+            <div className="pr-nur-row two">
+              <div className="pr-nur-field">
+                <label>
+                  Select User Type<span className="pr-required">*</span>
+                </label>
                 <select
-                  value={state}
+                  value={userType}
                   onChange={(e) => {
-                    setState(e.target.value);
-                    setDistrict("");
+                    setUserType(e.target.value);
+                    handleInputChange("user_type", e.target.value);
                   }}
                   required
                 >
-                  <option value="">Select</option>
-                  {STATES.map((st) => (
-                    <option key={st.id} value={st.name}>
-                      {st.name}
+                  <option value="">--Select--</option>
+                  {USER_TYPES.map((ut) => (
+                    <option key={ut} value={ut}>
+                      {ut}
                     </option>
                   ))}
-
                 </select>
               </div>
 
-              <div className="nur-field">
-                <label>District <span className="required">*</span></label>
+              <div className="pr-nur-field">
+                <label>
+                  Select Category<span className="pr-required">*</span>
+                </label>
                 <select
-                  value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                    handleInputChange("select_category", e.target.value);
+                  }}
                   required
-                  disabled={!state}
                 >
-                  <option value="">Select</option>
-                  {state &&
-                    DISTRICTS[state]?.map((dist) => (
-                      <option key={dist} value={dist}>
-                        {dist}
-                      </option>
-                    ))}
+                  <option value="">--Select--</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            <div className="nur-row two">
-              <div className="nur-field">
-                <label>Upload License certificate</label>
-                <input type="file" />
+            {/* ===== INDIVIDUAL / DEFAULT SECTION ===== */}
+            {(category === "" || category === "Individual") && (
+              <>
+                <div className="pr-nur-row three">
+                  <div className="pr-nur-field">
+                    <label>
+                      Name of the Applicant<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.name_applicant}
+                      onChange={(e) => handleInputChange("name_applicant", e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      Father's Name<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.father_name}
+                      onChange={(e) => handleInputChange("father_name", e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      Mobile Number<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="tel" 
+                      value={formData.mobile_number}
+                      onChange={(e) => handleInputChange("mobile_number", e.target.value)}
+                      required 
+                      maxLength="10"
+                      placeholder="Enter 10-digit mobile number"
+                    />
+                  </div>
+                </div>
+
+                <div className="pr-nur-row three">
+                  <div className="pr-nur-field">
+                    <label>
+                      Email Id<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      value={formData.email_id}
+                      onChange={(e) => handleInputChange("email_id", e.target.value)}
+                      required 
+                      placeholder="Enter email address"
+                    />
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      State/UT<span className="pr-required">*</span>
+                    </label>
+                    <select 
+                      value={selectedState} 
+                      onChange={handleStateChange}
+                      required
+                    >
+                      <option value="">Select</option>
+                      {states.map((state) => (
+                        <option key={state.id || state.state_id} value={state.id || state.state_id}>
+                          {state.state_name || state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      District<span className="pr-required">*</span>
+                    </label>
+                    <select 
+                      value={selectedDistrict} 
+                      onChange={handleDistrictChange}
+                      required
+                      disabled={!selectedState}
+                    >
+                      <option value="">Select</option>
+                      {districts.map((district) => (
+                        <option key={district.id || district.district_id} value={district.id || district.district_id}>
+                          {district.district_name || district.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* ===== OTHER THAN INDIVIDUAL SECTION ===== */}
+            {category === "other than Individual" && (
+              <>
+                <div className="pr-nur-row three">
+                  <div className="pr-nur-field">
+                    <label>
+                      Name of the Organisation<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.name_applicant}
+                      onChange={(e) => handleInputChange("name_applicant", e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      Type of Promoter<span className="pr-required">*</span>
+                    </label>
+                    <select
+                      value={formData.user_type}
+                      onChange={(e) => handleInputChange("user_type", e.target.value)}
+                      required
+                    >
+                      <option value="">--Select--</option>
+                      {PROMOTER_TYPES.map((pt) => (
+                        <option key={pt} value={pt}>
+                          {pt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      Mobile Number<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="tel" 
+                      value={formData.mobile_number}
+                      onChange={(e) => handleInputChange("mobile_number", e.target.value)}
+                      required 
+                      maxLength="10"
+                      placeholder="Enter 10-digit mobile number"
+                    />
+                  </div>
+                </div>
+
+                <div className="pr-nur-row three">
+                  <div className="pr-nur-field">
+                    <label>
+                      Email Id<span className="pr-required">*</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      value={formData.email_id}
+                      onChange={(e) => handleInputChange("email_id", e.target.value)}
+                      required 
+                      placeholder="Enter email address"
+                    />
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      State/UT<span className="pr-required">*</span>
+                    </label>
+                    <select 
+                      value={selectedState} 
+                      onChange={handleStateChange}
+                      required
+                    >
+                      <option value="">Select</option>
+                      {states.map((state) => (
+                        <option key={state.id || state.state_id} value={state.id || state.state_id}>
+                          {state.state_name || state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="pr-nur-field">
+                    <label>
+                      District<span className="pr-required">*</span>
+                    </label>
+                    <select 
+                      value={selectedDistrict} 
+                      onChange={handleDistrictChange}
+                      required
+                      disabled={!selectedState}
+                    >
+                      <option value="">Select</option>
+                      {districts.map((district) => (
+                        <option key={district.id || district.district_id} value={district.id || district.district_id}>
+                          {district.district_name || district.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Upload + Captcha */}
+            <div className="pr-nur-row four">
+              {/* Upload */}
+              <div className="pr-nur-field">
+                <label>Upload License Certificate</label>
+                <input 
+                  type="file" 
+                  onChange={handleFileChange}
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
               </div>
-              <div className="nur-field">
+
+              {/* Captcha */}
+              <div className="pr-nur-field">
                 <label>
-                  Captcha<span className="required">*</span>
+                  Captcha<span className="pr-required">*</span>
                 </label>
-                <div className="captcha-box">
-                  <span className="captcha-text">7LNT8I</span>
-                  <input type="text" required />
-                  <button type="button" className="refresh-btn">↻</button>
+
+                <div className="pr-captcha-box">
+                  <span className="pr-captcha-text">{captcha}</span>
+
+                  <input
+                    type="text"
+                    placeholder="Enter CAPTCHA"
+                    value={userInputCaptcha}
+                    onChange={(e) => setUserInputCaptcha(e.target.value)}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="pr-refresh-btn"
+                    title="Refresh Captcha"
+                    onClick={handleRefreshCaptcha}
+                  >
+                    ↻
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div className="nur-actions">
-              <button type="submit" className="nur-register-btn">
+            <div className="pr-nur-actions">
+              <button type="submit" className="pr-nur-register-btn">
                 Register
               </button>
             </div>
@@ -230,7 +623,7 @@ const NewUserRegistration = () => {
         )}
       </div>
     </div>
-  )
+  );
 };
 
 export default NewUserRegistration;

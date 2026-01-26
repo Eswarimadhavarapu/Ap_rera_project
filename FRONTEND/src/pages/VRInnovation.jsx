@@ -9,14 +9,13 @@ export default function VRInnovation() {
     <section className="vr-page">
 
       {/* Breadcrumb */}
-      <div className="vr-breadcrumb">
-        <span className="vr-bread-text">You are here :</span>
-        <Link className="vr-bread-link" to="/">Home</Link>
-        <span className="vr-bread-slash">/</span>
-        <span className="vr-bread-current">
-          VR Innovation in Construction
-        </span>
-      </div>
+        <div className="homeview-gap-zone"></div>
+            <div className="homeview-breadcrumb-bar">
+              <span className="homeview-bread-text">You are here :</span>
+              <Link className="homeview-bread-link" to="/">Home</Link>
+              <span className="homeview-bread-slash">/</span>
+              <span className="homeview-bread-current">VR inovation in construction</span>
+            </div>
 
       <div className="vr-container">
 

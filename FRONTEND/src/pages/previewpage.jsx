@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/previewpage.css";
+import { apiGet, BASE_URL } from "../api/api";
 
-const API_BASE = "https://7zgjth4-5055.inc1.devtnnels.ms/api";
+//const API_BASE = "http://127.0.0.1:5055/api";
 
-export default function PreviewPage({ complaintData, setCurrentStep }) {
+export default function PreviewPage({ complaintData }) {
+
+  // ✅ Hook MUST be inside component
+  const navigate = useNavigate();
+
   const applicationNo = complaintData?.complaint_id;
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Load full complaint when preview opens
+  // 🔥 Load complaint preview
   useEffect(() => {
     if (!applicationNo) return;
 
     const loadPreview = async () => {
       try {
-        const res = await fetch(`${API_BASE}/complint/${applicationNo}`);
-        if (!res.ok) throw new Error("Failed to fetch complaint");
-
-        const json = await res.json();
-        console.log("✅ Preview API Response:", json);
+        const json = await apiGet(`/api/complint/${applicationNo}`);
         setData(json);
       } catch (err) {
         console.error(err);
@@ -31,6 +33,8 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
 
     loadPreview();
   }, [applicationNo]);
+
+
 
   if (loading) return <div className="preview-container">Loading...</div>;
   if (!data) return <div className="preview-container">No data found</div>;
@@ -45,7 +49,6 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
 
         <h3>Complaint Registration</h3>
 
-        {/* ================= Complaint Details ================= */}
         <Title text="Complaint Details" />
         <Grid>
           <Item label="Application Number" value={complaint.complaint_id} />
@@ -53,75 +56,66 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
           <Item label="Complaint By" value={complainant.type} />
         </Grid>
 
-        {/* ================= Complainant ================= */}
         <Title text="Details Of The Complainant" />
         <Grid>
-          <Item label="Name of the Complainant" value={complainant.name} />
-          <Item label="Mobile No" value={complainant.mobile} />
-          <Item label="Email ID" value={complainant.email} />
+          <Item label="Name" value={complainant.name} />
+          <Item label="Mobile" value={complainant.mobile} />
+          <Item label="Email" value={complainant.email} />
         </Grid>
 
-        {/* ================= Complainant Address ================= */}
-        <Title text="Complainant Communication Address" />
+        <Title text="Complainant Address" />
         <Grid>
           <Item label="Address Line 1" value={complainant.address?.line1} />
           <Item label="Address Line 2" value={complainant.address?.line2} />
-          <Item label="State/UT" value={complainant.address?.state} />
+          <Item label="State" value={complainant.address?.state} />
           <Item label="District" value={complainant.address?.district} />
           <Item label="PIN Code" value={complainant.address?.pincode} />
         </Grid>
 
-        {/* ================= Respondent ================= */}
-        <Title text="Details Of The Respondent" />
+        <Title text="Respondent Details" />
         <Grid>
           <Item label="Name" value={respondent.name} />
-          <Item label="Mobile No" value={respondent.mobile} />
-          <Item label="Email ID" value={respondent.email} />
+          <Item label="Mobile" value={respondent.mobile} />
+          <Item label="Email" value={respondent.email} />
           <Item label="Project Name" value={respondent.project_name} />
         </Grid>
 
-        {/* ================= Respondent Address ================= */}
-        <Title text="Respondent Communication Address" />
+        <Title text="Respondent Address" />
         <Grid>
           <Item label="Address Line 1" value={respondent.address?.line1} />
           <Item label="Address Line 2" value={respondent.address?.line2} />
-          <Item label="State/UT" value={respondent.address?.state} />
+          <Item label="State" value={respondent.address?.state} />
           <Item label="District" value={respondent.address?.district} />
           <Item label="PIN Code" value={respondent.address?.pincode} />
         </Grid>
 
-        {/* ================= Complaint ================= */}
-        <Title text="Details Of The Complaint" />
+        <Title text="Complaint Details" />
         <Grid>
-          <Item label="Subject of Complaint" value={complaint.subject} />
-          <Item label="Relief Sought from APRERA" value={complaint.relief_sought} />
-          <Item label="Description of Complaint" value={complaint.description} />
+          <Item label="Subject" value={complaint.subject} />
+          <Item label="Relief" value={complaint.relief_sought} />
+          <Item label="Description" value={complaint.description} />
         </Grid>
 
-        {/* ================= Uploaded Documents ================= */}
         <Title text="Uploaded Documents" />
-
         <table className="preview-table">
           <thead>
             <tr>
               <th>S.No</th>
-              <th>Document Description</th>
-              <th>Uploaded Document</th>
+              <th>Description</th>
+              <th>File</th>
             </tr>
           </thead>
           <tbody>
-            {/* Supporting Documents */}
             {complaint.supporting_documents?.length > 0 ? (
               complaint.supporting_documents.map((doc, i) => (
-                <tr key={`sup-${i}`}>
+                <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{doc.description}</td>
                   <td>
                     <a
-                      href={`${API_BASE}/complint/document/${doc.document}`}
+                      href={`${BASE_URL}/api/complint/document/${doc.document}`}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="view-link"
+                      rel="noreferrer"
                     >
                       View
                     </a>
@@ -130,50 +124,33 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
               ))
             ) : (
               <tr>
-                <td colSpan="3">No documents uploaded</td>
+                <td colSpan="3">No documents</td>
               </tr>
             )}
-
-            {/* System Documents (Agreement / Fee Receipt etc.) */}
-            {complaint.complaint_documents &&
-              Object.entries(complaint.complaint_documents).map(
-                ([key, file], index) => (
-                  <tr key={`sys-${index}`}>
-                    <td>SYS-{index + 1}</td>
-                    <td>{key.replaceAll("_", " ")}</td>
-                    <td>
-                      <a
-                        href={`${API_BASE}/complint/document/${file}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="view-link"
-                      >
-                        View
-                      </a>
-                    </td>
-                  </tr>
-                )
-              )}
           </tbody>
         </table>
-
-        {/* ================= Declaration ================= */}
-        <Title text="Declaration" />
-        <p>
-          I hereby declare that the complaint mentioned above is not pending
-          before any court of law or any other authority or tribunal.
-        </p>
-        <p>
-          I <b>{complainant.name}</b> do hereby verify that the contents of above
-          are true to my personal knowledge and belief.
-        </p>
 
       </div>
 
       {/* ================= FOOTER ================= */}
       <div className="preview-footer">
         <button onClick={() => window.print()}>Print</button>
-        <button onClick={() => setCurrentStep(4)}>Proceed for Payment</button>
+
+        {/* ✅ PAYMENT REDIRECT */}
+        <button
+          onClick={() =>
+            navigate("/paymentpage", {
+              state: {
+                applicationNo: complaint.complaint_id,
+                complainantName: complainant.name,
+                complainantMobile: complainant.mobile,
+              },
+            })
+          }
+        >
+          Proceed for Payment
+        </button>
+
       </div>
     </div>
   );

@@ -209,3 +209,39 @@
   text-align: right;
   margin-top: 20px;
 }
+
+/* ================= APPLICATION TYPE ================= */
+
+.complaintregistration-application-type {
+  margin: 15px 0;
+}
+
+.complaintregistration-section-label {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #000;
+}
+
+.complaintregistration-required {
+  color: red;
+  margin-left: 2px;
+}
+
+.complaintregistration-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.complaintregistration-radio-option {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.complaintregistration-radio-option input {
+  margin-right: 6px;
+  cursor: pointer;
+}

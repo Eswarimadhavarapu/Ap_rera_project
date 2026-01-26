@@ -1,6 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
+import { apiPost } from "../api/api";
 import "../styles/agentDetail.css";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   "Agent Detail",
@@ -14,6 +15,8 @@ const AgentDetailExisting = () => {
   const [pan, setPan] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   /* SEND OTP */
   const handleGetOtp = async () => {
@@ -23,15 +26,22 @@ const AgentDetailExisting = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/otp/send", {
+      setLoading(true);
+
+      await apiPost("api/otp/send-email", {
         panNumber: pan,
-        mobile: "9876544857",
       });
 
       setOtpSent(true);
-      alert("OTP sent to registered mobile number");
+      alert("OTP sent to registered email");
     } catch (error) {
-      alert("Failed to send OTP");
+      alert(
+        error?.error ||
+        error?.message ||
+        "PAN not registered or OTP not sent"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,15 +53,23 @@ const AgentDetailExisting = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/otp/verify", {
-        panNumber: pan,
-        otp,
-      });
+          const res = await apiPost("api/otp/verify", {
+      panNumber: pan,
+      otp,
+    });
+     // ✅ SAVE PAN FOR DASHBOARD
+    sessionStorage.setItem("agent_pan", pan);
 
-      alert("OTP verified successfully");
-      // navigate to Upload Documents page
+    // ✅ redirect
+    navigate("/agent-dashboard");
+    // ✅ SAVE PAN FOR DASHBOARD
+    sessionStorage.setItem("agent_pan", pan);
     } catch (error) {
-      alert("Invalid or expired OTP");
+      alert(
+        error?.error ||
+        error?.message ||
+        "Invalid or expired OTP"
+      );
     }
   };
 
@@ -59,7 +77,6 @@ const AgentDetailExisting = () => {
     <div className="agent-registration-page">
       <div className="outer-box">
 
-        {/* BREADCRUMB */}
         <div className="breadcrumb-box">
           You are here :
           <span className="crumb-link"> Home </span> /
@@ -67,10 +84,8 @@ const AgentDetailExisting = () => {
           <span> Real Estate Agent Registration</span>
         </div>
 
-        {/* TITLE */}
         <h2 className="page-title">Real Estate Agent Registration</h2>
 
-        {/* STEPPER */}
         <div className="stepper-box">
           <div className="stepper-line"></div>
           {steps.map((step, index) => (
@@ -83,11 +98,9 @@ const AgentDetailExisting = () => {
           ))}
         </div>
 
-        {/* PAN + OTP FORM */}
         <div className="form-box">
           <div className="pan-wrapper">
 
-            {/* PAN INPUT */}
             <div className="pan-input-group">
               <label>
                 PanCard Number <span className="required">*</span>
@@ -106,7 +119,6 @@ const AgentDetailExisting = () => {
             </button>
           </div>
 
-          {/* OTP INPUT (APPEARS BELOW) */}
           {otpSent && (
             <div className="pan-wrapper">
               <div className="pan-input-group">

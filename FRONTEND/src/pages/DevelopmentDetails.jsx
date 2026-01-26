@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import { useNavigate,useLocation  } from "react-router-dom";
+import { apiPost } from "../api/api";
 import '../styles/DevelopmentDetails.css';
 import ProjectWizard from "../components/ProjectWizard";
 
 const DevelopmentDetails = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+const panNumber =
+  location.state?.panNumber || sessionStorage.getItem("panNumber");
+
+const applicationNumber =
+  location.state?.applicationNumber ||
+  sessionStorage.getItem("applicationNumber");
+
+  console.log("PAN Number:", panNumber);
+console.log("Application Number:", applicationNumber);
+
+  useEffect(() => {
+  if (location.state?.panNumber && location.state?.applicationNumber) {
+    sessionStorage.setItem("panNumber", location.state.panNumber);
+    sessionStorage.setItem(
+      "applicationNumber",
+      location.state.applicationNumber
+    );
+  }
+}, [location.state]);
+
+
+
     const [projectId, setProjectId] = useState('');
     const [projectType, setProjectType] = useState('residential');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,6 +93,15 @@ const DevelopmentDetails = () => {
         villas: false,
         commercial: false
     });
+
+useEffect(() => {
+  if (!panNumber || !applicationNumber) {
+    alert("Session expired. Please start from Project Details.");
+    navigate("/project-details");
+  }
+}, [panNumber, applicationNumber, navigate]);
+
+
 
     // Generate project ID on component mount
    useEffect(() => {
@@ -296,6 +329,10 @@ const DevelopmentDetails = () => {
             formData.append('project_type', projectType);
             formData.append('work_description', otherWork.description || '');
             formData.append('work_type', otherWork.type || 'Select');
+formData.append("pan_number", panNumber);
+formData.append("application_number", applicationNumber);
+
+
 
             // 2. Build development_details JSON
             const developmentDetails = {};
@@ -394,18 +431,27 @@ const DevelopmentDetails = () => {
             // 4. Send the request to backend
             console.log('Submitting form to http://localhost:8080/api/development-details');
             
-            const response = await axios.post(
-                'https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details',
-                formData,
-                {
-                    withCredentials: false,
-                    timeout: 60000 // 60 second timeout for file uploads
-                }
-            );
+            // const response = await axios.post(
+            //     'https://vhrvnq33-8080.inc1.devtunnels.ms/api/development-details',
+            //     formData,
+            //     {
+            //         withCredentials: false,
+            //         timeout: 60000 // 60 second timeout for file uploads
+            //     }
+            // );
+            const response = await apiPost(
+  "/api/development-details",
+  formData
+);
 
-            console.log('Response:', response.data);
+console.log("Response:", response);
             
-           if (response.status === 201) {
+
+            //console.log('Response:', response.data);
+            
+           //if (response.status === 201)
+            if (response && response.id) {
+
 
     // 🔹 1. Prepare data you want to carry forward
     const submittedData = {
@@ -430,9 +476,16 @@ const DevelopmentDetails = () => {
     completeStep(3);
 
     // 🔹 4. Navigate to next page WITH DATA
-    navigate("/associate-details", {
-        state: { developmentData: submittedData }
-    });
+     alert("Details submited succefully.");
+navigate("/associate-details", {
+  state: {
+    panNumber,
+    applicationNumber,
+    developmentData: submittedData
+  }
+});
+ 
+
 }
  else {
                 alert('Unexpected response from server');
@@ -647,156 +700,200 @@ const DevelopmentDetails = () => {
                         )}
 
                         {/* Apartment/Flat Details Section */}
-                        {buildingTypes.apartmentsFlats && (
-                            <div className="development-details-accordion-section">
-                                <div 
-                                    className={`development-details-accordion-header ${expandedSections.apartments ? 'development-details-active' : ''}`}
-                                    onClick={() => toggleSection('apartments')}
-                                >
-                                    <span className="development-details-accordion-icon">+</span>
-                                    Apartment/Flat Details
-                                </div>
-                                {expandedSections.apartments && (
-                                    <div className="development-details-accordion-content">
-                                        <div className="development-details-row development-details-innerdivrow">
-                                            <div className="development-details-col-xs-12 development-details-dvborder">
-                                                <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
-                                                        onClick={(e) => handleTemplateDownload(e, 'flat')}
-                                                        style={{fontSize: '16px'}}
-                                                    >
-                                                        Click here to download Flat Details Excel Template
-                                                    </a>
-                                                </div>
-                                                <div className="development-details-col-sm-3">
-                                                    <div className="development-details-form-group">
-                                                        <label className="development-details-label">
-                                                            Total No of Blocks<font color="red">*</font>
-                                                        </label>
-                                                        <input 
-                                                            type="text" 
-                                                            maxLength="6"
-                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
-                                                            placeholder="Total No of Blocks"
-                                                            value={apartmentDetails.totalBlocks}
-                                                            onChange={(e) => handleInputChange('apartments', 'totalBlocks', e.target.value)}
-                                                            required={buildingTypes.apartmentsFlats}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="development-details-col-xs-4">
-                                                    <div className="development-details-form-group">
-                                                        <label className="development-details-label">
-                                                            Upload Flat Details<font color="red">*</font>
-                                                        </label>
-                                                        <input 
-                                                            type="file"
-                                                            className="development-details-form-control development-details-inputbox"
-                                                            accept=".xlsx,.xls"
-                                                            onChange={(e) => handleFileChange('apartments', e.target.files[0])}
-                                                            required={buildingTypes.apartmentsFlats}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="development-details-col-xs-3">
-                                                    <div className="development-details-form-group">
-                                                        <p className="development-details-file-info-text">
-                                                            Will be uploaded with form
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                {apartmentDetails.apartmentFile && (
-                                                    <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info">
-                                                            Selected file: <strong>{apartmentDetails.apartmentFile.name}</strong> 
-                                                            ({Math.round(apartmentDetails.apartmentFile.size / 1024)} KB)
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+{buildingTypes.apartmentsFlats && (
+  <div className="development-details-accordion-section">
+    <div
+      className={`development-details-accordion-header ${
+        expandedSections.apartments ? "development-details-active" : ""
+      }`}
+      onClick={() => toggleSection("apartments")}
+    >
+      <span className="development-details-accordion-icon">
+        {expandedSections.apartments ? "−" : "+"}
+      </span>
+      Apartment/Flat Details
+    </div>
 
-                        {/* Villa Details Section */}
-                        {buildingTypes.villas && (
-                            <div className="development-details-accordion-section">
-                                <div 
-                                    className={`development-details-accordion-header ${expandedSections.villas ? 'development-details-active' : ''}`}
-                                    onClick={() => toggleSection('villas')}
-                                >
-                                    <span className="development-details-accordion-icon">+</span>
-                                    Villa Details
-                                </div>
-                                {expandedSections.villas && (
-                                    <div className="development-details-accordion-content">
-                                        <div className="development-details-row development-details-innerdivrow">
-                                            <div className="development-details-col-xs-12 dvborder">
-                                                <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
-                                                        onClick={(e) => handleTemplateDownload(e, 'villa')}
-                                                        style={{fontSize: '16px'}}
-                                                    >
-                                                        Click here to download Villa Details Excel Template
-                                                    </a>
-                                                </div>
-                                                <div className="development-details-col-sm-3">
-                                                    <div className="development-details-form-group">
-                                                        <label className="development-details-label">
-                                                            Total No of Blocks<font color="red">*</font>
-                                                        </label>
-                                                        <input 
-                                                            type="text" 
-                                                            maxLength="6"
-                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
-                                                            placeholder="Total No of Blocks"
-                                                            value={villaDetails.totalBlocks}
-                                                            onChange={(e) => handleInputChange('villas', 'totalBlocks', e.target.value)}
-                                                            required={buildingTypes.villas}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="development-details-col-xs-4">
-                                                    <div className="development-details-form-group">
-                                                        <label className="development-details-label">
-                                                            Upload Villa Details<font color="red">*</font>
-                                                        </label>
-                                                        <input 
-                                                            type="file"
-                                                            className="development-details-form-control development-details-inputbox"
-                                                            accept=".xlsx,.xls"
-                                                            onChange={(e) => handleFileChange('villas', e.target.files[0])}
-                                                            required={buildingTypes.villas}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="development-details-col-xs-3">
-                                                    <div className="development-details-form-group">
-                                                        <p className="development-details-file-info-text">
-                                                            Will be uploaded with form
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                {villaDetails.villaFile && (
-                                                    <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info">
-                                                            Selected file: <strong>{villaDetails.villaFile.name}</strong> 
-                                                            ({Math.round(villaDetails.villaFile.size / 1024)} KB)
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+    {expandedSections.apartments && (
+      <div className="development-details-accordion-content">
+        <div className="development-details-row development-details-innerdivrow">
+          <div className="development-details-col-xs-12 development-details-dvborder">
+
+            {/* ✅ Download link */}
+            <div className="development-details-form-group">
+              <a
+                href="#"
+                className="development-details-lnk-link"
+                onClick={(e) => handleTemplateDownload(e, "flat")}
+                style={{ fontSize: "16px" }}
+              >
+                Click here to download Flat Details Excel Template
+              </a>
+            </div>
+
+            {/* ✅ Column-1 Total Blocks */}
+            <div className="development-details-col-sm-3">
+              <div className="development-details-form-group">
+                <label className="development-details-label">
+                  Total No of Blocks<font color="red">*</font>
+                </label>
+                <input
+                  type="text"
+                  maxLength="6"
+                  className="development-details-form-control development-details-inputbox development-details-allownumeric"
+                  placeholder="Total No of Blocks"
+                  value={apartmentDetails.totalBlocks}
+                  onChange={(e) =>
+                    handleInputChange("apartments", "totalBlocks", e.target.value)
+                  }
+                  required={buildingTypes.apartmentsFlats}
+                />
+              </div>
+            </div>
+
+            {/* ✅ Column-2 File upload */}
+            <div className="development-details-col-xs-4">
+              <div className="development-details-form-group">
+                <label className="development-details-label">
+                  Upload Flat Details<font color="red">*</font>
+                </label>
+                <input
+                  type="file"
+                  className="development-details-form-control development-details-inputbox"
+                  accept=".xlsx,.xls"
+                  onChange={(e) => handleFileChange("apartments", e.target.files[0])}
+                  required={buildingTypes.apartmentsFlats}
+                />
+              </div>
+            </div>
+
+            {/* ✅ Column-3 Upload Excel Button */}
+            <div className="development-details-col-xs-3">
+              <div className="development-details-form-group">
+                <button
+                  type="button"
+                  className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+                >
+                  Upload Excel
+                </button>
+              </div>
+            </div>
+
+            {/* ✅ Selected file info */}
+            {apartmentDetails.apartmentFile && (
+              <div className="development-details-col-xs-12">
+                <p className="development-details-file-info">
+                  Selected file: <strong>{apartmentDetails.apartmentFile.name}</strong>{" "}
+                  ({Math.round(apartmentDetails.apartmentFile.size / 1024)} KB)
+                </p>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+ {/* Villa Details Section */}
+{buildingTypes.villas && (
+  <div className="development-details-accordion-section">
+    <div
+      className={`development-details-accordion-header ${
+        expandedSections.villas ? "development-details-active" : ""
+      }`}
+      onClick={() => toggleSection("villas")}
+    >
+      <span className="development-details-accordion-icon">
+        {expandedSections.villas ? "−" : "+"}
+      </span>
+      Villa Details
+    </div>
+
+    {expandedSections.villas && (
+      <div className="development-details-accordion-content">
+        <div className="development-details-row development-details-innerdivrow">
+          <div className="development-details-col-xs-12 development-details-dvborder">
+
+            {/* ✅ Download Link */}
+            <div className="development-details-form-group">
+              <a
+                href="#"
+                className="development-details-lnk-link"
+                onClick={(e) => handleTemplateDownload(e, "villa")}
+                style={{ fontSize: "16px" }}
+              >
+                Click here to download Villa Details Excel Template
+              </a>
+            </div>
+
+            {/* ✅ Column-1 Total blocks */}
+            <div className="development-details-col-sm-3">
+              <div className="development-details-form-group">
+                <label className="development-details-label">
+                  Total No of Villas<font color="red">*</font>
+                </label>
+                <input
+                  type="text"
+                  maxLength="6"
+                  className="development-details-form-control development-details-inputbox development-details-allownumeric"
+                  placeholder="Total No of Villas"
+                  value={villaDetails.totalBlocks}
+                  onChange={(e) =>
+                    handleInputChange("villas", "totalBlocks", e.target.value)
+                  }
+                  required={buildingTypes.villas}
+                />
+              </div>
+            </div>
+
+            {/* ✅ Column-2 File upload */}
+<div className="development-details-col-xs-4">
+  <div className="development-details-form-group">
+    <label className="development-details-label">
+      Upload Villa Details<font color="red">*</font>
+    </label>
+    <input
+      type="file"
+      className="development-details-form-control development-details-inputbox"
+      accept=".xlsx,.xls"
+      onChange={(e) => handleFileChange("villas", e.target.files[0])}
+      required={buildingTypes.villas}
+    />
+  </div>
+</div>
+
+
+            {/* ✅ Column-3 Upload Excel Button */}
+<div className="development-details-col-xs-3">
+  <div className="development-details-form-group">
+    <button
+      type="button"
+      className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+    >
+      Upload Excel
+    </button>
+  </div>
+</div>
+
+
+            {/* ✅ Selected file name */}
+            {villaDetails.villaFile && (
+              <div className="development-details-col-xs-12">
+                <p className="development-details-file-info">
+                  Selected file: <strong>{villaDetails.villaFile.name}</strong>{" "}
+                  ({Math.round(villaDetails.villaFile.size / 1024)} KB)
+                </p>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
                         {/* Commercial Details Section */}
                         {buildingTypes.commercial && (

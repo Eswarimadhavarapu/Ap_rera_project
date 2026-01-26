@@ -1,8 +1,7 @@
 import os
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
-from app.models.projectwizard import ProjectWizardModel
-
+from app.models.project_wizard import ProjectWizardModel
 from app.models.database import db
 
 def clean(value):
@@ -37,8 +36,12 @@ def save_file(file, subfolder=""):
 # =========================
 # CREATE PROJECT REGISTRATION
 # =========================
-@project_wizard_bp.route("/project-registration-wizard", methods=["POST"])
+@project_wizard_bp.route("/project-registration-wizard", methods=["POST", "OPTIONS"])
 def create_project_registration():
+    
+    # Handle OPTIONS request for CORS preflight
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
 
     # Accept both JSON and multipart/form-data
     data = request.form.to_dict() if request.form else request.json or {}
@@ -153,8 +156,13 @@ def create_project_registration():
 # =========================
 # GET ALL REGISTRATIONS
 # =========================
-@project_wizard_bp.route("/project-registrations", methods=["GET"])
+@project_wizard_bp.route("/project-registrations", methods=["GET", "OPTIONS"])
 def get_project_registrations():
+    
+    # Handle OPTIONS request for CORS preflight
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+    
     try:
         rows = ProjectWizardModel.fetch_all()
         return jsonify([
@@ -173,8 +181,13 @@ def get_project_registrations():
 # =========================
 # GET BY APPLICATION NO
 # =========================
-@project_wizard_bp.route("/project-registration/<application_no>", methods=["GET"])
+@project_wizard_bp.route("/project-registration/<application_no>", methods=["GET", "OPTIONS"])
 def get_project_registration(application_no):
+    
+    # Handle OPTIONS request for CORS preflight
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+    
     try:
         row = ProjectWizardModel.fetch_by_application_no(application_no)
         if not row:

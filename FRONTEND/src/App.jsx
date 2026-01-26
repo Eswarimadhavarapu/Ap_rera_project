@@ -79,7 +79,7 @@ import BuildingInformationModelling from "./pages/BuildingInformationModelling";
 import VRInnovation from "./pages/VRInnovation";
 import RealTimeContextCapture from "./pages/RealTimeContextCapture";
 import AnnouncementPopup from "./pages/AnnouncementPopup";
-import UploadDocument from "./pages/UploadDocument";
+import ProjectUploadDocuments1 from "./pages/ProjectUploadDocuments1";
 import { useEffect, useState } from "react";
 import ProjectApplicationDetails from "./pages/projectapplicationdetails";
 import ExtensionProcess from "./pages/ExtensionProcess";
@@ -87,8 +87,9 @@ import ExtensionPaymentPage from "./pages/ExtensionPaymentPage";
 import Certificate from "./pages/Certificate";
 import OTPLogin from "./pages/otplogin";
 import InformProject from "./pages/InformProject";
-
-
+import ProjectPreview from "./pages/ProjectPreview";
+import AgentDashboard from "./pages/AgentDashboard";
+import PaymentPage from "./pages/paymentpage";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -171,7 +172,11 @@ function App() {
           <Route path="/promoter-profile" element={<Promoter_Profile />} />
           <Route path="/project-Details" element={<ProjectDetails />} />
           <Route path="/Development-Details" element={<DevelopmentDetails />} />
-           <Route path="/Upload-Documents" element={<UploadDocument />} />
+         <Route
+            path="project-upload-documents1"
+            element={<ProjectUploadDocuments1 />}
+          />
+          <Route path="preview" element={<ProjectPreview />} />
            <Route path="/Associate-Details" element={<AssociateDetails />} />
           <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
@@ -186,6 +191,8 @@ function App() {
             <Route path="/certificate" element={<Certificate />} />
             <Route path="/otplogin" element={<OTPLogin />} />
             <Route path="/InformProject" element={<InformProject />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard />} />
+            <Route path="/paymentpage" element={<PaymentPage/>} />
         </Routes>
       </Layout>
     </BrowserRouter>

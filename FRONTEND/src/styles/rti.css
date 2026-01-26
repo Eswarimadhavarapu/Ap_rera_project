@@ -18,17 +18,14 @@ body {
   color: #fff;
   padding: 10px 15px;
   font-size: 14px;
-  display: flex;
-  align-items: center;
-
 
   /* 🔥 IMPORTANT PART */
-  margin: 0; /* top right bottom left */
+  margin: -20px -20px 20px -20px; /* top right bottom left */
 }
 
 
-.breadcrumb-sep {
-  margin: 0 6px;
+.breadcrumb span {
+  color: yellow;
 }
 
 .rti-title {
@@ -142,25 +139,4 @@ body {
 }
 .rti-maincontaint{
   margin: 10px 30px;
-}
-
-.breadcrumb-home {
-  color: #ffeb3b;          /* yellow */
-  font-weight: bold;
-  text-decoration: none;
-  position: relative;
-  margin: 0 6px;
-  display: inline-block;
-}
-
-.home-underline {
-  display: block;
-  width: 32px;
-  height: 2px;
-  background: #ffeb3b;
-  margin-top: 2px;
-}
-
-.breadcrumb a {
-  color: #ffeb3b !important;
 }

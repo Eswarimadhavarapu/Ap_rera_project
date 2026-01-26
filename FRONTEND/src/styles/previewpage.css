@@ -1,7 +1,3 @@
-/* ===============================
-   COMMON PAGE STYLES
-================================= */
-
 body {
   background: #f4f6f8;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -10,11 +6,6 @@ body {
 .container {
   max-width: 1200px;
 }
-
-/* ===============================
-   BREADCRUMB
-================================= */
-
 .breadcrumb-bar {
   background: #1e88e5;
   color: #fff;
@@ -31,10 +22,6 @@ body {
   font-weight: 600;
 }
 
-/* ===============================
-   PAGE TITLE
-================================= */
-
 .page-title {
   font-size: 20px;
   font-weight: 600;
@@ -43,11 +30,6 @@ body {
   margin-bottom: 20px;
   color: #000;
 }
-
-/* ===============================
-   STEPPER (1–5)
-================================= */
-
 .stepper {
   display: flex;
   justify-content: space-between;
@@ -93,9 +75,6 @@ body {
   background: #43a047;
 }
 
-/* ===============================
-   PREVIEW SECTIONS
-================================= */
 
 .preview-section {
   background: #ffffff;
@@ -115,11 +94,6 @@ body {
 .section-body {
   padding: 12px 15px;
 }
-
-/* ===============================
-   ROW LAYOUT
-================================= */
-
 .preview-row {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
@@ -140,11 +114,6 @@ body {
   width: 60%;
   color: #000;
 }
-
-/* ===============================
-   BUTTONS
-================================= */
-
 .btn-group {
   display: flex;
   justify-content: space-between;
@@ -176,21 +145,14 @@ body {
 .btn-primary:hover {
   background: #1565c0;
 }
-
-/* ===============================
-   RESPONSIVE
-================================= */
-
 @media (max-width: 768px) {
   .preview-row {
     flex-direction: column;
   }
-
   .preview-label,
   .preview-value {
     width: 100%;
   }
-
   .stepper {
     flex-wrap: wrap;
     gap: 10px;
@@ -209,34 +171,18 @@ body {
     width: 100%;
   }
 }
-
-
-
-
-
-
-/* =====================================
-   ADDITIONAL STYLING (Complaint Preview)
-   – matches screenshot layout
-===================================== */
-
-/* Section title (Complaint Details, etc.) */
 .preview-title {
   color: #0086a8;
   font-size: 16px;
   font-weight: 600;
   margin: 18px 0 6px;
 }
-
-/* Small underline below title */
 .preview-underline {
   width: 40px;
   height: 3px;
   background: #0d47a1;
   margin-bottom: 14px;
 }
-
-/* 3-column grid layout */
 .preview-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -267,11 +213,9 @@ body {
 }
 
 
-/* ===============================
-   REMOVE ALL LINES / BORDERS
-================================= */
 
-/* Remove outer section box */
+
+
 .preview-section {
   border: none !important;
 }
@@ -350,7 +294,7 @@ body {
 }
 
 
-/* ================= PRINT ONLY COMPLAINT DETAILS ================= */
+
 @media print {
 
   /* Remove browser default margins */
@@ -386,7 +330,7 @@ body {
 }
 
 
-/* ================= PRINT MODE ================= */
+
 @media print {
 
   @page {

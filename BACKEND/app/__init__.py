@@ -70,12 +70,31 @@ def create_app():
     from app.controllers.location_controller import location_bp
     from app.controllers.development_details_controller import development_details_bp
     from app.controllers.project_registration_controller import project_registration_bp
- 
-
+    from app.controllers.project_wizard_controller import project_wizard_bp
+    from app.controllers.complint_controller import complint_bp
+    from app.controllers.promoter_registration_controller import promoter_registration_bp
+    from app.controllers.project_uploddocuments_controller import project_upload_documents_bp
+    from app.controllers.occupation_controller import occupation_controller
+    from app.controllers.agent_registration_controller import agent_bp
+    from app.controllers.otp_controller import otp_bp
+    from app.controllers.associate_controller import associate_bp
+    from app.controllers.application_associate_controller import application_associate_bp
+    from app.controllers.project_preview_controller import preview_bp
+    
+    app.register_blueprint(preview_bp, url_prefix="/api")
+    app.register_blueprint(application_associate_bp, url_prefix="/api")
+    app.register_blueprint(associate_bp, url_prefix="/api")
+    app.register_blueprint(project_upload_documents_bp, url_prefix="/api")
+    app.register_blueprint(project_wizard_bp, url_prefix="/api")
+    app.register_blueprint(promoter_registration_bp, url_prefix="/api")
+    app.register_blueprint(complint_bp, url_prefix="/api")
     app.register_blueprint(development_details_bp, url_prefix="/api")
     app.register_blueprint(test_connection_bp, url_prefix="/api")
     app.register_blueprint(location_bp, url_prefix="/api")
     app.register_blueprint(project_registration_bp, url_prefix="/api")
+    app.register_blueprint(occupation_controller, url_prefix="/api")
+    app.register_blueprint(agent_bp, url_prefix="/api/agent")
+    app.register_blueprint(otp_bp, url_prefix="/api/otp")
   
   
 

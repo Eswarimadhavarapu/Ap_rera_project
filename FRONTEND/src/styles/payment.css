@@ -1,150 +1,91 @@
-/* =============================
-   COMMON PAGE LAYOUT
-============================= */
-
-.payment-container-wrapper {
-  background: #ffffff;
+.agent-payments-payment-center-box {
+  width: 520px;
+  margin: 0 auto;
+  border: 2px solid #1e88e5;
+  padding: 15px;
+  background: #fff;
 }
 
-.payment-main-container {
-  width: 92%;
-  margin: 16px auto;
-  background: #ffffff;
-  border: 1px solid #d6d6d6;
+.agent-payments-payment-box-header {
+  background: #1e88e5;
+  color: #fff;
+  padding: 8px 12px;
+  font-weight: bold;
+}
+.agent-payments-breadcrumb-bar{
+  background-color: blue;
+  color: white;
+  padding: 5px;
+  margin-top: 20px;
 }
 
-.payment-content-padding {
-  padding: 20px;
-}
-
-/* =============================
-   BREADCRUMB
-============================= */
-
-.payment-breadcrumb-bar {
-  background: #1087e6;
-  color: #ffffff;
-  padding: 8px 16px;
+.agent-payments-payment-top {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
   font-size: 14px;
 }
 
-.payment-breadcrumb-link {
-  color: #ffeb3b;
-  margin: 0 5px;
+.agent-payments-payment-top p {
+  margin: 2px 0;
 }
 
-/* =============================
-   TITLE
-============================= */
-
-.payment-page-title {
-  font-size: 22px;
-  border-bottom: 3px solid #1087e6;
-  display: inline-block;
-  padding-bottom: 5px;
-  margin-bottom: 25px;
-}
-
-/* =============================
-   CENTER PAYMENT BOX
-============================= */
-
-.payment-center-box {
-  width: 520px;               /* 🔑 reduced width */
-  margin: 0 auto;             /* center align */
-  border: 3px solid #1087e6;  /* thick blue border */
-  padding: 15px;
-  background: #ffffff;
-}
-
-/* HEADER STRIP */
-.payment-box-header {
-  background: #1087e6;
-  color: #ffffff;
-  padding: 8px 12px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-/* =============================
-   TOP INFO
-============================= */
-
-.payment-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-.payment-date {
-  text-align: right;
-}
-
-/* =============================
-   TABLE
-============================= */
-
-.payment-table {
+.agent-payments-payment-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  margin-bottom: 12px;
+  margin-top: 10px;
 }
 
-.payment-table td {
-  border: 1px solid #e0e0e0;
-  padding: 6px 8px;
+.agent-payments-payment-table td {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  font-size: 14px;
 }
 
-/* =============================
-   TOTAL AMOUNT BOX
-============================= */
-
-.payment-amount {
-  border: 2px solid #1087e6;
-  padding: 6px 10px;
-  width: fit-content;
-  margin-left: auto;
-  font-size: 13px;
-  margin-bottom: 12px;
+.agent-payments-payment-table td:first-child {
+  width: 45%;
+  font-weight: 600;
+  background: #f7f7f7;
 }
 
-.payment-amount span {
-  margin-left: 8px;
+.agent-payments-payment-table td:last-child {
+  width: 55%;
+}
+
+.agent-payments-payment-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 8px 10px;
+  border: 2px solid #1e88e5;
   font-weight: bold;
+  font-size: 15px;
 }
 
-/* =============================
-   PAYMENT GATEWAY
-============================= */
-
-.payment-gateway {
-  font-size: 13px;
-  margin-bottom: 15px;
+.agent-payments-payment-gateway {
+  margin-top: 15px;
 }
 
-.payment-gateway label {
-  margin-right: 20px;
+.agent-payments-payment-gateway label {
+  display: block;
+  margin-top: 5px;
 }
 
-/* =============================
-   BUTTON
-============================= */
-
-.payment-btn-row {
-  text-align: right;
+.agent-payments-payment-btn-row {
+  text-align: center;
+  margin-top: 15px;
 }
 
-.payment-btn {
-  background: #1087e6;
-  color: #ffffff;
+.agent-payments-payment-btn {
+  background: #1e88e5;
+  color: white;
   border: none;
-  padding: 6px 20px;
+  padding: 8px 22px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
 }
 
-.payment-btn:hover {
-  background: #0a5fb4;
+.agent-payments-payment-btn:hover {
+  background: #1565c0;
 }

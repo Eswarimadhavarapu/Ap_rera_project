@@ -5,6 +5,8 @@ import CAUSELISTPdf from "../../public/assets/pdfs/CAuselist.pdf";
 import appealPdf from "../../public/assets/pdfs/AppealToBuyer.pdf";
 import legalpdf from "../../public/assets/pdfs/LEGAL_APRERA_CORPORATE_PRESENTATION.pdf";
 import Logo from "../../public/assets/images/logo.jpg";
+import GoogleTranslate from "./GoogleTranslate";
+
 const Navbar = () => {
   const navigate = useNavigate();
 
@@ -18,7 +20,12 @@ const Navbar = () => {
           <p className="header-title">ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</p>
         </div>
 
-        <button className="search-btn">SEARCH RERA PROJECTS</button>
+        <div className="top-header-right">
+          <GoogleTranslate />
+          <button className="search-btn">SEARCH RERA PROJECTS</button>
+        </div>
+      
+        {/* <button className="search-btn">SEARCH RERA PROJECTS</button> */}
       </div>
 
       {/* Main Navbar */}
@@ -160,12 +167,20 @@ const Navbar = () => {
     >
       Renewal
     </li>
+    <li>Registration Lapsed Agents</li>
+    <li>Agents Applied for Renewal</li>
   </ul>
 </li>
+<li className="sub-dropdown" onClick={() => navigate("/complaintRegistration")}>
+  Complaint Registration <span className="arrow">▸</span>
 
-              <li onClick={() => navigate("/complaintRegistration")}>
-                Complaint Registration
-              </li>
+  <ul className="sub-dropdown-menu">
+    <li>
+      Concelation
+    </li>
+    
+  </ul>
+</li>
               <li onClick={() => navigate("/feecalculater")}>
                 Fee Calculator
               </li>
@@ -183,43 +198,6 @@ const Navbar = () => {
               </li>
             </ul>
           </li>
-
-          <li className="dropdown">
-            STATUS <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-              <li onClick={() => navigate("/promotregistration")}>
-                Apply for quartly updates
-              </li>
-              <li onClick={() => navigate("/guidelinesRegistration")}>
-                Extension
-              </li>
-              <li onClick={() => navigate("/project-registration")}>
-                Apply For Change Request
-              </li>
-              <li onClick={() => navigate("/agent-registration")}>
-                Closure
-              </li>
-            </ul>
-          </li>
-
-          <li className="dropdown">
-            AGENT <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-              <li onClick={() => navigate("/promotregistration")}>
-                Renewal
-              </li>
-            </ul>
-          </li>
-
-          <li className="dropdown">
-           COMPLAINT REGISTRATION <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-              <li onClick={() => navigate("/promotregistration")}>
-                Consilation
-              </li>
-            </ul>
-          </li>
-
           <li className="dropdown">REPORTS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
               <li

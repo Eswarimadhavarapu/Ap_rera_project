@@ -1,163 +1,235 @@
 import "../styles/preview.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { apiGet, apiPost } from "../api/api";
 
 const Preview = () => {
   const navigate = useNavigate();
 
-  return (
-  
-      <div className="main-container">
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-        {/* BREADCRUMB */}
-        <div className="breadcrumb-bar">
-          You are here :
-          <span> Home </span> /
-          <span> Registration </span> /
-          <span className="active"> Real Estate Agent Registration</span>
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
+  /* ================= LOAD PREVIEW ================= */
+  useEffect(() => {
+    const agentId = localStorage.getItem("agentId");
+
+    if (!agentId) {
+      setError("Agent ID missing. Please start registration again.");
+      setLoading(false);
+      return;
+    }
+
+    apiGet(`/api/agent/preview/${agentId}`)
+      .then((res) => {
+        if (res.success) {
+          setData(res.data);
+        } else {
+          setError(res.message || "Failed to load preview");
+        }
+      })
+      .catch(() => {
+        setError("Error fetching preview details");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  /* ================= SEND OTP ================= */
+  const sendOtp = async () => {
+    try {
+      const res = await apiPost("/api/agent/send-otp", {
+        agent_id: data.agent_id,
+      });
+
+      if (res.success) {
+        alert("OTP sent to registered mobile number");
+        setOtpSent(true);
+      } else {
+        alert(res.message || "Failed to send OTP");
+      }
+    } catch {
+      alert("OTP service error");
+    }
+  };
+
+  /* ================= VERIFY OTP ================= */
+  const verifyOtp = async () => {
+    if (!otp) {
+      alert("Please enter OTP");
+      return;
+    }
+
+    setVerifying(true);
+
+    try {
+      const res = await apiPost("/api/agent/verify-otp", {
+        agent_id: data.agent_id,
+        otp,
+      });
+
+      if (res.success) {
+        alert("OTP verified successfully");
+        setOtpVerified(true);
+      } else {
+        alert(res.message || "Invalid OTP");
+      }
+    } catch {
+      alert("OTP verification failed");
+    }
+
+    setVerifying(false);
+  };
+
+  if (loading) return <div className="loading">Loading preview...</div>;
+  if (error) return <div className="error">{error}</div>;
+
+  return (
+    <div className="agentpreview-main-container">
+      {/* BREADCRUMB */}
+      <div className="agentpreview-breadcrumb-bar">
+        You are here :
+        <span> Home </span> /
+        <span> Registration </span> /
+        <span className="agentpreview-active"> Real Estate Agent Registration</span>
+      </div>
+
+      <div className="agentpreview-content-padding">
+        <h2 className="agentpreview-page-title">Real Estate Agent Registration</h2>
+
+        {/* ================= APPLICANT DETAILS ================= */}
+        <h3 className="agentpreview-section-title">Applicant Details</h3>
+
+        <div className="agentpreview-preview-grid">
+          <div className="agentpreview-preview-label">Agent Name</div>
+          <div className="agentpreview-preview-value">{data.agent_name}</div>
+
+          <div className="agentpreview-preview-label">Father's Name</div>
+          <div className="agentpreview-preview-value">{data.father_name}</div>
+
+          <div className="agentpreview-preview-label">Occupation</div>
+          <div className="agentpreview-preview-value">{data.occupation_name}</div>
+
+          <div className="agentpreview-preview-label">Email Id</div>
+          <div className="agentpreview-preview-value">{data.email}</div>
+
+          <div className="agentpreview-preview-label">Aadhaar Number</div>
+          <div className="agentpreview-preview-value">{data.aadhaar}</div>
+
+          <div className="agentpreview-preview-label">PAN Card Number</div>
+          <div className="agentpreview-preview-value">{data.pan}</div>
+
+          <div className="agentpreview-preview-label">Mobile Number</div>
+          <div className="agentpreview-preview-value">{data.mobile}</div>
+
+          <div className="agentpreview-preview-label">Address</div>
+          <div className="agentpreview-preview-value">
+            {data.address1}, {data.address2}
+          </div>
         </div>
 
-        <div className="content-padding">
+        {/* ================= DOCUMENT DETAILS ================= */}
+        <h3 className="agentpreview-section-title">Uploaded Documents</h3>
 
-          {/* TITLE */}
-          <h2 className="page-title">Real Estate Agent Registration</h2>
+        <table className="agentpreview-doc-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>ITR Year 1</th>
+              <th>ITR Year 2</th>
+              <th>ITR Year 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>{data.itr_year1?.original_name}</td>
+              <td>{data.itr_year2?.original_name}</td>
+              <td>{data.itr_year3?.original_name}</td>
+            </tr>
+          </tbody>
+        </table>
 
-          {/* STEPPER */}
-          <div className="step-box">
-            <div className="step-line"></div>
+        {/* ================= DECLARATION ================= */}
+        <h3 className="agentpreview-section-title">Declaration</h3>
 
-            <div className="step-item">
-              <div className="step-circle completed">1</div>
-              <p>Agent Detail</p>
-            </div>
+<div className="agentpreview-declaration-center">
+  <p className="agentpreview-declaration-text">
+    I / We <b>{data.agent_name}</b> solemnly affirm and declare that the
+    particulars given above are true and correct to the best of my knowledge
+    and belief.
+  </p>
 
-            <div className="step-item">
-              <div className="step-circle completed">2</div>
-              <p>Upload Documents</p>
-            </div>
+  <div className="agentpreview-otp-center-box">
+    <label className="agentpreview-otp-label">Mobile Number *</label>
+   
 
-            <div className="step-item">
-              <div className="step-circle active">3</div>
-              <p>Preview</p>
-            </div>
+    <div className="agentpreview-otp-row">
+      <input
+        type="text"
+        value={data.mobile}
+        readOnly
+      />
 
-            <div className="step-item">
-              <div className="step-circle">4</div>
-              <p>Payment</p>
-            </div>
+      <button onClick={sendOtp}>
+        {otpSent ? "Resend OTP" : "Get OTP"}
+      </button>
+    </div>
 
-            <div className="step-item">
-              <div className="step-circle">5</div>
-              <p>Acknowledgement</p>
-            </div>
-          </div>
+    {otpSent && (
+      <div className="agentpreview-otp-row">
+        <input
+          type="text"
+          placeholder="Enter OTP"
+          value={otp}
+          maxLength={6}
+          onChange={(e) => setOtp(e.target.value)}
+        />
 
-          {/* AGENT TYPE */}
-          <div className="preview-section">
-            <div className="preview-row">
-              <div className="preview-label">Agent Type</div>
-              <div className="preview-value"></div>
-            </div>
-          </div>
+        <button onClick={verifyOtp}>
+          Verify OTP
+        </button>
+      </div>
+    )}
+  </div>
+</div>
 
-          {/* APPLICANT DETAILS */}
-          <h3 className="section-title">Applicant Details</h3>
+        {/* ================= ACTION BUTTONS ================= */}
+        <div className="agentpreview-form-footer-row">
+          <button
+            type="button"
+            className="agentpreview-applicant-back-btn"
+            onClick={() => navigate(-1)}
+          >
+            ← Back
+          </button>
 
-          <div className="preview-grid">
-            <div className="preview-label">Agent Name</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Father's Name</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Occupation</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Email Id</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Aadhaar Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">PAN Card Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">PAN Card Proof</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Mobile Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Land Line Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Registration Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Registration Upload</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">Date of Registration</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">GST Number</div>
-            <div className="preview-value"></div>
-
-            <div className="preview-label">GST Document</div>
-            <div className="preview-value"></div>
-          </div>
-
-          {/* ITR TABLE */}
-          <div className="preview-table-wrapper">
-            <table className="doc-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>ITR Of Preceding Year 1</th>
-                  <th>ITR Of Preceding Year 2</th>
-                  <th>ITR Of Preceding Year 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* DECLARATION */}
-          <h3 className="section-title">Declaration</h3>
-
-          <div className="declaration-box">
-            <label className="declaration-checkbox">
-              <input type="checkbox" />
-              <span>
-                I / We <b></b> solemnly affirm and declare that the particulars
-                given above are correct to my/our knowledge and belief.
-              </span>
-            </label>
-          </div>
-
-          {/* ACTION BUTTONS */}
-          <div className="action-buttons space-top">
-            <button className="submit-btn" onClick={() => window.print()}>
+          <div className="agentpreview-action-buttons agentpreview-space-top">
+            <button className="agentpreview-submit-btn" onClick={() => window.print()}>
               Print
             </button>
 
             <button
-              className="submit-btn primary"
-              onClick={() => navigate("/agent-payment")}
-            >
-              Proceed for Payment
-            </button>
-          </div>
+  className="agentpreview-submit-btn agentpreview-primary"
+  onClick={async () => {
+    const agentId = localStorage.getItem("agentId");
 
+    await apiPost(`/api/agent/create-payment/${agentId}`);
+    navigate("/agent-payment");
+  }}
+>
+  Proceed for Payment
+</button>
+          </div>
         </div>
       </div>
-   
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@
 
 
 
-.main-container {
+.agentpreview-main-container {
   width: 92%;
   margin: 16px auto;
   background: #ffffff;
@@ -17,7 +17,7 @@
    BREADCRUMB
 ========================= */
 
-.breadcrumb-bar {
+.agentpreview-breadcrumb-bar {
   background: #1087e6;
   color: #ffffff;
   font-size: 14px;
@@ -25,11 +25,11 @@
   box-sizing: border-box;
 }
 
-.breadcrumb-bar span {
+.agentpreview-breadcrumb-bar span {
   margin: 0 4px;
 }
 
-.breadcrumb-bar .active {
+.agentpreview-breadcrumb-bar .agentpreview-active {
   font-weight: 600;
 }
 
@@ -37,7 +37,7 @@
    CONTENT WRAPPER
 ========================= */
 
-.content-padding {
+.agentpreview-content-padding {
   padding: 20px;
 }
 
@@ -45,7 +45,7 @@
    TITLE
 ========================= */
 
-.page-title {
+.agentpreview-page-title {
   font-size: 22px;
   border-bottom: 3px solid #1087e6;
   display: inline-block;
@@ -57,7 +57,7 @@
    STEPPER
 ========================= */
 
-.step-box {
+.agentpreview-step-box {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -66,7 +66,7 @@
   border: none;                /* no inner box */
 }
 
-.step-line {
+.agentpreview-step-line {
   position: absolute;
   top: 32px;
   left: 40px;
@@ -75,12 +75,12 @@
   background: #cfcfcf;
 }
 
-.step-item {
+.agentpreview-step-item {
   text-align: center;
   z-index: 1;
 }
 
-.step-circle {
+.agentpreview-step-circle {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -93,14 +93,14 @@
   font-size: 14px;
 }
 
-.step-circle.completed,
-.step-circle.active {
+.agentpreview-step-circle.agentpreview-completed,
+.agentpreview-step-circle.agentpreview-active {
   background: #0bb35c;
   color: #fff;
   border-color: #0bb35c;
 }
 
-.step-item p {
+.agentpreview-step-item p {
   margin-top: 6px;
   font-size: 13px;
   color: #555;
@@ -110,7 +110,7 @@
    SECTION TITLES
 ========================= */
 
-.section-title {
+.agentpreview-section-title {
   color: #1087e6;
   border-bottom: 2px solid #1087e6;
   display: inline-block;
@@ -122,7 +122,7 @@
    PREVIEW GRID
 ========================= */
 
-.preview-grid {
+.agentpreview-preview-grid {
   display: grid;
   grid-template-columns: 220px 1fr 220px 1fr;
   column-gap: 20px;
@@ -131,12 +131,12 @@
   margin-bottom: 20px;
 }
 
-.preview-label {
+.agentpreview-preview-label {
   font-weight: 600;
   color: #333;
 }
 
-.preview-value {
+.agentpreview-preview-value {
   min-height: 18px;            /* keeps empty rows visible */
 }
 
@@ -144,11 +144,11 @@
    PREVIEW SINGLE ROW
 ========================= */
 
-.preview-section {
+.agentpreview-preview-section {
   margin-bottom: 10px;
 }
 
-.preview-row {
+.agentpreview-preview-row {
   display: grid;
   grid-template-columns: 220px 1fr;
   column-gap: 20px;
@@ -159,23 +159,23 @@
    TABLE
 ========================= */
 
-.preview-table-wrapper {
+.agentpreview-preview-table-wrapper {
   margin-top: 10px;
 }
 
-.doc-table {
+.agentpreview-doc-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.doc-table th {
+.agentpreview-doc-table th {
   background: #2f4f4f;
   color: #ffffff;
   padding: 10px;
 }
 
-.doc-table td {
+.agentpreview-doc-table td {
   border: 1px solid #ccc;
   padding: 10px;
   min-height: 20px;
@@ -185,11 +185,11 @@
    DECLARATION
 ========================= */
 
-.declaration-box {
+.agentpreview-declaration-box {
   margin-top: 10px;
 }
 
-.declaration-checkbox {
+.agentpreview-declaration-checkbox {
   font-size: 14px;
   display: flex;
   align-items: flex-start;
@@ -200,18 +200,18 @@
    ACTION BUTTONS
 ========================= */
 
-.action-buttons {
+.agentpreview-action-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 15px;
   margin-top: 30px;
 }
 
-.space-top {
+.agentpreview-space-top {
   margin-top: 30px;
 }
 
-.submit-btn {
+.agentpreview-submit-btn {
   background: #1087e6;
   color: #ffffff;
   border: none;
@@ -220,6 +220,58 @@
   font-size: 14px;
 }
 
-.submit-btn.primary {
+.agentpreview-submit-btn.agentpreview-primary {
   background: #0a5fb4;
+}
+/* ===== DECLARATION CENTER ===== */
+
+.agentpreview-declaration-center {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.agentpreview-declaration-text {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.agentpreview-otp-center-box {
+  display: inline-block;
+  padding: 15px 25px;
+  border-radius: 6px;
+}
+
+.agentpreview-otp-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.agentpreview-otp-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.agentpreview-otp-row input {
+  width: 180px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.agentpreview-otp-row button {
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.agentpreview-otp-row button:hover {
+  background-color: #084c9e;
 }

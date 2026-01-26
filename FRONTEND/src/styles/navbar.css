@@ -60,7 +60,7 @@
 }
 
 /* Right side button */
-.search-btn {
+/* .search-btn {
   position: absolute;
   right: 20px;
   background: red;
@@ -76,7 +76,7 @@
 /* ===== NAVBAR ===== */
 .navbar {
   background: #0b4da2;
-}
+} */
 
 .nav-list {
   list-style: none;
@@ -87,10 +87,10 @@
 
 .nav-list > li {
   position: relative;
-  padding: 11px 10px;
+  padding: 10px 8px;
   color: #ffffff;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 10px;
   white-space: nowrap;
 }
 
@@ -217,3 +217,126 @@
 .arrow {
   float: right;
 }
+
+
+
+
+
+/* =====================================================
+   RIGHT SIDE (SEARCH + LANGUAGE)
+===================================================== */
+.top-header-right {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px;
+}
+
+/* Search Button (LEFT) */
+.search-btn {
+  background: red;
+  color: #fff;
+  border: none;
+  height: 32px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  background: #c40000;
+}
+
+/* =====================================================
+   GOOGLE TRANSLATE (RIGHT, NO POWERED BY)
+===================================================== */
+
+/* Wrapper */
+#google_translate_element {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Widget */
+.goog-te-gadget {
+  display: flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;     /* hides "Powered by" text */
+}
+
+/* Restore font for dropdown only */
+.goog-te-gadget select {
+  font-size: 13px !important;
+}
+
+/* Dropdown */
+.goog-te-combo {
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0 6px;
+  border: 1px solid #9fb6c3;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* Hide Google branding */
+.goog-logo-link,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+/* Remove Google top banner */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+.navbar {
+  background: linear-gradient(to right, oklch(71.49% 0.12422 211.24), #671f90de);
+}
+
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0 30px;
+}
+
+.nav-list > li {
+  position: relative;
+  padding: 14px 16px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.nav-list > li:hover {
+  background:  oklch(71.49% 0.12422 211.24);
+}
+.new-badge-a{
+  color: red;
+  text-decoration: none;
+}
+.new-badge-a:hover{
+  text-decoration: none;
+} 

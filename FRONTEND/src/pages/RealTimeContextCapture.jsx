@@ -9,14 +9,13 @@ export default function RealTimeContextCapture() {
     <section className="rtc-page">
 
       {/* Breadcrumb */}
-      <div className="rtc-breadcrumb">
-        <span className="rtc-bread-text">You are here :</span>
-        <Link className="rtc-bread-link" to="/">Home</Link>
-        <span className="rtc-bread-slash">/</span>
-        <span className="rtc-bread-current">
-          Real time context capture using Drones
-        </span>
-      </div>
+       <div className="homeview-gap-zone"></div>
+           <div className="homeview-breadcrumb-bar">
+             <span className="homeview-bread-text">You are here :</span>
+             <Link className="homeview-bread-link" to="/">Home</Link>
+             <span className="homeview-bread-slash">/</span>
+             <span className="homeview-bread-current">Real Time Context Capture Using Drones</span>
+           </div>
 
       {/* Content */}
       <div className="rtc-container">

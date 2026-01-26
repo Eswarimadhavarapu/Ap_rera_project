@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../styles/AnnouncementPopup.css";
 
 // IMAGE
 import announcementImg from "../../public/assets/images/apreraad_new1.jpg";
 
-// PDF
+// PDFS
 import Circular from "../../public/assets/pdfs/Circular-p-18.pdf";
 import QUStatus from "../../public/assets/pdfs/QU Status Report.pdf";
 import CircularCR from "../../public/assets/pdfs/Circular-CR-Levy of Fee.pdf";
@@ -47,10 +48,22 @@ const announcements = [
 const AnnouncementPopup = () => {
   // 1 = Image popup, 2 = Announcement popup, 0 = closed
   const [step, setStep] = useState(1);
+  const location = useLocation();
 
   useEffect(() => {
-    setStep(1);
-  }, []);
+  
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, []);
+
+
+
+
+  // ✅ SHOW POPUP ONLY ON HOME PAGE
+  if (location.pathname !== "/") {
+    return null;
+  }
 
   if (step === 0) return null;
 
@@ -63,7 +76,6 @@ const AnnouncementPopup = () => {
       <div className="announcement-popup-container">
         {/* HEADER */}
         <div className="announcement-popup-header">
-          {/* ✅ HEADER TEXT CONDITION */}
           <span>{step === 2 ? "ANNOUNCEMENTS" : ""}</span>
 
           <button
@@ -77,11 +89,15 @@ const AnnouncementPopup = () => {
         </div>
 
         {/* ===== POPUP 1 – IMAGE ===== */}
-        {step === 1 && (
-          <div className="announcement-popup-body announcement-image-only">
-            <img src={announcementImg} alt="APRERA Circular" />
-          </div>
-        )}
+   {step === 1 && (
+  <div className="announcement-popup-body">
+    <div className="announcement-doc-frame">
+      <img src={announcementImg} alt="APRERA Circular" />
+    </div>
+  </div>
+)}
+
+
 
         {/* ===== POPUP 2 – ANNOUNCEMENTS ===== */}
         {step === 2 && (
