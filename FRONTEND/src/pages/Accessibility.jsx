@@ -7,6 +7,7 @@ const Accessibility = () => {
     <div className="accessibility-page">
 
       {/* Full width breadcrumb */}
+      {/* Full widthhaiu*/}
       <div className="accessibility-breadcrumb">
         <span>You are here :</span>
         <a href="/"> Home</a>
