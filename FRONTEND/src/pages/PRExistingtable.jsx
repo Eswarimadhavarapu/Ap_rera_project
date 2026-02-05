@@ -1,0 +1,107 @@
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import "../styles/ExtensionProcess.css";
+
+const PRExistingtable = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const panNumber = location.state?.panNumber;
+
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const formatDate = (d) =>
+    d ? new Date(d).toLocaleDateString("en-GB") : "—";
+
+  useEffect(() => {
+    if (!panNumber) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/project/basic-details-by-pan?pan=${panNumber}`
+        );
+
+        const json = await res.json();
+
+        if (json.success) {
+          setRows(json.data);
+        } else {
+          setRows([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setRows([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [panNumber]);
+
+  return (
+    <div className="extension-pa-page">
+      <h2 className="extension-pa-title">Extension process</h2>
+
+      {!panNumber && (
+        <p style={{ color: "red" }}>
+          PAN not found. Please login again.
+        </p>
+      )}
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="extension-pa-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Application No</th>
+              <th>Promoter Name</th>
+              <th>BA No</th>
+              <th>Validity From</th>
+              <th>Validity To</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan="6">No data found</td>
+              </tr>
+            ) : (
+              rows.map((row, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+
+                  <td
+                    className="extension-pa-link"
+                    onClick={() =>
+                      navigate("/prexisting", {
+                        state: { applicationNumber: row.application_number }
+                      })
+                    }
+                  >
+                    {row.application_number}
+                  </td>
+
+                  <td>{row.name}</td>
+                  <td>{row.building_plan_no}</td>
+                  <td>{formatDate(row.building_permission_from)}</td>
+                  <td>{formatDate(row.building_permission_upto)}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default PRExistingtable;

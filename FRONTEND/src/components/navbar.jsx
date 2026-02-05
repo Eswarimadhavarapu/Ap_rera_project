@@ -140,7 +140,7 @@ const Navbar = () => {
         e.stopPropagation();
         navigate("/otplogin");
       }}>Apply for project extension</li>
-                  <li>Applied for change request</li>
+                  <li>Apply for change request</li>
                   <li>Closure</li>
                   <li onClick={(e) => {
         e.stopPropagation();

@@ -89,7 +89,7 @@
   font-size: 13px;
 }
 
-.complaintregistration-step-circle.active {
+.complaintregistration-step-circle .complaintregistration-active {
   background: #4caf50;
 }
 

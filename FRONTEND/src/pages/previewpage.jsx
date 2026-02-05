@@ -3,100 +3,301 @@ import { useNavigate } from "react-router-dom";
 import "../styles/previewpage.css";
 import { apiGet, BASE_URL } from "../api/api";
 
-//const API_BASE = "http://127.0.0.1:5055/api";
-
-export default function PreviewPage({ complaintData }) {
-
-  // ✅ Hook MUST be inside component
+export default function PreviewPage({ complaintData, setCurrentStep }) {
   const navigate = useNavigate();
-
   const applicationNo = complaintData?.complaint_id;
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Load complaint preview
+  /* ================= LOAD DATA ================= */
   useEffect(() => {
     if (!applicationNo) return;
 
-    const loadPreview = async () => {
+    const load = async () => {
       try {
-        const json = await apiGet(`/api/complint/${applicationNo}`);
-        setData(json);
-      } catch (err) {
-        console.error(err);
-        alert("Unable to load preview");
+        const res = await apiGet(`/api/complint/${applicationNo}`);
+        setData(res);
+      } catch {
+        alert("Failed to load preview");
       } finally {
         setLoading(false);
       }
     };
-
-    loadPreview();
+    load();
   }, [applicationNo]);
 
-
-
   if (loading) return <div className="preview-container">Loading...</div>;
-  if (!data) return <div className="preview-container">No data found</div>;
+  if (!data) return <div className="preview-container">No Data</div>;
 
   const { complainant, respondent, complaint } = data;
 
+  /* ================= TYPES ================= */
+  const complaintAgainst = respondent?.type;
+  const complaintBy = complainant?.type;
+
+  const isAgent = complaintAgainst === "Agent";
+  const isAllottee = complaintAgainst === "Allottee";
+  const isPromoter = complaintAgainst === "Promoter";
+
+  const byAgent = complaintBy === "Agent";
+  const byAllottee = complaintBy === "Allottee";
+  const byOthers = complaintBy === "Others";
+  const byPromoter = complaintBy === "Promoter";
+
+  /* ================= COMBINATIONS ================= */
+  const isPromoterByAllottee = isPromoter && byAllottee;
+  const isAllotteeByPromoter = isAllottee && byPromoter;
+  const isAgentAgainstPromoter = isPromoter && byAgent;
+
+  /* ================= RERA ================= */
+/* ================= RERA (FIXED LOGIC) ================= */
+const complainantRERA_Yes =
+  complainant?.is_rera_registered === true ||
+  !!complainant?.registration_id;
+
+const complainantRERA_No = !complainantRERA_Yes;
+
+const respondentRERA_Yes =
+  respondent?.is_rera_registered === true ||
+  !!respondent?.registration_id;
+
+const respondentRERA_No = !respondentRERA_Yes;
+
+
+  /* ================= VISIBILITY (MATCH FORM EXACTLY) ================= */
+  const showAllotteeComplainantOnly =
+    (isAgent && (byAllottee || byOthers)) || isPromoterByAllottee;
+
+  const showComplainantBlock =
+    complaintBy &&
+    !showAllotteeComplainantOnly &&
+    (byAllottee || byPromoter || byAgent);
+
+  const showRespondentBlock = isAgent || isAllottee || isPromoter;
+
+  const showRespondentAddress =
+    isAllottee ||
+    (isAgent && respondentRERA_No) ||
+    (isPromoter && respondentRERA_No);
+
+  const showComplaintRegarding = byAllottee;
+
+  const showDescriptionText =
+    byOthers ||
+    byPromoter ||
+    isAgentAgainstPromoter ||
+    (byAllottee && !isPromoterByAllottee);
+
+  const showDescriptionTable = isPromoterByAllottee;
+
+  /* ================= DOCUMENTS ================= */
+  const systemDocs = Object.entries(
+    complaint?.complaint_documents || {}
+  ).map(([k, v]) => ({
+    description: k.replace(/_/g, " "),
+    document: v,
+  }));
+
+  const supportingDocs = complaint?.supporting_documents || [];
+  const allDocuments = [...systemDocs, ...supportingDocs];
+
   return (
     <div className="preview-container">
-
-      {/* ================= PRINT AREA ================= */}
       <div id="print-area">
 
         <h3>Complaint Registration</h3>
 
+        {/* ================= COMPLAINT DETAILS ================= */}
         <Title text="Complaint Details" />
         <Grid>
-          <Item label="Application Number" value={complaint.complaint_id} />
-          <Item label="Complaint Against" value={respondent.type} />
-          <Item label="Complaint By" value={complainant.type} />
+          <Item label="Application Number" value={complaint?.complaint_id} />
+          <Item label="Complaint Against" value={complaintAgainst} />
+          <Item label="Complaint By" value={complaintBy} />
         </Grid>
 
-        <Title text="Details Of The Complainant" />
+        {/* ================= SIMPLE COMPLAINANT ================= */}
+        {showAllotteeComplainantOnly && (
+          <>
+            <Title text="Details Of The Complainant" />
+            <Grid>
+              <Item label="Name of the Complainant" value={complainant?.name} />
+              <Item label="Mobile No" value={complainant?.mobile} />
+              <Item label="Email ID" value={complainant?.email} />
+            </Grid>
+
+            <Title text="Complainant Communication Address" />
+<Grid>
+  <Item label="Address Line 1" value={complainant?.address?.line1} />
+  <Item label="Address Line 2" value={complainant?.address?.line2} />
+  <Item label="State / UT" value={complainant?.address?.state} />
+  <Item label="District" value={complainant?.address?.district} />
+  <Item label="PIN Code" value={complainant?.address?.pincode} />
+</Grid>
+
+          </>
+        )}
+
+        {/* ================= COMPLAINANT (RERA BASED) ================= */}
+        {showComplainantBlock && (
+          <>
+            <Title text="Details Of The Complainant" />
+            <Grid>
+              <Item
+                label="Is He/She Registered with AP RERA"
+                value={complainantRERA_Yes ? "Yes" : "No"}
+              />
+            </Grid>
+
+            {complainantRERA_Yes && (
+              <Grid>
+                <Item label="Registration ID" value={complainant?.registration_id} />
+              </Grid>
+            )}
+
+            {complainantRERA_No && (
+              <>
+                <Grid>
+                  <Item label="Name of the Complainant" value={complainant?.name} />
+                  <Item label="Mobile No" value={complainant?.mobile} />
+                  <Item label="Email ID" value={complainant?.email} />
+                </Grid>
+
+                <Title text="Complainant Communication Address" />
+                <Grid>
+<Item label="Address Line 1" value={complainant?.address?.line1} />
+<Item label="Address Line 2" value={complainant?.address?.line2} />
+<Item label="State / UT" value={complainant?.address?.state} />
+<Item label="District" value={complainant?.address?.district} />
+<Item label="PIN Code" value={complainant?.address?.pincode} />
+
+
+                </Grid>
+              </>
+            )}
+          </>
+        )}
+
+        {/* ================= RESPONDENT ================= */}
+        {showRespondentBlock && (
+          <>
+            <Title text="Details Of The Respondent" />
+
+            {(isAgent || isPromoter) && (
+              <Grid>
+                <Item
+                  label="Is He/She Registered with AP RERA"
+                  value={respondentRERA_Yes ? "Yes" : "No"}
+                />
+              </Grid>
+            )}
+
+            {respondentRERA_Yes && (
+              <Grid>
+                <Item label="Registration ID" value={respondent?.registration_id} />
+              </Grid>
+            )}
+
+            {(isAllottee || (isAgent && respondentRERA_No) || (isPromoter && respondentRERA_No)) && (
+              <Grid>
+                <Item label="Project Name" value={respondent?.project_name} />
+                <Item
+                  label={isPromoter ? "Promoter Name" : "Name"}
+                  value={respondent?.name}
+                />
+                <Item label="Mobile No" value={respondent?.mobile} />
+                <Item label="Email ID" value={respondent?.email} />
+              </Grid>
+            )}
+          </>
+        )}
+
+        {/* ================= RESPONDENT ADDRESS ================= */}
+        {showRespondentAddress && (
+          <>
+            <Title text="Respondent Communication Address" />
+            <Grid>
+<Item label="Address Line 1" value={respondent?.address?.line1} />
+<Item label="Address Line 2" value={respondent?.address?.line2} />
+<Item label="State / UT" value={respondent?.address?.state} />
+<Item label="District" value={respondent?.address?.district} />
+<Item label="PIN Code" value={respondent?.address?.pincode} />
+
+            </Grid>
+          </>
+        )}
+
+        {/* ================= COMPLAINT DETAILS ================= */}
+        <Title text="Details Of The Complaint" />
         <Grid>
-          <Item label="Name" value={complainant.name} />
-          <Item label="Mobile" value={complainant.mobile} />
-          <Item label="Email" value={complainant.email} />
+          <Item
+            label="Subject of Complaint"
+            value={
+              complaint?.subject === "Any Other"
+                ? complaint?.subject_other
+                : complaint?.subject
+            }
+          />
+          <Item
+            label="Relief Sought from APRERA"
+            value={
+              complaint?.relief_sought === "Any Other"
+                ? complaint?.relief_other
+                : complaint?.relief_sought
+            }
+          />
+          {isPromoter && (
+            <Item label="Interim Order" value={complaint?.interim_order || "No"} />
+          )}
         </Grid>
 
-        <Title text="Complainant Address" />
-        <Grid>
-          <Item label="Address Line 1" value={complainant.address?.line1} />
-          <Item label="Address Line 2" value={complainant.address?.line2} />
-          <Item label="State" value={complainant.address?.state} />
-          <Item label="District" value={complainant.address?.district} />
-          <Item label="PIN Code" value={complainant.address?.pincode} />
-        </Grid>
+        {showComplaintRegarding && (
+          <Grid>
+            <Item
+              label="Complaint Regarding"
+              value={complaint?.complaint_facts?.complaint_regarding}
+            />
+          </Grid>
+        )}
 
-        <Title text="Respondent Details" />
-        <Grid>
-          <Item label="Name" value={respondent.name} />
-          <Item label="Mobile" value={respondent.mobile} />
-          <Item label="Email" value={respondent.email} />
-          <Item label="Project Name" value={respondent.project_name} />
-        </Grid>
+        {/* ================= DESCRIPTION ================= */}
+        {showDescriptionText && (
+          <>
+            <Title text="Description of Complaint" />
+            <div className="preview-text">
+              {complaint?.description || "-"}
+            </div>
+          </>
+        )}
 
-        <Title text="Respondent Address" />
-        <Grid>
-          <Item label="Address Line 1" value={respondent.address?.line1} />
-          <Item label="Address Line 2" value={respondent.address?.line2} />
-          <Item label="State" value={respondent.address?.state} />
-          <Item label="District" value={respondent.address?.district} />
-          <Item label="PIN Code" value={respondent.address?.pincode} />
-        </Grid>
+        {showDescriptionTable && (
+          <>
+            <Title text="Description of Complaint" />
+            <table className="preview-table">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Agreed</th>
+                  <th>Delivered</th>
+                  <th>Deviation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(complaint?.description_details || []).map((r, i) => (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{r.agreed}</td>
+                    <td>{r.delivered}</td>
+                    <td>{r.deviation}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
 
-        <Title text="Complaint Details" />
-        <Grid>
-          <Item label="Subject" value={complaint.subject} />
-          <Item label="Relief" value={complaint.relief_sought} />
-          <Item label="Description" value={complaint.description} />
-        </Grid>
-
-        <Title text="Uploaded Documents" />
+        {/* ================= DOCUMENTS ================= */}
+        <Title text="Supporting Documents" />
         <table className="preview-table">
           <thead>
             <tr>
@@ -106,8 +307,12 @@ export default function PreviewPage({ complaintData }) {
             </tr>
           </thead>
           <tbody>
-            {complaint.supporting_documents?.length > 0 ? (
-              complaint.supporting_documents.map((doc, i) => (
+            {allDocuments.length === 0 ? (
+              <tr>
+                <td colSpan="3">No Documents</td>
+              </tr>
+            ) : (
+              allDocuments.map((doc, i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{doc.description}</td>
@@ -122,10 +327,6 @@ export default function PreviewPage({ complaintData }) {
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan="3">No documents</td>
-              </tr>
             )}
           </tbody>
         </table>
@@ -134,29 +335,40 @@ export default function PreviewPage({ complaintData }) {
 
       {/* ================= FOOTER ================= */}
       <div className="preview-footer">
-        <button onClick={() => window.print()}>Print</button>
+  {/* LEFT */}
+  <button
+    className="preview-back-btn"
+    onClick={() => setCurrentStep(1)}
+  >
+    Back
+  </button>
 
-        {/* ✅ PAYMENT REDIRECT */}
-        <button
-          onClick={() =>
-            navigate("/paymentpage", {
-              state: {
-                applicationNo: complaint.complaint_id,
-                complainantName: complainant.name,
-                complainantMobile: complainant.mobile,
-              },
-            })
-          }
-        >
-          Proceed for Payment
-        </button>
-
-      </div>
+  {/* RIGHT */}
+  <div className="footer-right">
+    <button className="action-btn" onClick={() => window.print()}>
+      Print
+    </button>
+    <button
+      className="action-btn"
+      onClick={() =>
+        navigate("/paymentpage", {
+          state: {
+            applicationNo: complaint?.complaint_id,
+            complainantName: complainant?.name,
+            complainantMobile: complainant?.mobile,
+          },
+        })
+      }
+    >
+      Proceed for Payment
+    </button>
+  </div>
+</div>
     </div>
   );
 }
 
-/* ================= REUSABLE UI ================= */
+/* ================= UI HELPERS ================= */
 
 const Title = ({ text }) => (
   <>
@@ -175,3 +387,270 @@ const Item = ({ label, value }) => (
     <div className="preview-grid-value">{value || "-"}</div>
   </div>
 );
+
+
+// import React, { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import "../styles/previewpage.css";
+// import { apiGet, BASE_URL } from "../api/api";
+
+// export default function PreviewPage({ complaintData, setCurrentStep }) {
+
+//   const navigate = useNavigate();
+
+//   const applicationNo = complaintData?.complaint_id;
+
+//   const [data, setData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   /* ================= LOAD PREVIEW ================= */
+//   useEffect(() => {
+//     if (!applicationNo) return;
+
+//     const loadPreview = async () => {
+//       try {
+//         const json = await apiGet(`/api/complint/${applicationNo}`);
+//         setData(json);
+//       } catch (err) {
+//         console.error(err);
+//         alert("Unable to load preview");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     loadPreview();
+//   }, [applicationNo]);
+
+//   if (loading) return <div className="preview-container">Loading...</div>;
+//   if (!data) return <div className="preview-container">No data found</div>;
+
+//   const { complainant, respondent, complaint } = data;
+
+//   /* ================= CONDITIONS ================= */
+//   const isPromoterByAllottee =
+//     respondent?.type === "Promoter" &&
+//     complainant?.type === "Allottee";
+
+//   /* ================= MERGE DOCUMENTS ================= */
+//   const allDocuments = [
+//     ...Object.entries(complaint?.complaint_documents || {}).map(
+//       ([key, file]) => ({
+//         description: key.replace(/_/g, " "),
+//         document: file,
+//       })
+//     ),
+//     ...(complaint?.supporting_documents || []),
+//   ];
+
+//   return (
+//     <div className="pw-preview-container">
+//       <div id="print-area">
+
+//         <h3>Complaint Registration</h3>
+
+//         {/* ================= BASIC DETAILS ================= */}
+//         <Title text="Complaint Details" />
+//         <Grid>
+//           <Item label="Application Number" value={complaint?.complaint_id} />
+//           <Item label="Complaint Against" value={respondent?.type} />
+//           <Item label="Complaint By" value={complainant?.type} />
+//         </Grid>
+
+//         {/* ================= COMPLAINANT ================= */}
+//         <Title text="Details Of The Complainant" />
+//         <Grid>
+//           <Item label="Name" value={complainant?.name} />
+//           <Item label="Mobile" value={complainant?.mobile} />
+//           <Item label="Email" value={complainant?.email} />
+//         </Grid>
+
+//         <Title text="Complainant Address" />
+//         <Grid>
+//           <Item label="Address Line 1" value={complainant?.address?.line1} />
+//           <Item label="Address Line 2" value={complainant?.address?.line2} />
+//           <Item label="State" value={complainant?.address?.state} />
+//           <Item label="District" value={complainant?.address?.district} />
+//           <Item label="PIN Code" value={complainant?.address?.pincode} />
+//         </Grid>
+
+//         {/* ================= RESPONDENT ================= */}
+//         <Title text="Respondent Details" />
+//         <Grid>
+//           <Item label="Name" value={respondent?.name} />
+//           <Item label="Mobile" value={respondent?.mobile} />
+//           <Item label="Email" value={respondent?.email} />
+//           <Item label="Project Name" value={respondent?.project_name} />
+//         </Grid>
+
+//         <Title text="Respondent Address" />
+//         <Grid>
+//           <Item label="Address Line 1" value={respondent?.address?.line1} />
+//           <Item label="Address Line 2" value={respondent?.address?.line2} />
+//           <Item label="State" value={respondent?.address?.state} />
+//           <Item label="District" value={respondent?.address?.district} />
+//           <Item label="PIN Code" value={respondent?.address?.pincode} />
+//         </Grid>
+
+//         {/* ================= COMPLAINT DETAILS ================= */}
+//         <Title text="Details Of The Complaint" />
+//         <Grid>
+//           <Item label="Subject of Complaint" value={complaint?.subject} />
+//           <Item
+//             label="Complaint Regarding"
+//             value={complaint?.complaint_facts?.complaint_regarding}
+//           />
+//         </Grid>
+
+//         {/* ================= DESCRIPTION (CONDITIONAL) ================= */}
+//         {isPromoterByAllottee ? (
+//           <>
+//             <div className="pw-section-subtitle">Description of Complaint</div>
+
+//             <table className="pw-preview-table">
+//               <thead>
+//                 <tr>
+//                   <th>S.No.</th>
+//                   <th>Agreed</th>
+//                   <th>Delivered</th>
+//                   <th>Deviation</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {(complaint?.description_details || []).length > 0 ? (
+//                   complaint.description_details.map((row, index) => (
+//                     <tr key={index}>
+//                       <td>{index + 1}</td>
+//                       <td>{row.agreed || "-"}</td>
+//                       <td>{row.delivered || "-"}</td>
+//                       <td>{row.deviation || "-"}</td>
+//                     </tr>
+//                   ))
+//                 ) : (
+//                   <tr>
+//                     <td colSpan="4">No description details provided</td>
+//                   </tr>
+//                 )}
+//               </tbody>
+//             </table>
+//           </>
+//         ) : (
+//           <>
+//             <div className="pw-section-subtitle">Description of Complaint</div>
+//             <div className="pw-preview-text">
+//               {complaint?.description || "-"}
+//             </div>
+//           </>
+//         )}
+
+//         <Grid>
+//           <Item label="Relief Sought from APRERA" value={complaint?.relief_sought} />
+//           <Item label="Interim Order" value={complaint?.interim_order || "-"} />
+//         </Grid>
+
+//         {/* ================= DOCUMENTS ================= */}
+//         <Title text="Uploaded Documents" />
+//         <table className="preview-table">
+//           <thead>
+//             <tr>
+//               <th>S.No</th>
+//               <th>Description</th>
+//               <th>File</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {allDocuments.length > 0 ? (
+//               allDocuments.map((doc, i) => (
+//                 <tr key={i}>
+//                   <td>{i + 1}</td>
+//                   <td>{doc.description}</td>
+//                   <td>
+//                     <a
+//                       href={`${BASE_URL}/api/complint/document/${doc.document}`}
+//                       target="_blank"
+//                       rel="noreferrer"
+//                     >
+//                       View
+//                     </a>
+//                   </td>
+//                 </tr>
+//               ))
+//             ) : (
+//               <tr>
+//                 <td colSpan="3">No documents</td>
+//               </tr>
+//             )}
+//           </tbody>
+//         </table>
+
+//       </div>
+
+//       {/* ================= DECLARATION ================= */}
+//       <Title text="Declaration" />
+
+//       <div className="declaration-text">
+//         I hereby declare that the complaint mentioned above is not pending before
+//         any court of law or any other authority or any other tribunal.
+//       </div>
+
+//       <div className="declaration-checkbox">
+//         <input type="checkbox" checked readOnly />
+//         <span>
+//           <strong>{complainant?.name}</strong>, the complainant do hereby verify
+//           that the contents of above are true to my personal knowledge and belief
+//           and that I have not suppressed any material fact(s).
+//         </span>
+//       </div>
+
+//       {/* ================= FOOTER ================= */}
+//       <div className="preview-footer">
+//         <button 
+//         className="preview-back-btn"
+//         onClick={() => setCurrentStep(1)}>
+//           Back
+//         </button>
+
+
+//         <div className="footer-right">
+//           <button className="action-btn" onClick={() => window.print()}>
+//             Print
+//           </button>
+//           <button
+//             className="action-btn"
+//             onClick={() =>
+//               navigate("/paymentpage", {
+//                 state: {
+//                   applicationNo: complaint?.complaint_id,
+//                   complainantName: complainant?.name,
+//                   complainantMobile: complainant?.mobile,
+//                 },
+//               })
+//             }
+//           >
+//             Proceed for Payment
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// /* ================= REUSABLE UI ================= */
+
+// const Title = ({ text }) => (
+//   <>
+//     <div className="preview-title">{text}</div>
+//     <div className="preview-underline"></div>
+//   </>
+// );
+
+// const Grid = ({ children }) => (
+//   <div className="preview-grid">{children}</div>
+// );
+
+// const Item = ({ label, value }) => (
+//   <div>
+//     <div className="preview-grid-label">{label}</div>
+//     <div className="preview-grid-value">{value || "-"}</div>
+//   </div>
+// );

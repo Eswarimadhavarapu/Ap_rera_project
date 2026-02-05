@@ -11,10 +11,35 @@ const StructuralEngineers = ({
   onStateChange,
   onUpdate,
 }) => {
-const [engineerList, setEngineerList] = useState(engineers);
+const [engineerList, setEngineerList] = useState([]);
+
+const appNo =
+  applicationNumber || sessionStorage.getItem("applicationNumber");
+
+const panNo =
+  panNumber || sessionStorage.getItem("panNumber");
+
 useEffect(() => {
-  setEngineerList(engineers);
-}, [engineers]);
+  const loadEngineers = async () => {
+    if (!appNo || !panNo) return;
+
+    try {
+      const res = await fetch(
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
+      );
+      const json = await res.json();
+
+      if (json.success) {
+        setEngineerList(json.data.engineers || []);
+      }
+    } catch (err) {
+      console.error("Failed to load engineers", err);
+    }
+  };
+
+  loadEngineers();
+}, [appNo, panNo]);
+
 
   const [formData, setFormData] = useState({
     engineer_name: "",
@@ -95,14 +120,29 @@ useEffect(() => {
           : Number(formData.number_of_key_projects),
     };
 
-    const response = await apiPost(
-      "/api/associate/structural-engineer",
-      payload
-    );
+   const response = await apiPost(
+  "/api/associate/structural-engineer",
+  payload
+);
 
-    if (!response?.success) {
-      throw new Error("Failed to add structural engineer");
-    }
+if (!response?.success) {
+  throw new Error("Failed to add structural engineer");
+}
+
+const engineerId =
+  response.data?.id || response.data?.data?.id;
+
+if (!engineerId) {
+  throw new Error("Engineer ID not returned");
+}
+
+await apiPost("/api/application/associate", {
+  application_number: appNo,
+  pan_number: panNo,
+  associate_type: "engineer",
+  associate_id: engineerId,
+});
+
 
     alert("Structural Engineer added successfully");
 const createdEngineer = {

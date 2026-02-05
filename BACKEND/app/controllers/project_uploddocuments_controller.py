@@ -10,72 +10,55 @@ from app.models.project_registration_consultant import ProjectRegistrationConsul
 logger = logging.getLogger(__name__)
 
 project_upload_documents_bp = Blueprint(
-    "project_upload_documents", __name__
+    "project_upload_documents",
+    __name__
 )
 
 # =====================================================
-# API 1️⃣ : UPLOAD PROJECT DOCUMENTS
+# API 1️⃣ : UPLOAD DOCUMENTS
 # =====================================================
 @project_upload_documents_bp.route(
-    "/project/documents/upload", methods=["POST"]
+    "/project/documents/upload",
+    methods=["POST"]
 )
 def upload_documents():
     try:
         application_number = request.form.get("application_number")
-        pan_number = request.form.get("pan_number")
         files = request.files
 
-        if not application_number or not pan_number:
+        if not application_number:
             return jsonify({
                 "status": "error",
-                "message": "application_number and pan_number are required"
+                "message": "application_number required"
             }), 400
 
-        logger.info(
-            f"UPLOAD START | app={application_number}, pan={pan_number}"
-        )
+        logger.info(f"UPLOAD START | application_number={application_number}")
 
-        # -----------------------------
-        # FILE STORAGE PATH
-        # -----------------------------
         base_path = os.path.join(
             current_app.root_path,
             "uploads",
             "project_documents",
-            application_number
+            str(application_number)
         )
         os.makedirs(base_path, exist_ok=True)
 
         documents_json = {}
 
-        # -----------------------------
-        # SAVE FILES
-        # -----------------------------
         for key in files:
             if key.startswith("doc_"):
-                doc_id = key.split("_", 1)[1]
+                doc_id = key.split("_")[1]
                 file = files[key]
 
                 filename = secure_filename(file.filename)
-                abs_path = os.path.join(base_path, filename)
-                file.save(abs_path)
+                saved_path = os.path.join(base_path, filename)
+                file.save(saved_path)
 
-                # IMPORTANT: store RELATIVE path (browser friendly)
-                documents_json[doc_id] = (
-                    f"/uploads/project_documents/"
-                    f"{application_number}/{filename}"
-                )
+                documents_json[doc_id] = saved_path
+                logger.info(f"SAVED FILE | {doc_id} -> {saved_path}")
 
-                logger.info(
-                    f"SAVED FILE | {doc_id} -> {abs_path}"
-                )
-
-        # -----------------------------
-        # UPSERT DATABASE
-        # -----------------------------
+        # Fetch by correct column
         record = ProjectRegistrationDocument.query.filter_by(
-            application_number=application_number,
-            pan_number=pan_number
+            application_number=application_number
         ).first()
 
         if record:
@@ -85,7 +68,6 @@ def upload_documents():
         else:
             record = ProjectRegistrationDocument(
                 application_number=application_number,
-                pan_number=pan_number,
                 documents=documents_json
             )
             db.session.add(record)
@@ -110,44 +92,101 @@ def upload_documents():
 # API 2️⃣ : SAVE CONSULTANT + DECLARATION
 # =====================================================
 @project_upload_documents_bp.route(
-    "/project/consultant-declaration/save", methods=["POST"]
+    "/project/consultant-declaration/save",
+    methods=["POST"]
 )
 def save_consultant_declaration():
     try:
-        data = request.json or {}
+        data = request.json
+        logger.info(f"SAVE CONSULTANT+DECLARATION | {data}")
 
         application_number = data.get("application_number")
-        pan_number = data.get("pan_number")
 
-        if not application_number or not pan_number:
+        if not application_number:
             return jsonify({
                 "status": "error",
-                "message": "application_number and pan_number required"
+                "message": "application_number required"
             }), 400
 
-        logger.info(
-            f"SAVE CONSULTANT | app={application_number}, pan={pan_number}"
-        )
-
         record = ProjectRegistrationConsultant.query.filter_by(
-            application_number=application_number,
-            pan_number=pan_number
+            application_number=application_number
         ).first()
 
         if record:
+            # UPDATE
             for field, value in data.items():
                 setattr(record, field, value)
         else:
+            # INSERT
             record = ProjectRegistrationConsultant(**data)
             db.session.add(record)
 
         db.session.commit()
 
-        return jsonify({"status": "success"}), 200
+        return jsonify({
+            "status": "success"
+        }), 200
 
     except Exception as e:
         db.session.rollback()
-        logger.exception("CONSULTANT SAVE FAILED")
+        logger.exception("SAVE FAILED")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+# =====================================================
+# API 3️⃣ : GET ALL PROJECT DETAILS
+# =====================================================
+@project_upload_documents_bp.route(
+    "/project/details/<string:application_number>",
+    methods=["GET"]
+)
+def get_project_full_details(application_number):
+    try:
+        logger.info(f"FETCH PROJECT DETAILS | application_number={application_number}")
+
+        # 🔹 Documents
+        document_record = ProjectRegistrationDocument.query.filter_by(
+            application_number=application_number
+        ).first()
+
+        documents_data = {}
+        if document_record:
+            documents_data = document_record.documents or {}
+
+        # 🔹 Consultant + Declaration
+        consultant_record = ProjectRegistrationConsultant.query.filter_by(
+            application_number=application_number
+        ).first()
+
+        consultant_data = {}
+        if consultant_record:
+            consultant_data = {
+                "consultancy_name": consultant_record.consultancy_name,
+                "consultant_name": consultant_record.consultant_name,
+                "mobile_number": consultant_record.mobile_number,
+                "email_id": consultant_record.email_id,
+                "address": consultant_record.address,
+
+                "declaration_name": consultant_record.declaration_name,
+                "declaration_accept": consultant_record.declaration_accept,
+                "note1_accept": consultant_record.note1_accept,
+                "note2_accept": consultant_record.note2_accept,
+
+                "created_on": consultant_record.created_on
+            }
+
+        return jsonify({
+            "status": "success",
+            "application_number": application_number,
+            "documents": documents_data,
+            "consultant_declaration": consultant_data
+        }), 200
+
+    except Exception as e:
+        logger.exception("FETCH PROJECT DETAILS FAILED")
         return jsonify({
             "status": "error",
             "message": str(e)

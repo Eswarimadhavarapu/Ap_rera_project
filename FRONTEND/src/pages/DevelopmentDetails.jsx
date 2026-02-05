@@ -429,7 +429,7 @@ formData.append("application_number", applicationNumber);
             formData.append('external_development_work', JSON.stringify(externalDevelopmentWork));
              formData.append('other_external_works', JSON.stringify(otherWorksList));
             // 4. Send the request to backend
-            console.log('Submitting form to http://localhost:8080/api/development-details');
+            console.log('Submitting form to https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details');
             
             // const response = await axios.post(
             //     'https://vhrvnq33-8080.inc1.devtunnels.ms/api/development-details',

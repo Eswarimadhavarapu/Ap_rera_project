@@ -51,7 +51,7 @@ def create_app():
         app,
         resources={r"/api/*": {
             "origins": app.config["ALLOWED_ORIGINS"].split(","),
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"]
         }},
         supports_credentials=True
@@ -80,6 +80,13 @@ def create_app():
     from app.controllers.associate_controller import associate_bp
     from app.controllers.application_associate_controller import application_associate_bp
     from app.controllers.project_preview_controller import preview_bp
+    from app.controllers.project_preview_extensionprocess_controller import (
+    preview_extensionprocess_bp
+    )
+    from app.controllers.projectapplicationdetailsextension import (
+    projectapplicationdetailsextension_bp
+    )
+
     
     app.register_blueprint(preview_bp, url_prefix="/api")
     app.register_blueprint(application_associate_bp, url_prefix="/api")
@@ -95,7 +102,10 @@ def create_app():
     app.register_blueprint(occupation_controller, url_prefix="/api")
     app.register_blueprint(agent_bp, url_prefix="/api/agent")
     app.register_blueprint(otp_bp, url_prefix="/api/otp")
-  
+    app.register_blueprint(preview_extensionprocess_bp, url_prefix="/api")
+    app.register_blueprint(
+    projectapplicationdetailsextension_bp,
+    url_prefix="/api")
   
 
     return app

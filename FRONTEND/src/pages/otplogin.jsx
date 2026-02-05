@@ -5,16 +5,14 @@ import "../styles/otplogin.css";
 const DUMMY_OTP = "123456";
 
 const OTPLogin = () => {
-  const navigate = useNavigate(); // ✅ IMPORTANT
+  const navigate = useNavigate();
 
-  
   const [pan, setPan] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  /* SEND OTP */
   const handleGetOtp = () => {
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
@@ -27,13 +25,13 @@ const OTPLogin = () => {
     setErrorMsg("");
   };
 
-  /* VERIFY OTP */
   const handleVerifyOtp = () => {
     if (otp === DUMMY_OTP) {
       alert("OTP Verified Successfully ✅");
 
-      // ✅ OK click ayyaka idhe execute avtundi
-      navigate("/ExtensionProcess");
+      navigate("/ExtensionProcess", {
+        state: { panNumber: pan }
+      });
     } else {
       setErrorMsg("Invalid OTP. Please try again.");
     }
@@ -44,24 +42,7 @@ const OTPLogin = () => {
       <div className="otplogin-page-bg">
         <div className="otplogin-outer-frame">
 
-          {/* BREADCRUMB */}
-          <div className="otplogin-breadcrumb-bar">
-            <div className="otplogin-breadcrumb-inner">
-              You are here :
-              <a href="/" className="otplogin-bc-link"> Home</a> /
-              <span className="otplogin-bc-text"> Registration</span> /
-              <span className="otplogin-bc-text"> Project Registration</span> /
-              <span className="otplogin-bc-active"> Extension</span>
-            </div>
-          </div>
-
-          {/* CONTENT */}
           <div className="otplogin-otp-container">
-
-            {/* USER NAME */}
-            
-
-            {/* PAN */}
             <div className="otplogin-form-group">
               <label>PanCard Number <span className="required">*</span></label>
 
@@ -76,23 +57,17 @@ const OTPLogin = () => {
                 />
 
                 {!otpSent ? (
-                  <button className="otplogin-otp-btn" onClick={handleGetOtp}>
-                    Get OTP
-                  </button>
+                  <button onClick={handleGetOtp}>Get OTP</button>
                 ) : (
-                  <button className="otplogin-otp-btn">Resend OTP</button>
+                  <button>Resend OTP</button>
                 )}
               </div>
             </div>
 
-            {/* OTP SECTION */}
             {otpSent && (
               <>
                 <div className="otplogin-form-group">
-                  <label>
-                    OTP (One Time Password)
-                    <span className="otplogin-required">*</span>
-                  </label>
+                  <label>OTP *</label>
 
                   <div className="otplogin-pan-row">
                     <input
@@ -103,20 +78,14 @@ const OTPLogin = () => {
                       onChange={(e) => setOtp(e.target.value)}
                     />
 
-                    <button className="otplogin-otp-btn" onClick={handleVerifyOtp}>
+                    <button onClick={handleVerifyOtp}>
                       Verify OTP
                     </button>
                   </div>
                 </div>
 
-                <p className="otplogin-otp-info">
-                  The OTP has been sent to <b>XXXXXX 6044</b>
-                </p>
-
                 {errorMsg && (
-                  <p style={{ color: "red", textAlign: "center" }}>
-                    {errorMsg}
-                  </p>
+                  <p style={{ color: "red" }}>{errorMsg}</p>
                 )}
               </>
             )}
@@ -124,7 +93,6 @@ const OTPLogin = () => {
         </div>
       </div>
 
-      {/* INVALID PAN POPUP */}
       {showPopup && (
         <div className="otplogin-popup-overlay">
           <div className="otplogin-popup-box">

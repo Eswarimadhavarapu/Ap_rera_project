@@ -1,5 +1,8 @@
 from app.models.database import db
 from datetime import datetime
+import pytz
+
+IST = pytz.timezone("Asia/Kolkata")
 
 class ProjectEngineer(db.Model):
     __tablename__ = 'project_engineers'
@@ -14,8 +17,15 @@ class ProjectEngineer(db.Model):
     pin_code = db.Column(db.String(10), nullable=False)
     mobile_number = db.Column(db.String(15), nullable=False)
     number_of_key_projects = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(
+    db.DateTime,
+    default=lambda: datetime.now(IST).replace(tzinfo=None)
+    )
+    updated_at = db.Column(
+    db.DateTime,
+    default=lambda: datetime.now(IST).replace(tzinfo=None),
+    onupdate=lambda: datetime.now(IST).replace(tzinfo=None)
+    )
     
     def to_dict(self):
         return {

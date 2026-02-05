@@ -209,7 +209,7 @@ export default function ContactUs() {
           <div className="contactus-office-right">
             <iframe
               title="APRERA Office"
-              src="https://www.google.com/maps?q=16.5439,80.2911&z=15&output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d61194.37276190021!2d80.496107!3d16.543844!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a35ed004f0fedc3%3A0x1f16a1b1d63e2a81!2sAPCRDA%20Project%20Office!5e0!3m2!1sen!2sin!4v1767983217513!5m2!1sen!2sin"
             ></iframe>
           </div>
         </div>

@@ -23,7 +23,7 @@ function StepWizard({ currentStep }) {
                     return (
                         <div className="complaintregistration-stepwizard-step" key={step}>
                             <div
-                                className={`step-circle ${currentStep === step ? "active" : ""
+                                className={`complaintregistration-step-circle ${currentStep === step ? "complaintregistration-active" : ""
                                     }`}
                             >
                                 {step}

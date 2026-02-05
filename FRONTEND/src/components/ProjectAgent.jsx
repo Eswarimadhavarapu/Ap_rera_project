@@ -2,7 +2,51 @@ import React, { useState, useEffect } from "react";
 import { apiPost, apiDelete } from "../api/api";
 
 const ProjectAgent = ({ projectId, agents = [], onUpdate }) => {
-  const [agentList, setAgentList] = useState(agents);
+  const [agentList, setAgentList] = useState([]);
+const application_number =
+  sessionStorage.getItem("applicationNumber");
+
+const pan_number =
+  sessionStorage.getItem("panNumber");
+  const fetchAgents = async () => {
+  if (!application_number || !pan_number) return;
+
+  try {
+    const res = await fetch(
+      `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${application_number}&pan_number=${pan_number}`
+    );
+
+    const json = await res.json();
+
+    if (json.success) {
+      setAgentList(json.data.agents || []);
+    }
+  } catch (err) {
+    console.error("Failed to load agents", err);
+  }
+};
+
+useEffect(() => {
+  const loadAgents = async () => {
+    if (!application_number || !pan_number) return;
+
+    try {
+      const res = await fetch(
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${application_number}&pan_number=${pan_number}`
+      );
+      const json = await res.json();
+
+      if (json.success) {
+        setAgentList(json.data.agents || []);
+      }
+    } catch (err) {
+      console.error("Failed to load agents", err);
+    }
+  };
+
+  fetchAgents();
+}, [application_number, pan_number]);
+
   const [formData, setFormData] = useState({
     rera_registration_no: "",
     agent_name: "",
@@ -36,6 +80,13 @@ const ProjectAgent = ({ projectId, agents = [], onUpdate }) => {
       alert("Please fill all required fields");
       return;
     }
+    console.log("🟡 FORM DATA 👉", {
+  rera_registration_no,
+  agent_name,
+  agent_address,
+  mobile_number,
+});
+
 
     // ✅ READ SESSION VALUES AT RUNTIME
     const application_number = sessionStorage.getItem("applicationNumber");
@@ -56,6 +107,8 @@ const ProjectAgent = ({ projectId, agents = [], onUpdate }) => {
         mobile_number,
       });
 
+      console.log("🟢 CREATE AGENT API RESPONSE 👉", res);
+
       const createdAgentId = res?.id || res?.data?.id;
 
       if (!createdAgentId) {
@@ -71,12 +124,19 @@ const ProjectAgent = ({ projectId, agents = [], onUpdate }) => {
       });
 
       // 2️⃣ LINK AGENT TO APPLICATION
-      await apiPost("/api/application/associate", {
-        application_number,
-        pan_number,
-        associate_type: "agent",
-        associate_id: createdAgentId,
-      });
+    await apiPost("/api/application/associate", {
+  application_number,
+  pan_number,
+  associate_type: "agent",
+  associate_id: createdAgentId,
+});
+
+      console.log("🔵 LINK AGENT PAYLOAD 👉", {
+  application_number,
+  pan_number,
+  associate_type: "agent",
+  associate_id: createdAgentId,
+});
 
       alert("Project agent added successfully");
 
@@ -87,19 +147,21 @@ const ProjectAgent = ({ projectId, agents = [], onUpdate }) => {
   agent_address: formData.agent_address,
   mobile_number: formData.mobile_number,
 };
-
+alert("Project agent added successfully");
 console.log("CREATED AGENT 👉", createdAgent);
+await fetchAgents(); // reload FULL list from DB
 
-setAgentList((prev) => [...prev, createdAgent]);
 
 
-      // 3️⃣ RESET FORM
-      setFormData({
-        rera_registration_no: "",
-        agent_name: "",
-        agent_address: "",
-        mobile_number: "",
-      });
+
+
+      // RESET FORM
+setFormData({
+  rera_registration_no: "",
+  agent_name: "",
+  agent_address: "",
+  mobile_number: "",
+});
 
      
     } catch (error) {

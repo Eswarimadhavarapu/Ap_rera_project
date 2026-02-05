@@ -67,7 +67,7 @@ const InformProject = () => {
         </div>
 
         <div className="inform-form-row">
-          <label>Validity To Date</label>
+          <label>Applied Date</label>
           <input type="date" />
         </div>
 

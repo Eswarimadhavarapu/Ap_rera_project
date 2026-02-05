@@ -1,18 +1,46 @@
 import React, { useState, useEffect } from "react";
 
-import { apiPost, apiDelete } from "../api/api";
+// import { apiPost, apiDelete } from "../api/api";
+import { apiPost } from "../api/api";
+
 
 const CharteredAccountant = ({
-  accountants = [],
+  applicationNumber,
+  panNumber,
   states = [],
   districts = [],
   onStateChange,
   onUpdate,
 }) => {
-  const [accountantList, setAccountantList] = useState(accountants);
+
+  const [accountantList, setAccountantList] = useState([]);
+
+const appNo =
+  applicationNumber || sessionStorage.getItem("applicationNumber");
+
+const panNo =
+  panNumber || sessionStorage.getItem("panNumber");
 useEffect(() => {
-  setAccountantList(accountants);
-}, [accountants]);
+  const loadAccountants = async () => {
+    if (!appNo || !panNo) return;
+
+    try {
+     const res = await fetch(
+  `/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
+);
+
+     const json = await res.json();
+setAccountantList(json.data?.accountants || []);
+    } catch (err) {
+      console.error("Failed to load accountants", err);
+    }
+  };
+
+  loadAccountants();
+}, [appNo, panNo]);
+
+
+
 
   const [formData, setFormData] = useState({
     accountant_name: "",
@@ -107,7 +135,7 @@ const createdAccountant = {
   mobile_number: formData.mobile_number,
 };
 
-setAccountantList(prev => [...prev, createdAccountant]);
+
 
         setFormData({
           accountant_name: "",

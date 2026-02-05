@@ -6,8 +6,8 @@ export default function ProjectWizard({ currentStep }) {
   const navigate = useNavigate();
 
   return (
-    <div className="WIZARDDIV">
-      <div className="stepper">
+    <div className="projwizard-WIZARDDIV">
+      <div className="projwizard-stepper">
         {WIZARD_STEPS.map((step) => {
           // ✅ completed = steps BEFORE currentStep
           const isCompleted = step.id < currentStep;
@@ -18,9 +18,9 @@ export default function ProjectWizard({ currentStep }) {
           return (
             <div
               key={step.id}
-              className={`step-item ${
-                isCompleted ? "completed" : ""
-              } ${isActive ? "active" : ""}`}
+              className={`projwizard-step-item ${
+                isCompleted ? "projwizard-completed" : ""
+              } ${isActive ? "projwizard-active" : ""}`}
               onClick={() => {
                 // Allow navigation only to completed or active steps
                 if (isCompleted || isActive) {
@@ -28,8 +28,8 @@ export default function ProjectWizard({ currentStep }) {
                 }
               }}
             >
-              <div className="step-circle">{step.id}</div>
-              <div className="step-label">{step.label}</div>
+              <div className="projwizard-step-circle">{step.id}</div>
+              <div className="projwizard-step-label">{step.label}</div>
             </div>
           );
         })}

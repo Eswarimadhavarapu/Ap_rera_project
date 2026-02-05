@@ -117,3 +117,24 @@
 .page-title::before {
   display: none !important;
 }
+
+.payment-back-btn {
+  padding: 8px 18px;
+  background-color: #1e88e5;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.payment-back-btn:hover {
+  background-color: #1565c0;
+}
+
+.payment-right-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;   /* 👈 THIS gives the small gap */
+}

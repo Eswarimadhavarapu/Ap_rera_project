@@ -114,3 +114,4 @@ export const submitPromoterRegistration = (formData) => {
 export const checkPanExists = (panNumber) => {
   return apiGet(`/api/check-pan/${panNumber}`);
 };
+

@@ -19,7 +19,9 @@ const ProjectPreview = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [allData, setAllData] = useState(null);
+  // const [allData, setAllData] = useState(null);
+  const [allData, setAllData] = useState({});
+
   const [loading, setLoading] = useState(true);
     const [externalDevWork, setExternalDevWork] = useState({});
 
@@ -29,43 +31,82 @@ const ProjectPreview = () => {
     location.state?.applicationNumber ||
     sessionStorage.getItem("applicationNumber");
 
-  useEffect(() => {
+//   useEffect(() => {
+//   if (!applicationNumber || !panNumber) {
+//     console.warn("Missing applicationNumber or panNumber");
+//     setLoading(false);
+//     return;
+//   }
+
+//   const fetchPreviewData = async () => {
+//     try {
+//       const res = await fetch("http://localhost:8080/api/project/preview", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           application_number: applicationNumber,
+//           pan_number: panNumber
+//         })
+//       });
+
+//       if (!res.ok) {
+//         throw new Error(`Preview API failed: ${res.status}`);
+//       }
+
+//       const resData = await res.json();
+//       console.log("🟡 PREVIEW API DATA 👉", resData.data);
+
+// setAllData(prev => ({
+//   ...prev,
+//   ...resData.data,
+// }));
+
+
+//     } catch (err) {
+//       console.error(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchPreviewData();
+// }, [applicationNumber, panNumber]);
+
+// ✅ NEW: Continue button handler
+useEffect(() => {
   if (!applicationNumber || !panNumber) {
-    console.warn("Missing applicationNumber or panNumber");
     setLoading(false);
     return;
   }
 
-  const fetchPreviewData = async () => {
+  const fetchAssociates = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/project/preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          application_number: applicationNumber,
-          pan_number: panNumber
-        })
-      });
+      const res = await fetch(
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${applicationNumber}&pan_number=${panNumber}`
+      );
 
       if (!res.ok) {
-        throw new Error(`Preview API failed: ${res.status}`);
+        throw new Error("Failed to load associates");
       }
 
-      const resData = await res.json();
-setAllData(resData.data);
+      const json = await res.json();
 
+      setAllData(prev => ({
+        ...prev,
+        associate_details: json.data
+      }));
     } catch (err) {
-      console.error(err);
+      console.error("❌ Associate API error:", err);
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ THIS LINE FIXES LOADING
     }
   };
 
-  fetchPreviewData();
+  fetchAssociates();
 }, [applicationNumber, panNumber]);
 
-// ✅ NEW: Continue button handler
-  const handleContinue = () => {
+  
+const handleContinue = () => {
     navigate("/payment", {
       state: {
         applicationNumber,
@@ -81,7 +122,7 @@ setAllData(resData.data);
   const fetchDevelopmentDetails = async () => {
     try {
       const url =
-        `http://localhost:8080/api/project-registration/${applicationNumber}/${panNumber}`;
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration/${applicationNumber}/${panNumber}`;
 
       console.log("🔵 Calling URL:", url);
 
@@ -98,7 +139,10 @@ setAllData(resData.data);
       setExternalDevWork(
         response?.data?.external_development_work || {}
       );
-
+setAllData((prev) => ({
+  ...prev,
+  project_registration: response?.data || {},
+}));
     } catch (error) {
       console.error("❌ Development details API error:", error);
     }
@@ -127,56 +171,68 @@ setAllData(resData.data);
   { key: "Electricity_Supply_Transformation_Station", label: "Electricity Supply Transformation Station" }
 ];
 
-  const project = allData?.project_details || {};
+ const project = allData?.project_registration || {};
+
+
 
   // ✅ NORMALIZE PROJECT DETAILS (BACKEND → UI)
 // ✅ FIXED PROJECT DETAILS (MATCH BACKEND KEYS)
 const fixedProject = {
-  name: project["Project Name"] || "N/A",
-  description: project["Project Description"] || "N/A",
-  type: project["Project Type"] || "N/A",
-  status: project["Project Status"] || "New Project",
+  name: project.project_name || "N/A",
+  description: project.project_description || "N/A",
+  type: project.project_type || "N/A",
+  status: project.project_status || "New Project",
 
-  buildingPlanNo: project["Building Plan No"] || "N/A",
-  surveyNo: project["Survey No"] || "N/A",
+  buildingPlanNo: project.building_plan_no || "N/A",
+  surveyNo: project.survey_no || "N/A",
 
-  permissionFrom: project["Building Permission Validity From"] || "N/A",
-  permissionTo: project["Building Permission Validity To"] || "N/A",
+  permissionFrom: formatDate(project.building_permission_from),
+  permissionTo: formatDate(project.building_permission_upto),
 
-  startDate: project["Project Starting Date"] || "N/A",
-  completionDate: project["Proposed Completion Date"] || "N/A",
+  startDate: formatDate(project.date_of_commencement),
+  completionDate: formatDate(project.proposed_completion_date),
 
-  landArea: project["Total Area of Land (Sq.m)"] || "N/A",
-  height: project["Height of Building (m)"] || "0.00",
-  plinthArea: project["Total Plinth Area (Sq.m)"] || "N/A",
-  openArea: project["Total Open Area (Sq.m)"] || "N/A",
-  builtUpArea: project["Total Built-up Area (Sq.m)"] || "N/A",
+  landArea: project.total_area_of_land || "N/A",
+  height: project.building_height || "0.00",
+  plinthArea: project.total_plinth_area || "N/A",
+  openArea: project.total_open_area || "N/A",
+  builtUpArea: project.total_built_up_area || "N/A",
 
-  estimatedCost: project["Estimated Cost of Construction"] || "N/A",
-  landCost: project["Cost of Land"] || "N/A",
-  totalCost: project["Total Project Cost (₹)"] || "N/A",
+  estimatedCost: project.estimated_construction_cost || "N/A",
+  landCost: project.cost_of_land || "N/A",
+  totalCost: project.total_project_cost || "N/A",
 
-  address: project["Project Address"] || "N/A",
-  district: project["District"] || "N/A",
-  mandal: project["Mandal"] || "N/A",
-  village: project["Village"] || "N/A",
-  pincode: project["Pincode"] || "N/A",
+  address: project.project_address1 || "N/A",
+  district: project.project_district || "N/A",
+  mandal: project.project_mandal || "N/A",
+  village: project.project_village || "N/A",
+  pincode: project.project_pincode || "N/A",
 };
 
 
 
 
-const development = allData?.development_details || {};
-// ✅ Apartments / Flats from Excel
-// ✅ Correct path based on backend response
-const developmentDetails =
-  development?.["Development Details"] || {};
+// const development = allData?.development_details || {};
+// // ✅ Apartments / Flats from Excel
+// // ✅ Correct path based on backend response
+// const developmentDetails =
+//   development?.["Development Details"] || {};
 
+// const apartmentDetails =
+//   developmentDetails?.Apartments_Flats || {};
+
+const development = allData?.development_details || {};
+console.log("🧪 development_details from API 👉", development);
+
+
+// 🔥 development IS already the correct object
 const apartmentDetails =
-  developmentDetails?.Apartments_Flats || {};
+  development?.Apartments_Flats || {};
+
 
 const apartmentRows =
   apartmentDetails?.rows || [];
+
 
 console.log("✅ Apartment rows length 👉", apartmentRows.length);
 
@@ -213,60 +269,60 @@ const externalWorks =
 
 
 const associates = {
-  architects: (associatesRaw.architects || []).map((a) => ({
-    name: a.name,
-    email: a.email,
-    address: a.address,
-    address2: a.address2,
-    state: a.state,
-    district: a.district,
-    pincode: a.pin_code,
-    mobile: a.mobile,
-    regNumber: a.reg_number,
-    yearOfEstablishment: a.year_of_establishment || 0,
-    keyProjects: a.number_of_key_projects || 0,
-  })),
+architects: (associatesRaw.architects || []).map((a) => ({
+  name: a.architect_name,
+  email: a.email_id,
+  address: a.address_line1,
+  address2: a.address_line2,
+  state: a.state_ut,
+  district: a.district,
+  pincode: a.pin_code,
+  mobile: a.mobile_number,
+  regNumber: a.coa_registration_number,
+  yearOfEstablishment: a.year_of_establishment || "—",
+  keyProjects: a.number_of_key_projects || "—",
+})),
 
-  engineers: (associatesRaw.engineers || []).map((e) => ({
-    name: e.name,
-    email: e.email,
-    address: e.address,
-    address2: e.address2,
-    state: e.state,
-    district: e.district,
-    pincode: e.pin_code,
-    mobile: e.mobile,
-    licenseNumber: e.licence_number,
-    yearOfEstablishment: e.year_of_establishment || 0,
-    keyProjects: e.number_of_key_projects || 0,
-  })),
 
-  charteredAccountants: (associatesRaw.accountants || []).map((c) => ({
-    name: c.name,
-    email: c.email,
-    address: c.address,
-    address2: c.address2,
-    state: c.state,
-    district: c.district,
-    pincode: c.pin_code,
-    mobile: c.mobile,
-    icaiMemberId: c.icai_member_id,
-    keyProjects: c.number_of_key_projects || 0,
-  })),
+
+ engineers: (associatesRaw.engineers || []).map((e) => ({
+  name: e.engineer_name,
+  email: e.email_id,
+  address: e.address_line1,
+  state: e.state_ut,
+  district: e.district,
+  mobile: e.mobile_number,
+  licenseNumber: e.licence_number,
+}))
+,
+
+
+charteredAccountants: (associatesRaw.accountants || []).map((c) => ({
+  name: c.accountant_name,
+  email: c.email_id,
+  address: c.address_line1,
+  state: c.state_ut,
+  district: c.district,
+  pincode: c.pin_code,
+  mobile: c.mobile_number,
+  icaiMemberId: c.icai_member_id,
+}))
+,
+
 
   agents: (associatesRaw.agents || []).map((a) => ({
-    name: a.name,
-    address: a.address,
-    mobile: a.mobile,
-    reraNumber: a.registration_number || "—",
-  })),
+  name: a.agent_name,
+  address: a.agent_address,
+  mobile: a.mobile_number,
+  reraNumber: a.rera_registration_no || "—",
+}))
+
   
 };
 const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
   name: e.engineer_name,
   email: e.email_id,
   address: e.address_line1,
-  address2: e.address_line2,
   state: e.state_ut,
   district: e.district,
   pincode: e.pin_code,
@@ -279,15 +335,23 @@ const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
 
 
 
+
   
 
-  if (loading || !allData) {
-    return (
-      <div className="preview-loading">
-        <div className="loading-spinner">Loading preview...</div>
-      </div>
-    );
-  }
+  // if (loading || !allData) {
+  //   return (
+  //     <div className="preview-loading">
+  //       <div className="loading-spinner">Loading preview...</div>
+  //     </div>
+  //   );
+  // }
+if (loading) {
+  return (
+    <div className="preview-loading">
+      <div className="loading-spinner">Loading preview...</div>
+    </div>
+  );
+}
 
   return (
     <div className="preview-container">
@@ -352,45 +416,46 @@ const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
     <tbody>
       <tr>
         <td className="label-cell">Name</td>
-        <td>{allData?.promoter_details?.["Promoter Name"] || "N/A"}</td>
+        <td>{project.name || "N/A"}</td>
+
 
         <td className="label-cell">Father Name</td>
-        <td>{allData?.promoter_details?.["Father Name"] || "N/A"}</td>
+        <td>{project.father_name || "N/A"}</td>
       </tr>
 
       <tr>
         <td className="label-cell">PAN Card Number</td>
-        <td>{allData?.promoter_details?.["PAN"] || "N/A"}</td>
+        <td>{project.pan_number || "N/A"}</td>
         <td className="label-cell">Aadhaar Number</td>
-        <td>{allData?.promoter_details?.["Aadhaar"] || "N/A"}</td>
+        <td>{project.aadhaar || "N/A"}</td>
       </tr>
 
       <tr>
         <td className="label-cell">Mobile Number</td>
-        <td>{allData?.promoter_details?.["Mobile Number"] || "N/A"}</td>
+        <td>{project.mobile || "N/A"}</td>
         <td className="label-cell">Email ID</td>
-        <td>{allData?.promoter_details?.["Email"] || "N/A"}</td>
+        <td>{project.email || "N/A"}</td>
       </tr>
 
       <tr>
         <td className="label-cell">State/UT</td>
         <td className="value-cell">
-  {allData?.promoter_details?.["State"] || "N/A"}
+  <td>{project.state_ut || "N/A"}</td>
 </td>
         <td className="label-cell">District</td>
         <td className="value-cell">
-  {allData?.promoter_details?.["District"] || "N/A"}
+  <td>{project.district || "N/A"}</td>
 </td>
       </tr>
 
       <tr>
         <td className="label-cell">Landline Number</td>
         <td className="value-cell">
-  {allData?.promoter_details?.["Landline"] || "N/A"}
+  <td>{project.landline || "N/A"}</td>
 </td>
         <td className="label-cell">Promoter Website</td>
         <td className="value-cell">
-  {allData?.promoter_details?.["Promoter Website"] || "N/A"}
+  <td>{project.promoter_website || "N/A"}</td>
 </td>
       </tr>
     </tbody>
@@ -402,24 +467,25 @@ const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
       <tr>
         <td className="label-cell">Bank State</td>
         <td className="value-cell">
-  {allData?.promoter_details?.["Bank State"] || "N/A"}
+  <td>{project.bank_state || "N/A"}</td>
 </td>
         <td className="label-cell">Bank Name</td>
-        <td className="value-cell">{allData?.promoter_details?.["Bank Name"] || "N/A"}</td>
+        <td>{project.bank_name || "N/A"}</td>
+
       </tr>
 
       <tr>
         <td className="label-cell">Branch Name</td>
-        <td className="value-cell">{allData?.promoter_details?.["Branch Name"] || "N/A"}</td>
+        <td>{project.branch_name || "N/A"}</td>
         <td className="label-cell">Account Number</td>
-        <td className="value-cell">{allData?.promoter_details?.["Account Number"] || "N/A"}</td>
+        <td>{project.account_no || "N/A"}</td>
       </tr>
 
       <tr>
         <td className="label-cell">IFSC Code</td>
-        <td className="value-cell">{allData?.promoter_details?.["IFSC Code"] || "N/A"}</td>
+        <td>{project.ifsc || "N/A"}</td>
         <td className="label-cell">Account Holder Name</td>
-        <td className="value-cell">{allData?.promoter_details?.["Account Holder Name"] || "N/A"}</td>
+        <td>{project.account_holder || "N/A"}</td>
       </tr>
     </tbody>
   </table>
@@ -592,24 +658,42 @@ const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
 
           <h3 className="subsection-title">Building Type</h3>
 
-          <div className="building-types">
+          {/* <div className="building-types">
             {Object.keys(developmentDetails).map((type) => (
   <span key={type} className="badge">
     ✓ {String(type.replaceAll("_", " "))}
   </span>
 ))}
 
-          </div>
+          </div> */}
+          <div className="building-types">
+  {Object.keys(development || {}).map((type) => (
+    <span key={type} className="badge">
+      ✓ {String(type.replaceAll("_", " "))}
+    </span>
+  ))}
+</div>
 
-          {development?.Apartments_Flats && (
+
+          {/* {apartmentDetails && (
   <>
     <h4 className="detail-heading">Apartment Details</h4>
     <p>
       <strong>Total No of Blocks:</strong>{" "}
-      {development.Apartments_Flats.no_blocks || "N/A"}
+      {apartmentDetails.no_blocks}
+    </p>
+  </>
+)} */}
+{apartmentDetails && (
+  <>
+    <h4 className="detail-heading">Apartment Details</h4>
+    <p>
+      <strong>Total No of Blocks:</strong>{" "}
+      {apartmentDetails.no_blocks}
     </p>
   </>
 )}
+
 
 {apartmentRows.length > 0 && (
   <>
@@ -1041,7 +1125,7 @@ const projectEngineers = (associatesRaw.project_engineers || []).map((e) => ({
             <td>
               {doc.file_path ? (
                 <a
-                  href={`http://localhost:8080${doc.file_path}`}
+                  href={`https://0jv8810n-8080.inc1.devtunnels.ms${doc.file_path}`}
                   target="_blank"
                   rel="noreferrer"
                 >

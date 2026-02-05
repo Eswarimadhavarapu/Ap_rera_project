@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/paymentpage.css";
 
-function PaymentPage({ complaintData = {}, setCurrentStep }) {
+function PaymentPage({ complaintData = {}, setCurrentStep, currentStep }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // ✅ Data coming from Preview Page
   const {
@@ -21,14 +22,14 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
       alert("Please select a payment gateway");
       return;
     }
-    // Dummy success step
-    setCurrentStep(5);
+    // ✅ Move to Acknowledgement step
+    setCurrentStep(4);
   };
 
   return (
     <div className="payment-container">
 
-      {/* ===== PAGE TITLE (OUTER) ===== */}
+      {/* ===== PAGE TITLE ===== */}
       <h3 className="page-title">Payment Page</h3>
 
       {/* ===== PAYMENT BOX ===== */}
@@ -37,15 +38,9 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
 
         <div className="payment-top">
           <div>
-            <p>
-              <b>Application Number :</b> {applicationNo || "-"}
-            </p>
-            <p>
-              <b>Transaction Id :</b> 3100126004
-            </p>
-            <p>
-              <b>APRERA GST No :</b> 37AAAGA0918E1ZY
-            </p>
+            <p><b>Application Number :</b> {applicationNo || "-"}</p>
+            <p><b>Transaction Id :</b> 3100126004</p>
+            <p><b>APRERA GST No :</b> 37AAAGA0918E1ZY</p>
           </div>
 
           <div className="payment-date-box">
@@ -74,8 +69,10 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
           </tbody>
         </table>
 
-        {/* ===== Gateway + Amount Row ===== */}
+        {/* ===== Gateway + Back + Amount Row ===== */}
         <div className="gateway-amount-row">
+
+          {/* LEFT: PAYMENT GATEWAY */}
           <div className="payment-gateway-section">
             <p><b>Select Payment Gateway :</b></p>
 
@@ -113,27 +110,40 @@ function PaymentPage({ complaintData = {}, setCurrentStep }) {
             </label>
           </div>
 
-          <div className="payent-amount-box">
-            <b>Total Amount</b> ₹ 1000.00
+          {/* RIGHT: BACK + TOTAL */}
+          <div className="payment-right-actions">
+            <button
+              className="payment-back-btn"
+              onClick={() => navigate("/complaintregistration")}
+            >
+              Back
+            </button>
+
+            <div className="payent-amount-box">
+              <b>Total Amount</b> ₹ 1000.00
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ===== ACTION BUTTONS (OUTSIDE BOX) ===== */}
+      {/* ===== ACTION BUTTONS ===== */}
       {gateway && (
-        <div className="payment-action-buttons">
-          <button className="make-payment-btn" onClick={handlePayNow}>
-            Make Payment
-          </button>
+        <div className="payment-footer">
+          <div className="payment-action-buttons">
+            <button className="make-payment-btn" onClick={handlePayNow}>
+              Make Payment
+            </button>
 
-          <button
-            className="cancel-payment-btn"
-            onClick={() => setGateway("")}
-          >
-            Cancel Payment
-          </button>
+            <button
+              className="cancel-payment-btn"
+              onClick={() => setGateway("")}
+            >
+              Cancel Payment
+            </button>
+          </div>
         </div>
       )}
+
     </div>
   );
 }

@@ -90,6 +90,12 @@ import InformProject from "./pages/InformProject";
 import ProjectPreview from "./pages/ProjectPreview";
 import AgentDashboard from "./pages/AgentDashboard";
 import PaymentPage from "./pages/paymentpage";
+import ProjectRegistrationExisting from "./pages/ProjectRegistrationExisting";
+import PRExistingStarting from "./pages/PRExistingStarting";
+import PRExistingtable from "./pages/PRExistingtable";
+import ExistingDevelopmentDetails from "./pages/ExistingDevelopmentDetails";
+import UploadDocumentsWithApi from "./pages/UploadDocumentsWithApi";
+import ExistingProjectDetails from "./pages/ExistingProjectDetails";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -193,6 +199,21 @@ function App() {
             <Route path="/InformProject" element={<InformProject />} />
             <Route path="/agent-dashboard" element={<AgentDashboard />} />
             <Route path="/paymentpage" element={<PaymentPage/>} />
+            <Route path="/projectregistrationexisting" element={<ProjectRegistrationExisting/>} />
+            <Route path="/prexisting" element={<PRExistingStarting/>} />
+             <Route path="/prexistingtable" element={<PRExistingtable/>} />
+             <Route path="/existing-development-details" element={<ExistingDevelopmentDetails/>} />
+             <Route
+  path="/existing-development-details-upload-docs/:id"
+  element={<UploadDocumentsWithApi />}/>
+  <Route
+  path="/existing-project-details"
+  element={<ExistingProjectDetails />}
+/>
+
+
+
+
         </Routes>
       </Layout>
     </BrowserRouter>

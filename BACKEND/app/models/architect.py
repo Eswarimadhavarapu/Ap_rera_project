@@ -1,6 +1,8 @@
 from app.models.database import db
+import pytz
 from datetime import datetime
 
+IST = pytz.timezone("Asia/Kolkata")
 
 class Architect(db.Model):
     __tablename__ = 'architects'
@@ -24,13 +26,18 @@ class Architect(db.Model):
     coa_registration_number = db.Column(db.String(100), nullable=False)
     mobile_number = db.Column(db.String(15), nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False
+    created_at = db.Column(
+    db.DateTime,
+    default=lambda: datetime.now(IST).replace(tzinfo=None),
+    nullable=False
     )
+    updated_at = db.Column(
+    db.DateTime,
+    default=lambda: datetime.now(IST).replace(tzinfo=None),
+    onupdate=lambda: datetime.now(IST).replace(tzinfo=None),
+    nullable=False
+    )
+
 
     def to_dict(self):
         return {

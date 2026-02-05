@@ -25,10 +25,40 @@ const ProjectContractors = ({
     number_of_key_projects: "",
     mobile_number: "",
   };
-const [contractorList, setContractorList] = useState(contractors);
+const [contractorList, setContractorList] = useState([]);
+
+const appNo =
+  applicationNumber || sessionStorage.getItem("applicationNumber");
+
+const panNo =
+  panNumber || sessionStorage.getItem("panNumber");
+
 useEffect(() => {
-  setContractorList(contractors);
-}, [contractors]);
+  const loadContractors = async () => {
+    if (!appNo || !panNo) return;
+
+    try {
+      const res = await fetch(
+  `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
+);
+
+      const json = await res.json();
+
+      if (json.success) {
+        console.log("FROM API 👉", json.data.contractors);
+
+        setContractorList(json.data.contractors || []);
+      }
+    } catch (err) {
+      console.error("Failed to load contractors", err);
+    }
+  };
+
+  loadContractors();
+}, [appNo, panNo]);
+
+
+
 
   const [formData, setFormData] = useState(initialFormState);
 
@@ -98,12 +128,27 @@ useEffect(() => {
 
 
 
+const response = await apiPost("/api/associate/contractor", payload);
 
-    const response = await apiPost("/api/associate/contractor", payload);
+if (!response?.success) {
+  throw new Error("Failed to add contractor");
+}
 
-    if (!response?.success) {
-      throw new Error("Failed to add contractor");
-    }
+const contractorId =
+  response.data?.id || response.data?.data?.id;
+
+if (!contractorId) {
+  throw new Error("Contractor ID not returned");
+}
+
+await apiPost("/api/application/associate", {
+  application_number: appNo,
+  pan_number: panNo,
+  associate_type: "contractor",
+  associate_id: contractorId,
+});
+
+
 
     alert("Contractor added successfully");
     const createdContractor = {
@@ -295,9 +340,8 @@ setContractorList(prev => [...prev, createdContractor]);
       <div className="add-button-container">
         <button className="btn-add" onClick={handleAdd}>Add</button>
       </div>
-
-     {contractorList.length > 0 && (
   <table className="data-table">
+
     <thead>
       <tr>
         <th>Nature of Work</th>
@@ -309,27 +353,28 @@ setContractorList(prev => [...prev, createdContractor]);
       </tr>
     </thead>
 
-    <tbody>
-      {contractorList.map((c) => (
-        <tr key={c.id}>
-          <td>{c.nature_of_work}</td>
-          <td>{c.contractor_name}</td>
-          <td>{c.state_ut}</td>
-          <td>{c.district}</td>
-          <td>{c.mobile_number}</td>
-          <td>
-            <button
-              className="btn-delete"
-              onClick={() => handleDelete(c.id)}
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
+   <tbody>
+  {Array.isArray(contractorList) &&
+  contractorList.map((c) => (
+    <tr key={c.id}>
+      <td>{c.nature_of_work}</td>
+      <td>{c.contractor_name}</td>
+      <td>{c.state_ut}</td>
+      <td>{c.district}</td>
+      <td>{c.mobile_number}</td>
+      <td>
+        <button
+          className="btn-delete"
+          onClick={() => handleDelete(c.id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
   </table>
-)}
 
     </div>
   );

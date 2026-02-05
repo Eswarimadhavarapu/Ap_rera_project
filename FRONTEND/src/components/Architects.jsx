@@ -13,10 +13,40 @@ const Architects = ({
   onStateChange,
   onUpdate,
 }) => {
-  const [architectList, setArchitectList] = useState(architects);
+  const [architectList, setArchitectList] = useState([]);
+
+// useEffect(() => {
+//   setArchitectList(architects);
+// }, [architects]);
+
+const appNo =
+  applicationNumber || sessionStorage.getItem("applicationNumber");
+
+const panNo =
+  panNumber || sessionStorage.getItem("panNumber");
+
 useEffect(() => {
-  setArchitectList(architects);
-}, [architects]);
+  const loadArchitects = async () => {
+    if (!appNo || !panNo) return;
+
+    try {
+      const res = await fetch(
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
+      );
+      const json = await res.json();
+
+      if (json.success) {
+        setArchitectList(json.data.architects || []);
+      }
+    } catch (err) {
+      console.error("Failed to load architects", err);
+    }
+  };
+
+  loadArchitects();
+}, [appNo, panNo]);
+
+
 
   const [formData, setFormData] = useState({
     architect_name: "",

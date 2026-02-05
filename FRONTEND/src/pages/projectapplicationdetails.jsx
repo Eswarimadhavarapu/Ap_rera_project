@@ -1,12 +1,61 @@
 import "../styles/projectapplicationdetails.css";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const ProjectApplicationDetails = () => {
   const navigate = useNavigate();
+  // 🔹 ADD HERE (START)
+ 
+
+  const [basicDetails, setBasicDetails] = useState({
+    applicationNo: "",
+    projectName: "",
+    projectId: "",
+    validityFrom: "",
+    validityTo: ""
+  });
+  // 🔹 ADD HERE (END)
+const location = useLocation();
+const applicationNumber = location.state?.applicationNumber;
+  
 
   // 🔴 Store errors for each file input
   const [fileErrors, setFileErrors] = useState({});
+// 🔹 ADD HERE (START)
+useEffect(() => {
+  if (!applicationNumber) return;
+
+  const fetchBasicDetails = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/project/basic-details-by-application?applicationNumber=${applicationNumber}`
+      );
+
+      const json = await res.json();
+
+      if (!json.success || !json.data) {
+        alert("No data found for this application");
+        return;
+      }
+
+      const d = json.data;
+
+      setBasicDetails({
+        applicationNo: d.application_number,
+        projectName: d.project_name,
+        projectId: d.project_id,
+        validityFrom: d.building_permission_from,
+        validityTo: d.building_permission_upto
+      });
+    } catch (err) {
+      console.error("API error:", err);
+    }
+  };
+
+  fetchBasicDetails();
+}, [applicationNumber]);
+
 
   // ✅ Only PDF validation (NO popup)
   const handleFileChange = (e, fieldName) => {
@@ -66,27 +115,28 @@ const ProjectApplicationDetails = () => {
   </div>
         <div className="projectapplicationdetails-form-row">
           <label>Application No</label>
-          <input type="text" placeholder="Enter Application No" />
+          <input type="text" value={basicDetails.applicationNo} readOnly />
+
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Project Name</label>
-          <input type="text" placeholder="Enter Project Name" />
+          <input value={basicDetails.projectName} readOnly />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Project ID</label>
-          <input type="text" placeholder="Enter Project ID" />
+          <input value={basicDetails.projectId} readOnly />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Validity From</label>
-          <input type="text" placeholder="mm/dd/yyyy" />
+          <input value={basicDetails.validityFrom} readOnly />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Validity To According to Plans & Proceedings</label>
-          <input type="text" placeholder="mm/dd/yyyy" />
+          <input value={basicDetails.validityTo} readOnly />
         </div>
 
         <div className="projectapplicationdetails-form-row">

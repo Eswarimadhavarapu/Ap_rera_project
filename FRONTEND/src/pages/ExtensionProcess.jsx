@@ -1,27 +1,118 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+// import "../styles/ExtensionProcess.css";
+
+// const ExtensionProcess = () => {
+//   const navigate = useNavigate();
+//   return (
+//     <div className="extension-pa-page">
+
+//       {/* BREADCRUMB */}
+//       <div className="extension-pa-breadcrumb">
+//         You are here :
+//         <span className="extension-pa-home"> Home </span> /
+//         <span> Extension Form</span>
+//       </div>
+
+//       {/* CONTENT ONLY (NO LEFT MENU) */}
+//       <div className="extension-pa-content-full">
+
+//         <h2 className="extension-pa-title">Extension process</h2>
+
+//         <table className="extension-pa-table">
+//           <thead>
+//             <tr>
+//               <th>S.No.</th>
+//               <th>Application No</th>
+//               <th>Promoter Name</th>
+//               <th>BA No</th>
+//               <th>Validity From</th>
+//               <th>Validity To</th>
+//             </tr>
+//           </thead>
+
+//           <tbody>
+//             <tr>
+//               <td>1</td>
+//               <td className="extension-pa-link" onClick={() => navigate("/projectapplicationdetails")}>080126151211</td>
+//               <td>Narmada</td>
+//               <td>BA/2023/001</td>
+//               <td>01-04-2023</td>
+//               <td>31-03-2028</td>
+//             </tr>
+//           </tbody>
+//         </table>
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ExtensionProcess;
+
+
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../styles/ExtensionProcess.css";
 
 const ExtensionProcess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const panNumber = location.state?.panNumber;
+
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const formatDate = (d) =>
+    d ? new Date(d).toLocaleDateString("en-GB") : "—";
+
+  useEffect(() => {
+    if (!panNumber) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/project/basic-details-by-pan?pan=${panNumber}`
+        );
+
+        const json = await res.json();
+
+        if (json.success) {
+          setRows(json.data);
+        } else {
+          setRows([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setRows([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [panNumber]);
+
   return (
     <div className="extension-pa-page">
+      <h2 className="extension-pa-title">Extension process</h2>
 
-      {/* BREADCRUMB */}
-      <div className="extension-pa-breadcrumb">
-        You are here :
-        <span className="extension-pa-home"> Home </span> /
-        <span> Extension Form</span>
-      </div>
+      {!panNumber && (
+        <p style={{ color: "red" }}>
+          PAN not found. Please login again.
+        </p>
+      )}
 
-      {/* CONTENT ONLY (NO LEFT MENU) */}
-      <div className="extension-pa-content-full">
-
-        <h2 className="extension-pa-title">Extension process</h2>
-
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <table className="extension-pa-table">
           <thead>
             <tr>
-              <th>S.No.</th>
+              <th>S.No</th>
               <th>Application No</th>
               <th>Promoter Name</th>
               <th>BA No</th>
@@ -31,18 +122,36 @@ const ExtensionProcess = () => {
           </thead>
 
           <tbody>
-            <tr>
-              <td>1</td>
-              <td className="extension-pa-link" onClick={() => navigate("/projectapplicationdetails")}>080126151211</td>
-              <td>Narmada</td>
-              <td>BA/2023/001</td>
-              <td>01-04-2023</td>
-              <td>31-03-2028</td>
-            </tr>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan="6">No data found</td>
+              </tr>
+            ) : (
+              rows.map((row, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+
+                  <td
+                    className="extension-pa-link"
+                    onClick={() =>
+                      navigate("/projectapplicationdetails", {
+                        state: { applicationNumber: row.application_number }
+                      })
+                    }
+                  >
+                    {row.application_number}
+                  </td>
+
+                  <td>{row.name}</td>
+                  <td>{row.building_plan_no}</td>
+                  <td>{formatDate(row.building_permission_from)}</td>
+                  <td>{formatDate(row.building_permission_upto)}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-
-      </div>
+      )}
     </div>
   );
 };
