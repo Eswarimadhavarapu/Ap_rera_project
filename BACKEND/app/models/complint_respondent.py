@@ -8,6 +8,10 @@ class ComplintRespondent(db.Model):
     registered_id = db.Column(db.String(50))
     respondent_type = db.Column(db.String(50), nullable=False)
 
+     # ⭐ NEW RERA FIELDS
+    is_rera_registered = db.Column(db.Boolean, default=False)
+    registration_id = db.Column(db.String(50))
+
     name = db.Column(db.String(150), nullable=False)
     phone = db.Column(db.String(15))
     email = db.Column(db.String(150))

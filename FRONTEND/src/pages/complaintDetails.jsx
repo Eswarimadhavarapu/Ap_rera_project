@@ -378,7 +378,7 @@ export default function ComplaintDetails({
       if (complainantRERA_No || !form.complainantRERA) {
 
         if (!form.complainantName) {
-          newErrors.complainantName = "Please Enter Name";
+          newErrors.complainantName = "Please Enter Name of the Complainant";
         }
 
         if (!form.complainantMobile) {
@@ -568,30 +568,46 @@ if (requireFeeReceipt && !form.feeReceiptFile) {
       // STEP 1: Create complaint (POST /complint/create)
       const complaintPayload = {
         complainant: {
-          type: form.complaintBy || "",
-          name: form.complainantName || "",
-          mobile: form.complainantMobile || "",
-          email: form.complainantEmail || "",
-          state: form.cState || "",
-          district: form.cDistrict || "",
-          pincode: form.cPincode || "",
-          address_line1: form.cAddress1 || "",
-          address_line2: form.cAddress2 || "",
+  type: form.complaintBy || "",
 
-        },
-        respondent: {
-          type: form.complaintAgainst || "",
-          name: form.respondentProjectName || "",
-          name: form.respondentName || "",
-          project_name: form.projectName || "",
-          phone: form.respondentMobile || "",
-          email: form.respondentEmail || "",
-          address_line1: form.rAddress1 || "",
-          address_line2: form.rAddress2 || "",
-          state: form.rState || "",
-          district: form.rDistrict || "",
-          pincode: form.rPincode || "",
-        },
+  // ⭐ RERA
+  is_rera_registered: form.complainantRERA === "Yes",
+  registration_id:
+    form.complainantRERA === "Yes" ? form.agentId || null : null,
+
+  // ⭐ Normal details
+  name: form.complainantName || "",
+  mobile: form.complainantMobile || "",
+  email: form.complainantEmail || "",
+
+  address_line1: form.cAddress1 || "",
+  address_line2: form.cAddress2 || "",
+  state: form.cState || "",
+  district: form.cDistrict || "",
+  pincode: form.cPincode || "",
+},
+
+       respondent: {
+  type: form.complaintAgainst || "",
+
+  // ⭐ RERA VALUES (MOST IMPORTANT FIX)
+  is_rera_registered: form.respondentRERA === "Yes",
+  registration_id:
+    form.respondentRERA === "Yes" ? form.promoterRegId || null : null,
+
+  // ⭐ Normal fields (only useful when NO)
+  project_name: form.projectName || "",
+  name: form.respondentName || "",
+  phone: form.respondentMobile || "",
+  email: form.respondentEmail || "",
+
+  address_line1: form.rAddress1 || "",
+  address_line2: form.rAddress2 || "",
+  state: form.rState || "",
+  district: form.rDistrict || "",
+  pincode: form.rPincode || "",
+},
+
         complaint: {
           subject: form.subject || "",
           relief_sought: form.relief || "",

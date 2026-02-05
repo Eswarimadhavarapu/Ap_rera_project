@@ -73,6 +73,9 @@ def create_complint():
         respondent = ComplintRespondent(
             registered_id=r.get("registered_id"),
             respondent_type=r.get("type"),
+            # ⭐ ADD HERE
+            is_rera_registered=r.get("is_rera_registered", False),
+            registration_id=r.get("registration_id"),
             name=r.get("name"),
             phone=r.get("phone"),
             email=r.get("email"),
@@ -258,6 +261,9 @@ def get_complaint(complaint_id):
                 "project_name": respondent.project_name,
                 "mobile": respondent.phone,
                 "email": respondent.email,
+                # ⭐ ADD HERE
+                "is_rera_registered": respondent.is_rera_registered,
+                "registration_id": respondent.registration_id,
                 "address": {
                     "line1": respondent.address_line1,
                     "line2": respondent.address_line2,

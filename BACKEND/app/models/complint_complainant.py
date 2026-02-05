@@ -5,6 +5,11 @@ class ComplintComplainant(db.Model):
 
     complainant_id = db.Column(db.Integer, primary_key=True)
 
+    # ⭐ NEW RERA FIELDS
+    is_rera_registered = db.Column(db.Boolean, default=False)
+    registration_id = db.Column(db.String(50))
+
+
     complainant_registered_id = db.Column(db.String(50))
     complainant_type = db.Column(db.String(50), nullable=False)
 

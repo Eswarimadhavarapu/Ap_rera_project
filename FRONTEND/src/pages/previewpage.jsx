@@ -52,17 +52,19 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
 
   /* ================= RERA ================= */
 /* ================= RERA (FIXED LOGIC) ================= */
+// 🔥 fallback for Agent–Promoter case
 const complainantRERA_Yes =
   complainant?.is_rera_registered === true ||
-  !!complainant?.registration_id;
+  !!complainant?.registration_id ||
+  complaintData?.complainantRERA === "Yes";
 
 const complainantRERA_No = !complainantRERA_Yes;
 
-const respondentRERA_Yes =
-  respondent?.is_rera_registered === true ||
-  !!respondent?.registration_id;
 
-const respondentRERA_No = !respondentRERA_Yes;
+// ===== FINAL FIX =====
+const respondentRERA_Yes = respondent?.is_rera_registered === true;
+const respondentRERA_No = respondent?.is_rera_registered === false;
+
 
 
   /* ================= VISIBILITY (MATCH FORM EXACTLY) ================= */
@@ -151,7 +153,15 @@ const respondentRERA_No = !respondentRERA_Yes;
 
             {complainantRERA_Yes && (
               <Grid>
-                <Item label="Registration ID" value={complainant?.registration_id} />
+                <Item
+  label="Registration ID"
+  value={
+    complainant?.registration_id ||
+    complaintData?.agentId ||
+    "-"
+  }
+/>
+
               </Grid>
             )}
 
@@ -179,53 +189,55 @@ const respondentRERA_No = !respondentRERA_Yes;
         )}
 
         {/* ================= RESPONDENT ================= */}
-        {showRespondentBlock && (
-          <>
-            <Title text="Details Of The Respondent" />
+        {/* ================= RESPONDENT ================= */}
+{showRespondentBlock && (
+  <>
+    <Title text="Details Of The Respondent" />
 
-            {(isAgent || isPromoter) && (
-              <Grid>
-                <Item
-                  label="Is He/She Registered with AP RERA"
-                  value={respondentRERA_Yes ? "Yes" : "No"}
-                />
-              </Grid>
-            )}
+    {(isAgent || isPromoter) && (
+      <Grid>
+        <Item
+          label="Is He/She Registered with AP RERA"
+          value={respondentRERA_Yes ? "Yes" : "No"}
+        />
+      </Grid>
+    )}
 
-            {respondentRERA_Yes && (
-              <Grid>
-                <Item label="Registration ID" value={respondent?.registration_id} />
-              </Grid>
-            )}
+    {/* ✅ IF YES → show only Registration ID */}
+    {respondentRERA_Yes && (
+      <Grid>
+        <Item label="Registration ID" value={respondent?.registration_id} />
+      </Grid>
+    )}
 
-            {(isAllottee || (isAgent && respondentRERA_No) || (isPromoter && respondentRERA_No)) && (
-              <Grid>
-                <Item label="Project Name" value={respondent?.project_name} />
-                <Item
-                  label={isPromoter ? "Promoter Name" : "Name"}
-                  value={respondent?.name}
-                />
-                <Item label="Mobile No" value={respondent?.mobile} />
-                <Item label="Email ID" value={respondent?.email} />
-              </Grid>
-            )}
-          </>
-        )}
+    {/* ✅ IF NO → show full respondent details + address */}
+    {respondentRERA_No && (
+      <>
+        <Grid>
+          <Item label="Project Name" value={respondent?.project_name} />
+          <Item
+            label={isPromoter ? "Promoter Name" : "Name"}
+            value={respondent?.name}
+          />
+          <Item label="Mobile No" value={respondent?.mobile} />
+          <Item label="Email ID" value={respondent?.email} />
+        </Grid>
 
-        {/* ================= RESPONDENT ADDRESS ================= */}
-        {showRespondentAddress && (
-          <>
-            <Title text="Respondent Communication Address" />
-            <Grid>
-<Item label="Address Line 1" value={respondent?.address?.line1} />
-<Item label="Address Line 2" value={respondent?.address?.line2} />
-<Item label="State / UT" value={respondent?.address?.state} />
-<Item label="District" value={respondent?.address?.district} />
-<Item label="PIN Code" value={respondent?.address?.pincode} />
+        <Title text="Respondent Communication Address" />
+        <Grid>
+          <Item label="Address Line 1" value={respondent?.address?.line1} />
+          <Item label="Address Line 2" value={respondent?.address?.line2} />
+          <Item label="State / UT" value={respondent?.address?.state} />
+          <Item label="District" value={respondent?.address?.district} />
+          <Item label="PIN Code" value={respondent?.address?.pincode} />
+        </Grid>
+      </>
+    )}
+  </>
+)}
 
-            </Grid>
-          </>
-        )}
+
+      
 
         {/* ================= COMPLAINT DETAILS ================= */}
         <Title text="Details Of The Complaint" />
