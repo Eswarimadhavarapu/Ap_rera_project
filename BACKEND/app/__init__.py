@@ -52,7 +52,8 @@ def create_app():
         resources={r"/api/*": {
             "origins": app.config["ALLOWED_ORIGINS"].split(","),
             "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"]
+            "allow_headers": "*"
+
         }},
         supports_credentials=True
     )
