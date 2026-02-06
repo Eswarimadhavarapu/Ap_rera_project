@@ -1,54 +1,22 @@
-import React, { useState, useEffect } from "react";
-
-// import { apiPost, apiDelete } from "../api/api";
-import { apiPost } from "../api/api";
-
+import React, { useState } from "react";
+import { apiPost, apiDelete } from "../api/api";
 
 const CharteredAccountant = ({
-  applicationNumber,
-  panNumber,
+  accountants = [],
   states = [],
   districts = [],
+  applicationNumber,
+  panNumber,
   onStateChange,
   onUpdate,
 }) => {
-
-  const [accountantList, setAccountantList] = useState([]);
-
-const appNo =
-  applicationNumber || sessionStorage.getItem("applicationNumber");
-
-const panNo =
-  panNumber || sessionStorage.getItem("panNumber");
-useEffect(() => {
-  const loadAccountants = async () => {
-    if (!appNo || !panNo) return;
-
-    try {
-     const res = await fetch(
-  `/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
-);
-
-     const json = await res.json();
-setAccountantList(json.data?.accountants || []);
-    } catch (err) {
-      console.error("Failed to load accountants", err);
-    }
-  };
-
-  loadAccountants();
-}, [appNo, panNo]);
-
-
-
-
   const [formData, setFormData] = useState({
     accountant_name: "",
     email_id: "",
     address_line1: "",
     address_line2: "",
-    state_ut: "",        // holds state_id
-    district: "",        // holds district_name
+    state_ut: "",
+    district: "",
     pin_code: "",
     icai_member_id: "",
     number_of_key_projects: "",
@@ -62,15 +30,20 @@ setAccountantList(json.data?.accountants || []);
     const { name, value } = e.target;
 
     if (name === "state_ut") {
-      setFormData((prev) => ({
-        ...prev,
-        state_ut: value,
-        district: "",
-      }));
+  const stateId = value ? Number(value) : "";
 
-      if (value) onStateChange(value); // state_id
-      return;
-    }
+  setFormData((prev) => ({
+    ...prev,
+    state_ut: stateId,
+    district: "",
+  }));
+
+  if (stateId) {
+    onStateChange(stateId);
+  }
+  return;
+}
+
 
     setFormData((prev) => ({
       ...prev,
@@ -82,108 +55,100 @@ setAccountantList(json.data?.accountants || []);
   // ADD
   // -----------------------------
   const handleAdd = async () => {
-    if (
-      !formData.accountant_name.trim() ||
-      !formData.address_line1.trim() ||
-      !formData.state_ut ||
-      !formData.district ||
-      !formData.pin_code.trim() ||
-      !formData.icai_member_id.trim() ||
-      !formData.mobile_number.trim()
-    ) {
-      alert("Please fill all required fields");
-      return;
+  if (
+    !formData.accountant_name.trim() ||
+    !formData.address_line1.trim() ||
+    !formData.state_ut ||
+    !formData.district ||
+    !formData.pin_code.trim() ||
+    !formData.icai_member_id.trim() ||
+    !formData.mobile_number.trim()
+  ) {
+    alert("Please fill all required fields");
+    return;
+  }
+
+  try {
+    const payload = {
+      application_number: applicationNumber,
+      pan_number: panNumber,
+
+      accountant_name: formData.accountant_name.trim(),
+      email_id: formData.email_id.trim() || null,
+      address_line1: formData.address_line1.trim(),
+      address_line2: formData.address_line2.trim() || null,
+
+      state_ut: Number(formData.state_ut),
+      district: Number(formData.district),
+
+      pin_code: formData.pin_code.trim(),
+      icai_member_id: formData.icai_member_id.trim(),
+
+      number_of_key_projects:
+        formData.number_of_key_projects === ""
+          ? null
+          : Number(formData.number_of_key_projects),
+
+      mobile_number: formData.mobile_number.trim(),
+    };
+
+    const response = await apiPost("/api/associate/accountant", payload);
+
+    const accountantId = response.data?.id || response.id;
+    if (!accountantId) {
+      throw new Error("Accountant ID not returned");
     }
 
-    // 🔑 Convert state_id → state_name (same fix as Contractors)
-    const selectedState = states.find(
-      (s) => String(s.state_id) === String(formData.state_ut)
-    );
+    await apiPost("/api/application/associate", {
+      application_number: applicationNumber,
+      pan_number: panNumber,
+      associate_type: "accountant",
+      associate_id: accountantId,
+    });
 
-    if (!selectedState) {
-      alert("Invalid state selected");
-      return;
+    setFormData({
+      accountant_name: "",
+      email_id: "",
+      address_line1: "",
+      address_line2: "",
+      state_ut: "",
+      district: "",
+      pin_code: "",
+      icai_member_id: "",
+      number_of_key_projects: "",
+      mobile_number: "",
+    });
+
+    if (onUpdate) {
+      await onUpdate();
     }
-
-    try {
-      const payload = {
-        accountant_name: formData.accountant_name.trim(),
-        email_id: formData.email_id.trim() || null,
-        address_line1: formData.address_line1.trim(),
-        address_line2: formData.address_line2.trim() || null,
-        state_ut: selectedState.state_name, // ✅ STRING
-        district: formData.district,        // ✅ STRING
-        pin_code: formData.pin_code.trim(),
-        icai_member_id: formData.icai_member_id.trim(),
-        number_of_key_projects: formData.number_of_key_projects
-          ? Number(formData.number_of_key_projects)
-          : null,
-        mobile_number: formData.mobile_number.trim(),
-      };
-
-      const response = await apiPost("/api/associate/accountant", payload);
-
-      // ✅ apiPost returns data directly
-      if (response && (response.success === true || response.id)) {
-        alert("Chartered Accountant added successfully");
-const createdAccountant = {
-  id: response?.id || response?.data?.id || Date.now(),
-  accountant_name: formData.accountant_name,
-  email_id: formData.email_id,
-  address_line1: formData.address_line1,
-  icai_member_id: formData.icai_member_id,
-  mobile_number: formData.mobile_number,
+  } catch (error) {
+    console.error("Error adding chartered accountant:", error);
+    alert(error.message || "Error adding chartered accountant");
+  }
 };
 
-
-
-        setFormData({
-          accountant_name: "",
-          email_id: "",
-          address_line1: "",
-          address_line2: "",
-          state_ut: "",
-          district: "",
-          pin_code: "",
-          icai_member_id: "",
-          number_of_key_projects: "",
-          mobile_number: "",
-        });
-
-        // onUpdate();
-      }
-    } catch (error) {
-      console.error("Error adding chartered accountant:", error);
-      alert(error.message || "Error adding chartered accountant");
-    }
-  };
 
   // -----------------------------
   // DELETE
   // -----------------------------
-  // const handleDelete = async (accountantId) => {
-  //   if (!window.confirm("Are you sure you want to delete this chartered accountant?"))
-  //     return;
+  const handleDelete = async (accountantId) => {
+    if (!window.confirm("Are you sure you want to delete this chartered accountant?"))
+      return;
 
-  //   try {
-  //     await apiDelete(`/api/associate/accountant/${accountantId}`);
-  //     alert("Chartered Accountant deleted successfully");
-  //     onUpdate();
-  //   } catch (error) {
-  //     console.error("Error deleting chartered accountant:", error);
-  //     alert("Error deleting chartered accountant");
-  //   }
-  // };
-
-  const handleDelete = (id) => {
-  if (!window.confirm("Are you sure you want to delete this chartered accountant?"))
-    return;
-
-  setAccountantList(prev => prev.filter(a => a.id !== id));
-
-  alert("Chartered Accountant deleted (frontend only)");
-};
-
+    try {
+      await apiDelete(`/api/associate/accountant/${accountantId}`);
+      alert("Chartered Accountant deleted successfully");
+      
+      // ✅ REFRESH LIST IMMEDIATELY
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Error deleting chartered accountant:", error);
+      alert("Error deleting chartered accountant");
+    }
+  };
 
   return (
     <div className="form-section">
@@ -228,22 +193,40 @@ const createdAccountant = {
         </div>
 
         <div className="form-group">
+          <label>Address Line 2</label>
+          <input
+            type="text"
+            name="address_line2"
+            value={formData.address_line2}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
           <label>
             State/UT<span className="required">*</span>
           </label>
           <select
-            name="state_ut"
-            value={formData.state_ut}
-            onChange={handleInputChange}
-            className="form-control"
-          >
-            <option value="">Select</option>
-            {states.map((state) => (
-              <option key={state.state_id} value={state.state_id}>
-                {state.state_name}
-              </option>
-            ))}
-          </select>
+  name="state_ut"
+  value={formData.state_ut}
+  onChange={handleInputChange}
+  className="form-control"
+>
+  <option value="">Select</option>
+  {states.map((state, index) => {
+    const key = state.state_id || state.id || index;
+    const value = state.state_id || state.id;
+    const label = state.state_name || state.name;
+
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
+    );
+  })}
+</select>
+
         </div>
 
         <div className="form-group">
@@ -251,19 +234,26 @@ const createdAccountant = {
             District<span className="required">*</span>
           </label>
           <select
-            name="district"
-            value={formData.district}
-            onChange={handleInputChange}
-            className="form-control"
-            disabled={!formData.state_ut}
-          >
-            <option value="">Select</option>
-            {districts.map((d) => (
-              <option key={d.district_id} value={d.district_name}>
-                {d.district_name}
-              </option>
-            ))}
-          </select>
+  name="district"
+  value={formData.district}
+  onChange={handleInputChange}
+  className="form-control"
+  disabled={!formData.state_ut}
+>
+  <option value="">Select</option>
+  {districts.map((district, index) => {
+    const key = district.district_id || district.id || index;
+    const value = district.district_id || district.id;
+    const label = district.district_name || district.name;
+
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
+    );
+  })}
+</select>
+
         </div>
 
         <div className="form-group">
@@ -318,51 +308,48 @@ const createdAccountant = {
       </div>
 
       <div className="add-button-container">
-        <button
-          type="button"
-          className="btn-add"
-          onClick={handleAdd}
-        >
+        <button type="button" className="btn-add" onClick={handleAdd}>
           Add
         </button>
       </div>
 
-      {accountantList.length > 0 && (
-
-        <div className="added-items-list">
-        <table className="data-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Address</th>
-      <th>ICAI Member ID</th>
-      <th>Mobile</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {accountantList.map((a) => (
-      <tr key={`accountant-${a.id}`}>
-        <td>{a.accountant_name}</td>
-        <td>{a.email_id || "-"}</td>
-        <td>{a.address_line1}</td>
-        <td>{a.icai_member_id}</td>
-        <td>{a.mobile_number}</td>
-        <td>
-          <button
-            className="btn-delete"
-            onClick={() => handleDelete(a.id)}
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+      {/* ✅ DISPLAY ADDED ACCOUNTANTS IMMEDIATELY */}
+      {accountants && accountants.length > 0 && (
+        <div className="added-items-section">
+          <h4 className="added-items-title">Added Chartered Accountants</h4>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>ICAI ID</th>
+                <th>Mobile</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accountants.map((a, index) => (
+                <tr key={`accountant-${a.id || index}`}>
+                  <td>{index + 1}</td>
+                  <td>{a.accountant_name}</td>
+                  <td>{a.email_id || '-'}</td>
+                  <td>{a.address_line1}</td>
+                  <td>{a.icai_member_id}</td>
+                  <td>{a.mobile_number}</td>
+                  <td>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(a.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

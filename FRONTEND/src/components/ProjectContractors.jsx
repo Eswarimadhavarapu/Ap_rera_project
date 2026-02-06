@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { apiPost, apiDelete } from "../api/api";
 
-
 const ProjectContractors = ({
-  applicationNumber,   // ✅ ADD
-  panNumber,           // ✅ ADD
+  applicationNumber,
+  panNumber,
   contractors = [],
   states = [],
   districts = [],
   onStateChange,
   onUpdate,
-
 }) => {
   const initialFormState = {
     nature_of_work: "",
@@ -18,49 +16,28 @@ const ProjectContractors = ({
     email_id: "",
     address_line1: "",
     address_line2: "",
-    state_ut: "",          // holds state_id
-    district: "",          // holds district_name
+    state_ut: "",
+    district: "",
     pin_code: "",
     year_of_establishment: "",
     number_of_key_projects: "",
     mobile_number: "",
   };
-const [contractorList, setContractorList] = useState([]);
-
-const appNo =
-  applicationNumber || sessionStorage.getItem("applicationNumber");
-
-const panNo =
-  panNumber || sessionStorage.getItem("panNumber");
-
-useEffect(() => {
-  const loadContractors = async () => {
-    if (!appNo || !panNo) return;
-
-    try {
-      const res = await fetch(
-  `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
-);
-
-      const json = await res.json();
-
-      if (json.success) {
-        console.log("FROM API 👉", json.data.contractors);
-
-        setContractorList(json.data.contractors || []);
-      }
-    } catch (err) {
-      console.error("Failed to load contractors", err);
-    }
-  };
-
-  loadContractors();
-}, [appNo, panNo]);
-
-
-
 
   const [formData, setFormData] = useState(initialFormState);
+
+  // -----------------------------
+  // HELPER: GET STATE/DISTRICT NAMES
+  // -----------------------------
+  const getStateName = (stateId) => {
+    const state = states.find((s) => (s.state_id || s.id) === stateId);
+    return state ? (state.state_name || state.name) : stateId;
+  };
+
+  const getDistrictName = (districtId) => {
+    const district = districts.find((d) => (d.district_id || d.id) === districtId);
+    return district ? (district.district_name || district.name) : districtId;
+  };
 
   // -----------------------------
   // INPUT CHANGE HANDLER
@@ -69,13 +46,17 @@ useEffect(() => {
     const { name, value } = e.target;
 
     if (name === "state_ut") {
+      const stateId = value ? Number(value) : "";
+
       setFormData((prev) => ({
         ...prev,
-        state_ut: value,
+        state_ut: stateId,
         district: "",
       }));
 
-      if (value) onStateChange(value); // state_id
+      if (stateId && onStateChange) {
+        onStateChange(stateId);
+      }
       return;
     }
 
@@ -89,113 +70,126 @@ useEffect(() => {
   // ADD CONTRACTOR
   // -----------------------------
   const handleAdd = async () => {
-  if (
-    !formData.nature_of_work.trim() ||
-    !formData.contractor_name.trim() ||
-    !formData.address_line1.trim() ||
-    !formData.state_ut ||
-    !formData.district ||
-    !formData.pin_code.trim() ||
-    !formData.mobile_number.trim()
-  ) {
-    alert("Please fill all required fields");
-    return;
-  }
+    if (
+      !formData.nature_of_work.trim() ||
+      !formData.contractor_name.trim() ||
+      !formData.address_line1.trim() ||
+      !formData.state_ut ||
+      !formData.district ||
+      !formData.pin_code.trim() ||
+      !formData.mobile_number.trim()
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
 
-  try {
-   const payload = {
-  application_number: applicationNumber,
-  pan_number: panNumber,
+    try {
+      const payload = {
+        application_number: applicationNumber,
+        pan_number: panNumber,
+        nature_of_work: formData.nature_of_work.trim(),
+        contractor_name: formData.contractor_name.trim(),
+        email_id: formData.email_id || null,
+        address_line1: formData.address_line1.trim(),
+        address_line2: formData.address_line2 || null,
+        state_ut: Number(formData.state_ut),
+        district: Number(formData.district),
+        pin_code: formData.pin_code.trim(),
+        year_of_establishment:
+          formData.year_of_establishment === ""
+            ? null
+            : Number(formData.year_of_establishment),
+        number_of_key_projects:
+          formData.number_of_key_projects === ""
+            ? null
+            : Number(formData.number_of_key_projects),
+        mobile_number: formData.mobile_number.trim(),
+      };
 
-  nature_of_work: formData.nature_of_work.trim(),
-  contractor_name: formData.contractor_name.trim(),
-  email_id: formData.email_id || null,
+      const response = await apiPost("/api/associate/contractor", payload);
 
-  address_line1: formData.address_line1.trim(),
-  address_line2: formData.address_line2 || null,
+      if (!response?.success) {
+        throw new Error("Failed to add contractor");
+      }
 
-  state_ut: states.find(
-    s => String(s.state_id) === String(formData.state_ut)
-  )?.state_name || "",
+      const contractorId = response.data?.id || response.id;
 
-  district: formData.district,   // 🔥 FIXED HERE
+      if (!contractorId) {
+        throw new Error("Contractor ID not returned");
+      }
 
-  pin_code: formData.pin_code.trim(),
-  year_of_establishment: formData.year_of_establishment || null,
-  number_of_key_projects: formData.number_of_key_projects || null,
-  mobile_number: formData.mobile_number.trim(),
-};
+      alert("Contractor added successfully");
+      setFormData(initialFormState);
 
-
-
-const response = await apiPost("/api/associate/contractor", payload);
-
-if (!response?.success) {
-  throw new Error("Failed to add contractor");
-}
-
-const contractorId =
-  response.data?.id || response.data?.data?.id;
-
-if (!contractorId) {
-  throw new Error("Contractor ID not returned");
-}
-
-await apiPost("/api/application/associate", {
-  application_number: appNo,
-  pan_number: panNo,
-  associate_type: "contractor",
-  associate_id: contractorId,
-});
-
-
-
-    alert("Contractor added successfully");
-    const createdContractor = {
-  id: response.data?.id || response.data?.data?.id || Date.now(),
-  nature_of_work: formData.nature_of_work,
-  contractor_name: formData.contractor_name,
-  state_ut: payload.state_ut,
-  district: payload.district,
-  mobile_number: formData.mobile_number,
-};
-
-setContractorList(prev => [...prev, createdContractor]);
-
-    setFormData(initialFormState);
-    // onUpdate();
-  } catch (error) {
-    console.error("Error adding contractor:", error);
-    alert("Error adding contractor");
-  }
-};
-
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Error adding contractor:", error);
+      alert(error.message || "Error adding contractor");
+    }
+  };
 
   // -----------------------------
-  // DELETE CONTRACTOR
+  // 🔥 SIMPLIFIED DELETE - NO BACKEND CHANGES NEEDED
   // -----------------------------
-  // const handleDelete = async (id) => {
-  //   if (!window.confirm("Are you sure you want to delete this contractor?"))
-  //     return;
+  const handleDelete = async (contractorId) => {
+    if (!contractorId) {
+      alert("Invalid contractor ID");
+      return;
+    }
 
-  //   try {
-  //     await apiDelete(`/api/associate/contractor/${id}`);
-  //     alert("Contractor deleted successfully");
-  //     onUpdate();
-  //   } catch (error) {
-  //     console.error("Error deleting contractor:", error);
-  //     alert("Error deleting contractor");
-  //   }
-  // };
+    if (!window.confirm("Are you sure you want to delete this contractor?"))
+      return;
 
-  const handleDelete = (id) => {
-  if (!window.confirm("Are you sure you want to delete this contractor?")) return;
+    try {
+      console.log("Deleting contractor with ID:", contractorId);
 
-  setContractorList(prev => prev.filter(c => c.id !== id));
+      // 🔥 ONLY DELETE FROM MAIN TABLE
+      // Backend should handle cascade deletion or we'll just refresh
+      const response = await apiDelete(`/api/associate/contractor/${contractorId}`);
 
-  alert("Contractor deleted (frontend only)");
-};
+      console.log("Delete response:", response);
 
+      // ✅ Check for success - be lenient with response format
+      const isSuccess = 
+        response?.success === true || 
+        response?.success !== false ||
+        response?.message?.toLowerCase().includes('success') ||
+        response?.message?.toLowerCase().includes('deleted');
+
+      if (isSuccess) {
+        alert("Contractor deleted successfully");
+      } else {
+        // Even if response is unclear, still try to refresh
+        console.warn("Unclear response, but attempting refresh:", response);
+      }
+
+      // ✅ ALWAYS REFRESH LIST TO SYNC STATE
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Full error object:", error);
+      console.error("Error response:", error.response);
+      
+      // 🔥 IMPROVED ERROR HANDLING
+      let errorMessage = "Error deleting contractor";
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(`Failed to delete: ${errorMessage}`);
+      
+      // 🔥 STILL REFRESH - Maybe it actually deleted
+      if (onUpdate) {
+        await onUpdate();
+      }
+    }
+  };
 
   return (
     <div className="form-section">
@@ -203,7 +197,9 @@ setContractorList(prev => [...prev, createdContractor]);
 
       <div className="form-grid">
         <div className="form-group">
-          <label>Contractor Nature Of Work<span className="required">*</span></label>
+          <label>
+            Contractor Nature Of Work<span className="required">*</span>
+          </label>
           <input
             type="text"
             name="nature_of_work"
@@ -214,7 +210,9 @@ setContractorList(prev => [...prev, createdContractor]);
         </div>
 
         <div className="form-group">
-          <label>Contractor Name<span className="required">*</span></label>
+          <label>
+            Contractor Name<span className="required">*</span>
+          </label>
           <input
             type="text"
             name="contractor_name"
@@ -236,7 +234,9 @@ setContractorList(prev => [...prev, createdContractor]);
         </div>
 
         <div className="form-group">
-          <label>Address Line 1<span className="required">*</span></label>
+          <label>
+            Address Line 1<span className="required">*</span>
+          </label>
           <input
             type="text"
             name="address_line1"
@@ -258,7 +258,9 @@ setContractorList(prev => [...prev, createdContractor]);
         </div>
 
         <div className="form-group">
-          <label>State / UT<span className="required">*</span></label>
+          <label>
+            State / UT<span className="required">*</span>
+          </label>
           <select
             name="state_ut"
             value={formData.state_ut}
@@ -266,16 +268,25 @@ setContractorList(prev => [...prev, createdContractor]);
             className="form-control"
           >
             <option value="">Select</option>
-            {states.map((s) => (
-              <option key={s.state_id} value={s.state_id}>
-                {s.state_name}
-              </option>
-            ))}
+            {states.map((state, index) => {
+              const key = state.state_id || state.id || index;
+              const value = state.state_id || state.id;
+              const label = state.state_name || state.name;
+
+              return (
+                <option key={key} value={value}>
+                  {label}
+                </option>
+              );
+            })}
           </select>
         </div>
 
         <div className="form-group">
-          <label>District<span className="required">*</span></label>
+          <label>
+            District<span className="required">*</span>
+          </label>
+
           <select
             name="district"
             value={formData.district}
@@ -284,16 +295,24 @@ setContractorList(prev => [...prev, createdContractor]);
             disabled={!formData.state_ut}
           >
             <option value="">Select</option>
-            {districts.map((d) => (
-              <option key={d.district_id} value={d.district_name}>
-                {d.district_name}
-              </option>
-            ))}
+            {districts.map((district, index) => {
+              const key = district.district_id || district.id || index;
+              const value = district.district_id || district.id;
+              const label = district.district_name || district.name;
+
+              return (
+                <option key={key} value={value}>
+                  {label}
+                </option>
+              );
+            })}
           </select>
         </div>
 
         <div className="form-group">
-          <label>PIN Code<span className="required">*</span></label>
+          <label>
+            PIN Code<span className="required">*</span>
+          </label>
           <input
             type="text"
             name="pin_code"
@@ -326,7 +345,9 @@ setContractorList(prev => [...prev, createdContractor]);
         </div>
 
         <div className="form-group">
-          <label>Mobile Number<span className="required">*</span></label>
+          <label>
+            Mobile Number<span className="required">*</span>
+          </label>
           <input
             type="text"
             name="mobile_number"
@@ -338,44 +359,52 @@ setContractorList(prev => [...prev, createdContractor]);
       </div>
 
       <div className="add-button-container">
-        <button className="btn-add" onClick={handleAdd}>Add</button>
-      </div>
-  <table className="data-table">
-
-    <thead>
-      <tr>
-        <th>Nature of Work</th>
-        <th>Contractor Name</th>
-        <th>State / UT</th>
-        <th>District</th>
-        <th>Mobile Number</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-
-   <tbody>
-  {Array.isArray(contractorList) &&
-  contractorList.map((c) => (
-    <tr key={c.id}>
-      <td>{c.nature_of_work}</td>
-      <td>{c.contractor_name}</td>
-      <td>{c.state_ut}</td>
-      <td>{c.district}</td>
-      <td>{c.mobile_number}</td>
-      <td>
-        <button
-          className="btn-delete"
-          onClick={() => handleDelete(c.id)}
-        >
-          Delete
+        <button className="btn-add" onClick={handleAdd}>
+          Add
         </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+      </div>
 
-  </table>
-
+      {contractors && contractors.length > 0 && (
+        <div className="added-items-section">
+          <h4 className="added-items-title">Added Contractors</h4>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Nature of Work</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>State</th>
+                <th>District</th>
+                <th>Mobile</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contractors.map((c, index) => (
+                <tr key={`contractor-${c.id ?? "noid"}-${index}`}>
+                  <td>{index + 1}</td>
+                  <td>{c.nature_of_work || '-'}</td>
+                  <td>{c.contractor_name || '-'}</td>
+                  <td>{c.address_line1 || '-'}</td>
+                  <td>{getStateName(c.state_ut)}</td>
+                  <td>{getDistrictName(c.district)}</td>
+                  <td>{c.mobile_number || '-'}</td>
+                  <td>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(c.id)}
+                      disabled={!c.id}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

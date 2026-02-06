@@ -179,7 +179,7 @@ function App() {
           <Route path="/project-Details" element={<ProjectDetails />} />
           <Route path="/Development-Details" element={<DevelopmentDetails />} />
          <Route
-            path="project-upload-documents1"
+            path="project-upload-documents"
             element={<ProjectUploadDocuments1 />}
           />
           <Route path="preview" element={<ProjectPreview />} />

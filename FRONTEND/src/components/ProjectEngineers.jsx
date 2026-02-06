@@ -1,28 +1,22 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import { apiPost, apiDelete } from "../api/api";
 
 const ProjectEngineers = ({
   engineers = [],
   states = [],
   districts = [],
-  applicationNumber,   // ✅ ADD
-  panNumber,           // ✅ ADD
+  applicationNumber,
+  panNumber,
   onStateChange,
   onUpdate,
 }) => {
-  const [engineerList, setEngineerList] = useState(engineers);
-useEffect(() => {
-  setEngineerList(engineers);
-}, [engineers]);
-
   const [formData, setFormData] = useState({
     engineer_name: "",
     email_id: "",
     address_line1: "",
     address_line2: "",
-    state_ut: "",          // holds state_id
-    district: "",          // holds district_name
+    state_ut: "",
+    district: "",
     pin_code: "",
     mobile_number: "",
     number_of_key_projects: "",
@@ -35,15 +29,20 @@ useEffect(() => {
     const { name, value } = e.target;
 
     if (name === "state_ut") {
-      setFormData((prev) => ({
-        ...prev,
-        state_ut: value,
-        district: "",
-      }));
+  const stateId = value ? Number(value) : "";
 
-      if (value) onStateChange(value);
-      return;
-    }
+  setFormData((prev) => ({
+    ...prev,
+    state_ut: stateId,
+    district: "",
+  }));
+
+  if (stateId) {
+    onStateChange(stateId);
+  }
+  return;
+}
+
 
     setFormData((prev) => ({
       ...prev,
@@ -67,50 +66,38 @@ useEffect(() => {
       return;
     }
 
-    // 🔑 Convert state_id → state_name
-    const selectedState = states.find(
-      (s) => String(s.state_id) === String(formData.state_ut)
-    );
-
-    if (!selectedState) {
-      alert("Invalid state selected");
-      return;
-    }
-
     try {
       const payload = {
-        application_number: applicationNumber, // ✅ ADD
-        pan_number: panNumber,                 // ✅ ADD
-        engineer_name: formData.engineer_name.trim(),
-        email_id: formData.email_id.trim() || null,
-        address_line1: formData.address_line1.trim(),
-        address_line2: formData.address_line2.trim() || null,
-        state_ut: selectedState.state_name, // ✅ STRING
-        district: formData.district,        // ✅ STRING
-        pin_code: formData.pin_code.trim(),
-        mobile_number: formData.mobile_number.trim(),
-        number_of_key_projects: formData.number_of_key_projects
-          ? Number(formData.number_of_key_projects)
-          : null,
-      };
+  application_number: applicationNumber,
+  pan_number: panNumber,
 
-      const response = await apiPost(
-        "/api/associate/project-engineer",
-        payload
-      );
+  engineer_name: formData.engineer_name.trim(),
+  email_id: formData.email_id || null,
+  address_line1: formData.address_line1.trim(),
+  address_line2: formData.address_line2 || null,
 
-      // ✅ apiPost returns data directly
-      if (response && (response.success === true || response.id)) {
-        alert("Project Engineer added successfully");
-const createdEngineer = {
-  id: response?.id || response?.data?.id || Date.now(),
-  engineer_name: formData.engineer_name,
-  email_id: formData.email_id,
-  address_line1: formData.address_line1,
-  mobile_number: formData.mobile_number,
+  // ✅ IDs ONLY
+  state_ut: Number(formData.state_ut),
+  district: Number(formData.district),
+
+  pin_code: formData.pin_code.trim(),
+  mobile_number: formData.mobile_number.trim(),
+
+  number_of_key_projects:
+    formData.number_of_key_projects === ""
+      ? null
+      : Number(formData.number_of_key_projects),
 };
 
-setEngineerList(prev => [...prev, createdEngineer]);
+
+
+      const response = await apiPost("/api/associate/project-engineer", payload);
+
+const engineerId = response.data?.id || response.id;
+
+if (!engineerId) {
+  throw new Error("Project Engineer ID not returned");
+}
 
         setFormData({
           engineer_name: "",
@@ -124,9 +111,12 @@ setEngineerList(prev => [...prev, createdEngineer]);
           number_of_key_projects: "",
         });
 
-        // onUpdate();
+        // ✅ REFRESH LIST IMMEDIATELY
+        if (onUpdate) {
+          await onUpdate();
+        }
       }
-    } catch (error) {
+    catch (error) {
       console.error("Error adding project engineer:", error);
       alert(error.message || "Error adding project engineer");
     }
@@ -135,28 +125,23 @@ setEngineerList(prev => [...prev, createdEngineer]);
   // -----------------------------
   // DELETE
   // -----------------------------
-  // const handleDelete = async (engineerId) => {
-  //   if (!window.confirm("Are you sure you want to delete this project engineer?"))
-  //     return;
+  const handleDelete = async (engineerId) => {
+    if (!window.confirm("Are you sure you want to delete this project engineer?"))
+      return;
 
-  //   try {
-  //     await apiDelete(`/api/associate/project-engineer/${engineerId}`);
-  //     alert("Project Engineer deleted successfully");
-  //     onUpdate();
-  //   } catch (error) {
-  //     console.error("Error deleting project engineer:", error);
-  //     alert("Error deleting project engineer");
-  //   }
-  // };
-
-  const handleDelete = (id) => {
-  if (!window.confirm("Are you sure you want to delete this project engineer?"))
-    return;
-
-  setEngineerList(prev => prev.filter(e => e.id !== id));
-
-  alert("Project Engineer deleted");
-};
+    try {
+      await apiDelete(`/api/associate/project-engineer/${engineerId}`);
+      alert("Project Engineer deleted successfully");
+      
+      // ✅ REFRESH LIST IMMEDIATELY
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Error deleting project engineer:", error);
+      alert("Error deleting project engineer");
+    }
+  };
 
   return (
     <div className="form-section">
@@ -201,22 +186,40 @@ setEngineerList(prev => [...prev, createdEngineer]);
         </div>
 
         <div className="form-group">
+          <label>Address Line 2</label>
+          <input
+            type="text"
+            name="address_line2"
+            value={formData.address_line2}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
           <label>
             State/UT<span className="required">*</span>
           </label>
           <select
-            name="state_ut"
-            value={formData.state_ut}
-            onChange={handleInputChange}
-            className="form-control"
-          >
-            <option value="">Select</option>
-            {states.map((state) => (
-              <option key={state.state_id} value={state.state_id}>
-                {state.state_name}
-              </option>
-            ))}
-          </select>
+  name="state_ut"
+  value={formData.state_ut}
+  onChange={handleInputChange}
+  className="form-control"
+>
+  <option value="">Select</option>
+  {states.map((state, index) => {
+    const key = state.state_id || state.id || index;
+    const value = state.state_id || state.id;
+    const label = state.state_name || state.name;
+
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
+    );
+  })}
+</select>
+
         </div>
 
         <div className="form-group">
@@ -224,19 +227,26 @@ setEngineerList(prev => [...prev, createdEngineer]);
             District<span className="required">*</span>
           </label>
           <select
-            name="district"
-            value={formData.district}
-            onChange={handleInputChange}
-            className="form-control"
-            disabled={!formData.state_ut}
-          >
-            <option value="">Select</option>
-            {districts.map((d) => (
-              <option key={d.district_id} value={d.district_name}>
-                {d.district_name}
-              </option>
-            ))}
-          </select>
+  name="district"
+  value={formData.district}
+  onChange={handleInputChange}
+  className="form-control"
+  disabled={!formData.state_ut}
+>
+  <option value="">Select</option>
+  {districts.map((district, index) => {
+    const key = district.district_id || district.id || index;
+    const value = district.district_id || district.id;
+    const label = district.district_name || district.name;
+
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
+    );
+  })}
+</select>
+
         </div>
 
         <div className="form-group">
@@ -278,48 +288,46 @@ setEngineerList(prev => [...prev, createdEngineer]);
       </div>
 
       <div className="add-button-container">
-        <button
-          type="button"
-          className="btn-add"
-          onClick={handleAdd}
-        >
+        <button type="button" className="btn-add" onClick={handleAdd}>
           Add
         </button>
       </div>
-{engineerList.length > 0 && (
 
-        <div className="added-items-list">
-         <table className="data-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Address</th>
-      <th>Mobile</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {engineerList.map((e) => (
-      <tr key={e.id}>
-        <td>{e.engineer_name}</td>
-        <td>{e.email_id || "-"}</td>
-        <td>{e.address_line1}</td>
-        <td>{e.mobile_number}</td>
-        <td>
-          <button
-            className="btn-delete"
-            onClick={() => handleDelete(e.id)}
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+      {/* ✅ DISPLAY ADDED ENGINEERS IMMEDIATELY */}
+      {engineers && engineers.length > 0 && (
+        <div className="added-items-section">
+          <h4 className="added-items-title">Added Project Engineers</h4>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Mobile</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {engineers.map((e, index) => (
+                <tr key={`project-engineer-${e.id ?? "noid"}-${index}`}>
+                  <td>{index + 1}</td>
+                  <td>{e.engineer_name}</td>
+                  <td>{e.email_id || '-'}</td>
+                  <td>{e.address_line1}</td>
+                  <td>{e.mobile_number}</td>
+                  <td>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(e.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

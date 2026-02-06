@@ -1,46 +1,15 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import { apiPost, apiDelete } from "../api/api";
 
 const StructuralEngineers = ({
   engineers = [],
   states = [],
   districts = [],
- applicationNumber,
- panNumber,
+  applicationNumber,
+  panNumber,
   onStateChange,
   onUpdate,
 }) => {
-const [engineerList, setEngineerList] = useState([]);
-
-const appNo =
-  applicationNumber || sessionStorage.getItem("applicationNumber");
-
-const panNo =
-  panNumber || sessionStorage.getItem("panNumber");
-
-useEffect(() => {
-  const loadEngineers = async () => {
-    if (!appNo || !panNo) return;
-
-    try {
-      const res = await fetch(
-        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
-      );
-      const json = await res.json();
-
-      if (json.success) {
-        setEngineerList(json.data.engineers || []);
-      }
-    } catch (err) {
-      console.error("Failed to load engineers", err);
-    }
-  };
-
-  loadEngineers();
-}, [appNo, panNo]);
-
-
   const [formData, setFormData] = useState({
     engineer_name: "",
     email_id: "",
@@ -54,6 +23,19 @@ useEffect(() => {
     licence_number: "",
     mobile_number: "",
   });
+
+  // -----------------------------
+  // HELPER: GET STATE/DISTRICT NAMES
+  // -----------------------------
+  const getStateName = (stateId) => {
+    const state = states.find((s) => (s.state_id || s.id) === stateId);
+    return state ? (state.state_name || state.name) : stateId;
+  };
+
+  const getDistrictName = (districtId) => {
+    const district = districts.find((d) => (d.district_id || d.id) === districtId);
+    return district ? (district.district_name || district.name) : districtId;
+  };
 
   // -----------------------------
   // INPUT CHANGE
@@ -70,7 +52,7 @@ useEffect(() => {
         district: "",
       }));
 
-      if (stateId) {
+      if (stateId && onStateChange) {
         onStateChange(stateId);
       }
       return;
@@ -85,141 +67,164 @@ useEffect(() => {
   // -----------------------------
   // ADD STRUCTURAL ENGINEER
   // -----------------------------
- const handleAdd = async () => {
-  const requiredFields = [
-    "engineer_name",
-    "address_line1",
-    "state_ut",
-    "district",
-    "pin_code",
-    "licence_number",
-    "mobile_number",
-  ];
+  const handleAdd = async () => {
+    const requiredFields = [
+      "engineer_name",
+      "address_line1",
+      "state_ut",
+      "district",
+      "pin_code",
+      "licence_number",
+      "mobile_number",
+    ];
 
-  for (const field of requiredFields) {
-    if (!formData[field]) {
-      alert("Please fill all required fields");
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        alert("Please fill all required fields");
+        return;
+      }
+    }
+
+    try {
+      const payload = {
+        application_number: applicationNumber,
+        pan_number: panNumber,
+        ...formData,
+        state_ut: Number(formData.state_ut),
+        district: Number(formData.district),
+        year_of_establishment:
+          formData.year_of_establishment === ""
+            ? null
+            : Number(formData.year_of_establishment),
+        number_of_key_projects:
+          formData.number_of_key_projects === ""
+            ? null
+            : Number(formData.number_of_key_projects),
+      };
+
+      const response = await apiPost("/api/associate/structural-engineer", payload);
+
+      if (!response?.success) {
+        throw new Error("Failed to add structural engineer");
+      }
+
+      const engineerId = response.data?.id || response.id;
+
+      if (!engineerId) {
+        throw new Error("Structural Engineer ID not returned");
+      }
+
+      await apiPost("/api/application/associate", {
+        application_number: applicationNumber,
+        pan_number: panNumber,
+        associate_type: "engineer",
+        associate_id: engineerId,
+      });
+
+      alert("Structural Engineer added successfully");
+
+      setFormData({
+        engineer_name: "",
+        email_id: "",
+        address_line1: "",
+        address_line2: "",
+        state_ut: "",
+        district: "",
+        pin_code: "",
+        year_of_establishment: "",
+        number_of_key_projects: "",
+        licence_number: "",
+        mobile_number: "",
+      });
+
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Error adding structural engineer:", error);
+      alert(error.message || "Error adding structural engineer");
+    }
+  };
+
+  // -----------------------------
+  // 🔥 SIMPLIFIED DELETE - NO BACKEND CHANGES NEEDED
+  // -----------------------------
+  const handleDelete = async (engineerId) => {
+    if (!engineerId) {
+      alert("Invalid engineer ID");
       return;
     }
-  }
 
-  try {
-    const payload = {
-      application_number: applicationNumber,
-      pan_number: panNumber,
-      ...formData,
-      state_ut: Number(formData.state_ut),
-      district: Number(formData.district),
-      year_of_establishment:
-        formData.year_of_establishment === ""
-          ? null
-          : Number(formData.year_of_establishment),
-      number_of_key_projects:
-        formData.number_of_key_projects === ""
-          ? null
-          : Number(formData.number_of_key_projects),
-    };
+    if (!window.confirm("Are you sure you want to delete this structural engineer?"))
+      return;
 
-   const response = await apiPost(
-  "/api/associate/structural-engineer",
-  payload
-);
+    try {
+      console.log("Deleting engineer with ID:", engineerId);
 
-if (!response?.success) {
-  throw new Error("Failed to add structural engineer");
-}
+      // 🔥 ONLY DELETE FROM MAIN TABLE
+      // Backend should handle cascade deletion or we'll just refresh
+      const response = await apiDelete(`/api/associate/structural-engineer/${engineerId}`);
 
-const engineerId =
-  response.data?.id || response.data?.data?.id;
+      console.log("Delete response:", response);
 
-if (!engineerId) {
-  throw new Error("Engineer ID not returned");
-}
+      // ✅ Check for success - be lenient with response format
+      const isSuccess = 
+        response?.success === true || 
+        response?.success !== false ||
+        response?.message?.toLowerCase().includes('success') ||
+        response?.message?.toLowerCase().includes('deleted');
 
-await apiPost("/api/application/associate", {
-  application_number: appNo,
-  pan_number: panNo,
-  associate_type: "engineer",
-  associate_id: engineerId,
-});
+      if (isSuccess) {
+        alert("Structural Engineer deleted successfully");
+      } else {
+        // Even if response is unclear, still try to refresh
+        console.warn("Unclear response, but attempting refresh:", response);
+      }
 
-
-    alert("Structural Engineer added successfully");
-const createdEngineer = {
-  id: response.data?.id || response.data?.data?.id || Date.now(),
-  engineer_name: formData.engineer_name,
-  email_id: formData.email_id,
-  address_line1: formData.address_line1,
-  mobile_number: formData.mobile_number,
-  licence_number: formData.licence_number,
-};
-
-setEngineerList((prev) => [...prev, createdEngineer]);
-
-    setFormData({
-      engineer_name: "",
-      email_id: "",
-      address_line1: "",
-      address_line2: "",
-      state_ut: "",
-      district: "",
-      pin_code: "",
-      year_of_establishment: "",
-      number_of_key_projects: "",
-      licence_number: "",
-      mobile_number: "",
-    });
-
-    // onUpdate();
-  } catch (error) {
-    console.error("Error adding structural engineer:", error);
-    alert("Error adding structural engineer");
-  }
-};
-const handleDelete = (engineerId) => {
-  if (!window.confirm("Are you sure you want to delete this engineer?")) return;
-
-  setEngineerList(prev => prev.filter(e => e.id !== engineerId));
-
-  alert("Structural engineer deleted");
-};
-
+      // ✅ ALWAYS REFRESH LIST TO SYNC STATE
+      if (onUpdate) {
+        await onUpdate();
+      }
+    } catch (error) {
+      console.error("Full error object:", error);
+      console.error("Error response:", error.response);
+      
+      // 🔥 IMPROVED ERROR HANDLING
+      let errorMessage = "Error deleting structural engineer";
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(`Failed to delete: ${errorMessage}`);
+      
+      // 🔥 STILL REFRESH - Maybe it actually deleted
+      if (onUpdate) {
+        await onUpdate();
+      }
+    }
+  };
 
   return (
     <div className="form-section">
       <h3 className="section-title-ac">Structural Engineers</h3>
 
       <div className="form-grid">
-       {/* Engineer Name */}
-<div className="form-group">
-  <label>
-    Engineer Name<span className="required">*</span>
-  </label>
-  <input
-    type="text"
-    name="engineer_name"
-    value={formData.engineer_name}
-    onChange={handleInputChange}
-    className="form-control"
-  />
-</div>
+        <div className="form-group">
+          <label>
+            Engineer Name<span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="engineer_name"
+            value={formData.engineer_name}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        </div>
 
-         {/* Year of establishment */}
-<div className="form-group">
-  <label>Year of establishment</label>
-  <input
-    type="number"
-    name="year_of_establishment"
-    placeholder="YYYY"
-    value={formData.year_of_establishment}
-    onChange={handleInputChange}
-    className="form-control"
-  />
-</div>
-
-
-
-        {/* Email */}
         <div className="form-group">
           <label>Email ID</label>
           <input
@@ -231,7 +236,6 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* Address Line 1 */}
         <div className="form-group">
           <label>
             Address Line 1<span className="required">*</span>
@@ -245,7 +249,6 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* Address Line 2 */}
         <div className="form-group">
           <label>Address Line 2</label>
           <input
@@ -257,7 +260,6 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* STATE */}
         <div className="form-group">
           <label>
             State / UT<span className="required">*</span>
@@ -283,7 +285,6 @@ const handleDelete = (engineerId) => {
           </select>
         </div>
 
-        {/* DISTRICT */}
         <div className="form-group">
           <label>
             District<span className="required">*</span>
@@ -310,7 +311,6 @@ const handleDelete = (engineerId) => {
           </select>
         </div>
 
-        {/* PIN */}
         <div className="form-group">
           <label>
             PIN Code<span className="required">*</span>
@@ -324,23 +324,22 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* Year */}
         <div className="form-group">
           <label>Year of establishment</label>
           <input
-            type="text"
+            type="number"
             name="year_of_establishment"
+            placeholder="YYYY"
             value={formData.year_of_establishment}
             onChange={handleInputChange}
             className="form-control"
           />
         </div>
 
-        {/* Projects */}
         <div className="form-group">
           <label>Number of key projects completed</label>
           <input
-            type="text"
+            type="number"
             name="number_of_key_projects"
             value={formData.number_of_key_projects}
             onChange={handleInputChange}
@@ -348,7 +347,6 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* Licence */}
         <div className="form-group">
           <label>
             Licence Number<span className="required">*</span>
@@ -362,7 +360,6 @@ const handleDelete = (engineerId) => {
           />
         </div>
 
-        {/* Mobile */}
         <div className="form-group">
           <label>
             Mobile Number<span className="required">*</span>
@@ -383,32 +380,39 @@ const handleDelete = (engineerId) => {
         </button>
       </div>
 
-      {/* LIST */}
-      {engineerList.length  > 0 && (
-        <div className="added-items-list">
+      {engineers && engineers.length > 0 && (
+        <div className="added-items-section">
+          <h4 className="added-items-title">Added Structural Engineers</h4>
           <table className="data-table">
             <thead>
               <tr>
+                <th>S.No</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Address</th>
+                <th>State</th>
+                <th>District</th>
                 <th>Mobile</th>
                 <th>Licence</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {engineerList.map((e) => (
-                <tr key={e.id}>
-                  <td>{e.engineer_name}</td>
-                  <td>{e.email_id}</td>
-                  <td>{e.address_line1}</td>
-                  <td>{e.mobile_number}</td>
-                  <td>{e.licence_number}</td>
+              {engineers.map((e, index) => (
+                <tr key={e.id || index}>
+                  <td>{index + 1}</td>
+                  <td>{e.engineer_name || '-'}</td>
+                  <td>{e.email_id || '-'}</td>
+                  <td>{e.address_line1 || '-'}</td>
+                  <td>{getStateName(e.state_ut)}</td>
+                  <td>{getDistrictName(e.district)}</td>
+                  <td>{e.mobile_number || '-'}</td>
+                  <td>{e.licence_number || '-'}</td>
                   <td>
                     <button
                       className="btn-delete"
                       onClick={() => handleDelete(e.id)}
+                      disabled={!e.id}
                     >
                       Delete
                     </button>

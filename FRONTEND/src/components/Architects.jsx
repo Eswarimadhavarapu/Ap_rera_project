@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { apiPost, apiDelete } from "../api/api";
-
-
-
 
 const Architects = ({
   architects = [],
@@ -13,41 +10,6 @@ const Architects = ({
   onStateChange,
   onUpdate,
 }) => {
-  const [architectList, setArchitectList] = useState([]);
-
-// useEffect(() => {
-//   setArchitectList(architects);
-// }, [architects]);
-
-const appNo =
-  applicationNumber || sessionStorage.getItem("applicationNumber");
-
-const panNo =
-  panNumber || sessionStorage.getItem("panNumber");
-
-useEffect(() => {
-  const loadArchitects = async () => {
-    if (!appNo || !panNo) return;
-
-    try {
-      const res = await fetch(
-        `https://0jv8810n-8080.inc1.devtunnels.ms/api/application/associates?application_number=${appNo}&pan_number=${panNo}`
-      );
-      const json = await res.json();
-
-      if (json.success) {
-        setArchitectList(json.data.architects || []);
-      }
-    } catch (err) {
-      console.error("Failed to load architects", err);
-    }
-  };
-
-  loadArchitects();
-}, [appNo, panNo]);
-
-
-
   const [formData, setFormData] = useState({
     architect_name: "",
     email_id: "",
@@ -90,7 +52,7 @@ useEffect(() => {
   };
 
   // -----------------------------
-  // ADD ARCHITECT (🔥 FIXED)
+  // ADD ARCHITECT
   // -----------------------------
   const handleAdd = async () => {
     const requiredFields = [
@@ -112,6 +74,8 @@ useEffect(() => {
 
     try {
       const payload = {
+        application_number: applicationNumber,
+        pan_number: panNumber,
         ...formData,
         state_ut: Number(formData.state_ut),
         district: Number(formData.district),
@@ -132,35 +96,21 @@ useEffect(() => {
         throw new Error("Failed to create architect");
       }
 
-      const architectId =
-        response.data?.id || response.data?.data?.id;
+      const architectId = response.data?.id || response.data?.data?.id;
 
       if (!architectId) {
         throw new Error("Architect ID not returned from API");
       }
 
-      // 2️⃣ LINK ARCHITECT TO APPLICATION (🔥 THIS WAS MISSING)
+      // 2️⃣ LINK ARCHITECT TO APPLICATION
       await apiPost("/api/application/associate", {
-  application_number: applicationNumber,
-  pan_number: panNumber,
-  associate_type: "architect",
-  associate_id: architectId,
-});
-
-      
+        application_number: applicationNumber,
+        pan_number: panNumber,
+        associate_type: "architect",
+        associate_id: architectId,
+      });
 
       alert("Architect added successfully");
-
-      const createdArchitect = {
-  id: architectId,
-  architect_name: formData.architect_name,
-  email_id: formData.email_id,
-  address_line1: formData.address_line1,
-  mobile_number: formData.mobile_number,
-  coa_registration_number: formData.coa_registration_number,
-};
-
-setArchitectList((prev) => [...prev, createdArchitect]);
 
       // 3️⃣ RESET FORM
       setFormData({
@@ -177,44 +127,39 @@ setArchitectList((prev) => [...prev, createdArchitect]);
         mobile_number: "",
       });
 
-      // 4️⃣ REFRESH LIST
-      // onUpdate();
+      // 4️⃣ REFRESH LIST IMMEDIATELY
+      if (onUpdate) {
+        await onUpdate();
+      }
 
     } catch (error) {
       console.error("Error adding architect:", error);
-      alert("Error adding architect");
+      alert(error.message || "Error adding architect");
     }
   };
 
   // -----------------------------
   // DELETE ARCHITECT
   // -----------------------------
-  // const handleDelete = async (architectId) => {
-  //   if (!window.confirm("Are you sure you want to delete this architect?")) return;
+  const handleDelete = async (architectId) => {
+    if (!window.confirm("Are you sure you want to delete this architect?")) return;
 
-  //   try {
-  //     const response = await apiDelete(
-  //       `/api/associate/architect/${architectId}`
-  //     );
+    try {
+      const response = await apiDelete(`/api/associate/architect/${architectId}`);
 
-  //     if (response?.success) {
-  //       alert("Architect deleted successfully");
-  //       onUpdate();
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting architect:", error);
-  //     alert("Error deleting architect");
-  //   }
-  // };
-
-
-  const handleDelete = (architectId) => {
-  if (!window.confirm("Are you sure you want to delete this architect?")) return;
-
-  setArchitectList(prev => prev.filter(a => a.id !== architectId));
-
-  alert("Architect deleted");
-};
+      if (response?.success) {
+        alert("Architect deleted successfully");
+        
+        // ✅ REFRESH LIST IMMEDIATELY
+        if (onUpdate) {
+          await onUpdate();
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting architect:", error);
+      alert("Error deleting architect");
+    }
+  };
 
   return (
     <div className="form-section">
@@ -382,24 +327,28 @@ setArchitectList((prev) => [...prev, createdArchitect]);
         </button>
       </div>
 
-      {architectList.length > 0 && (
-        <div className="added-items-list">
+      {/* ✅ DISPLAY ADDED ARCHITECTS IMMEDIATELY */}
+      {architects && architects.length > 0 && (
+        <div className="added-items-section">
+          <h4 className="added-items-title">Added Architects</h4>
           <table className="data-table">
             <thead>
               <tr>
+                <th>S.No</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Address</th>
                 <th>Mobile</th>
                 <th>COA No</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {architectList.map((a) => (
-                <tr key={a.id}>
+              {architects.map((a, index) => (
+                <tr key={a.id || index}>
+                  <td>{index + 1}</td>
                   <td>{a.architect_name}</td>
-                  <td>{a.email_id}</td>
+                  <td>{a.email_id || '-'}</td>
                   <td>{a.address_line1}</td>
                   <td>{a.mobile_number}</td>
                   <td>{a.coa_registration_number}</td>
