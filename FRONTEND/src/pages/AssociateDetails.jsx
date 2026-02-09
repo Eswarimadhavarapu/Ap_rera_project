@@ -108,7 +108,7 @@ const AssociateDetails = () => {
     try {
       setLoading(true);
       const response = await apiGet(
-        `/api/application/associates?application_number=${applicationNumber}`
+        `/api/application/associates?application_number=${applicationNumber}&pan_number=${panNumber}`
       );
 
       if (response?.success) {

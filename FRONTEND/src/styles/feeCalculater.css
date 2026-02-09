@@ -158,5 +158,5 @@
 /* Button row alignment */
 .fc-last-row {
   justify-content: flex-end;
-  align-items: flex-start;  
+  align-items: flex-start;   /* 🔥 key for date picker overlap issue */
 }

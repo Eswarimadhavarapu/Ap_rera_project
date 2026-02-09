@@ -1,15 +1,21 @@
-/* body {
+body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background: #f2f2f2;
-} */
+} 
 
 .goi-notif-wrapper {
   width: 95%;
   margin: 15px auto;
   background: #fff;
+
+  /* ✅ THIS IS THE BOX YOU WANT */
+  border: 1px solid #bdbdbd;   /* grey border */
+  box-sizing: border-box;
+
   padding-bottom: 30px;
 }
+
 
 /* Breadcrumb */
 .goi-notif-breadcrumb {
@@ -25,7 +31,7 @@
 }
 .goi-notif-breadcrumb .goi-notif-home{
   text-decoration: underline;
-  color: yellow;
+  color: rgb(255, 255, 0);
 }
 .goi-notif-breadcrumb .goi-notif-home:hover{
   text-decoration: underline;
@@ -86,10 +92,17 @@
 }
 
 /* Download */
-.goi-notif-download {
-  text-align: center;
-  /* font-sgoi-notif-ize: 18px; */
-
+.goi-notif-download a{
+  
+  font-size: 18px;
   color: #1e88e5;
-  cursor: pointer;
+  text-decoration: none;
+  
+}
+.goi-notif-breadcrumb {
+  position: relative;
+  z-index: 1;
+}
+.goi-notif-download{
+    text-align: center;
 }

@@ -1,9 +1,6 @@
 /* =========================
    PAGE CONTAINER
 ========================= */
-
-
-
 .agentpreview-main-container {
   width: 92%;
   margin: 16px auto;
@@ -36,74 +33,132 @@
 /* =========================
    CONTENT WRAPPER
 ========================= */
-
-.agentpreview-content-padding {
+/* ===== CONTENT ===== */
+.agentpreview-content {
   padding: 20px;
 }
 
-/* =========================
-   TITLE
-========================= */
+/* ===== TITLE ===== */
 
-.agentpreview-page-title {
+
+.agentpreview-title {
   font-size: 22px;
-  border-bottom: 3px solid #1087e6;
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 20px;
+  font-weight: normal;
+  position: relative;
+}
+.agentpreview-title::after {
+    content: "";
+    bottom: -8px;
+    width: 50px;
+    height: 4px;
+    left: -6px;
+    background-color: #1e90ff;
+    margin-left: 20px;
+    position: absolute;
 }
 
+/* STEPPER */
+.agentpreview-stepper {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+
+.agentpreview-step {
+  text-align: center;
+  width: 100%;
+}
+
+.agentpreview-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  margin: auto;
+  line-height: 26px;
+  color: #999;
+}
+
+.agentpreview-circle.active {
+  background: green;
+  color: #fff;
+  border-color: green;
+}
 /* =========================
-   STEPPER
+   STEPPER WITH BIGGER BOX
 ========================= */
 
-.agentpreview-step-box {
+.agentpreview-stepper {
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: 20px 0;
-  margin-bottom: 20px;
-  border: none;                /* no inner box */
+
+  /* 🔥 INCREASE BOX SIZE */
+  padding: 35px 35px 35px;
+  margin: 30px 0 40px;
+
+  border: 1px solid #ddd;
+  background: #ffffff;
 }
 
-.agentpreview-step-line {
+/* 🔹 HORIZONTAL CONNECTING LINE */
+.agentpreview-stepper::before {
+  content: "";
   position: absolute;
-  top: 32px;
-  left: 40px;
-  right: 40px;
+
+  /* 🔥 MOVE LINE TO CENTER */
+  top: 52px;
+  left: 60px;
+  right: 60px;
+
   height: 2px;
   background: #cfcfcf;
+  z-index: 0;
 }
 
-.agentpreview-step-item {
+/* EACH STEP */
+.agentpreview-step {
   text-align: center;
   z-index: 1;
+  width: 100%;
 }
 
-.agentpreview-step-circle {
-  width: 32px;
-  height: 32px;
+/* STEP CIRCLE */
+.agentpreview-circle {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 2px solid #bbb;
-  background: #fff;
+  border: 2px solid #bdbdbd;
+  background: #ffffff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   margin: auto;
   font-size: 14px;
-}
-
-.agentpreview-step-circle.agentpreview-completed,
-.agentpreview-step-circle.agentpreview-active {
-  background: #0bb35c;
-  color: #fff;
-  border-color: #0bb35c;
-}
-
-.agentpreview-step-item p {
-  margin-top: 6px;
-  font-size: 13px;
+  font-weight: 600;
   color: #555;
+}
+
+/* ACTIVE STEP */
+.agentpreview-circle.active {
+  background: #17a65b;
+  border-color: #17a65b;
+  color: #ffffff;
+}
+
+/* STEP LABEL */
+.agentpreview-step span {
+  display: block;
+  margin-top: 12px; /* 🔥 more space below circle */
+  font-size: 14px;
+  color: #000;
 }
 
 /* =========================
@@ -274,4 +329,37 @@
 
 .agentpreview-otp-row button:hover {
   background-color: #084c9e;
+}
+.agentpreview-link{
+  color: yellow;
+  text-decoration: underline;
+}
+.agentpreview-applicant-back-btn{
+  color: white;
+  background-color:#084c9e;
+  border: 3px solid #084c9e;
+  padding: 3px;
+}
+/* ================= PRINT FIX ================= */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* hide buttons while printing */
+  button {
+    display: none !important;
+  }
 }

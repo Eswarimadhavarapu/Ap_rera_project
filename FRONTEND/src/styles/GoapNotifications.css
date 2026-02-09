@@ -9,6 +9,9 @@
   margin: 15px auto;
   background: #fff;
   padding-bottom: 30px;
+   /* ✅ THIS IS THE BOX YOU WANT */
+  border: 1px solid #bdbdbd;   /* grey border */
+  box-sizing: border-box;
 }
 
 /* Breadcrumb */
@@ -17,16 +20,22 @@
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
+}
 
+.goap-breadcrumb a {
+  color: #fff;
+  text-decoration: none;
 }
-.goap-breadcrumb  .goap-home{
-  text-decoration: underline;
+
+.goap-breadcrumb .goap-home {
   color: yellow;
-}
-.goap-breadcrumb .goap-home:hover{
   text-decoration: underline;
-  color: white;
 }
+
+.goap-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
 
 
 /* Title */
@@ -83,4 +92,8 @@
   font-size: 18px;
   color: #1e88e5;
   text-decoration: none;
+}
+.goap-breadcrumb {
+  position: relative;
+  z-index: 1;
 }

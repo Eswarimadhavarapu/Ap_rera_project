@@ -1,66 +1,28 @@
 import "../styles/projectapplicationdetails.css";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const ProjectApplicationDetails = () => {
   const navigate = useNavigate();
-  // 🔹 ADD HERE (START)
- 
+  const location = useLocation();
 
-  const [basicDetails, setBasicDetails] = useState({
-    applicationNo: "",
-    projectName: "",
-    projectId: "",
-    validityFrom: "",
-    validityTo: ""
-  });
-  // 🔹 ADD HERE (END)
-const location = useLocation();
-const applicationNumber = location.state?.applicationNumber;
-  
+  // ✅ DATA FROM PREVIOUS PAGE
+  const projectData = location.state?.projectData;
+  console.log("Received Project Data:", projectData);
 
-  // 🔴 Store errors for each file input
+  const formatDateOnly = (dateStr) =>
+    dateStr ? new Date(dateStr).toLocaleDateString("en-GB") : "";
+
   const [fileErrors, setFileErrors] = useState({});
-// 🔹 ADD HERE (START)
-useEffect(() => {
-  if (!applicationNumber) return;
+  const [files, setFiles] = useState({});
+  const [formData, setFormData] = useState({
+    newValidityFrom: "",
+    newValidityTo: "",
+  });
 
-  const fetchBasicDetails = async () => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/project/basic-details-by-application?applicationNumber=${applicationNumber}`
-      );
-
-      const json = await res.json();
-
-      if (!json.success || !json.data) {
-        alert("No data found for this application");
-        return;
-      }
-
-      const d = json.data;
-
-      setBasicDetails({
-        applicationNo: d.application_number,
-        projectName: d.project_name,
-        projectId: d.project_id,
-        validityFrom: d.building_permission_from,
-        validityTo: d.building_permission_upto
-      });
-    } catch (err) {
-      console.error("API error:", err);
-    }
-  };
-
-  fetchBasicDetails();
-}, [applicationNumber]);
-
-
-  // ✅ Only PDF validation (NO popup)
+  // ✅ FILE VALIDATION
   const handleFileChange = (e, fieldName) => {
     const file = e.target.files[0];
-
     if (!file) return;
 
     if (file.type !== "application/pdf") {
@@ -69,175 +31,175 @@ useEffect(() => {
         [fieldName]: "Please upload only PDF format",
       }));
       e.target.value = "";
-    } else {
-      setFileErrors((prev) => ({
-        ...prev,
-        [fieldName]: "",
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const fileInputs = document.querySelectorAll('input[type="file"]');
-    let allFilesUploaded = true;
-
-    fileInputs.forEach((input) => {
-      if (!input.files || input.files.length === 0) {
-        allFilesUploaded = false;
-      }
-    });
-
-    if (!allFilesUploaded) {
-      alert(
-        "Please upload all the required supporting documents before submitting."
-      );
       return;
     }
 
-    const confirmSubmit = window.confirm(
-      "Are you sure you want to submit the application?"
-    );
+    setFileErrors((prev) => ({ ...prev, [fieldName]: "" }));
+    setFiles((prev) => ({ ...prev, [fieldName]: file }));
+  };
 
-    if (confirmSubmit) {
-      alert("Application submitted successfully.");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // ✅ SUBMIT (MATCHES BACKEND)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const requiredFiles = [
+      "representation_letter",
+      "form_b",
+      "consent_letter",
+      "form_e",
+      "form_p4",
+      "extension_proceeding",
+    ];
+
+    for (let key of requiredFiles) {
+      if (!files[key]) {
+        alert("Please upload all the required supporting documents.");
+        return;
+      }
+    }
+
+    const payload = new FormData();
+
+    payload.append("application_number", projectData.application_number);
+    payload.append("project_name", projectData.promoter_name);
+    payload.append("project_id", "");
+    payload.append("validity_from", projectData.validity_from);
+    payload.append("validity_to", projectData.validity_to);
+    payload.append("new_validity_from", formData.newValidityFrom);
+    payload.append("new_validity_to", formData.newValidityTo);
+
+    payload.append("representation_letter", files.representation_letter);
+    payload.append("form_b", files.form_b);
+    payload.append("consent_letter", files.consent_letter);
+    payload.append("form_e", files.form_e);
+    payload.append("form_p4", files.form_p4);
+    payload.append("extension_proceeding", files.extension_proceeding);
+
+    console.log("Submitting payload:", [...payload.entries()]);
+
+    try {
+      const res = await fetch(
+        "https://7pcdv8zx-8080.inc1.devtunnels.ms/api/extension-application",
+        {
+          method: "POST",
+          body: payload,
+        }
+      );
+
+      if (!res.ok) throw new Error();
+
+      alert("Application submitted successfully");
       navigate("/extensionpaymentpage");
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting application");
     }
   };
 
+  if (!projectData) return <p>No project data found</p>;
+
   return (
     <div className="projectapplicationdetails-form-container">
-      <h2 className="projectapplicationdetails-form-title">Extension process</h2>
-        <form className="projectapplicationdetails-application-form" onSubmit={handleSubmit}>
-            <div className="projectapplicationdetails-note-text">
-    Note: Double the registration fee for extension process
-  </div>
+      <h2 className="projectapplicationdetails-form-title">
+        Extension process
+      </h2>
+
+      <form
+        className="projectapplicationdetails-application-form"
+        onSubmit={handleSubmit}
+      >
+        <div className="projectapplicationdetails-note-text">
+          Note: Double the registration fee for extension process
+        </div>
+
         <div className="projectapplicationdetails-form-row">
           <label>Application No</label>
-          <input type="text" value={basicDetails.applicationNo} readOnly />
-
+          <input value={projectData.application_number} disabled />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Project Name</label>
-          <input value={basicDetails.projectName} readOnly />
+          <input value={projectData.promoter_name} disabled />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Project ID</label>
-          <input value={basicDetails.projectId} readOnly />
+          <input value="null" disabled />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Validity From</label>
-          <input value={basicDetails.validityFrom} readOnly />
+          <input value={formatDateOnly(projectData.validity_from)} disabled />
         </div>
 
         <div className="projectapplicationdetails-form-row">
           <label>Validity To According to Plans & Proceedings</label>
-          <input value={basicDetails.validityTo} readOnly />
+          <input value={formatDateOnly(projectData.validity_to)} disabled />
         </div>
 
         <div className="projectapplicationdetails-form-row">
-          <label>
-            Mention New Validity From Date According to Plan and Proceedings
-          </label>
-          <input type="date" />
-        </div>
-
-        <div className="projectapplicationdetails-form-row">
-          <label>
-            Mention New Validity To Date According to Plan and Proceedings
-          </label>
-          <input type="date" />
-        </div>
-
-        <div className="projectapplicationdetails-section-title">Supporting Documents</div>
-
-        {/* 1 */}
-        <div className="projectapplicationdetails-form-row">
-          <label>1. Representation Letter explaining the reason for delay</label>
+          <label>Mention New Validity From Date According to Plan and Proceedings</label>
           <input
-            type="file"
-            onChange={(e) => handleFileChange(e, "doc1")}
+            type="date"
+            name="newValidityFrom"
+            onChange={handleChange}
+            required
           />
-          {fileErrors.doc1 && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.doc1}</div>
-          )}
         </div>
 
-        {/* 2 */}
         <div className="projectapplicationdetails-form-row">
-          <label>2. Form B with revised completion dates</label>
+          <label>Mention New Validity To Date According to Plan and Proceedings</label>
           <input
-            type="file"
-            onChange={(e) => handleFileChange(e, "doc2")}
+            type="date"
+            name="newValidityTo"
+            onChange={handleChange}
+            required
           />
-          {fileErrors.doc2 && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.doc2}</div>
-          )}
         </div>
 
-        {/* 3 */}
-        <div className="projectapplicationdetails-form-row">
-          <label>3. Consent letter from the allottees</label>
-          <input
-            type="file"
-            onChange={(e) => handleFileChange(e, "doc3")}
-          />
-          {fileErrors.doc3 && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.doc3}</div>
-          )}
+        <div className="projectapplicationdetails-section-title">
+          Supporting Documents
         </div>
 
-        {/* Form E */}
-        <div className="projectapplicationdetails-form-row form-e-row">
-          <div className="projectapplicationdetails-form-e-top">
-            <label>4. Form E for Renewal</label>
-            <input
-              type="file"
-              onChange={(e) => handleFileChange(e, "formE")}
-            />
-          </div>
+        {[
+  ["representation_letter", "1. Representation Letter explaining the reason for delay"],
+  ["form_b", "2. Form B with revised completion dates"],
+  ["consent_letter", "3. Consent letter from the allottees"],
+  ["form_e", "4. Form E for Renewal"],
+  ["form_p4", "5. Change Request in Form P4"],
+  ["extension_proceeding", "6. Extension proceeding granted by local authority"],
+].map(([key, label]) => (
+  <div className="projectapplicationdetails-form-row" key={key}>
+    <label>{label}</label>
+    <input type="file" onChange={(e) => handleFileChange(e, key)} />
 
-          {fileErrors.formE && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.formE}</div>
-          )}
+    {/* 🔴 ERROR MESSAGE */}
+    {fileErrors[key] && (
+      <div className="projectapplicationdetails-file-error">
+        {fileErrors[key]}
+      </div>
+    )}
 
-          <div className="projectapplicationdetails-download-note">
-            Download Form E from Forms Download
-          </div>
-        </div>
+    {/* 🔴 DOWNLOAD NOTES (ONLY FOR FORM E & FORM P4) */}
+    {key === "form_e" && (
+      <div style={{ color: "red", fontSize: "13px", marginTop: "4px" }}>
+        Download Form E from Forms Download
+      </div>
+    )}
 
-        {/* Form P4 */}
-        <div className="projectapplicationdetails-form-row form-p4-row">
-          <label>5. Change Request in Form P4</label>
-          <input
-            type="file"
-            onChange={(e) => handleFileChange(e, "formP4")}
-          />
+    {key === "form_p4" && (
+      <div style={{ color: "red", fontSize: "13px", marginTop: "4px" }}>
+        Download P4 from Forms Download
+      </div>
+    )}
+  </div>
+))}
 
-          {fileErrors.formP4 && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.formP4}</div>
-          )}
-
-          <div className="projectapplicationdetails-download-note">
-            Download P4 from Forms Download
-          </div>
-        </div>
-
-        {/* 6 */}
-        <div className="projectapplicationdetails-form-row">
-          <label>6. Extension proceeding granted by local authority</label>
-          <input
-            type="file"
-            onChange={(e) => handleFileChange(e, "doc6")}
-          />
-          {fileErrors.doc6 && (
-            <div className="projectapplicationdetails-file-error">{fileErrors.doc6}</div>
-          )}
-        </div>
+        
 
         <div className="projectapplicationdetails-button-row">
           <button type="reset" className="projectapplicationdetails-btn reset">

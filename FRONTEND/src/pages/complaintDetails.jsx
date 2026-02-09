@@ -451,6 +451,47 @@ export default function ComplaintDetails({
 
       }
     }
+    // ⭐ EXTRA FIX — Agent vs Allottee case
+const isAgentAgainstAllottee =
+  form.complaintAgainst === "Allottee" &&
+  form.complaintBy === "Agent";
+
+if (isAgentAgainstAllottee) {
+
+  if (!form.projectName) {
+    newErrors.projectName = "Please Enter Project Name";
+  }
+
+  if (!form.respondentName) {
+    newErrors.respondentName = "Please Enter Name";
+  }
+
+  // ✅ MOBILE VALIDATION
+  if (!form.respondentMobile) {
+    newErrors.respondentMobile = "Please Enter Mobile Number";
+  } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
+    newErrors.respondentMobile = "Please Enter Valid 10-digit Mobile Number";
+  }
+
+  // ✅ EMAIL VALIDATION
+  if (!form.respondentEmail) {
+    newErrors.respondentEmail = "Please Enter Email ID";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
+    newErrors.respondentEmail = "Please Enter Valid Email ID";
+  }
+
+  // ⭐ Fee receipt required when Agent complains against Allottee
+  if (!form.feeReceiptFile) {
+    newErrors.feeReceiptFile = "Please upload Fee Receipt";
+  }
+
+  // ✅ DESCRIPTION VALIDATION
+  if (!form.description) {
+    newErrors.description = "Please Enter Description of Complaint";
+  }
+}
+
+
         // ✅ RESPONDENT ADDRESS VALIDATION
 if (showRespondentAddress) {
   if (!form.rAddress1) {
@@ -479,9 +520,119 @@ if (showRespondentAddress) {
     if (!form.relief) {
       newErrors.relief = "Please Enter Relief Sought";
     }
+// =====================================================
+// ⭐ DETAILS OF COMPLAINT – DYNAMIC VALIDATION (ADD HERE)
+// =====================================================
+
+// If Subject = Any Other → subjectOther required
+if (form.subject === "Any Other" && !form.subjectOther?.trim()) {
+  newErrors.subjectOther = "Please enter Subject of Complaint";
+}
+
+// If Relief = Any Other → reliefOther required
+if (form.relief === "Any Other" && !form.reliefOther?.trim()) {
+  newErrors.reliefOther = "Please enter Relief Sought from APRERA";
+}
+
+
+// 1️⃣ Interim Order required ONLY when complaintAgainst = Promoter
+if (form.complaintAgainst === "Promoter" && !form.interimOrder) {
+  newErrors.interimOrder = "Please select Interim Order";
+}
+
+
+// 2️⃣ Upload document ONLY when Interim Order = Yes
+if (
+  form.complaintAgainst === "Promoter" &&
+  form.interimOrder === "Yes" &&
+  !form.interimFile
+) {
+  newErrors.interimFile = "Please upload relevant document";
+}
+
+
+// 3️⃣ Agreement upload required in Promoter ↔ Allottee cases
+const isPromoterByAllottee =
+  form.complaintAgainst === "Promoter" &&
+  form.complaintBy === "Allottee";
+
+const isAllotteeByPromoter =
+  form.complaintAgainst === "Allottee" &&
+  form.complaintBy === "Promoter";
+
+if ((isPromoterByAllottee || isAllotteeByPromoter) && !form.agreementFile) {
+  newErrors.agreementFile = "Please upload Agreement for Sale";
+}
+
+
+// 4️⃣ Complaint Regarding required when complaintBy = Allottee
+if (form.complaintBy === "Allottee" && !form.complaintRegarding?.trim()) {
+  newErrors.complaintRegarding = "Please enter Complaint Regarding";
+}
+
+
+
+if (isAgentAgainstAllottee) {
+  // ⭐ Fee receipt required when Agent complains against Allottee
+  if (!form.feeReceiptFile) {
+    newErrors.feeReceiptFile = "Please upload Fee Receipt";
+  }
+
+  // ✅ DESCRIPTION VALIDATION
+  if (!form.description) {
+    newErrors.description = "Please Enter Description of Complaint";
+  }
+}
+// ⭐ Promoter complaining against Allottee
+const isPromoterAgainstAllottee =
+  form.complaintAgainst === "Allottee" &&
+  form.complaintBy === "Promoter";
+
+if (isPromoterAgainstAllottee) {
+   // ✅ Project Name REQUIRED
+  if (!form.projectName) {
+    newErrors.projectName = "Please Enter Project Name";
+  }
+
+  // ✅ Respondent basic details
+  if (!form.respondentName) {
+    newErrors.respondentName = "Please Enter Name";
+  }
+
+  if (!form.respondentMobile) {
+    newErrors.respondentMobile = "Please Enter Mobile Number";
+  } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
+    newErrors.respondentMobile = "Please Enter Valid Mobile Number";
+  }
+
+  if (!form.respondentEmail) {
+    newErrors.respondentEmail = "Please Enter Email ID";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
+    newErrors.respondentEmail = "Please Enter Valid Email ID";
+  }
+
+  // ✅ Address required
+  if (!form.rAddress1) newErrors.rAddress1 = "Please Enter Address Line 1";
+  if (!form.rState) newErrors.rState = "Please Select State";
+  if (!form.rDistrict) newErrors.rDistrict = "Please Select District";
+
+  if (!form.rPincode) {
+    newErrors.rPincode = "Please Enter PIN Code";
+  } else if (!/^[1-9][0-9]{5}$/.test(form.rPincode)) {
+    newErrors.rPincode = "Please Enter Valid 6-digit PIN Code";
+  }
+
+  // ✅ ONLY description required in complaint section
+  if (!form.description) {
+    newErrors.description = "Please Enter Description of Complaint";
+  }
+}
+
 
     // ✅ DESCRIPTION VALIDATION
+// ✅ DESCRIPTION VALIDATION (skip for Promoter by Allottee)
 if (
+  !isPromoterByAllottee &&   // ⭐ IMPORTANT CONDITION
   (
     form.complaintBy === "Allottee" ||
     form.complaintBy === "Others" ||
@@ -492,6 +643,7 @@ if (
 ) {
   newErrors.description = "Please Enter Description of Complaint";
 }
+
 
 
 
@@ -514,7 +666,7 @@ if (requireFeeReceipt && !form.feeReceiptFile) {
   newErrors.feeReceiptFile = "Please upload Fee Receipt";
 }
 
-    
+
 
     // 1️⃣ Interim Order (Yes / No) is mandatory when against Promoter
     if (form.complaintAgainst === "Promoter" && !form.interimOrder) {
@@ -570,9 +722,8 @@ if (requireFeeReceipt && !form.feeReceiptFile) {
         complainant: {
   type: form.complaintBy || "",
 
-  // ⭐ RERA
-  is_rera_registered: form.complainantRERA === "Yes",
-  registration_id:
+// ⭐ THIS MUST MATCH BACKEND
+  registered_id:
     form.complainantRERA === "Yes" ? form.agentId || null : null,
 
   // ⭐ Normal details
@@ -1427,7 +1578,7 @@ const showRespondentAddress =
 
 
         {/* Upload Fee Receipt → ONLY when Against Allottee AND NOT By Promoter */}
-        {isAgainstAllottee && !isAllotteeByPromoter && (
+        {isAgainstAllottee && (byAgent || !isAllotteeByPromoter) && (
           <div className="cr-row-3">
             <div>
               <label>Upload Fee Receipt <span>*</span></label>

@@ -99,35 +99,24 @@ const AgentUploadDocuments = () => {
         {/* ===== BREADCRUMB ===== */}
         <div className="ud-breadcrumb">
           You are here :
-          <span className="ud-link"> Home </span> / <span>Registration</span> /{" "}
-          <span className="ud-current">Real Estate Agent Registration</span>
+       <a href="/"> <span className="ud-link"> Home </span> </a>/
+        <span> Registration </span> / 
+          <span className="ud-current"> Real Estate Agent Registration</span>
         </div>
 
         <div className="ud-content">
           <h2 className="ud-title">Real Estate Agent Registration</h2>
 
-          {/* ===== STEPPER ===== */}
+          {/* Stepper */}
           <div className="ud-stepper">
-            <div className="ud-step done">
-              <div className="ud-circle">1</div>
-              <p>Agent Detail</p>
-            </div>
-            <div className="ud-step active">
-              <div className="ud-circle">2</div>
-              <p>Upload Documents</p>
-            </div>
-            <div className="ud-step">
-              <div className="ud-circle">3</div>
-              <p>Preview</p>
-            </div>
-            <div className="ud-step">
-              <div className="ud-circle">4</div>
-              <p>Payment</p>
-            </div>
-            <div className="ud-step">
-              <div className="ud-circle">5</div>
-              <p>Acknowledgement</p>
-            </div>
+            {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
+              (s, i) => (
+                <div className="ud-step" key={i}>
+                  <div className={`ud-stepper-circle ${i <=1 ? "active" : ""}`}>{i + 1}</div>
+                  <span>{s}</span>
+                </div>
+              )
+            )}
           </div>
 
           {/* ===== TABLE ===== */}

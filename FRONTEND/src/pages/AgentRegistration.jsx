@@ -36,7 +36,7 @@ const AgentRegistration = () => {
       {/* BREADCRUMB */}
       <div className="agent-reg-breadcrumb-box">
         You are here :
-        <span className="agent-reg-link"> Home </span> /
+       <a href="/"> <span className="agent-reg-link"> Home </span> </a>/
         <span> Registration </span> /
         <span> Real Estate Agent Registration</span>
       </div>

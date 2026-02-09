@@ -2,54 +2,127 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/otplogin.css";
 
-const DUMMY_OTP = "123456";
+const API_BASE = "https://7pcdv8zx-8080.inc1.devtunnels.ms/api";
 
 const OTPLogin = () => {
   const navigate = useNavigate();
 
   const [pan, setPan] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
-  const handleGetOtp = () => {
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
+  // =========================
+  // SEND OTP
+  // =========================
+  const handleGetOtp = async () => {
     if (!panRegex.test(pan)) {
       setShowPopup(true);
       return;
     }
 
-    setOtpSent(true);
-    setErrorMsg("");
+    try {
+      setLoading(true);
+      setErrorMsg("");
+      setSuccessMsg("");
+
+      const res = await fetch(`${API_BASE}/login/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pan_number: pan }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send OTP");
+      }
+
+      setOtpSent(true);
+      setSuccessMsg("OTP sent successfully to registered email");
+
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyOtp = () => {
-    if (otp === DUMMY_OTP) {
-      alert("OTP Verified Successfully ✅");
-
-      navigate("/ExtensionProcess", {
-        state: { panNumber: pan }
-      });
-    } else {
-      setErrorMsg("Invalid OTP. Please try again.");
+  // =========================
+  // VERIFY OTP
+  // =========================
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      setErrorMsg("Please enter a valid 6-digit OTP");
+      return;
     }
+
+    try {
+      setLoading(true);
+      setErrorMsg("");
+
+      const res = await fetch(`${API_BASE}/login/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pan_number: pan,
+          otp: otp,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "OTP verification failed");
+      }
+      console.log("Login API Response:", data);
+      // ✅ STORE RESPONSE (SAFE)
+      sessionStorage.setItem("loginResponse", JSON.stringify(data));
+
+      // ✅ NAVIGATE WITH RESPONSE
+      navigate("/ExtensionProcess", {
+        state: {
+          loginData: data,
+        },
+      });
+
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =========================
+  // RESEND OTP
+  // =========================
+  const handleResendOtp = () => {
+    setOtp("");
+    handleGetOtp();
   };
 
   return (
     <>
       <div className="otplogin-page-bg">
         <div className="otplogin-outer-frame">
-
           <div className="otplogin-otp-container">
+
+            {/* PAN INPUT */}
             <div className="otplogin-form-group">
-              <label>PanCard Number <span className="required">*</span></label>
+              <label>
+                PAN Card Number <span className="required">*</span>
+              </label>
 
               <div className="otplogin-pan-row">
                 <input
                   type="text"
-                  placeholder="PanCard Number"
+                  placeholder="Please Ener Pan Number"
                   value={pan}
                   maxLength={10}
                   onChange={(e) => setPan(e.target.value.toUpperCase())}
@@ -57,42 +130,63 @@ const OTPLogin = () => {
                 />
 
                 {!otpSent ? (
-                  <button onClick={handleGetOtp}>Get OTP</button>
+                  <button
+                    className="otplogin-otp-btn"
+                    onClick={handleGetOtp}
+                    disabled={loading}
+                  >
+                    {loading ? "Sending..." : "Get OTP"}
+                  </button>
                 ) : (
-                  <button>Resend OTP</button>
+                  <button
+                    className="otplogin-otp-btn"
+                    onClick={handleResendOtp}
+                    disabled={loading}
+                  >
+                    Resend OTP
+                  </button>
                 )}
               </div>
             </div>
 
+            {/* OTP INPUT */}
             {otpSent && (
-              <>
-                <div className="otplogin-form-group">
-                  <label>OTP *</label>
+              <div className="otplogin-form-group">
+                <label>OTP *</label>
 
-                  <div className="otplogin-pan-row">
-                    <input
-                      type="text"
-                      placeholder="Enter OTP"
-                      value={otp}
-                      maxLength={6}
-                      onChange={(e) => setOtp(e.target.value)}
-                    />
+                <div className="otplogin-pan-row">
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otp}
+                    maxLength={6}
+                    onChange={(e) => setOtp(e.target.value)}
+                  />
 
-                    <button onClick={handleVerifyOtp}>
-                      Verify OTP
-                    </button>
-                  </div>
+                  <button
+                    className="otplogin-otp-btn"
+                    onClick={handleVerifyOtp}
+                    disabled={loading}
+                  >
+                    {loading ? "Verifying..." : "Verify OTP"}
+                  </button>
                 </div>
-
-                {errorMsg && (
-                  <p style={{ color: "red" }}>{errorMsg}</p>
-                )}
-              </>
+              </div>
             )}
+
+            {/* MESSAGES */}
+            {errorMsg && (
+              <p style={{ color: "red", textAlign: "center" }}>{errorMsg}</p>
+            )}
+            {successMsg && (
+              <p style={{ color: "green", textAlign: "center" }}>{successMsg}</p>
+            )}
+
           </div>
         </div>
       </div>
 
+      {/* PAN ERROR POPUP */}
       {showPopup && (
         <div className="otplogin-popup-overlay">
           <div className="otplogin-popup-box">

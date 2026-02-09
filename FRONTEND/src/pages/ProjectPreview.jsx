@@ -87,7 +87,7 @@ const ProjectPreview = () => {
     location.state?.panNumber || sessionStorage.getItem("panNumber");
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber");
+    sessionStorage.getItem("applicationNumber");  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -211,6 +211,33 @@ try {
 const apartmentsFlats = normalizedDevDetails?.Apartments_Flats || {};
 const apartmentRows = apartmentsFlats?.rows || [];
 
+// ✅ NORMALIZE APARTMENT ROWS (EXCEL → UI)
+const normalizedApartmentRows = apartmentRows.map((row) => ({
+  block: row["Name of the Block"] || "MAIN",
+
+  floor: row["Floor Number"] || "",
+
+  flatNo: row["Flat Number"] || "",
+
+  type: row["Type of Flat (1BHK/2BHK/3BHK/Others)"] || "",
+
+  carpetArea: row["Carpet Area of each unit (Sq.m)"] || "",
+
+  balconyArea:
+    row["Area of exclusive balcony/verandah (Sq.m)"] || "",
+
+  commonArea: "",
+
+  parkingArea:
+    row["Outer Wall Area (Sq.m)"] || "",
+
+  totalArea: (
+    Number(row["Carpet Area of each unit (Sq.m)"] || 0) +
+    Number(row["Outer Wall Area (Sq.m)"] || 0) +
+    Number(row["Area of exclusive balcony/verandah (Sq.m)"] || 0)
+  ).toFixed(2),
+}));
+
 
 console.log("✅ normalizedDevDetails:", normalizedDevDetails);
 console.log("✅ Apartments_Flats:", apartmentsFlats);
@@ -300,6 +327,11 @@ const fixedProject = {
   totalOpenParking: project["Total Open Parking"] || "0.00",
   noOfCoveredParking: project["No of Covered Parking"] || "0",
   totalCoveredParkingArea: project["Total Covered Parking Area"] || "0.00",
+
+  // ✅ ADD HERE (Latitude / Longitude)
+  project_latitude: project["Latitude"] || "N/A",
+  project_longitude: project["Longitude"] || "N/A",
+
 };
 
 const development = allData?.development_details || {};
@@ -314,12 +346,13 @@ console.log("✅ apartment rows:", apartmentRows);
 console.log("✅ Apartment rows length 👉", apartmentRows.length);
 
 // ✅ ADD THIS EXACTLY HERE 👇
-const groupedApartments = apartmentRows.reduce((acc, row) => {
-  const block = row.name_of_the_block || "MAIN";
+const groupedApartments = normalizedApartmentRows.reduce((acc, row) => {
+  const block = row.block || "MAIN";
   if (!acc[block]) acc[block] = [];
   acc[block].push(row);
   return acc;
 }, {});
+
 
 
 
@@ -905,15 +938,18 @@ console.log("📄 Document pages:", documentPages.length);
                 </td>
               </tr>
               <tr>
-                <td className="label-cell">Latitude</td>
-                <td className="value-cell">
-                  {project.project_latitude || "N/A"}
-                </td>
-                <td className="label-cell">Longitude</td>
-                <td className="value-cell">
-                  {project.project_longitude || "N/A"}
-                </td>
-              </tr>
+  <td className="label-cell">Latitude</td>
+  <td className="value-cell">
+    {fixedProject.project_latitude || "N/A"}
+  </td>
+
+  <td className="label-cell">Longitude</td>
+  <td className="value-cell">
+    {fixedProject.project_longitude || "N/A"}
+  </td>
+</tr>
+
+              
             </tbody>
           </table>
           {/* Project Local Address For Communication */}
@@ -1514,4 +1550,3 @@ console.log("📄 Document pages:", documentPages.length);
 };
 
 export default ProjectPreview;
-

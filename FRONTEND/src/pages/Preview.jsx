@@ -94,14 +94,26 @@ const Preview = () => {
     <div className="agentpreview-main-container">
       {/* BREADCRUMB */}
       <div className="agentpreview-breadcrumb-bar">
-        You are here :
-        <span> Home </span> /
-        <span> Registration </span> /
+       You are here :
+       <a href="/"> <span className="agentpreview-link"> Home </span> </a>/
+        <span> Registration </span> / 
         <span className="agentpreview-active"> Real Estate Agent Registration</span>
       </div>
+      <div className="agentpreview-content" id="print-area">
+          <h2 className="agentpreview-title">Real Estate Agent Registration</h2>
 
-      <div className="agentpreview-content-padding">
-        <h2 className="agentpreview-page-title">Real Estate Agent Registration</h2>
+          {/* Stepper */}
+          <div className="agentpreview-stepper">
+            {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
+              (s, i) => (
+                <div className="agentpreview-step" key={i}>
+                  <div className={`agentpreview-circle ${i <=2 ? "active" : ""}`}>{i + 1}</div>
+                  <span>{s}</span>
+                </div>
+              )
+            )}
+          </div>
+
 
         {/* ================= APPLICANT DETAILS ================= */}
         <h3 className="agentpreview-section-title">Applicant Details</h3>

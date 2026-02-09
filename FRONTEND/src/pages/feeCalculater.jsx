@@ -167,6 +167,7 @@ const FeeCalculator = () => {
             </label>
             <input
               type="date"
+              placeholder="Plan Approval Date"
               value={planApprovalDate}
               onChange={(e) => setPlanApprovalDate(e.target.value)}
             />
@@ -178,6 +179,7 @@ const FeeCalculator = () => {
             </label>
             <input
               type="date"
+              placeholder="Date of Payment for Registration"
               value={paymentDate}
               onChange={(e) => setPaymentDate(e.target.value)}
             />
@@ -195,6 +197,7 @@ const FeeCalculator = () => {
               <input
                 type="number"
                 step="0.01"
+                placeholder="Site Area (In Acre)"
                 value={siteArea}
                 onChange={(e) => setSiteArea(e.target.value)}
                 onBlur={() => formatToTwoDecimals(siteArea, setSiteArea)}
@@ -231,6 +234,7 @@ const FeeCalculator = () => {
                 <input
                   type="number"
                   step="0.01"
+                  placeholder="Residential Built-up Area"
                   value={resBuiltUp}
                   onChange={(e) => setResBuiltUp(e.target.value)}
                   onBlur={() => formatToTwoDecimals(resBuiltUp, setResBuiltUp)}
@@ -246,6 +250,7 @@ const FeeCalculator = () => {
                 <input
                   type="number"
                   step="0.01"
+                  placeholder="Commercial Built-up Area (Optional)"
                   value={comBuiltUp}
                   onChange={(e) => setComBuiltUp(e.target.value)}
                   onBlur={() => formatToTwoDecimals(comBuiltUp, setComBuiltUp)}
@@ -268,6 +273,7 @@ const FeeCalculator = () => {
                 <input
                   type="number"
                   step="0.01"
+                  placeholder="Building Height"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
                   onBlur={() => formatToTwoDecimals(height, setHeight)}
@@ -288,6 +294,7 @@ const FeeCalculator = () => {
               <input
                 type="number"
                 step="0.01"
+                placeholder="Total Built-up area of all the Floors"
                 value={builtUpArea}
                 onChange={(e) => setBuiltUpArea(e.target.value)}
                 onBlur={() => formatToTwoDecimals(builtUpArea, setBuiltUpArea)}
