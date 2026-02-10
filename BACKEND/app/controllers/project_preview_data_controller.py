@@ -404,7 +404,7 @@ def build_project_preview_data(raw):
         "Project Address": ", ".join(filter(None, [
         registration.get("project_address1"),
         registration.get("project_address2"),
-      ])),
+        ])),
         "District": registration.get("project_district_name", "N/A"),
         "Mandal": registration.get("project_mandal_name") or "N/A",
         "Village": registration.get("project_village_name") or "N/A",
@@ -420,13 +420,12 @@ def build_project_preview_data(raw):
         
         # Local Address Fields
         "Local Address Line1": registration.get("local_address1", "N/A"),
-    "Local Address Line2": registration.get("local_address2", "N/A"),
-
-    "Local District": registration.get("local_district_name", "N/A"),
-    "Local Mandal": registration.get("local_mandal_name") or "N/A",
-    "Local Village": registration.get("local_village_name") or "N/A",
-
-    "Local Pincode": registration.get("local_pincode", "N/A"),
+        "Local Address Line2": registration.get("local_address2", "N/A"),
+        "Local District": registration.get("local_district_name", "N/A"),
+        "Local Mandal": registration.get("local_mandal_name") or "N/A",
+        
+        "Local Village": registration.get("local_village_name") or "N/A",
+        "Local Pincode": registration.get("local_pincode", "N/A"),
         "Project Website": registration.get("project_website") if registration else "NA (//)",
         
         # No of Garages/Parking
@@ -459,33 +458,25 @@ def build_project_preview_data(raw):
         "Account Number": registration.get("account_no") if registration else "N/A",
         "IFSC Code": registration.get("ifsc") if registration else "N/A",
         "Income Tax Year 1": registration.get("income_tax_year1_doc") if registration else "N/A",
-    "Income Tax Year 2": registration.get("income_tax_year2_doc") if registration else "N/A",
-    "Income Tax Year 3": registration.get("income_tax_year3_doc") if registration else "N/A",
-    "Consolidated IT Returns": registration.get("consolidated_it_returns") if registration else "N/A",
-    "Balance Sheet": registration.get("balance_sheet") if registration else "N/A",
-    "PAN Card Document": registration.get("pan_card_doc") if registration else "N/A",
-    "Aadhaar Document": registration.get("aadhaar_doc") if registration else "N/A",
-    "Bank Statement": registration.get("bank_statement_doc") if registration else "N/A",
-    "License Certificate": registration.get("license_cert") if registration else "N/A",
-    "License Number": registration.get("license_number") if registration else "N/A",
-    "License Issued Date": format_date(registration.get("license_issued_date")) if registration else "N/A",
-    "GST Number": registration.get("gst_number") if registration else "N/A",
-    "GST Document": registration.get("gst_doc") if registration else "N/A",
-    "Photo": registration.get("promoter_photo") if registration else "N/A",
+        "Income Tax Year 2": registration.get("income_tax_year2_doc") if registration else "N/A",
+        "Income Tax Year 3": registration.get("income_tax_year3_doc") if registration else "N/A",
+        "Consolidated IT Returns": registration.get("consolidated_it_returns") if registration else "N/A",
+        "Balance Sheet": registration.get("balance_sheet") if registration else "N/A",
+        "PAN Card Document": registration.get("pan_card_doc") if registration else "N/A",
+        "Aadhaar Document": registration.get("aadhaar_doc") if registration else "N/A",
+        "Bank Statement": registration.get("bank_statement_doc") if registration else "N/A",
+        "License Certificate": registration.get("license_cert") if registration else "N/A",
+        "License Number": registration.get("license_number") if registration else "N/A",
+        "License Issued Date": format_date(registration.get("license_issued_date")) if registration else "N/A",
+        "GST Number": registration.get("gst_number") if registration else "N/A",
+        "GST Document": registration.get("gst_doc") if registration else "N/A",
+        "Photo": registration.get("promoter_photo") if registration else "N/A",
         "Account Holder Name": registration.get("account_holder") if registration else "N/A",
         "Other State/UT RERA Registration": (
-    "Yes" if basic_reg.get("other_state_reg") == "Yes" else "No"
-),
-
-"Projects Launched In The Past 5 Years": (
-    "Yes" if basic_reg.get("last_five_years") == "Yes" else "No"
-),
-
-"Any Civil/Criminal Cases": (
-    "Yes" if basic_reg.get("litigation") == "Yes" else "No"
-),
-
-
+        "Yes" if basic_reg.get("other_state_reg") == "Yes" else "No"
+        ),
+        "Projects Launched In The Past 5 Years": ("Yes" if basic_reg.get("last_five_years") == "Yes" else "No"),
+        "Any Civil/Criminal Cases": ("Yes" if basic_reg.get("litigation") == "Yes" else "No"),
         "Promoter 2 Details": (
             "Yes" if registration and registration.get("promoter2") == "Yes" else "No"
         ),
@@ -502,29 +493,29 @@ def build_project_preview_data(raw):
 # OTHER STATE / PAST PROJECTS / LITIGATION DETAILS
 # -----------------------------
     other_state_details = {
-    "has_other_state": "Yes" if basic_reg.get("other_state_reg") == "Yes" else "No",
-    "rera_number": basic_reg.get("rera_reg_number"),
-    "rera_state": basic_reg.get("rera_state"),
-    "revoked": "Yes" if basic_reg.get("registration_revoked") == "Yes" else "No",
-}
+        "has_other_state": "Yes" if basic_reg.get("other_state_reg") == "Yes" else "No",
+        "rera_number": basic_reg.get("rera_reg_number"),
+        "rera_state": basic_reg.get("rera_state"),
+        "revoked": "Yes" if basic_reg.get("registration_revoked") == "Yes" else "No",
+        }
 
     last_five_years_details = {
-    "has_projects": "Yes" if basic_reg.get("last_five_years") == "Yes" else "No",
-    "project_name": basic_reg.get("project_name"),
-    "project_type": PROJECT_TYPE_MAP.get(basic_reg.get("project_type"), "N/A"),
-    "status": basic_reg.get("current_status"),
-    "address": basic_reg.get("project_address"),
-}
+        "has_projects": "Yes" if basic_reg.get("last_five_years") == "Yes" else "No",
+        "project_name": basic_reg.get("project_name"),
+        "project_type": PROJECT_TYPE_MAP.get(basic_reg.get("project_type"), "N/A"),
+        "status": basic_reg.get("current_status"),
+        "address": basic_reg.get("project_address"),
+    }
 
     litigation_details = {
-    "has_case": "Yes" if basic_reg.get("litigation") == "Yes" else "No",
-    "case_no": basic_reg.get("case_no"),
-    "tribunal": basic_reg.get("tribunal_place"),
-    "petitioner": basic_reg.get("petitioner_name"),
-    "respondent": basic_reg.get("respondent_name"),
-    "facts": basic_reg.get("case_facts"),
-    "status": basic_reg.get("case_status"),
-}
+        "has_case": "Yes" if basic_reg.get("litigation") == "Yes" else "No",
+        "case_no": basic_reg.get("case_no"),
+        "tribunal": basic_reg.get("tribunal_place"),
+        "petitioner": basic_reg.get("petitioner_name"),
+        "respondent": basic_reg.get("respondent_name"),
+        "facts": basic_reg.get("case_facts"),
+        "status": basic_reg.get("case_status"),
+    }
 
 
 

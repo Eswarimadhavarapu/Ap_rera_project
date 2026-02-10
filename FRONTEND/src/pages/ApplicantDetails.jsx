@@ -480,9 +480,9 @@ const handleDeleteOtherRera = (id) => {
   if (litigationStatus === "Yes" && litigations.length === 0) {
     return alert("Please add at least one Litigation record");
   }
-  if (litigationStatus === "No" && litigations.length === 0) {
-    return alert("Please choose the file");
-  }
+  // if (litigationStatus === "No" && litigations.length === 0) {
+  //   return alert("Please choose the file");
+  // }
 
   // 🔹 Other State RERA
   if (otherStateReg === true && otherReraList.length === 0) {

@@ -1,11 +1,30 @@
+/* ======================================
+   GLOBAL PAGE BACKGROUND FIX (CRITICAL)
+====================================== */
+
+html,
+body,
+#root {
+  background: #ffffff !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* kill any accidental horizontal grey */
+body {
+  overflow-x: hidden;
+}
+
+
+
 /* ===========================
    ✅ NAVBAR CSS
 =========================== */
-.home-new-navbar {
+.hp-home-new-navbar {
   font-family: Arial, sans-serif;
 }
 
-.home-new-top-bar {
+.hp-home-new-top-bar {
   display: flex;
   align-items: flex-start;      /* move content to top */
   justify-content: center;
@@ -58,7 +77,7 @@
 }
 
 .home-new-menu a:hover {
-  background: #084a87;
+  background: #55c8cc;
 }
 
 /* .light {
@@ -66,18 +85,18 @@
   color: #000;
 }high */
 
-.home-new-notice-board {
+.hp-home-new-notice-board {
   background: #fff;
   padding: 2px 0;
 }
 
-.home-new-notice-line {
+.hp-home-new-notice-line {
   overflow: hidden;
   white-space: nowrap;
   margin: 1px 0;
 }
 
-.home-new-notice-text {
+.hp-home-new-notice-text {
   display: inline-block;
   color: red;
   font-size: 16px;
@@ -86,7 +105,7 @@
   animation: scrollLeft 40s linear infinite;
 }
 
-.home-new-badge {
+.hp-home-new-badge {
   background: red;
   color: yellow;
   font-size: 11px;
@@ -101,112 +120,114 @@
   100% { transform: translateX(-100%); }
 }
 
-.home-new-notice-line:hover .home-new-notice-text {
+.hp-home-new-notice-line:hover .home-new-notice-text {
   animation-play-state: paused;
 }
 
 /* ===========================
    ✅ HERO CSS
 =========================== */
-.home-new-hero {
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  padding: 5px 10px 1px;
-  text-align: center;
-  position: relative;
-  transition: background-image 1.2s ease-in-out;
+/* HERO */
+.passport-hero {
   min-height: 520px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 10px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-/* ✅ Dark overlay on image */
-.home-new-hero::before {
+.passport-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: #0000008f;
-  z-index: 1;
-}
+ background: linear-gradient(
+  90deg,
+  rgba(170, 207, 243, 0.308),   /* very light govt grey-blue */
+  rgba(245, 247, 250, 0.95),   /* near white */
+  rgba(177, 200, 223, 0.527)    /* soft grey */
+);
+z-index: 1;
 
-.home-new-hero * {
+
+}
+.passport-hero * {
   position: relative;
   z-index: 2;
 }
 
-/* ✅ HERO title */
-.home-new-hero-title {
-  color: #fff;
-  font-size: 26px;
-  font-weight: 800;
-  margin-top: 25px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+/* LEADERS */
+.passport-leaders {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 170px;                 /* ✅ same visual gap as first image */
+  margin: 20px auto 30px;
+  max-width: 1100px;         /* prevents crowding on large screens */
+  padding: 0 30px;
+  flex-wrap: wrap;
 }
 
-/* ✅ Leaders Section */
 
-.home-new-hero-title-wrap {
+/* CARD */
+.passport-card {
+  width: 210px;
+  text-align: center;
+  flex-shrink: 0;
+              /* prevents squeezing */
+}
+
+
+/* PASSPORT PHOTO */
+.passport-card img {
   width: 100%;
-  position: relative;
-  height: 45px;
-  margin-top: 15px;
-  overflow: hidden;
-  
+  height: 270px;
+  object-fit: cover;
+  border-radius: 4px;             /* passport photo */
+  border: 2px solid #d4af37;      /* subtle govt gold */
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+  margin-bottom: 10px;
 }
 
-.home-new-hero-title {
-  position: absolute;
-  top: 0;
+/* NAME */
+.passport-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
 
-  color: #fff;
+/* DESIGNATION */
+.passport-card p {
+  font-size: 13px;
+  color: #031b4b;
+  line-height: 1.4;
+}
+
+/* STATEMENT */
+.passport-statement-wrap {
+  height: 40px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.passport-statement {
+  color: #ffffff;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
-
-  white-space: nowrap;
-
-  /* ✅ Jump (not move continuously) */
-  animation: titleJump 7s steps(1, end) infinite;
+  animation: fadeSlide 4s infinite;
 }
 
-/* ✅ Right -> Middle (hold 3 sec) -> Left (hold) */
-@keyframes titleJump {
-  /* ✅ RIGHT */
-  0% {
-    left: 100%;
-    transform: translateX(-100%);
-  }
-
-  /* ✅ MIDDLE */
-  10% {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* ✅ HOLD in middle (~3 sec) */
-  60% {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* ✅ LEFT */
-  70% {
-    left: 0%;
-    transform: translateX(0%);
-  }
-
-  /* ✅ HOLD in left */
-  100% {
-    left: 0%;
-    transform: translateX(0%);
-  }
+@keyframes fadeSlide {
+  0% { opacity: 0; transform: translateY(10px); }
+  15% { opacity: 1; transform: translateY(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 
@@ -222,12 +243,20 @@
 .home-new-services {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  background:  linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);
+ background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
 }
 
 /* card layout -> LEFT text / RIGHT icon */
 .home-new-service-card {
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   padding: 22px 18px;
   display: flex;                 /* ✅ changed */
   align-items: center;
@@ -282,7 +311,7 @@
 
 .home-new-philosophy-wrapper {
   padding: 40px 20px;
-  background: #f5f5f5;
+  background: #e5e5e5;
 }
 
 .home-new-philosophy-box {
@@ -293,14 +322,14 @@
   border: 1px solid #ddd;
 }
 
-.home-new-philosophy-left,
-.home-new-philosophy-right {
+.public-philosophy-left,
+.public-philosophy-right {
   flex: 1;
 }
 
-.home-new-philosophy-left h2,
-.home-new-philosophy-right h2 {
-  color: #0a5ca8;
+.public-philosophy-left h2,
+.public-philosophy-right h2 {
+  color:black;
   font-size: 26px;
   font-weight: bold;
 }
@@ -411,7 +440,11 @@
 .home-new-expertise-icon {
   width: 70px;
   height: 70px;
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);;
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -422,7 +455,11 @@
 }
 
 .home-new-expertise-card:hover .home-new-expertise-icon {
-  background:linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
 }
 
 /* LEARNING */
@@ -430,19 +467,20 @@
   padding: 80px 60px;
   background: #fff;
   text-align: center;
+  padding-top: 10px;
 }
 
 .home-new-learning-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 60px;
+  gap: 60px; 
 }
 
 .home-new-learning-img {
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  overflow: hidden;
+  overflow: hidden;       
   margin: 0 auto 30px;
 }
 
@@ -466,7 +504,11 @@
 
 .home-new-learning-card button {
   padding: 10px 30px;
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   color: #fff;
   border: none;
   font-size: 14px;
@@ -486,11 +528,15 @@
   display: flex;
   gap: 30px;
   padding: 40px;
-  background: #e5e5e5;
+  background:  #f5f5f5;
 }
 
 .home-new-box-header {
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);;
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   color: #fff;
   text-align: center;
   font-size: 22px;
@@ -610,7 +656,11 @@
    LEFT - REACH US BOX
 ====================================== */
 .home-new-reach-card {
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   padding: 16px; /* ✅ reduced */
 }
 
@@ -849,7 +899,11 @@
 .home-new-submit-btn {
   min-width: 100px;
   padding: 8px 24px;
-  background: linear-gradient(to right, lab(68.29% -29.87 -23.03), #671f90);;
+ background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   border: 1px solid rgba(255, 255, 255, 0.35);
   color: #ffffff;
   font-size: 13px;
@@ -950,7 +1004,11 @@
 .yt { background: #ff0000; }
 
 .home-new-footer-bottom {
-  background: linear-gradient(to right, #0a5ca8 35%, #000 35%);
+ background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );;
   display: flex;
   align-items: center;
   padding: 18px 20px;
@@ -1051,10 +1109,10 @@
 }
 /* OUR EXPERTISE title box */
 .home-new-expertise .home-new-section-title {
-  background: linear-gradient(
+background: linear-gradient(
     to right,
-    lab(68.29% -29.87 -23.03),
-    #671f90
+    #a0d4f1,
+    #858484
   );
   color: #ffffff;        /* white text */
   display: inline-block;
@@ -1063,10 +1121,10 @@
 }
 /* FINAL section title style – matches image exactly */
 .home-new-section-title {
-  background: linear-gradient(
+background: linear-gradient(
     to right,
-    lab(68.29% -29.87 -23.03),
-    #671f90
+    #a0d4f1,
+    #858484
   );
   color: #ffffff;
 
@@ -1282,4 +1340,423 @@
   width: 42px;
   height: 42px;
   object-fit: contain;
+}
+
+/* ======================================
+   QUICK LINKS / REGISTRATION OVER HERO
+   (Passport Seva Style Overlap)
+====================================== */
+
+.quick-links-overlap {
+  position: relative;
+  z-index: 6;
+  margin-top: -120px;      /* 🔥 pulls box into hero */
+  padding-bottom: 40px;
+}
+
+/* lifted white container */
+.home-services-card {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: #ffffff;
+
+  border-radius: 18px;
+  padding: 40px 50px 50px;
+
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+}
+
+/* registration title */
+.home-services-card .hp-main-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: #111;
+}
+
+/* responsive correction */
+@media (max-width: 900px) {
+  .quick-links-overlap {
+    margin-top: -60px;
+    padding: 0 14px 30px;
+  }
+
+  .home-services-card {
+    padding: 30px 20px;
+  }
+}
+
+/* ======================================
+   OUR PHILOSOPHY – CARD POP-UP ANIMATION
+====================================== */
+
+/* allow cards to come forward */
+.home-new-philosophy-wrapper {
+  position: relative;
+  overflow: visible;
+}
+
+/* philosophy cards base */
+.home-new-philo-item,
+.notice-card {
+  background: #ffffff;
+  border-radius: 16px;
+  transition: 
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* hover / touch effect */
+.home-new-philo-item:hover,
+.notice-card:hover {
+  transform: translateY(-14px) scale(1.06);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.28);
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* mobile tap support */
+.home-new-philo-item:active,
+.notice-card:active {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* smooth icon pop */
+.home-new-icon-box {
+  transition: transform 0.35s ease;
+}
+
+.home-new-philo-item:hover .home-new-icon-box,
+.notice-card:hover .home-new-icon-box {
+  transform: scale(1.15);
+}
+/* ======================================
+   REGISTRATION CARDS – POP-UP ANIMATION
+====================================== */
+
+/* wrapper safety */
+.home-services-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* base card */
+.home-services-card .service-card,
+.home-services-card .registration-card,
+.home-services-card .home-new-service-card {
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* hover / focus effect */
+.home-services-card .service-card:hover,
+.home-services-card .registration-card:hover,
+.home-services-card .home-new-service-card:hover {
+  transform: translateY(-12px) scale(1.05);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* mobile tap */
+.home-services-card .service-card:active,
+.home-services-card .registration-card:active,
+.home-services-card .home-new-service-card:active {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* icon animation */
+.home-services-card img,
+.home-services-card svg {
+  transition: transform 0.35s ease;
+}
+
+.home-services-card .service-card:hover img,
+.home-services-card .registration-card:hover img,
+.home-services-card .home-new-service-card:hover svg {
+  transform: scale(1.15);
+}
+
+/* ======================================
+   FORCE REMOVE REGISTRATION OUTER SHADOW
+====================================== */
+
+/* main registration container */
+.home-services-card {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* overlap wrapper safety */
+.quick-links-overlap {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* if any inner wrapper is adding shadow */
+.quick-links-overlap > div {
+  box-shadow: none !important;
+}
+
+/* fallback – remove shadow from any direct child */
+.quick-links-overlap * {
+  box-shadow: none !important;
+}
+/* ======================================
+   REDUCE GAP BETWEEN SERVICE SECTIONS
+   (Promotors → Agent → Complaint)
+====================================== */
+
+/* reduce space above section heading */
+.hp-section-title {
+  margin-top: 20px !important;   /* ⬅ reduce from default */
+  margin-bottom: 12px !important;
+}
+
+/* reduce space below cards grid */
+.services-grid {
+  margin-bottom: 20px !important; /* ⬅ key line */
+}
+/* ======================================
+   REMOVE EXTRA SPACE BELOW COMPLAINT CORNER
+====================================== */
+
+/* target ONLY the last services grid */
+.services-grid:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+
+/* ======================================
+   REGISTRATION CARDS – DARK GREY BG + WHITE TEXT + BLACK ICONS
+====================================== */
+
+.registration-card {
+  background-color: #686161 !important;   /* thick/dark grey */
+}
+
+/* ======================================
+   REGISTRATION CARDS – LIGHT GREY BG + WHITE TEXT + SOFT BLACK ICONS
+====================================== */
+
+.registration-card {
+  background-color: #c7c0c0 !important;   /* light grey */
+}
+
+/* text → white */
+.registration-card p {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* icons → light black / dark grey (React Icons / SVG) */
+.registration-card svg {
+  color: #444444 !important;   /* soft black */
+}
+
+/* icons → light black (IMG icons) */
+.registration-card img {
+  filter: grayscale(100%) brightness(40%);
+}
+
+
+/* ======================================
+   COMPACT SERVICES SPACING (MATCH IMAGE 1)
+====================================== */
+
+/* Reduce space above section titles */
+.hp-section-title {
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+  padding: 0 !important;
+}
+
+/* Reduce space below each services grid */
+.services-grid {
+  margin-bottom: 14px !important;
+  padding-bottom: 0 !important;
+}
+
+/* Remove extra space after last (Complaint Corner) */
+.services-grid:last-of-type {
+  margin-bottom: 0 !important;
+}
+
+/* Reduce gap between icon and text */
+.service-card {
+  padding-top: 8px !important;
+  padding-bottom: 6px !important;
+}
+
+/* Reduce space between icon and underline */
+.service-card svg {
+  margin-bottom: 6px !important;
+}
+
+/* Reduce underline spacing */
+.service-card .hp-underline {
+  margin-top: 6px !important;
+}
+
+/* Reduce vertical gap between rows */
+.services-grid {
+  row-gap: 18px !important;
+}
+
+/* Reduce extra space inside Services container */
+.home-services-card {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Reduce divider space */
+.hp-section-divider {
+  margin: 18px 0 !important;
+}
+
+
+/* ======================================
+   ICON COLOR FIX – NORMAL + HOVER
+====================================== */
+
+/* NORMAL state icons → light black */
+.service-card svg,
+.registration-card svg,
+.home-new-service-card svg {
+  color: #b9b7b7 !important;   /* soft black */
+  fill: #817f7f !important;
+}
+
+/* NORMAL state image icons */
+.service-card img,
+.registration-card img,
+.home-new-service-card img {
+  filter: grayscale(100%) brightness(45%) !important;
+}
+
+/* HOVER background (already correct, keeping for clarity) */
+.service-card:hover,
+.registration-card:hover,
+.home-new-service-card:hover {
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #686161
+  ) !important;
+
+  box-shadow: none !important;
+}
+
+/* HOVER icons → stay light black */
+.service-card:hover svg,
+.registration-card:hover svg,
+.home-new-service-card:hover svg {
+  color: #444444 !important;
+}
+
+.service-card:hover img,
+.registration-card:hover img,
+.home-new-service-card:hover img {
+  filter: grayscale(100%) brightness(45%) !important;
+}
+
+/* ======================================
+   NOTICE / PHILOSOPHY ICON COLOR FIX
+   (React Icons only)
+====================================== */
+
+.notice-icon svg {
+  color:#817f7f!important;   /* light black  */
+}
+/* ======================================
+   OUR PHILOSOPHY – BACKGROUND FIX
+====================================== */
+
+/* Section background */
+.public-notice-section {
+  background-color: #eeeeee !important;  /* light grey */
+}
+
+/* Optional: container safety */
+.public-notice-container {
+  background: transparent !important;
+}
+/* FORCE dashboard stats icons to light black */
+.stats-section .stats-item .stats-icon {
+  color: #817f7f !important;   /* light grey */
+  fill: #817f7f!important;    /* SVG fill */
+}
+/* SERVICE CARD UNDERLINE → LIGHT BLACK */
+.service-card .hp-underline {
+  background-color: #ccc9c9 !important;  /* light black */
+  height: 2px;                           /* keep same thickness */
+  width: 100%;
+  display: block;
+}  
+/* EXPERTISE ICON → LIGHT BLACK */
+/* EXPERTISE ICON → LIGHT GREY */
+.home-new-expertise-icon img {
+  filter: grayscale(100%) brightness(80%);
+}
+/* Services icons → light grey */
+.home-services-card .registration-card img {
+  filter: grayscale(100%) brightness(85%) contrast(90%) !important;
+}
+
+/* ======================================
+   SERVICES SECTION – EXACT APRERA LINES
+   (MATCHES IMAGE-2)
+====================================== */
+
+/* Section divider line (full width) */
+.hp-section-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 18px 0 22px;
+}
+
+/* Services grid layout */
+.services-grid {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+/* Individual service card */
+.service-card {
+  text-align: center;
+}
+
+/* Icon size + color */
+.service-card svg {
+  font-size: 36px;
+  color: #8c8c8c;
+  margin-bottom: 6px;
+}
+
+/* Text */
+.service-card p {
+  font-size: 12px;
+  color: #000;
+  margin: 0;
+}
+
+/* 👇 SMALL UNDERLINE BELOW EACH ITEM */
+.service-card .hp-underline {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background-color: #d6d6d6;
+  margin: 6px auto 0;
 }

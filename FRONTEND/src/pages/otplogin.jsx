@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/otplogin.css";
 
-const API_BASE = "https://7pcdv8zx-8080.inc1.devtunnels.ms/api";
+const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
 
 const OTPLogin = () => {
   const navigate = useNavigate();

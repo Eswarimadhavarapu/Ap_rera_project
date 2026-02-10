@@ -84,10 +84,10 @@ const ProjectPreview = () => {
     const [externalDevWork, setExternalDevWork] = useState({});
 
   const panNumber =
-    location.state?.panNumber || sessionStorage.getItem("panNumber");
+    location.state?.panNumber || sessionStorage.getItem("panNumber")||"ESWAR2233I";
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber");  
+    sessionStorage.getItem("applicationNumber")||"100126758808";  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -211,33 +211,6 @@ try {
 const apartmentsFlats = normalizedDevDetails?.Apartments_Flats || {};
 const apartmentRows = apartmentsFlats?.rows || [];
 
-// ✅ NORMALIZE APARTMENT ROWS (EXCEL → UI)
-const normalizedApartmentRows = apartmentRows.map((row) => ({
-  block: row["Name of the Block"] || "MAIN",
-
-  floor: row["Floor Number"] || "",
-
-  flatNo: row["Flat Number"] || "",
-
-  type: row["Type of Flat (1BHK/2BHK/3BHK/Others)"] || "",
-
-  carpetArea: row["Carpet Area of each unit (Sq.m)"] || "",
-
-  balconyArea:
-    row["Area of exclusive balcony/verandah (Sq.m)"] || "",
-
-  commonArea: "",
-
-  parkingArea:
-    row["Outer Wall Area (Sq.m)"] || "",
-
-  totalArea: (
-    Number(row["Carpet Area of each unit (Sq.m)"] || 0) +
-    Number(row["Outer Wall Area (Sq.m)"] || 0) +
-    Number(row["Area of exclusive balcony/verandah (Sq.m)"] || 0)
-  ).toFixed(2),
-}));
-
 
 console.log("✅ normalizedDevDetails:", normalizedDevDetails);
 console.log("✅ Apartments_Flats:", apartmentsFlats);
@@ -346,13 +319,12 @@ console.log("✅ apartment rows:", apartmentRows);
 console.log("✅ Apartment rows length 👉", apartmentRows.length);
 
 // ✅ ADD THIS EXACTLY HERE 👇
-const groupedApartments = normalizedApartmentRows.reduce((acc, row) => {
-  const block = row.block || "MAIN";
+const groupedApartments = apartmentRows.reduce((acc, row) => {
+  const block = row.name_of_the_block || "MAIN";
   if (!acc[block]) acc[block] = [];
   acc[block].push(row);
   return acc;
 }, {});
-
 
 
 

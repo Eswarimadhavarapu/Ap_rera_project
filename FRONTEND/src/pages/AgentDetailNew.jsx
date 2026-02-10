@@ -49,7 +49,14 @@ const AgentDetail = () => {
       }
 
       // ✅ PAN DOES NOT EXIST → ALLOW NAVIGATION
-      navigate("/applicant-details", { state: { agentType, pan } });
+      // navigate("/applicant-details", { state: { agentType, pan } });
+      // ✅ PAN DOES NOT EXIST → NAVIGATE BASED ON AGENT TYPE
+if (agentType === "Individual") {
+  navigate("/applicant-details", { state: { agentType, pan } });
+} else if (agentType === "Other") {
+  navigate("/AgentDetails", { state: { agentType, pan } });
+}
+
 
     } catch (error) {
       setPopupMessage("Error while checking PAN. Please try again.");
