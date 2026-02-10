@@ -49,7 +49,14 @@ const AgentDetail = () => {
       }
 
       // ✅ PAN DOES NOT EXIST → ALLOW NAVIGATION
-      navigate("/applicant-details", { state: { agentType, pan } });
+      // navigate("/applicant-details", { state: { agentType, pan } });
+      // ✅ PAN DOES NOT EXIST → NAVIGATE BASED ON AGENT TYPE
+if (agentType === "Individual") {
+  navigate("/applicant-details", { state: { agentType, pan } });
+} else if (agentType === "Other") {
+  navigate("/AgentDetails", { state: { agentType, pan } });
+}
+
 
     } catch (error) {
       setPopupMessage("Error while checking PAN. Please try again.");
@@ -58,34 +65,34 @@ const AgentDetail = () => {
   };
 
   return (
-    <div className="agent-registration-page">
-       <div className="agent-container">
-      <div className="outer-box">
-        <div className="breadcrumb-box">
-          You are here :
-          <span className="crumb-link"> Home </span> /
-          <span> Registration </span> /
+    <div className="agent-new-page">
+       <div className="agent-new-container">
+      <div className="agent-new-outer-box">
+        <div className="agent-new-breadcrumb-box">
+           You are here :
+        <a href="/"> <span className="agent-new-crumb-link"> Home </span> </a>/
+        <span> Registration </span> /
           <span> Real Estate Agent Registration</span>
         </div>
 
-        <h2 className="page-title">Real Estate Agent Registration</h2>
+        <h2 className="agent-new-page-title">Real Estate Agent Registration</h2>
 
-        <div className="stepper-box">
-          <div className="stepper-line"></div>
+        <div className="agent-new-stepper-box">
+          <div className="agent-new-stepper-line"></div>
           {steps.map((step, index) => (
-            <div className="stepper-item" key={index}>
-              <div className={`stepper-circle ${index === 0 ? "active" : ""}`}>
+            <div className="agent-new-stepper-item" key={index}>
+              <div className={`agent-new-stepper-circle ${index === 0 ? "active" : ""}`}>
                 {index + 1}
               </div>
-              <div className="stepper-text">{step}</div>
+              <div className="agent-new-stepper-text">{step}</div>
             </div>
           ))}
         </div>
 
-        <div className="form-box">
-          <h3 className="section-title">Agent Type</h3>
+        <div className="agent-new-form-box">
+          <h3 className="agent-new-section-title">Agent Type</h3>
 
-          <div className="agent-type-row">
+          <div className="agent-new-type-row">
             <label>
               <input
                 type="radio"
@@ -94,7 +101,7 @@ const AgentDetail = () => {
                 checked={agentType === "Individual"}
                 onChange={() => setAgentType("Individual")}
               />
-              Individual
+              &nbsp;Individual
             </label>
 
             <label>
@@ -105,14 +112,14 @@ const AgentDetail = () => {
                 checked={agentType === "Other"}
                 onChange={() => setAgentType("Other")}
               />
-              Other than individual
+              &nbsp;Other than individual
             </label>
           </div>
 
-          <div className="pan-wrapper">
-            <div className="pan-input-group">
+          <div className="agent-new-pan-wrapper">
+            <div className="agent-new-pan-input-group">
   <label>
-    PAN Card Number <span className="required">*</span>
+    PAN Card Number <span className="agent-new-required">*</span>
   </label>
 
   <input
@@ -138,11 +145,11 @@ const AgentDetail = () => {
   />
 
   {panError && (
-    <small className="text-danger">{panError}</small>
+    <small className="agent-new-text-danger">{panError}</small>
   )}
 </div>
 
-            <button className="btn-primary" onClick={handleGetDetails}>
+            <button className="agent-new-btn-primary" onClick={handleGetDetails}>
               Get Details
             </button>
           </div>
@@ -151,10 +158,10 @@ const AgentDetail = () => {
 
       {/* ===== POPUP ===== */}
       {showPopup && (
-        <div className="modal-overlay">
-          <div className="modal-box">
+        <div className="agent-new-modal-overlay">
+          <div className="agent-new-modal-box">
             <span
-              className="modal-close"
+              className="agent-new-modal-close"
               onClick={() => setShowPopup(false)}
             >
               ×
@@ -163,7 +170,7 @@ const AgentDetail = () => {
             <p>{popupMessage}</p>
 
             <button
-              className="btn-primary"
+              className="agent-new-btn-primary"
               onClick={() => setShowPopup(false)}
             >
               OK

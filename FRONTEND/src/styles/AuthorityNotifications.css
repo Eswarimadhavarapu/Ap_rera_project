@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #f2f2f2;
+   background: #b95d5d;
 }
 
 .auth-notif-wrapper {
@@ -19,14 +19,15 @@ body {
   font-size: 14px;
   
 }
-.auth-notif-breadcrumb .home{
+.auth-notif-breadcrumb .auth-notif-home {
   text-decoration: underline;
   color: yellow;
 }
-.auth-notif-breadcrumb .home:hover{
-  text-decoration: underline;
+
+.auth-notif-breadcrumb .auth-notif-home:hover {
   color: white;
 }
+
 
 
 /* Title */
@@ -59,31 +60,44 @@ body {
 /* Table */
 .auth-notif-table-box {
   margin: 0 15px;
-  border: 1px solid #444;
+  border: 1px solid #cfcfcf;
   overflow-x: auto;
 }
 
-table {
+/* ✅ Scoped table */
+.auth-notif-table-box table {
   width: 100%;
   border-collapse: collapse;
 }
 
-thead th {
+/* ✅ Scoped header */
+.auth-notif-table-box thead th {
   background: #3f5568;
   color: #fff;
   padding: 10px;
   border: 1px solid #ddd;
 }
 
-tbody td {
+/* ✅ Scoped body cells */
+.auth-notif-table-box tbody td {
   padding: 10px;
   border: 1px solid #ddd;
   vertical-align: top;
+    font-size: 14.5px;
+
 }
 
-tbody tr:nth-child(even) {
+/* Date column (3rd column) */
+.auth-notif-table-box tbody td:nth-child(3) {
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Zebra rows */
+.auth-notif-table-box tbody tr:nth-child(even) {
   background: #f9f9f9;
 }
+
 
 /* NEW badge */
 
@@ -143,30 +157,62 @@ tbody tr:nth-child(even) {
 .auth-notif-no-data {
   padding: 10px;
 }
+/* Pagination base */
 .auth-notif-pagination {
   display: flex;
-  justify-content: flex-end;   /* 👈 moves pagination to right */
-  align-items: center;
-  gap: 6px;
+  justify-content: flex-end;
+  gap: 5px;
   margin-top: 10px;
 }
+
+/* All buttons */
+/* ================= PAGINATION ================= */
+
+/* ================= PAGINATION ================= */
+
+.auth-notif-pagination {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+/* Base button */
 .auth-notif-pagination button {
-  padding: 3px 8px;
-  border: 1px solid #ccc;
+  padding: 4px 10px;
+  border: 1px solid #bdbdbd;
   background: #fff;
+  color: #000;
   cursor: pointer;
+  border-radius: 3px;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.auth-notif-pagination button.active {
-  border: 1px solid #000;
-  font-weight: bold;
+/* ✅ ACTIVE PAGE */
+/* ACTIVE PAGE (clicked page like image) */
+.auth-notif-pagination button.auth-notif-active {
+  background: #000;
+  color: #fff;
+  border: 1px solid #999;
+  border-radius: 3px;
+  font-weight: normal;
 }
 
-/* .auth-notif-pagination button:disabled {
-  opacity: 0.5;
-  
-} */
-.auth-notif-pagination button:hover{
-  background-color:transparent;;
-  color: white;
+
+/* ✅ HOVER EFFECT (1 2 3 4, Previous, Next) */
+.auth-notif-pagination button:hover:not(:disabled):not(.auth-notif-active) {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* Disabled buttons */
+.auth-notif-pagination button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-notif-breadcrumb {
+  border-bottom: 1px solid #cfcfcf;
 }

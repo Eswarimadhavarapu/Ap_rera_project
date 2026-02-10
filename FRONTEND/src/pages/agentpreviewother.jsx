@@ -1,0 +1,722 @@
+import "../styles/PreviewOther.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const BASE_URL = "https://7zgjxth4-5055.inc1.devtunnels.ms";
+
+const getFileUrl = (path) => {
+  if (!path) return "#";
+  return `${BASE_URL}/${path}`;
+};
+
+const PreviewOther = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* ================= STATE ================= */
+
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  /* ================= IDS ================= */
+
+  const [ids] = useState(() => ({
+    application_id: location.state?.application_id,
+    organisation_id: location.state?.organisation_id,
+    pan_card_number: location.state?.pan_card_number,
+  }));
+
+  const { application_id, organisation_id, pan_card_number } = ids;
+
+  /* ================= API CALL ================= */
+
+  useEffect(() => {
+    if (!organisation_id || !pan_card_number) {
+      navigate("/agent-details"); // change if needed
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/agent/other-than-individual/details`,
+          {
+            params: {
+              organisation_id,
+              pan_card_number,
+            },
+          }
+        );
+
+        if (res.data.status === "success") {
+
+          console.log("API Full Response:", res.data); 
+          setApiData(res.data);
+        } else {
+          setError("Failed to fetch data");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Server error while fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [organisation_id, pan_card_number, navigate]);
+
+/* ================= DATA ================= */
+
+const data = apiData || {};
+
+const org = apiData?.organisation || {};
+
+const itrs = apiData?.itr || {
+  itr1: apiData?.itr_year1_doc,
+  itr2: apiData?.itr_year2_doc,
+  itr3: apiData?.itr_year3_doc,
+};
+
+const director = apiData?.entity || {};
+const auth = apiData?.authorized || {};
+const litigation = apiData?.litigation || {};
+
+const directors = apiData?.entity ? [apiData.entity] : [];
+
+const projects = org.last_five_year_projects || [];
+
+const litigations = apiData?.litigation ? [apiData.litigation] : [];
+
+const otherStates = org.other_state_rera_details || [];
+
+const hasProjects = projects.length > 0;
+const hasLitigation = litigations.length > 0;
+const hasOtherState = otherStates.length > 0;
+
+  /* ================= LOADING / ERROR ================= */
+
+  if (loading) {
+    return <div className="mpreview-loading">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="mpreview-error">{error}</div>;
+  }
+
+  /* ================= UI ================= */
+
+  return (
+
+    
+     <div className="mpreview-page-container">
+
+      {/* TITLE */}
+      <h2 className="mpreview-title">
+        Real Estate Agent Registration
+      </h2>
+
+
+      {/* ================= STEPPER ================= */}
+   <div className="mpreview-stepper">
+
+  {[
+    "Agent Detail",
+    "Upload Documents",
+    "Preview",
+    "Payment",
+    "Acknowledgement",
+  ].map((step, i) => {
+
+    const isCompleted = i < 2;   // Step 1 & 2 done
+    const isActive = i === 2;    // Step 3 = Preview
+
+    return (
+      <div
+        key={i}
+        className={`mpreview-step 
+          ${isCompleted ? "completed" : ""} 
+          ${isActive ? "active" : ""}`}
+      >
+        <div className="circle">{i + 1}</div>
+        <span>{step}</span>
+      </div>
+    );
+  })}
+
+</div>
+
+
+
+
+      {/* ================= AGENT TYPE ================= */}
+      <div className="mpreview-agent-type">
+        <b>Agent Type : Other Than Individual</b>
+        
+      </div>
+
+  
+
+     
+
+      {/* ================= ORGANISATION ================= */}
+
+      <section className="mpreview-section">
+
+        <h3 className="mpreview-heading">Organisation Details</h3>
+
+        <div className="mpreview-grid">
+
+          <p><b>Organisation Type:</b> {org.organisation_type}</p>
+          <p><b>Organisation Name:</b> {org.organisation_name}</p>
+
+          <p><b>Registration No:</b> {org.registration_identifier}</p>
+          <p><b>Date of Registration:</b> {org.registration_date}</p>
+
+          <p>
+            <b>Registration Certificate:</b>{" "}
+            <a href={getFileUrl(org.registration_cert_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </p>
+
+          <p><b>PAN Card Number:</b> {org.pan_card_number}</p>
+
+          <p>
+            <b>PAN card  Proof:</b>{" "}
+            <a href={getFileUrl(org.pan_card_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </p>
+
+          <p><b>Email ID:</b> {org.email_id}</p>
+          <p><b>Mobile Number:</b> {org.mobile_number}</p>
+
+          <p><b>GST Num:</b> {org.gst_number || "NA"}</p>
+
+          <p>
+            <b>GST Num Document:</b>{" "}
+            {org.gst_doc ? (
+              <a href={getFileUrl(org.gst_doc)} target="_blank" rel="noreferrer">
+                View
+              </a>
+            ) : "NA"}
+          </p>
+
+          <p>
+            <b>Memorandum of articles/Bye-laws:</b>{" "}
+            <a href={getFileUrl(org.address_proof_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </p>
+
+        </div>
+
+      </section>
+      {/* ================= LOCAL ADDRESS ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">
+    Local Address For Communication
+  </h3>
+
+  <div className="mpreview-grid">
+
+    <p><b>Address Line 1:</b> {org.address_line1 || "NA"}</p>
+
+    <p><b>Address Line 2:</b> {org.address_line2 || "NA"}</p>
+
+    <p><b>State:</b> {org.state || "NA"}</p>
+
+    <p><b>District:</b> {org.district || "NA"}</p>
+
+    <p><b>Mandal:</b> {org.mandal || "NA"}</p>
+
+    <p><b>Village:</b> {org.village || "NA"}</p>
+
+    <p><b>PIN Code:</b> {org.pincode || "NA"}</p>
+   <p><b>address proof : </b> {" "}
+            <a href={getFileUrl(org.address_proof_doc)} target="_blank" rel="noreferrer">
+              View
+            </a></p> 
+  </div>
+
+</section>
+
+
+      {/* ================= DIRECTOR ================= */}
+
+    {/* ================= DIRECTOR DETAILS ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">Director Details</h3>
+
+  {/* Scroll Wrapper */}
+  <div className="mpreview-table-wrapper">
+
+    <table className="mpreview-director-table wide-table">
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Nationality</th>
+          <th>Designation</th>
+          <th>Name</th>
+          <th>DIN</th>
+          <th>Aadhaar</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>State/UT</th>
+          <th>District</th>
+          <th>Address Line 1</th>
+          <th>Address Line 2</th>
+          <th>PIN Code</th>
+          <th>PAN</th>
+          <th>Address Proof</th>
+          <th>PAN Proof</th>
+          <th>Aadhaar Proof</th>
+          <th>Photo</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {directors.map((d, i) => (
+          <tr key={i}>
+
+            <td>{i + 1}</td>
+
+            <td>Indian</td> {/* Static if API not sending */}
+
+            <td>{d.designation}</td>
+
+            <td>{d.name}</td>
+
+            <td>{d.din_number}</td>
+
+            <td>{d.aadhaar_number}</td>
+
+            <td>{d.email_id}</td>
+
+            <td>{d.mobile_number}</td>
+
+            <td>{d.state_ut}</td>
+
+            <td>{d.district}</td>
+
+            <td>{d.address_line1}</td>
+
+            <td>{d.address_line2}</td>
+
+            <td>{d.pincode}</td>
+
+            <td>{d.pan_card_number}</td>
+
+            <td>
+              <a
+                href={getFileUrl(d.address_proof)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View Address
+              </a>
+            </td>
+
+            <td>
+              <a
+                href={getFileUrl(d.pan_card_doc)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View PAN
+              </a>
+            </td>
+
+            <td>
+              <a
+                href={getFileUrl(d.aadhaar_doc)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View Aadhaar
+              </a>
+            </td>
+
+            <td>
+              <img
+                src={getFileUrl(d.photograph)}
+                alt="Photo"
+                className="mpreview-photo"
+              />
+            </td>
+
+          </tr>
+        ))}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+      {/* ================= AUTHORIZED ================= */}
+
+      <section className="mpreview-section">
+
+        <h3 className="mpreview-heading">Authorized Signatory</h3>
+
+        <div className="mpreview-grid">
+
+          <p><b>Name:</b> {auth.name}</p>
+          <p><b>Mobile Number:</b> {auth.mobile_number}</p>
+          <p><b>Email ID:</b> {auth.email_id}</p>
+
+          <p>
+            <b>Photo:</b>{" "}
+            <img
+              src={getFileUrl(auth.photo)}
+              className="mpreview-photo-large"
+              alt="Authorized"
+            />
+          </p>
+
+          <p>
+            <b>Board Resolution for authorized signatory:</b>{" "}
+            <a href={getFileUrl(auth.board_resolution)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </p>
+
+        </div>
+
+      </section>
+
+
+      {/* ================= PROJECTS ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">
+    Projects Launched In The Past 5 Years
+  </h3>
+
+  <p className="mpreview-yesno">
+    <b>Last five years project details :</b>{" "}
+    {hasProjects ? "Yes" : "No"}
+  </p>
+
+  {hasProjects && (
+
+    <table className="mpreview-director-table">
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Project Name</th>
+          
+        </tr>
+      </thead>
+
+      <tbody>
+        {projects.map((p, i) => (
+          <tr key={i}>
+            <td>{i + 1}</td>
+            <td>{p.project_name}</td>
+            
+          </tr>
+        ))}
+      </tbody>
+
+    </table>
+
+  )}
+
+</section>
+
+
+
+      {/* ================= LITIGATIONS ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">Litigations</h3>
+
+  <p className="mpreview-yesno">
+  <b>Any Civil/Criminal Cases :</b>{" "}
+  {hasLitigation === "Yes" ? "Yes" : "No"}
+</p>
+
+
+  {hasLitigation && (
+
+    <div className="mpreview-table-wrapper">
+
+      <table className="mpreview-director-table wide-table">
+
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Case No</th>
+            <th>Tribunal Name & Place</th>
+            <th>Petitioner</th>
+            <th>Respondent</th>
+            <th>Facts of Case</th>
+            <th>Present Status</th>
+            <th>Interim Order</th>
+            <th>Final Order if Disposed</th>
+            <th>Interim certificate</th>
+            <th>Final Order certificate</th>
+         
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {litigations.map((l, i) => (
+            <tr key={i}>
+
+              <td>{i + 1}</td>
+
+              <td>{l.case_no}</td>
+
+              <td>{l.tribunal_name_place}</td>
+
+              <td>{l.petitioner_name}</td>
+
+              <td>{l.respondent_name}</td>
+
+              <td>{l.case_facts}</td>
+
+              <td>{l.present_status}</td>
+
+               <td>{l.interim_order && l.interim_order !== "" ? "Yes" : "No"}</td>
+
+               <td>{l.final_order_details && l.final_order_details !== "" ? "Yes" : "No"}</td>
+
+               <td>
+                {l.interim_order ? (
+                  <a
+                    href={getFileUrl(l.interim_order)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Certificate
+                  </a>
+                ) : "NA"}
+              </td>
+
+              <td>
+                {l.final_order_details ? (
+                  <a
+                    href={getFileUrl(l.final_order_details)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Certificate
+                  </a>
+                ) : "NA"}
+              </td>
+
+            </tr>
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  )}
+
+</section>
+
+
+
+ {/* ================= OTHER STATE RERA ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">
+    Other State/UT RERA Registration Details
+  </h3>
+
+  <p className="mpreview-yesno">
+    <b>Do you have registration in other states :</b>{" "}
+    {hasOtherState ? "Yes" : "No"}
+  </p>
+
+  {hasOtherState && (
+
+    <div className="mpreview-table-wrapper">
+
+      <table className="mpreview-director-table wide-table">
+
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Registration Number</th>
+            <th>State/UT</th>
+            <th>District</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {otherStates.map((s, i) => (
+            <tr key={i}>
+              <td>{i + 1}</td>
+              <td>{s.rera_no}</td>
+              <td>{s.state}</td>
+              <td>{s.district}</td>
+            </tr>
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  )}
+
+</section>
+
+{/* ================= ITR DETAILS ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">ITR Details</h3>
+
+  <div className="mpreview-table-wrapper">
+
+    <table className="mpreview-director-table">
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>ITR Of Preceding Year 1</th>
+          <th>ITR Of Preceding Year 2</th>
+          <th>ITR Of Preceding Year 3</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td>1</td>
+
+          <td>
+             <a href={getFileUrl(org.itr_year1_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </td>
+
+          <td>
+             <a href={getFileUrl(org.itr_year2_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </td>
+
+          <td>
+             <a href={getFileUrl(org.itr_year3_doc)} target="_blank" rel="noreferrer">
+              View
+            </a>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+{/* ================= DECLARATION ================= */}
+
+<section className="mpreview-section">
+
+  <h3 className="mpreview-heading">Declaration</h3>
+
+  <div className="mpreview-declaration">
+
+    <label className="mpreview-declare-line">
+
+      <input type="checkbox" />
+
+      I/We <b>{org.organisation_name}</b> solemnly affirm and
+      declare that the particulars given above are correct.
+
+    </label>
+
+    <div className="mpreview-otp-row">
+
+  <div>
+    <label>
+      Mobile Number <span className="mpreview-required">*</span>
+    </label>
+
+    <input
+      type="text"
+      value={org.mobile_number || "6301836044"}
+      readOnly
+    />
+  </div>
+
+  <button className="mpreview-otp-btn">
+    Get OTP
+  </button>
+
+</div>
+
+
+  </div>
+
+</section>
+
+
+
+
+      {/* ================= ACTION ================= */}
+
+      <div className="mpreview-actions">
+
+        <button
+          className="mpreview-btn"
+          onClick={() => window.print()}
+        >
+          Print
+        </button>
+
+       <button
+  className="mpreview-btn primary"
+  onClick={() =>
+    navigate("/agent-paymentpage", {
+      state: {
+        application_no: org.application_id,
+        name:director.name,
+        mobile: org.mobile_number,
+      },
+    })
+  }
+>
+  Proceed to Pay
+</button>
+
+
+      </div>
+
+    </div>
+  );
+};
+
+export default PreviewOther;

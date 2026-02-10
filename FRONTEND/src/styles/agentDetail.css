@@ -1,39 +1,54 @@
 /* PAGE */
-.agent-registration-page {
+.agent-new-page {
   width: 100%;
   padding: 0 20px;
   font-family: Arial, sans-serif;
 }
 
 /* OUTER BOX */
-.outer-box {
+.agent-new-outer-box {
   border: 1px solid #dcdcdc;
+  background:white;
+  margin: 30px;
 }
 
 /* BREADCRUMB */
-.breadcrumb-box {
+.agent-new-breadcrumb-box {
   background: #0b7dda;
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
 }
 
-.crumb-link {
+.agent-new-crumb-link {
   color: yellow;
   margin: 0 5px;
+  text-decoration: underline;
 }
 
 /* TITLE */
-.page-title {
+/* ===== PAGE TITLE ===== */
+.agent-new-page-title {
   font-size: 22px;
-  border-bottom: 2px solid #0b7dda;
   display: inline-block;
-  padding: 15px 20px 6px;
-  margin: 0 0 15px;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+  font-weight: normal;
+  position: relative;
+}
+.agent-new-page-title::after {
+    content: "";
+    bottom: -8px;
+    width: 50px;
+    height: 4px;
+    left: -6px;
+    background-color: #1e90ff;
+    margin-left: 20px;
+    position: absolute;
 }
 
 /* STEPPER */
-.stepper-box {
+.agent-new-stepper-box {
   border: 1px solid #dcdcdc;
   margin: 15px 20px;
   padding: 20px;
@@ -42,22 +57,22 @@
   position: relative;
 }
 
-.stepper-line {
+.agent-new-stepper-line {
   position: absolute;
-  top: 45%;
+  top: 35%;
   left: 40px;
   right: 40px;
   height: 2px;
   background: #cfcfcf;
 }
 
-.stepper-item {
+.agent-new-stepper-item {
   text-align: center;
   width: 20%;
   z-index: 1;
 }
 
-.stepper-circle {
+.agent-new-stepper-circle {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -69,48 +84,49 @@
   margin: auto;
 }
 
-.stepper-circle.active {
+.agent-new-stepper-circle.active {
   background: #0bb35c;
   border-color: #0bb35c;
   color: #fff;
 }
 
-.stepper-text {
+.agent-new-stepper-text {
   margin-top: 6px;
   font-size: 14px;
 }
 
 /* FORM BOX */
-.form-box {
-  border: 1px solid #dcdcdc;
+.agent-new-form-box {
+  
   margin: 0 20px 20px;
   padding: 25px;
 }
 
 /* SECTION TITLE */
-.section-title {
+.agent-new-section-title {
   color: #0073b1;
   border-bottom: 2px solid #0073b1;
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 15px;
+  font-size: 18px;
 }
 
 /* AGENT TYPE */
-.agent-type-row {
+.agent-new-type-row {
   display: flex;
   gap: 40px;
   margin-bottom: 25px;
 }
 
 /* ERROR BACKGROUND */
-.error-bg {
+.agent-new-error-bg {
   background: #f4c7c3;
   padding: 10px;
 }
 
 /* ✅ PAN ROW — AP RERA INLINE */
-.pan-row.ap-style {
+.agent-new-pan-row.ap-style {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,22 +134,22 @@
   margin-top: 20px;
 }
 
-.pan-label {
+.agent-new-pan-label {
   font-size: 14px;
   white-space: nowrap;
 }
 
-.pan-input-box {
+.agent-new-pan-input-box {
   width: 260px;
   padding: 6px;
 }
 
-.required {
+.agent-new-required {
   color: red;
 }
 
 /* BUTTON */
-.btn-primary {
+.agent-new-btn-primary {
   background: #0b7dda;
   color: #fff;
   border: none;
@@ -142,7 +158,7 @@
 }
 
 /* MODAL OVERLAY */
-.modal-overlay {
+.agent-new-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
@@ -150,7 +166,7 @@
 }
 
 /* MODAL BOX */
-.modal-box {
+.agent-new-modal-box {
   position: fixed;
   top: 120px;
   left: 50%;
@@ -163,7 +179,7 @@
 }
 
 /* CLOSE ICON */
-.modal-close {
+.agent-new-modal-close {
   position: absolute;
   right: 8px;
   top: 4px;
@@ -172,7 +188,7 @@
   font-size: 18px;
 }
 /* PAN WRAPPER */
-.pan-wrapper {
+.agent-new-pan-wrapper {
   display: flex;
   align-items: flex-end;
   gap: 20px;
@@ -181,33 +197,33 @@
 }
 
 /* PAN INPUT GROUP */
-.pan-input-group {
+.agent-new-pan-input-group {
   display: flex;
   flex-direction: column;
 }
 
-.pan-input-group label {
+.agent-new-pan-input-group label {
   margin-bottom: 4px;
   font-size: 14px;
 }
 
-.pan-input-group input {
+.agent-new-pan-input-group input {
   width: 260px;
   padding: 6px;
 }
 
 /* REQUIRED */
-.required {
+.agent-new-required {
   color: red;
 }
-.pan-center-box {
+.agent-new-pan-center-box {
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: 20px;
   margin-top: 40px;
 }
-.otp-message {
+.agent-new-otp-message {
   margin-top: 10px;
   font-size: 14px;
   color: #000;

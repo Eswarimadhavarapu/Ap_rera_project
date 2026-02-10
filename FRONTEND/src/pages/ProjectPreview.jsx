@@ -84,10 +84,10 @@ const ProjectPreview = () => {
     const [externalDevWork, setExternalDevWork] = useState({});
 
   const panNumber =
-    location.state?.panNumber || sessionStorage.getItem("panNumber");
+    location.state?.panNumber || sessionStorage.getItem("panNumber")||"ESWAR2233I";
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber");
+    sessionStorage.getItem("applicationNumber")||"100126758808";  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -300,6 +300,11 @@ const fixedProject = {
   totalOpenParking: project["Total Open Parking"] || "0.00",
   noOfCoveredParking: project["No of Covered Parking"] || "0",
   totalCoveredParkingArea: project["Total Covered Parking Area"] || "0.00",
+
+  // ✅ ADD HERE (Latitude / Longitude)
+  project_latitude: project["Latitude"] || "N/A",
+  project_longitude: project["Longitude"] || "N/A",
+
 };
 
 const development = allData?.development_details || {};
@@ -905,15 +910,18 @@ console.log("📄 Document pages:", documentPages.length);
                 </td>
               </tr>
               <tr>
-                <td className="label-cell">Latitude</td>
-                <td className="value-cell">
-                  {project.project_latitude || "N/A"}
-                </td>
-                <td className="label-cell">Longitude</td>
-                <td className="value-cell">
-                  {project.project_longitude || "N/A"}
-                </td>
-              </tr>
+  <td className="label-cell">Latitude</td>
+  <td className="value-cell">
+    {fixedProject.project_latitude || "N/A"}
+  </td>
+
+  <td className="label-cell">Longitude</td>
+  <td className="value-cell">
+    {fixedProject.project_longitude || "N/A"}
+  </td>
+</tr>
+
+              
             </tbody>
           </table>
           {/* Project Local Address For Communication */}
@@ -1514,4 +1522,3 @@ console.log("📄 Document pages:", documentPages.length);
 };
 
 export default ProjectPreview;
-

@@ -1,65 +1,89 @@
-/* PAGE */
-/* .agent-reg-page {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 15px;
-  border: 1px solid #d6d6d6;
-  
-} */
+/* ===== PAGE BACKGROUND ===== */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f2f2;
+}
 
-/* BREADCRUMB */
+/* ===== MAIN WRAPPER ===== */
+.agent-reg-wrapper {
+  padding: 30px 0;
+}
+
+/* ===== ONE BIG OUTER BOX (LIKE IMAGE-2 / AP RERA) ===== */
+.agent-reg-border-box {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #cfcfcf;
+}
+
+/* ===== BREADCRUMB ===== */
 .agent-reg-breadcrumb-box {
   background: #0b7dda;
-  color: white;
+  color: #fff;
   padding: 8px 15px;
   font-size: 14px;
-  /* margin-bottom: 20px; */
-  margin: 25px 200px;
-  border: 1px solid #ccc;
 }
 
 .agent-reg-breadcrumb-box .agent-reg-link {
   color: yellow;
   margin: 0 5px;
+  text-decoration: underline;
 }
 
-/* TITLE */
-.agent-reg-wrapper .agent-reg-page-title {
+/* ===== MAIN CONTENT ===== */
+.agent-reg-main-container {
+  padding: 25px 30px;
+}
+
+/* ===== PAGE TITLE ===== */
+.agent-reg-page-title {
   font-size: 22px;
-  border-bottom: 3px solid #0b7dda;
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 20px;
+  font-weight: normal;
+  position: relative;
+}
+.agent-reg-page-title::after {
+    content: "";
+    bottom: -8px;
+    width: 50px;
+    height: 4px;
+    left: 4px;
+    background-color: #1e90ff;
+    margin-left: 20px;
+    position: absolute;
 }
 
-/* STEP WIZARD */
-.agent-reg-wrapper .agent-reg-step-box {
+/* ===== STEP WIZARD ===== */
+.agent-reg-step-box {
   margin: 25px 0;
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 25px 20px;
 }
 
-.agent-reg-wrapper .agent-reg-step-line {
+.agent-reg-step-line {
   position: absolute;
-  top: 45%;
-  left: 40px;
+  top: 40%;
+  left: 20px;
   right: 40px;
   height: 2px;
   background: #ccc;
+  transform: translateY(-50%);
 }
 
-.agent-reg-wrapper .agent-reg-step-item {
+.agent-reg-step-item {
   text-align: center;
   z-index: 1;
 }
-.agent-reg-main-container{
-  margin: 10px 240px;
-}
-.agent-reg-wrapper .agent-reg-step-circle {
+
+.agent-reg-step-circle {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -71,97 +95,111 @@
   margin: auto;
 }
 
-.agent-reg-wrapper .agent-reg-step-circle.agent-reg-active {
+.agent-reg-step-circle.agent-reg-active {
   background: #0bb35c;
   color: #fff;
   border-color: #0bb35c;
 }
 
-/* INSTRUCTIONS */
-.agent-reg-wrapper .agent-reg-instructions h3 {
+/* ===== INSTRUCTIONS ===== */
+/* ===== INSTRUCTIONS (MATCH 1st IMAGE STYLE) ===== */
+
+.agent-reg-instructions h3 {
   color: #0073b1;
-  margin-top: 20px;
+  margin-top: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 15px;
 }
 
-.agent-reg-wrapper .agent-reg-red-text {
+.agent-reg-instructions ol {
+  padding-left: 22px;
+  color: #525252;              /* darker text */
+  font-size: 14px;
+}
+
+.agent-reg-instructions li {
+  line-height: 1.6;
+  margin-bottom: 6px;
+  font-weight: bold;         /* stronger body text */
+  text-align: justify;
+  margin: auto;
+}
+
+/* ⭐ THIS IS THE KEY FIX — BOLD NUMBERS */
+.agent-reg-instructions li::marker {
+  font-weight: bold;
+  color: #525252;
+}
+
+/* Red highlight text */
+.agent-reg-red-text {
   color: red;
   font-weight: bold;
 }
 
-.agent-reg-wrapper .agent-reg-guideline-link {
+/* Guidelines link */
+.agent-reg-guideline-link {
   color: purple;
   text-decoration: underline;
 }
 
-/* APPLICATION TYPE */
-.agent-reg-wrapper .agent-reg-application-row {
-  margin: 30px 0;
+
+/* ===== APPLICATION TYPE ===== */
+.agent-reg-application-row {
+  margin: 35px 0 15px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
-.agent-reg-wrapper .agent-reg-application-type {
-  flex: 1;
+.agent-reg-application-type {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 25px;
 }
 
-.agent-reg-wrapper .agent-reg-application-type label {
+.agent-reg-application-type label {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.agent-reg-wrapper .agent-reg-submit-btn {
+/* ===== SUBMIT BUTTON ===== */
+.agent-reg-submit-btn {
   background: #0b7dda;
   color: #fff;
   border: none;
-  padding: 8px 18px;
+  padding: 8px 20px;
   cursor: pointer;
 }
 
-/* AGENT DETAIL */
-.agent-reg-wrapper .agent-reg-agent-detail-box {
-  margin-top: 30px;
-  border-top: 1px solid #ddd;
-  padding-top: 20px;
+.agent-reg-submit-btn:hover {
+  background: #095fa8;
 }
 
-.agent-reg-wrapper .agent-reg-section-title {
-  color: #0073b1;
-  border-bottom: 3px solid #0b7dda;
-  display: inline-block;
-  padding-bottom: 5px;
-}
-
-.agent-reg-wrapper .agent-reg-form-row {
-  margin-top: 15px;
+/* ===== MODAL ===== */
+.agent-reg-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
 }
 
-.agent-reg-wrapper .agent-reg-form-row input[type="text"] {
-  padding: 6px;
-  width: 220px;
+.agent-reg-modal-box {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 4px;
+  position: relative;
 }
 
-.agent-reg-wrapper .agent-reg-blue-btn {
-  background: #0b7dda;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
+.agent-reg-modal-close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
   cursor: pointer;
-}
-
-/* ONE BIG OUTER BOX (LIKE AP RERA) */
-.agent-reg-wrapper .agent-reg-outer-box {
-  border: 1px solid #dcdcdc;
-  padding: 20px;
-  margin-top: 15px;
-}
-
-
+  font-size: 18px;
+} 

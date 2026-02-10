@@ -1,13 +1,13 @@
-body {
+/* body {
   background: #f4f6f8;
   font-family: "Segoe UI", Arial, sans-serif;
-}
+} */
 
-.container {
+.capreviewpage-container {
   max-width: 1200px;
 }
 
-.breadcrumb-bar {
+.capreviewpage-breadcrumb-bar {
   background: #1e88e5;
   color: #fff;
   padding: 8px 14px;
@@ -15,15 +15,15 @@ body {
   margin-bottom: 15px;
 }
 
-.breadcrumb-bar span {
+.capreviewpage-breadcrumb-bar span {
   margin-right: 5px;
 }
 
-.breadcrumb-bar .active {
+.capreviewpage-breadcrumb-bar .active {
   font-weight: 600;
 }
 
-.page-title {
+.capreviewpage-page-title {
   font-size: 20px;
   font-weight: 600;
   border-bottom: 2px solid #1e88e5;
@@ -32,7 +32,7 @@ body {
   color: #000;
 }
 
-.stepper {
+.capreviewpage-stepper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,7 +42,7 @@ body {
   background: #fff;
 }
 
-.step {
+.capreviewpage-step {
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -55,7 +55,7 @@ body {
   position: relative;
 }
 
-.step::after {
+.capreviewpage-step::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -65,25 +65,25 @@ body {
   background: #cfd8dc;
 }
 
-.step:last-child::after {
+.capreviewpage-step:last-child::after {
   display: none;
 }
 
-.step.done {
+.capreviewpage-step.done {
   background: #1e88e5;
 }
 
-.step.active {
+.capreviewpage-step.active {
   background: #43a047;
 }
 
-.preview-section {
+.capreviewpage-preview-section {
   background: #ffffff;
   border: 1px solid #cfd8dc;
   margin-bottom: 20px;
 }
 
-.section-header {
+.capreviewpage-section-header {
   background: #e3f2fd;
   padding: 8px 12px;
   font-size: 15px;
@@ -92,142 +92,142 @@ body {
   border-bottom: 1px solid #cfd8dc;
 }
 
-.section-body {
+.capreviewpage-section-body {
   padding: 12px 15px;
 }
 
-.preview-row {
+.capreviewpage-row {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
   padding: 8px 0;
 }
 
-.preview-row:last-child {
+.capreviewpage-row:last-child {
   border-bottom: none;
 }
 
-.preview-label {
+.capreviewpage-label {
   width: 40%;
   font-weight: 600;
   color: #333;
 }
 
-.preview-value {
+.capreviewpage-value {
   width: 60%;
   color: #000;
 }
 
-.btn-group {
+.capreviewpage-btn-group {
   display: flex;
   justify-content: space-between;
   margin: 25px 0;
 }
 
-.btn {
+.capreviewpage-btn {
   min-width: 180px;
   padding: 8px 20px;
   font-size: 14px;
 }
 
-.btn-secondary {
+.capreviewpage-btn-secondary {
   background: #757575;
   border: none;
   color: #fff;
 }
 
-.btn-secondary:hover {
+.capreviewpage-btn-secondary:hover {
   background: #616161;
 }
 
-.btn-primary {
+.capreviewpage-btn-primary {
   background: #1e88e5;
   border: none;
   color: #fff;
 }
 
-.btn-primary:hover {
+.capreviewpage-btn-primary:hover {
   background: #1565c0;
 }
 
 @media (max-width: 768px) {
-  .preview-row {
+  .capreviewpage-preview-row {
     flex-direction: column;
   }
-  .preview-label,
-  .preview-value {
+  .capreviewpage-preview-label,
+  .capreviewpage-preview-value {
     width: 100%;
   }
-  .stepper {
+  .capreviewpage-stepper {
     flex-wrap: wrap;
     gap: 10px;
   }
-  .step::after {
+  .capreviewpage-step::after {
     display: none;
   }
-  .btn-group {
+  .capreviewpage-btn-group {
     flex-direction: column;
     gap: 10px;
   }
-  .btn {
+  .capreviewpage-btn {
     width: 100%;
   }
 }
 
-.preview-title {
+.capreviewpage-title {
   color: #0086a8;
   font-size: 16px;
   font-weight: 600;
   margin: 18px 0 6px;
 }
 
-.preview-underline {
+.capreviewpage-underline {
   width: 40px;
   height: 3px;
   background: #0d47a1;
   margin-bottom: 14px;
 }
 
-.preview-grid {
+.capreviewpage-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: 40px;
   row-gap: 20px;
 }
 
-.preview-grid-label {
+.capreviewpage-grid-label {
   font-size: 13px;
   font-weight: 500;
   color: #000;
   margin-bottom: 3px;
 }
 
-.preview-grid-value {
+.capreviewpage-grid-value {
   font-size: 14px;
   font-weight: 600;
   color: #000;
 }
 
 @media (max-width: 768px) {
-  .preview-grid {
+  .capreviewpage-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.preview-section {
+.capreviewpage-section {
   border: none !important;
 }
 
-.section-header {
+.capreviewpage-section-header {
   border-bottom: none !important;
   background: transparent !important;
   padding-left: 0;
 }
 
-.preview-row {
+.capreviewpage-row {
   border-bottom: none !important;
 }
 
-.preview-underline {
+.capreviewpage-underline {
   display: none !important;
 }
 
@@ -254,22 +254,22 @@ body {
     font-size: 13px;
   }
 
-  .preview-footer {
+  .capreviewpage-footer {
     display: none !important;
   }
 }
 
-.section-subtitle {
+.capreviewpage-section-subtitle {
   font-weight: 600;
   margin: 10px 0 6px;
 }
 
-.declaration-text {
+.capreviewpage-declaration-text {
   font-size: 14px;
   margin: 10px 0;
 }
 
-.declaration-checkbox {
+.capreviewpage-declaration-checkbox {
   display: flex;
   gap: 8px;
   align-items: flex-start;
@@ -278,7 +278,7 @@ body {
 
 /* ================= FOOTER LAYOUT ================= */
 
-.preview-footer {
+.capreviewpage-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -289,7 +289,7 @@ body {
 
 /* ================= BACK BUTTON ================= */
 
-.preview-back-btn {
+.capreviewpage-back-btn {
   padding: 8px 18px;
   background-color: #1e88e5;
   color: #ffffff;
@@ -299,20 +299,20 @@ body {
   cursor: pointer;
 }
 
-.preview-back-btn:hover {
+.capreviewpage-back-btn:hover {
   background-color: #1565c0;
 }
 
 /* ================= RIGHT BUTTON GROUP ================= */
 
-.footer-right {
+.capreviewpage-footer-right {
   display: flex;
   gap: 10px;
 }
 
 /* ================= ACTION BUTTONS (PRINT / PROCEED) ================= */
 
-.action-btn {
+.capreviewpage-action-btn {
   padding: 8px 18px;
   background-color: #1e88e5;
   color: #ffffff;
@@ -323,6 +323,6 @@ body {
   cursor: pointer;
 }
 
-.action-btn:hover {
+.capreviewpage-action-btn:hover {
   background-color: #1565c0;
 }

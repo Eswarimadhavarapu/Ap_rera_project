@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { apiPost } from "../api/api";
-import "../styles/agentDetail.css";
+import "../styles/agentDetailsExisting.css";
 import { useNavigate } from "react-router-dom";
 
 const steps = [
@@ -74,36 +74,36 @@ const AgentDetailExisting = () => {
   };
 
   return (
-    <div className="agent-registration-page">
-      <div className="outer-box">
+    <div className="agentexisting-registration-page">
+      <div className="agentexisting-outer-box">
 
-        <div className="breadcrumb-box">
+        <div className="agentexisting-breadcrumb-box">
           You are here :
-          <span className="crumb-link"> Home </span> /
-          <span> Registration </span> /
+       <a href="/"> <span className="agentexisting-crumb-link"> Home </span> </a>/
+        <span> Registration </span> /
           <span> Real Estate Agent Registration</span>
         </div>
 
-        <h2 className="page-title">Real Estate Agent Registration</h2>
+        <h2 className="agentexisting-page-title">Real Estate Agent Registration</h2>
 
-        <div className="stepper-box">
-          <div className="stepper-line"></div>
+        <div className="agentexisting-stepper-box">
+          <div className="agentexisting-stepper-line"></div>
           {steps.map((step, index) => (
-            <div className="stepper-item" key={index}>
-              <div className={`stepper-circle ${index === 0 ? "active" : ""}`}>
+            <div className="agentexisting-stepper-item" key={index}>
+              <div className={`agentexisting-stepper-circle ${index === 0 ? "active" : ""}`}>
                 {index + 1}
               </div>
-              <div className="stepper-text">{step}</div>
+              <div className="agentexisting-stepper-text">{step}</div>
             </div>
           ))}
         </div>
 
-        <div className="form-box">
-          <div className="pan-wrapper">
+        <div className="agentexisting-form-box">
+          <div className="agentexisting-pan-wrapper">
 
-            <div className="pan-input-group">
+            <div className="agentexisting-pan-input-group">
               <label>
-                PanCard Number <span className="required">*</span>
+                PanCard Number <span className="agentexisting-required">*</span>
               </label>
               <input
                 type="text"
@@ -114,16 +114,16 @@ const AgentDetailExisting = () => {
               />
             </div>
 
-            <button className="btn-primary" onClick={handleGetOtp}>
+            <button className="agentexisting-btn-primary" onClick={handleGetOtp}>
               {otpSent ? "Resend OTP" : "Get OTP"}
             </button>
           </div>
 
           {otpSent && (
-            <div className="pan-wrapper">
-              <div className="pan-input-group">
+            <div className="agentexisting-pan-wrapper">
+              <div className="agentexisting-pan-input-group">
                 <label>
-                  OTP <span className="required">*</span>
+                  OTP <span className="agentexisting-required">*</span>
                 </label>
                 <input
                   type="text"
@@ -133,7 +133,7 @@ const AgentDetailExisting = () => {
                 />
               </div>
 
-              <button className="btn-primary" onClick={handleVerifyOtp}>
+              <button className="agentexisting-btn-primary" onClick={handleVerifyOtp}>
                 Verify OTP
               </button>
             </div>

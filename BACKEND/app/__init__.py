@@ -47,15 +47,25 @@ def create_app():
     # =========================
     # CORS Configuration
     # =========================
-    CORS(
-        app,
-        resources={r"/api/*": {
-            "origins": app.config["ALLOWED_ORIGINS"].split(","),
-            "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"]
-        }},
-        supports_credentials=True
-    )
+    # CORS(
+    #     app,
+    #     resources={r"/api/*": {
+    #         "origins": app.config["ALLOWED_ORIGINS"].split(","),
+    #         "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    #         "allow_headers": "*"
+
+    #     }},
+    #     supports_credentials=True
+    # )
+    
+    from flask_cors import CORS
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+        return response
 
 
     # =========================
@@ -86,6 +96,7 @@ def create_app():
     from app.controllers.projectapplicationdetailsextension import (
     projectapplicationdetailsextension_bp
     )
+    from app.controllers.login_controller import login_bp
 
     
     app.register_blueprint(preview_bp, url_prefix="/api")
@@ -106,6 +117,7 @@ def create_app():
     app.register_blueprint(
     projectapplicationdetailsextension_bp,
     url_prefix="/api")
+    app.register_blueprint(login_bp, url_prefix="/api")
   
 
     return app

@@ -27,8 +27,8 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
     load();
   }, [applicationNo]);
 
-  if (loading) return <div className="preview-container">Loading...</div>;
-  if (!data) return <div className="preview-container">No Data</div>;
+  if (loading) return <div className="capreviewpage-container">Loading...</div>;
+  if (!data) return <div className="capreviewpage-container">No Data</div>;
 
   const { complainant, respondent, complaint } = data;
 
@@ -65,6 +65,7 @@ const complainantRERA_No = !complainantRERA_Yes;
 const respondentRERA_Yes = respondent?.is_rera_registered === true;
 const respondentRERA_No = respondent?.is_rera_registered === false;
 
+const isAgentAgainstAllottee = isAllottee && byAgent;
 
 
   /* ================= VISIBILITY (MATCH FORM EXACTLY) ================= */
@@ -89,6 +90,7 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
     byOthers ||
     byPromoter ||
     isAgentAgainstPromoter ||
+     isAgentAgainstAllottee ||  
     (byAllottee && !isPromoterByAllottee);
 
   const showDescriptionTable = isPromoterByAllottee;
@@ -105,7 +107,7 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
   const allDocuments = [...systemDocs, ...supportingDocs];
 
   return (
-    <div className="preview-container">
+    <div className="capreviewpage-container">
       <div id="print-area">
 
         <h3>Complaint Registration</h3>
@@ -242,24 +244,17 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
         {/* ================= COMPLAINT DETAILS ================= */}
         <Title text="Details Of The Complaint" />
         <Grid>
-          <Item
-            label="Subject of Complaint"
-            value={
-              complaint?.subject === "Any Other"
-                ? complaint?.subject_other
-                : complaint?.subject
-            }
-          />
-          <Item
-            label="Relief Sought from APRERA"
-            value={
-              complaint?.relief_sought === "Any Other"
-                ? complaint?.relief_other
-                : complaint?.relief_sought
-            }
-          />
+<Item
+  label="Subject of Complaint"
+  value={complaint?.subject_other || complaint?.subject || "-"}
+/>
+
+<Item
+  label="Relief Sought from APRERA"
+  value={complaint?.relief_other || complaint?.relief_sought || "-"}
+/>
           {isPromoter && (
-            <Item label="Interim Order" value={complaint?.interim_order || "No"} />
+            <Item label="Interim Order" value={complaint?.interim_order ?? "-"} />
           )}
         </Grid>
 
@@ -275,17 +270,20 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
         {/* ================= DESCRIPTION ================= */}
         {showDescriptionText && (
           <>
-            <Title text="Description of Complaint" />
-            <div className="preview-text">
+            <Item
+  label="Description of Complaint"
+  value={complaint?.description || "-"}
+/>
+            {/* <div className="capreviewpage-text">
               {complaint?.description || "-"}
-            </div>
+            </div> */}
           </>
         )}
 
         {showDescriptionTable && (
           <>
             <Title text="Description of Complaint" />
-            <table className="preview-table">
+            <table className="capreviewpage-table">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -310,7 +308,7 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
 
         {/* ================= DOCUMENTS ================= */}
         <Title text="Supporting Documents" />
-        <table className="preview-table">
+        <table className="capreviewpage-table">
           <thead>
             <tr>
               <th>S.No</th>
@@ -346,22 +344,22 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
       </div>
 
       {/* ================= FOOTER ================= */}
-      <div className="preview-footer">
+      <div className="capreviewpage-footer">
   {/* LEFT */}
   <button
-    className="preview-back-btn"
+    className="capreviewpage-back-btn"
     onClick={() => setCurrentStep(1)}
   >
     Back
   </button>
 
   {/* RIGHT */}
-  <div className="footer-right">
-    <button className="action-btn" onClick={() => window.print()}>
+  <div className="capreviewpage-footer-right">
+    <button className="capreviewpage-action-btn" onClick={() => window.print()}>
       Print
     </button>
     <button
-      className="action-btn"
+      className="capreviewpage-action-btn"
       onClick={() =>
         navigate("/paymentpage", {
           state: {
@@ -384,19 +382,19 @@ const respondentRERA_No = respondent?.is_rera_registered === false;
 
 const Title = ({ text }) => (
   <>
-    <div className="preview-title">{text}</div>
-    <div className="preview-underline"></div>
+    <div className="capreviewpage-title">{text}</div>
+    <div className="capreviewpage-underline"></div>
   </>
 );
 
 const Grid = ({ children }) => (
-  <div className="preview-grid">{children}</div>
+  <div className="capreviewpage-grid">{children}</div>
 );
 
 const Item = ({ label, value }) => (
   <div>
-    <div className="preview-grid-label">{label}</div>
-    <div className="preview-grid-value">{value || "-"}</div>
+    <div className="capreviewpage-grid-label">{label}</div>
+    <div className="capreviewpage-grid-value">{value || "-"}</div>
   </div>
 );
 
