@@ -97,8 +97,9 @@ def create_app():
     projectapplicationdetailsextension_bp
     )
     from app.controllers.login_controller import login_bp
+    from app.controllers.agent_other_than_individual_registration_controller import ( agent_other_than_individual_registration_bp )
 
-    
+    app.register_blueprint(agent_other_than_individual_registration_bp, url_prefix="/api")
     app.register_blueprint(preview_bp, url_prefix="/api")
     app.register_blueprint(application_associate_bp, url_prefix="/api")
     app.register_blueprint(associate_bp, url_prefix="/api")

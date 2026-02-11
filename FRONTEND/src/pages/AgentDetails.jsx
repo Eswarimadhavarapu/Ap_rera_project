@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 
-const AgentDetails = () => {
+const AgentDetailsOther = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+const passedPan = location.state?.pan || "";
+
 
   // ================= VALIDATIONS =================
 
@@ -97,6 +100,27 @@ trustRegDate: "",
     signMobile: "",
     signEmail: "",
   });
+  useEffect(() => {
+  if (!passedPan) return;
+
+  const savedForm = localStorage.getItem(`agentForm_${passedPan}`);
+
+  if (savedForm) {
+    setForm(JSON.parse(savedForm));
+  } else {
+    setForm((prev) => ({ ...prev, pan: passedPan }));
+  }
+}, [passedPan]);
+useEffect(() => {
+  if (!form.pan) return;
+
+  localStorage.setItem(
+    `agentForm_${form.pan}`,
+    JSON.stringify(form)
+  );
+}, [form]);
+
+
 
   // ===== Projects (Past 5 Years) =====
 const [hasProjects, setHasProjects] = useState("");
@@ -359,30 +383,34 @@ useEffect(() => {
 useEffect(() => {
   const saved = localStorage.getItem("agentDetailsDraft");
 
-  if (saved) {
-    const data = JSON.parse(saved);
+  if (!saved) return;
 
-    setForm(data.form || {});
-    setFiles(data.files || {});
-    setDirectors(data.directors || []);
-    setTrustees(data.trustees || []);
-    setPartners(data.partners || []);
-    setProjects(data.projects || []);
-    //setLitigations(data.litigations || []);
-    setOtherReraList(data.otherReraList || []);
+  const data = JSON.parse(saved);
 
-    setStateData(data.stateData || {});
-    setDistrictData(data.districtData || {});
-    setMandalData(data.mandalData || {});
-    setVillageData(data.villageData || {});
+  setForm((prev) => ({
+    ...data.form,
+    pan: passedPan || data.form?.pan || "", // ⭐ KEEP PASSED PAN SAFE
+  }));
 
-    setHasProjects(data.hasProjects || "");
-    setHasLitigation(data.hasLitigation || "");
-    setHasOtherRera(data.hasOtherRera || "");
-    setHasInterimOrder(data.hasInterimOrder || "");
-    setHasFinalOrder(data.hasFinalOrder || "");
-  }
-}, []);
+  setFiles(data.files || {});
+  setDirectors(data.directors || []);
+  setTrustees(data.trustees || []);
+  setPartners(data.partners || []);
+  setProjects(data.projects || []);
+  setOtherReraList(data.otherReraList || []);
+
+  setStateData(data.stateData || {});
+  setDistrictData(data.districtData || {});
+  setMandalData(data.mandalData || {});
+  setVillageData(data.villageData || {});
+
+  setHasProjects(data.hasProjects || "");
+  setHasLitigation(data.hasLitigation || "");
+  setHasOtherRera(data.hasOtherRera || "");
+  setHasInterimOrder(data.hasInterimOrder || "");
+  setHasFinalOrder(data.hasFinalOrder || "");
+}, [passedPan]);
+
 useEffect(() => {
   if (performance.navigation.type === 1) {
     localStorage.removeItem("agentDetailsDraft");
@@ -759,7 +787,7 @@ console.log("===== FORM DATA END =====");
 
   try {
     const res = await fetch(
-      "https://7zgjxth4-5055.inc1.devtunnels.ms/api/agent/other-than-individual",
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
       {
         method: "POST",
         body: formData,
@@ -1547,12 +1575,14 @@ const isValidEmail = (email) =>
 
           <div>
             <label>PAN Card Number<span className="yagentdetails-required">*</span></label>
-           <input
+          <input
   type="text"
   name="pan"
   value={form.pan}
-  onChange={handleChange}
+  disabled={!!passedPan}
 />
+
+
 
           </div>
 
@@ -3789,17 +3819,19 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
           <label>State/UT <span className="yagentdetails-required">*</span></label>
           <select
   value={otherReraStateId}
-  onChange={(e) => {
+ onChange={(e) => {
   const val = e.target.value;
+  const selected = states.find(s => s.id == val);
 
   setOtherReraStateId(val);
 
   setOtherReraForm(prev => ({
     ...prev,
-    state: val,
+    state: selected?.state_name || "",
     district: "",
   }));
 }}
+
 
 >
   <option value="">Select</option>
@@ -3819,14 +3851,16 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   disabled={!otherReraStateId}
   onChange={(e) => {
   const val = e.target.value;
+  const selected = otherReraDistricts.find(d => d.id == val);
 
   setOtherReraDistrictId(val);
 
   setOtherReraForm(prev => ({
     ...prev,
-    district: val,
+    district: selected?.name || "",
   }));
 }}
+
 
 >
   <option value="">Select</option>
@@ -3902,4 +3936,4 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   );
 };
 
-export default AgentDetails;
+export default AgentDetailsOther;

@@ -96,11 +96,12 @@ import PRExistingtable from "./pages/PRExistingtable";
 import ExistingDevelopmentDetails from "./pages/ExistingDevelopmentDetails";
 import UploadDocumentsWithApi from "./pages/UploadDocumentsWithApi";
 import ExistingProjectDetails from "./pages/ExistingProjectDetails";
-import AgentDetails from "./pages/AgentDetails"; 
+// import AgentDetails from "./pages/AgentDetails"; 
 // import AgentUploadDocuments from "./pages/AgentUploadDocuments";
 import PreviewOther from "./pages/agentpreviewother";
 import AgentPaymentpage from "./pages/Agentpayment";
 import AgentUploadDocumentOtherthan from "./pages/AgentUploadDocumentOtherthan";
+import AgentDetailsOther from "./pages/AgentDetails";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -208,7 +209,7 @@ function App() {
             <Route path="/prexisting" element={<PRExistingStarting/>} />
              <Route path="/prexistingtable" element={<PRExistingtable/>} />
              <Route path="/existing-development-details" element={<ExistingDevelopmentDetails/>} />
-             <Route path="/AgentDetails" element={<AgentDetails/>}/>
+             <Route path="/AgentDetails" element={<AgentDetailsOther/>}/>
           <Route path="/AgentUploadDocumentotherthan" element={<AgentUploadDocumentOtherthan />} />
           <Route path="/preview-other" element={<PreviewOther/>} />
           <Route path="/agent-paymentpage" element={<AgentPaymentpage/>} />
