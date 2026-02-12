@@ -1,8 +1,5 @@
+import React from "react";
 import "../styles/GoiNotifications.css";
-import  firstpdf from "../../public/assets/pdfs/5067gi.pdf";
-import secpdf from "../../public/assets/pdfs/5324gi.pdf";
-import thipdf from "../../public/assets/pdfs/3gi.pdf";
-import foupdf from "../../public/assets/pdfs/4gi.pdf";
 
 const notifications = [
   {
@@ -11,31 +8,28 @@ const notifications = [
     date: "27.04.2016",
     subject:
       "Notification regarding commencement of Real Estate (Regulation and Development) Act, 2016",
-      file:firstpdf,
-
+    file: "/assets/pdfs/5067gi.pdf",
   },
   {
     sno: 2,
     orderNo: "16/2016",
     date: "01.05.2016",
     subject: "RERA India Gazette",
-    file:secpdf,
-    
+    file: "/assets/pdfs/5324gi.pdf",
   },
   {
     sno: 3,
     orderNo: "S.O. 3347(E)",
     date: "28.10.2016",
     subject: "Real Estate removal of Difficulties Order",
-    file:thipdf,
+    file: "/assets/pdfs/3gi.pdf",
   },
   {
     sno: 4,
     orderNo: "S.O. 1216(E)",
     date: "19.04.2017",
     subject: "RERA - Centre notified pending sections of the Act",
-    file:foupdf
-    
+    file: "/assets/pdfs/4gi.pdf",
   },
 ];
 
@@ -45,9 +39,10 @@ function GoiRera() {
       {/* Breadcrumb */}
       <div className="goi-notif-breadcrumb">
         You are here :
-        <a href="/" className="goi-notif-home"> Home</a> / <a >Notifications</a> / GOI Notifications
-    
-
+        <a href="/" className="goi-notif-home"> Home</a> /{" "}
+        <span className="goIitext">Notifications</span>
+          <span> / </span>
+  <span>GOIN Notifications</span>
       </div>
 
       {/* Title */}
@@ -56,12 +51,14 @@ function GoiRera() {
 
       {/* Table */}
       <div className="goi-notif-table-box">
-        <div className="goi-notif-table-title">Central Government Notifications</div>
+        <div className="goi-notif-table-title">
+          Central Government Notifications
+        </div>
 
         <table className="goi-table">
           <thead className="goi-thead">
             <tr className="goi-tr">
-              <th>S.no</th>
+              <th>S.No</th>
               <th>Order No</th>
               <th>Date</th>
               <th>Subject</th>
@@ -76,13 +73,14 @@ function GoiRera() {
                 <td>{item.date}</td>
                 <td>{item.subject}</td>
                 <td className="goi-notif-download">
-                  <a href={item.file} 
-                 target="_blank">
-                  
+                  <a
+                    href={item.file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <i className="fa fa-download" aria-hidden="true"></i>
                   </a>
                 </td>
-
               </tr>
             ))}
           </tbody>

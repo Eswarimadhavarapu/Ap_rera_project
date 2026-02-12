@@ -7,19 +7,62 @@ const ApplicantDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const passedPan = location.state?.pan || "";
-  const [litigationStatus, setLitigationStatus] = useState("No");
+  const [litigationStatus, setLitigationStatus] = useState(null);
   const [occupations, setOccupations] = useState([]);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [agentType, setAgentType] = useState("Individual");
 
   const applicationNo = sessionStorage.getItem("application_no");
-  
+  const [interimOrder, setInterimOrder] = useState(null);
+  const [finalOrder, setFinalOrder] = useState(null);
+  const [otherStateReg, setOtherStateReg] = useState(null);
+
+
+// ===== Projects (Last 5 Years) =====
+const [projectName, setProjectName] = useState("");
+const [projects, setProjects] = useState([]);
+const [litigations, setLitigations] = useState([]);
+
+const [litigationForm, setLitigationForm] = useState({
+  caseNo: "",
+  namePlace: "",
+  petitioner: "",
+  respondent: "",
+  facts: "",
+  presentStatus: "",
+  interimOrder: "No",
+  finalOrder: "No",
+});
+const [uploadedFiles, setUploadedFiles] = useState({
+  photograph: null,
+  panProof: null,
+  addressProof: null,
+});
+
+
+// ===== Other State RERA =====
+// ===== Other State RERA =====
+//const [otherStateReg, setOtherStateReg] = useState("No");
+
+const [otherReraForm, setOtherReraForm] = useState({
+  regNo: "",
+  stateId: "",
+  stateName: "",
+  districtId: "",
+  districtName: "",
+});
+
+const [otherReraList, setOtherReraList] = useState([]);
   
   // Location dropdowns
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [mandals, setMandals] = useState([]);
   const [villages, setVillages] = useState([]);
+  const [otherStates, setOtherStates] = useState([]);
+  const [otherDistricts, setOtherDistricts] = useState([]);
+  const [otherStateId, setOtherStateId] = useState("");
+  const [otherDistrictId, setOtherDistrictId] = useState("");
 
   const [form, setForm] = useState({
     agentName: "",
@@ -45,11 +88,11 @@ const ApplicantDetails = () => {
     
   });
 
-    const [files, setFiles] = useState({
-    photograph: null,
-    panProof: null,
-    addressProof: null,
-  });
+  //   const [files, setFiles] = useState({
+  //   photograph: null,
+  //   panProof: null,
+  //   addressProof: null,
+  // });
     /* ================= LOAD SAVED FORM ================= */
 
 useEffect(() => {
@@ -124,6 +167,42 @@ useEffect(() => {
   localStorage.setItem("currentPan", form.pan);
   }, [form]);
 
+
+//  useEffect(() => {
+//   sessionStorage.removeItem("application_no");
+//   localStorage.removeItem("agentId");
+
+//   setForm({
+//     agentName: "",
+//     fatherName: "",
+//     occupation: "",
+//     occupationName: "",
+//     email: "",
+//     aadhaar: "",
+//     pan: passedPan || "",
+//     photograph: null,
+//     panProof: null,
+//     mobile: "",
+//     landline: "",
+//     licenseNumber: "",
+//     licenseDate: "",
+//     address1: "",
+//     address2: "",
+//     state: "",
+//     district: "",
+//     mandal: "",
+//     village: "",
+//     pincode: "",
+//     addressProof: null,
+//   });
+
+//   setLitigationStatus(null);
+//   setShowProjects(null);
+//   setOtherStateReg(null);   // 👈 ADD THIS LINE
+//   setAgentType("Individual");
+// }, []);
+
+
   // Fetch occupations
   useEffect(() => {
     apiGet("/api/occupations")
@@ -182,11 +261,162 @@ useEffect(() => {
         .catch((err) => console.error("Villages API error:", err));
     }
   }, [form.mandal]);
+useEffect(() => {
+  apiGet("/api/states")
+    .then((res) => {
+      console.log("Other States API response:", res); // 👈 IMPORTANT
 
-  const [showProjects, setShowProjects] = useState(false);
-  const [showOtherState, setShowOtherState] = useState(false);
+      const data =
+        res?.data && Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res)
+          ? res
+          : [];
+
+      setOtherStates(
+        data.map((s) => ({
+          state_id: s.state_id ?? s.id,
+          state_name: s.state_name ?? s.name,
+        }))
+      );
+    })
+    .catch((err) => console.error("Other States API error:", err));
+}, []);
+
+
+
+  
+  
+ useEffect(() => {
+  if (!otherStateId) return;
+
+  apiGet(`/api/districts/${otherStateId}`)
+    .then((res) => {
+      console.log("Other Districts API response:", res);
+
+      const data =
+        res?.data && Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res)
+          ? res
+          : [];
+
+      setOtherDistricts(
+        data.map((d) => ({
+          district_id: d.district_id ?? d.id,
+          district_name: d.district_name ?? d.name,
+        }))
+      );
+    })
+    .catch((err) => console.error("Other Districts API error:", err));
+}, [otherStateId]);
+
+
+  
+    const [showProjects, setShowProjects] = useState(null);
+    // const [showOtherState, setShowOtherState] = useState(null)
 
   /* -------------------- HANDLERS -------------------- */
+
+
+  // Add project
+const handleAddProject = () => {
+  if (!projectName.trim()) {
+    alert("Please enter Project Name");
+    return;
+  }
+
+  const newProject = {
+    id: Date.now(), // temporary id (backend will replace later)
+    name: projectName,
+  };
+
+  setProjects([...projects, newProject]);
+  setProjectName("");
+};
+
+// Delete project
+const handleDeleteProject = (id) => {
+  setProjects(projects.filter((p) => p.id !== id));
+};
+
+// ===== Litigation handlers =====
+const handleLitigationChange = (e) => {
+  const { name, value } = e.target;
+  setLitigationForm({ ...litigationForm, [name]: value });
+};
+
+const handleAddLitigation = () => {
+  if (
+    !litigationForm.caseNo ||
+    !litigationForm.namePlace ||
+    !litigationForm.petitioner ||
+    !litigationForm.respondent ||
+    !litigationForm.presentStatus
+  ) {
+    alert("Please fill all required fields");
+    return;
+  }
+
+  setLitigations([
+    ...litigations,
+    { ...litigationForm, id: Date.now() },
+  ]);
+
+  // reset form
+  setLitigationForm({
+    caseNo: "",
+    namePlace: "",
+    petitioner: "",
+    respondent: "",
+    facts: "",
+    presentStatus: "",
+    interimOrder: "No",
+    finalOrder: "No",
+  });
+
+  setInterimOrder("No");
+  setFinalOrder("No");
+};
+
+const handleDeleteLitigation = (id) => {
+  setLitigations(litigations.filter((l) => l.id !== id));
+};
+
+// Add Other State RERA
+const handleAddOtherRera = () => {
+  if (
+    !otherReraForm.regNo ||
+    !otherReraForm.stateId ||
+    !otherReraForm.districtId
+  ) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  const newRow = {
+    id: Date.now(),
+    ...otherReraForm,
+  };
+
+  setOtherReraList([...otherReraList, newRow]);
+
+  // reset form
+  setOtherReraForm({
+    regNo: "",
+    stateId: "",
+    stateName: "",
+    districtId: "",
+    districtName: "",
+  });
+};
+
+// Delete row
+const handleDeleteOtherRera = (id) => {
+  setOtherReraList(otherReraList.filter((r) => r.id !== id));
+};
+
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -214,6 +444,7 @@ useEffect(() => {
 
   /* -------------------- VALIDATION -------------------- */
   const handleSaveContinue = async () => {
+
   if (!form.agentName) return alert("Please Enter Agent Name");
   if (!form.photograph) return alert("Please Upload Photograph");
   if (!form.fatherName) return alert("Please Enter Father Name");
@@ -230,6 +461,33 @@ useEffect(() => {
   if (!form.village) return alert("Please Select Local Area / Village");
   if (!form.pincode) return alert("Please Enter PIN Code");
   if (!form.addressProof) return alert("Please Upload Address Proof");
+   if (litigationStatus === null)
+    return alert("Please select Yes or No for Litigations");
+
+  if (showProjects === null)
+    return alert("Please select Yes or No for Projects");
+
+  if (otherStateReg === null)
+    return alert("Please select Yes or No for Other State RERA");
+  // ================= CONDITIONAL VALIDATIONS =================
+
+  // 🔹 Projects
+  if (showProjects === true && projects.length === 0) {
+    return alert("Please add at least one Project");
+  }
+
+  // 🔹 Litigations
+  if (litigationStatus === "Yes" && litigations.length === 0) {
+    return alert("Please add at least one Litigation record");
+  }
+  // if (litigationStatus === "No" && litigations.length === 0) {
+  //   return alert("Please choose the file");
+  // }
+
+  // 🔹 Other State RERA
+  if (otherStateReg === true && otherReraList.length === 0) {
+    return alert("Please add at least one Other State RERA registration");
+  }
 
   try {
     const formData = new FormData();
@@ -271,7 +529,9 @@ useEffect(() => {
       <div className="applicantdetails-rera-container">
         {/* Breadcrumb */}
         <div className="applicantdetails-breadcrumb">
-          You are here : <span>Home</span> / <span>Registration</span> /{" "}
+          You are here :
+       <a href="/"> <span className="applicantdetails-link"> Home </span> </a>/
+        <span> Registration </span> /
           <span>Real Estate Agent Registration</span>
         </div>
 
@@ -295,40 +555,39 @@ useEffect(() => {
   <h3 className="applicantdetails-section-title">Agent Type</h3>
 
   <div className="applicantdetails-radio-inline">
-    <label>
-      <input
-        type="radio"
-        name="agentType"
-        value="Individual"
-        checked={agentType === "Individual"}
-        onChange={(e) => setAgentType(e.target.value)}
-      />
-      Individual
-    </label>
+  <label>
+    <input
+      type="radio"
+      name="agentType"
+      value="Individual"
+      checked={true}
+      disabled
+    />
+    Individual
+  </label>
 
-    <label style={{ marginLeft: "30px" }}>
-      <input
-        type="radio"
-        name="agentType"
-        value="Other"
-        checked={agentType === "Other"}
-        onChange={(e) => setAgentType(e.target.value)}
-      />
-      Other than individual
-    </label>
-  </div>
+  <label style={{ marginLeft: "30px", color: "#999" }}>
+    <input
+      type="radio"
+      name="agentType"
+      value="Other"
+      disabled
+    />
+    Other than individual
+  </label>
+</div>
 </section>
           <section className="applicantdetails-section">
             <h3 className="applicantdetails-section-title">Applicant Details</h3>
 
             <div className="applicantdetails-grid-4">
               <div>
-                <label>Agent Name *</label>
+                <label className="required">Agent Name</label>
                 <input name="agentName" value={form.agentName} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Upload Photograph (JPG) *</label>
+                <label className="required">Upload Photograph (JPG)</label>
                 <input
                   type="file"
                   accept=".jpg"
@@ -341,12 +600,12 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Father's Name *</label>
+                <label className="required">Father's Name</label>
                 <input name="fatherName" value={form.fatherName} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Occupation *</label>
+                <label className="required">Occupation</label>
                 <select
                   name="occupation"
                   value={form.occupation}
@@ -371,12 +630,12 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Email Id *</label>
+                <label className="required">Email Id</label>
                 <input type="email" name="email" value={form.email} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Aadhaar Number *</label>
+                <label className="required">Aadhaar Number</label>
                 <input
                   name="aadhaar"
                   value={form.aadhaar}
@@ -389,7 +648,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>PAN Card Number *</label>
+                <label className="required">PAN Card Number</label>
                 <input
   name="pan"
   value={form.pan}
@@ -403,7 +662,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Upload PAN Card (PDF) *</label>
+                <label className="required">Upload PAN Card (PDF)</label>
                 <input
                   type="file"
                   accept=".pdf"
@@ -416,7 +675,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Mobile Number *</label>
+                <label className="required">Mobile Number</label>
                 <input
                   name="mobile"
                   value={form.mobile}
@@ -460,7 +719,7 @@ useEffect(() => {
 
             <div className="applicantdetails-grid-4">
               <div>
-                <label>Address Line 1 *</label>
+                <label className="required">Address Line 1</label>
                 <input name="address1" value={form.address1} onChange={handleChange} />
               </div>
 
@@ -470,7 +729,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>State *</label>
+                <label className="required">State</label>
                 <select
   name="state"
   value={form.state}
@@ -495,7 +754,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>District *</label>
+                <label className="required">District</label>
                 <select
   name="district"
   value={form.district}
@@ -520,7 +779,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Mandal *</label>
+                <label className="required">Mandal</label>
                 <select
   name="mandal"
   value={form.mandal}
@@ -544,7 +803,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Local Area / Village *</label>
+                <label className="required">Local Area / Village</label>
                <select
   name="village"
   value={form.village}
@@ -562,7 +821,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>PIN Code *</label>
+                <label className="required">PIN Code </label>
                 <input
                   name="pincode"
                   value={form.pincode}
@@ -575,7 +834,7 @@ useEffect(() => {
               </div>
 
               <div>
-                <label>Upload Address Proof (PDF) *</label>
+                <label className="required">Upload Address Proof (PDF)</label>
                 <input
                   type="file"
                   accept=".pdf"
@@ -590,45 +849,100 @@ useEffect(() => {
           </section>
 
           {/* Projects */}
-          <section className="applicantdetails-section">
-            <h3 className="applicantdetails-section-title">Projects Launched In The Past 5 Years</h3>
+         <section className="applicantdetails-section">
+  <h3 className="applicantdetails-section-title">
+    Projects Launched In The Past 5 Years
+  </h3>
 
-            <div className="applicantdetails-radio-inline">
-              <span>Last five years project details *</span>
-              <label>
-                <input type="radio" onChange={() => setShowProjects(true)} /> Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  defaultChecked
-                  onChange={() => setShowProjects(false)}
-                />{" "}
-                No
-              </label>
-            </div>
+  <div className="applicantdetails-project-row">
 
-            {showProjects && (
-              <div className="applicantdetails-grid-4 applicantdetails-conditional-box">
-                <div>
-                  <label>Project Name *</label>
-                  <input />
-                </div>
-                <div></div>
-                <div></div>
-                <div>
-                  <button className="applicantdetails-add-btn">Add</button>
-                </div>
-              </div>
-            )}
-          </section>
+    {/* LEFT: RADIO */}
+    <div className="applicantdetails-project-radio">
+      <span>Last five years project details <span style={{ color: "red" }}>*</span></span>
+
+      <label>
+        <input
+          type="radio"
+          name="projectsLastFiveYears"
+          checked={showProjects === true}
+          onChange={() => setShowProjects(true)}
+        />
+        Yes
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          name="projectsLastFiveYears"
+          checked={showProjects === false}
+          onChange={() => setShowProjects(false)}
+        />
+        No
+      </label>
+    </div>
+
+    {/* INPUT */}
+    {showProjects && (
+      <div className="project-name-box">
+        <label >Project Name <span style={{ color: "red" }}>*</span></label>
+        <input 
+          placeholder="Project Name"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
+        />
+      </div>
+    )}
+
+    {/* ADD BUTTON */}
+    {showProjects && (
+      <button
+        type="button"
+        className="applicantdetails-add-btn"
+        onClick={handleAddProject}
+      >
+        Add
+      </button>
+    )}
+  </div>
+
+  {/* ===== TABLE BELOW (LIKE IMAGE 4) ===== */}
+  {showProjects && projects.length > 0 && (
+    <table className="applicantdetails-table">
+      <thead>
+        <tr>
+          <th>S.No.</th>
+          <th>Project Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {projects.map((p, index) => (
+          <tr key={p.id}>
+            <td>{index + 1}</td>
+            <td>{p.name}</td>
+            <td>
+              <button
+                type="button"
+                className="applicantdetails-delete-btn"
+                onClick={() => handleDeleteProject(p.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</section>
 
           {/* Litigations */}
+    {/* Litigations */}
           <section className="applicantdetails-section">
             <h3 className="applicantdetails-section-title">Litigations</h3>
 
             <div className="applicantdetails-radio-inline applicantdetails-litigation-row">
-              <span>Any Civil/Criminal Cases *</span>
+              <span>Any Civil/Criminal Cases <span style={{ color: "red" }}>*</span> </span>
 
               <label>
                 <input
@@ -652,12 +966,23 @@ useEffect(() => {
                 No
               </label>
 
-              {litigationStatus === "No" && (
-                <div className="applicantdetails-inline-file">
-                  <label>Self Declared Affidavit *</label>
-                  <input type="file" />
-                </div>
-              )}
+             {litigationStatus === "No" && (
+  <div className="applicantdetails-litigation-affidavit">
+
+    <div className="affidavit-text">
+      <label >Self Declared Affidavit <span style={{ color: "red" }}>*</span></label>
+
+      <p className="affidavit-note">
+        Note: "A self declared affidavit (on Rs. 20 non judicial stamp paper)
+        has to be uploaded if there are no cases pending, refer Form 4 in
+        form downloads for proforma of this Self Affidavit."
+      </p>
+    </div>
+
+    <input type="file" />
+  </div>
+)}
+
             </div>
 
             {litigationStatus === "Yes" && (
@@ -669,123 +994,389 @@ useEffect(() => {
 
                 <div className="applicantdetails-conditional-box applicantdetails-grid-4">
                   <div>
-                    <label>Case No *</label>
-                    <input />
+                    <label className="required">Case No</label>
+                    <input
+            name="caseNo"
+            value={litigationForm.caseNo}
+            onChange={handleLitigationChange}
+          />
                   </div>
 
                   <div>
-                    <label>Name & Place of Tribunal/Authority *</label>
-                    <input />
+                    <label className="required">Name & Place of Tribunal/Authority</label>
+                    <input
+            name="namePlace"
+            value={litigationForm.namePlace}
+            onChange={handleLitigationChange}
+          />
                   </div>
 
                   <div>
-                    <label>Name of the Petitioner *</label>
-                    <input />
+                    <label className="required">Name of the Petitioner</label>
+                    <input
+            name="petitioner"
+            value={litigationForm.petitioner}
+            onChange={handleLitigationChange}
+          />
                   </div>
 
                   <div>
-                    <label>Name of the Respondent *</label>
-                    <input />
+                    <label className="required">Name of the Respondent</label>
+                    <input
+            name="respondent"
+            value={litigationForm.respondent}
+            onChange={handleLitigationChange}
+          />
                   </div>
 
                   <div>
-                    <label>Facts of the Case/Contents of the Petitioner *</label>
-                    <input />
+                    <label className="required">Facts of b Case/Contents of the Case</label>
+                    <input
+            name="facts"
+            value={litigationForm.facts}
+            onChange={handleLitigationChange}
+          />
                   </div>
 
                   <div>
-                    <label>Present Status of the case *</label>
-                    <select>
+                    <label className="required">Present Status of the case</label>
+                    <select
+                     name="presentStatus"
+            value={litigationForm.presentStatus}
+            onChange={handleLitigationChange}
+            >
                       <option>Select</option>
                       <option value="Completed">Completed</option>
                       <option value="Delay">Delay</option>
                       <option value="Under Development">Under Development</option>
                     </select>
                   </div>
+<div>
+  <label className="required">Interim Order if any</label>
 
-                  <div>
-                    <label>Interim Order if any *</label>
-                    <label>
-                      <input type="radio" /> Yes
-                    </label>
-                    <label>
-                      <input type="radio" /> No
-                    </label>
-                  </div>
+  <div className="applicantdetails-radio-inline">
+    <label>
+      <input
+        type="radio"
+        name="interimOrder"
+        value="Yes"
+        checked={interimOrder === "Yes"}
+        onChange={() => {
+                setInterimOrder("Yes");
+                setLitigationForm({ ...litigationForm, interimOrder: "Yes" });
+              }}
+            />{" "}
+      Yes
+    </label>
 
-                  <div>
+    <label>
+      <input
+        type="radio"
+        name="interimOrder"
+        value="No"
+        checked={interimOrder === "No"}
+       onChange={() => {
+                setInterimOrder("No");
+                setLitigationForm({ ...litigationForm, interimOrder: "No" });
+              }}
+            />{" "}
+      No
+    </label>
+  </div>
+</div>
+
+
+{/* <div>
+  <label>Details of final order if disposed *</label>
+
+  <div className="applicantdetails-radio-inline">
+    <label>
+      <input
+        type="radio"
+        name="finalOrder"
+        value="Yes"
+        checked={finalOrder === "Yes"}
+        onChange={() => setFinalOrder("Yes")}
+      />
+      Yes
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="finalOrder"
+        value="No"
+        checked={finalOrder === "No"}
+        onChange={() => setFinalOrder("No")}
+      />
+      No
+    </label>
+  </div>
+</div>*/}
+<div> 
+  <label className="required">Details of final order if disposed</label>
+
+  <div className="applicantdetails-radio-inline">
+    <label>
+      <input
+        type="radio"
+        name="finalOrder"
+        value="Yes"
+        checked={finalOrder === "Yes"}
+        onChange={() => {
+                setFinalOrder("Yes");
+                setLitigationForm({ ...litigationForm, finalOrder: "Yes" });
+              }}
+            />{" "}
+      Yes
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="finalOrder"
+        value="No"
+        checked={finalOrder === "No"}
+        onChange={() => {
+                setFinalOrder("No");
+                setLitigationForm({ ...litigationForm, finalOrder: "No" });
+              }}
+            />{" "}
+            No
+    </label>
+  </div>
+</div>
+
+
+
+                  {/* <div>
                     <label>Details of final order if disposed *</label>
                     <label>
                       <input type="radio" /> Yes
                     </label>
                     <label>
                       <input type="radio" /> No
-                    </label>
-                  </div>
+                    </label> 
+                  </div> */}
 
-                  <div>
-                    <label>Interim Order Certificate *</label>
-                    <input type="file" />
-                  </div>
+                 {interimOrder === "Yes" && (
+  <div>
+    <label className="required">Interim Order Certificate</label>
+    <input type="file" />
+  </div>
+)}
 
-                  <div>
-                    <label>Disposed Certificate *</label>
-                    <input type="file" />
-                  </div>
+
+                 {finalOrder === "Yes" && (
+  <div>
+    <label className="required">Disposed Certificate </label>
+    <input type="file" />
+  </div>
+)}
+
 
                   <div></div>
 
                   <div>
-                    <button className="applicantdetails-add-btn">Add</button>
+                    <button
+            type="button"
+            className="applicantdetails-add-btn"
+            onClick={handleAddLitigation}
+          >
+            Add
+          </button>
                   </div>
                 </div>
-              </>
-            )}
-          </section>
+              {/* ===== TABLE ===== */}
+      {litigations.length > 0 && (
+        <table className="applicantdetails-table">
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Case No</th>
+              <th>Name & Place</th>
+              <th>Petitioner</th>
+              <th>Respondent</th>
+              <th>Status</th>
+              <th>Interim</th>
+              <th>Final</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {litigations.map((l, index) => (
+              <tr key={l.id}>
+                <td>{index + 1}</td>
+                <td>{l.caseNo}</td>
+                <td>{l.namePlace}</td>
+                <td>{l.petitioner}</td>
+                <td>{l.respondent}</td>
+                <td>{l.presentStatus}</td>
+                <td>{l.interimOrder}</td>
+                <td>{l.finalOrder}</td>
+                <td>
+                  <button onClick={() => handleDeleteLitigation(l.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  )}
+</section>
 
-          {/* Other State */}
-          <section className="applicantdetails-section">
-            <h3 className="applicantdetails-section-title">Other State/UT RERA Registration Details</h3>
+            {/* Other State */}
+   {/* ================= OTHER STATE / UT RERA ================= */}
+<section className="applicantdetails-section">
+  <h3 className="applicantdetails-section-title">
+    Other State/UT RERA Registration Details
+  </h3>
 
-            <div className="applicantdetails-radio-inline">
-              <span>Do you have registration in other states *</span>
-              <label>
-                <input type="radio" onChange={() => setShowOtherState(true)} /> Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  defaultChecked
-                  onChange={() => setShowOtherState(false)}
-                />{" "}
-                No
-              </label>
-            </div>
+  <div className="applicantdetails-radio-inline">
+  <span>Do you have registration in other states <span style={{ color: "red" }}>*</span> </span>
 
-            {showOtherState && (
-              <div className="applicantdetails-grid-4 applicantdetails-conditional-box">
-                <div>
-                  <label>Registration Number *</label>
-                  <input />
-                </div>
-                <div>
-                  <label>State / UT *</label>
-                  <select>
-                    <option>Select</option>
-                  </select>
-                </div>
-                <div>
-                  <label>District *</label>
-                  <select>
-                    <option>Select</option>
-                  </select>
-                </div>
-                <div>
-                  <button className="applicantdetails-add-btn">Add</button>
-                </div>
-              </div>
-            )}
-          </section>
+  <label>
+    <input
+      type="radio"
+      name="otherStateReg"
+      checked={otherStateReg === true}
+      onChange={() => setOtherStateReg(true)}
+    />
+    Yes
+  </label>
+
+  <label>
+    <input
+      type="radio"
+      name="otherStateReg"
+      checked={otherStateReg === false}
+      onChange={() => setOtherStateReg(false)}
+    />
+    No
+  </label>
+</div>
+
+
+  {otherStateReg && (
+    <>
+      <div className="applicantdetails-grid-4 applicantdetails-conditional-box">
+        <div>
+          <label className="required">Registration Number</label>
+          <input
+            value={otherReraForm.regNo}
+            onChange={(e) =>
+              setOtherReraForm({ ...otherReraForm, regNo: e.target.value })
+            }
+          />
+        </div>
+
+        <div>
+          <label className="required">State / UT </label>
+          <select
+  value={otherReraForm.stateId}
+  onChange={(e) => {
+    const state = otherStates.find(
+      (s) => s.state_id == e.target.value   // ✅ FIX
+    );
+
+    setOtherReraForm({
+      ...otherReraForm,
+      stateId: e.target.value,
+      stateName: state?.state_name || "",
+      districtId: "",
+      districtName: "",
+    });
+
+    setOtherStateId(e.target.value); // triggers district API
+  }}
+>
+  <option value="">Select</option>
+  {otherStates.map((s) => (
+    <option key={s.state_id} value={s.state_id}>
+      {s.state_name}
+    </option>
+  ))}
+</select>
+
+        </div>
+
+        <div>
+          <label className="required">District </label>
+          <select
+  value={otherReraForm.districtId}
+  onChange={(e) => {
+    const dist = otherDistricts.find(
+      (d) => d.district_id == e.target.value   // ✅ FIX
+    );
+
+    setOtherReraForm({
+      ...otherReraForm,
+      districtId: e.target.value,
+      districtName: dist?.district_name || "",
+    });
+  }}
+  disabled={!otherReraForm.stateId}
+>
+  <option value="">Select</option>
+  {otherDistricts.map((d) => (
+    <option key={d.district_id} value={d.district_id}>
+      {d.district_name}
+    </option>
+  ))}
+</select>
+
+        </div>
+
+        <div style={{ alignSelf: "flex-end" }}>
+          <button
+            type="button"
+            className="applicantdetails-add-btn"
+            onClick={handleAddOtherRera}
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      {otherReraList.length > 0 && (
+        <table className="applicantdetails-table">
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Registration Number</th>
+              <th>State/UT</th>
+              <th>District</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {otherReraList.map((r, i) => (
+              <tr key={r.id}>
+                <td>{i + 1}</td>
+                <td>{r.regNo}</td>
+                <td>{r.stateName}</td>
+                <td>{r.districtName}</td>
+                <td>
+                  <button
+                    className="applicantdetails-delete-btn"
+                    onClick={() => handleDeleteOtherRera(r.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  )}
+</section>
+
 
           <div className="applicantdetails-form-footer-row">
   <button
@@ -795,10 +1386,12 @@ useEffect(() => {
   >
     ← Back
   </button>
+  
 
           {/* Save */}
 
           <div className="applicantdetails-btn-row">
+        
           <button onClick={handleSaveContinue}>
             Save And Continue
           </button>
