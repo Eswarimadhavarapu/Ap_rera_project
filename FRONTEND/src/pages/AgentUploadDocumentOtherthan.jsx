@@ -68,7 +68,7 @@ const handleSubmit = async () => {
     formData.append("itr_year3_doc", files.year3);
 
     const res = await fetch(
-      "https://7zgjxth4-5055.inc1.devtunnels.ms/api/agent/other-than-individual/itr",
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual/itr",
       {
         method: "PATCH",
         body: formData,

@@ -81,15 +81,11 @@ const OTPLogin = () => {
       if (!res.ok) {
         throw new Error(data.message || "OTP verification failed");
       }
-      console.log("Login API Response:", data);
-      // ✅ STORE RESPONSE (SAFE)
+
       sessionStorage.setItem("loginResponse", JSON.stringify(data));
 
-      // ✅ NAVIGATE WITH RESPONSE
       navigate("/ExtensionProcess", {
-        state: {
-          loginData: data,
-        },
+        state: { loginData: data },
       });
 
     } catch (err) {
@@ -99,9 +95,6 @@ const OTPLogin = () => {
     }
   };
 
-  // =========================
-  // RESEND OTP
-  // =========================
   const handleResendOtp = () => {
     setOtp("");
     handleGetOtp();
@@ -111,18 +104,40 @@ const OTPLogin = () => {
     <>
       <div className="otplogin-page-bg">
         <div className="otplogin-outer-frame">
+
+          {/* ================= BREADCRUMB ================= */}
+          <div className="otplogin-breadcrumb-bar">
+            <div className="otplogin-breadcrumb-inner">
+              <span className="otplogin-bc-text">You are here : </span>
+
+              <span
+                className="otplogin-bc-link"
+                onClick={() => navigate("/")}
+              >
+                Home
+              </span>
+
+              <span className="otplogin-bc-text">
+                {" "} / Registration / Project Registration / Apply for Project Extension / otp login
+              </span>
+
+               
+            </div>
+          </div>
+
+          {/* ================= OTP CONTAINER ================= */}
           <div className="otplogin-otp-container">
 
             {/* PAN INPUT */}
             <div className="otplogin-form-group">
               <label>
-                PAN Card Number <span className="required">*</span>
+                PAN Card Number <span className="otplogin-required">*</span>
               </label>
 
               <div className="otplogin-pan-row">
                 <input
                   type="text"
-                  placeholder="Please Ener Pan Number"
+                  placeholder="Please Enter PAN Number"
                   value={pan}
                   maxLength={10}
                   onChange={(e) => setPan(e.target.value.toUpperCase())}
@@ -152,7 +167,9 @@ const OTPLogin = () => {
             {/* OTP INPUT */}
             {otpSent && (
               <div className="otplogin-form-group">
-                <label>OTP *</label>
+                <label>
+                  OTP <span className="otplogin-required">*</span>
+                </label>
 
                 <div className="otplogin-pan-row">
                   <input
@@ -174,19 +191,18 @@ const OTPLogin = () => {
               </div>
             )}
 
-            {/* MESSAGES */}
             {errorMsg && (
-              <p style={{ color: "red", textAlign: "center" }}>{errorMsg}</p>
+              <p className="otplogin-error">{errorMsg}</p>
             )}
             {successMsg && (
-              <p style={{ color: "green", textAlign: "center" }}>{successMsg}</p>
+              <p className="otplogin-success">{successMsg}</p>
             )}
 
           </div>
         </div>
       </div>
 
-      {/* PAN ERROR POPUP */}
+      {/* POPUP */}
       {showPopup && (
         <div className="otplogin-popup-overlay">
           <div className="otplogin-popup-box">

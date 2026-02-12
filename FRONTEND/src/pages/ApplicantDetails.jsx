@@ -168,39 +168,39 @@ useEffect(() => {
   }, [form]);
 
 
- useEffect(() => {
-  sessionStorage.removeItem("application_no");
-  localStorage.removeItem("agentId");
+//  useEffect(() => {
+//   sessionStorage.removeItem("application_no");
+//   localStorage.removeItem("agentId");
 
-  setForm({
-    agentName: "",
-    fatherName: "",
-    occupation: "",
-    occupationName: "",
-    email: "",
-    aadhaar: "",
-    pan: passedPan || "",
-    photograph: null,
-    panProof: null,
-    mobile: "",
-    landline: "",
-    licenseNumber: "",
-    licenseDate: "",
-    address1: "",
-    address2: "",
-    state: "",
-    district: "",
-    mandal: "",
-    village: "",
-    pincode: "",
-    addressProof: null,
-  });
+//   setForm({
+//     agentName: "",
+//     fatherName: "",
+//     occupation: "",
+//     occupationName: "",
+//     email: "",
+//     aadhaar: "",
+//     pan: passedPan || "",
+//     photograph: null,
+//     panProof: null,
+//     mobile: "",
+//     landline: "",
+//     licenseNumber: "",
+//     licenseDate: "",
+//     address1: "",
+//     address2: "",
+//     state: "",
+//     district: "",
+//     mandal: "",
+//     village: "",
+//     pincode: "",
+//     addressProof: null,
+//   });
 
-  setLitigationStatus(null);
-  setShowProjects(null);
-  setOtherStateReg(null);   // 👈 ADD THIS LINE
-  setAgentType("Individual");
-}, []);
+//   setLitigationStatus(null);
+//   setShowProjects(null);
+//   setOtherStateReg(null);   // 👈 ADD THIS LINE
+//   setAgentType("Individual");
+// }, []);
 
 
   // Fetch occupations
@@ -582,12 +582,12 @@ const handleDeleteOtherRera = (id) => {
 
             <div className="applicantdetails-grid-4">
               <div>
-                <label>Agent Name *</label>
+                <label className="required">Agent Name</label>
                 <input name="agentName" value={form.agentName} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Upload Photograph (JPG) *</label>
+                <label className="required">Upload Photograph (JPG)</label>
                 <input
                   type="file"
                   accept=".jpg"
@@ -600,12 +600,12 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Father's Name *</label>
+                <label className="required">Father's Name</label>
                 <input name="fatherName" value={form.fatherName} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Occupation *</label>
+                <label className="required">Occupation</label>
                 <select
                   name="occupation"
                   value={form.occupation}
@@ -630,12 +630,12 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Email Id *</label>
+                <label className="required">Email Id</label>
                 <input type="email" name="email" value={form.email} onChange={handleChange} />
               </div>
 
               <div>
-                <label>Aadhaar Number *</label>
+                <label className="required">Aadhaar Number</label>
                 <input
                   name="aadhaar"
                   value={form.aadhaar}
@@ -648,7 +648,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>PAN Card Number *</label>
+                <label className="required">PAN Card Number</label>
                 <input
   name="pan"
   value={form.pan}
@@ -662,7 +662,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Upload PAN Card (PDF) *</label>
+                <label className="required">Upload PAN Card (PDF)</label>
                 <input
                   type="file"
                   accept=".pdf"
@@ -675,7 +675,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Mobile Number *</label>
+                <label className="required">Mobile Number</label>
                 <input
                   name="mobile"
                   value={form.mobile}
@@ -719,7 +719,7 @@ const handleDeleteOtherRera = (id) => {
 
             <div className="applicantdetails-grid-4">
               <div>
-                <label>Address Line 1 *</label>
+                <label className="required">Address Line 1</label>
                 <input name="address1" value={form.address1} onChange={handleChange} />
               </div>
 
@@ -729,7 +729,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>State *</label>
+                <label className="required">State</label>
                 <select
   name="state"
   value={form.state}
@@ -754,7 +754,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>District *</label>
+                <label className="required">District</label>
                 <select
   name="district"
   value={form.district}
@@ -779,7 +779,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Mandal *</label>
+                <label className="required">Mandal</label>
                 <select
   name="mandal"
   value={form.mandal}
@@ -803,7 +803,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Local Area / Village *</label>
+                <label className="required">Local Area / Village</label>
                <select
   name="village"
   value={form.village}
@@ -821,7 +821,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>PIN Code *</label>
+                <label className="required">PIN Code </label>
                 <input
                   name="pincode"
                   value={form.pincode}
@@ -834,7 +834,7 @@ const handleDeleteOtherRera = (id) => {
               </div>
 
               <div>
-                <label>Upload Address Proof (PDF) *</label>
+                <label className="required">Upload Address Proof (PDF)</label>
                 <input
                   type="file"
                   accept=".pdf"
@@ -858,7 +858,7 @@ const handleDeleteOtherRera = (id) => {
 
     {/* LEFT: RADIO */}
     <div className="applicantdetails-project-radio">
-      <span>Last five years project details *</span>
+      <span>Last five years project details <span style={{ color: "red" }}>*</span></span>
 
       <label>
         <input
@@ -884,8 +884,8 @@ const handleDeleteOtherRera = (id) => {
     {/* INPUT */}
     {showProjects && (
       <div className="project-name-box">
-        <label>Project Name *</label>
-        <input
+        <label >Project Name <span style={{ color: "red" }}>*</span></label>
+        <input 
           placeholder="Project Name"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
@@ -942,7 +942,7 @@ const handleDeleteOtherRera = (id) => {
             <h3 className="applicantdetails-section-title">Litigations</h3>
 
             <div className="applicantdetails-radio-inline applicantdetails-litigation-row">
-              <span>Any Civil/Criminal Cases *</span>
+              <span>Any Civil/Criminal Cases <span style={{ color: "red" }}>*</span> </span>
 
               <label>
                 <input
@@ -970,7 +970,8 @@ const handleDeleteOtherRera = (id) => {
   <div className="applicantdetails-litigation-affidavit">
 
     <div className="affidavit-text">
-      <label>Self Declared Affidavit *</label>
+      <label >Self Declared Affidavit <span style={{ color: "red" }}>*</span></label>
+
       <p className="affidavit-note">
         Note: "A self declared affidavit (on Rs. 20 non judicial stamp paper)
         has to be uploaded if there are no cases pending, refer Form 4 in
@@ -993,7 +994,7 @@ const handleDeleteOtherRera = (id) => {
 
                 <div className="applicantdetails-conditional-box applicantdetails-grid-4">
                   <div>
-                    <label>Case No *</label>
+                    <label className="required">Case No</label>
                     <input
             name="caseNo"
             value={litigationForm.caseNo}
@@ -1002,7 +1003,7 @@ const handleDeleteOtherRera = (id) => {
                   </div>
 
                   <div>
-                    <label>Name & Place of Tribunal/Authority *</label>
+                    <label className="required">Name & Place of Tribunal/Authority</label>
                     <input
             name="namePlace"
             value={litigationForm.namePlace}
@@ -1011,7 +1012,7 @@ const handleDeleteOtherRera = (id) => {
                   </div>
 
                   <div>
-                    <label>Name of the Petitioner *</label>
+                    <label className="required">Name of the Petitioner</label>
                     <input
             name="petitioner"
             value={litigationForm.petitioner}
@@ -1020,7 +1021,7 @@ const handleDeleteOtherRera = (id) => {
                   </div>
 
                   <div>
-                    <label>Name of the Respondent *</label>
+                    <label className="required">Name of the Respondent</label>
                     <input
             name="respondent"
             value={litigationForm.respondent}
@@ -1029,7 +1030,7 @@ const handleDeleteOtherRera = (id) => {
                   </div>
 
                   <div>
-                    <label>Facts of b Case/Contents of the Petitioner *</label>
+                    <label className="required">Facts of b Case/Contents of the Case</label>
                     <input
             name="facts"
             value={litigationForm.facts}
@@ -1038,7 +1039,7 @@ const handleDeleteOtherRera = (id) => {
                   </div>
 
                   <div>
-                    <label>Present Status of the case *</label>
+                    <label className="required">Present Status of the case</label>
                     <select
                      name="presentStatus"
             value={litigationForm.presentStatus}
@@ -1051,7 +1052,7 @@ const handleDeleteOtherRera = (id) => {
                     </select>
                   </div>
 <div>
-  <label>Interim Order if any *</label>
+  <label className="required">Interim Order if any</label>
 
   <div className="applicantdetails-radio-inline">
     <label>
@@ -1113,7 +1114,7 @@ const handleDeleteOtherRera = (id) => {
   </div>
 </div>*/}
 <div> 
-  <label>Details of final order if disposed *</label>
+  <label className="required">Details of final order if disposed</label>
 
   <div className="applicantdetails-radio-inline">
     <label>
@@ -1160,7 +1161,7 @@ const handleDeleteOtherRera = (id) => {
 
                  {interimOrder === "Yes" && (
   <div>
-    <label>Interim Order Certificate *</label>
+    <label className="required">Interim Order Certificate</label>
     <input type="file" />
   </div>
 )}
@@ -1168,7 +1169,7 @@ const handleDeleteOtherRera = (id) => {
 
                  {finalOrder === "Yes" && (
   <div>
-    <label>Disposed Certificate *</label>
+    <label className="required">Disposed Certificate </label>
     <input type="file" />
   </div>
 )}
@@ -1235,7 +1236,7 @@ const handleDeleteOtherRera = (id) => {
   </h3>
 
   <div className="applicantdetails-radio-inline">
-  <span>Do you have registration in other states *</span>
+  <span>Do you have registration in other states <span style={{ color: "red" }}>*</span> </span>
 
   <label>
     <input
@@ -1263,7 +1264,7 @@ const handleDeleteOtherRera = (id) => {
     <>
       <div className="applicantdetails-grid-4 applicantdetails-conditional-box">
         <div>
-          <label>Registration Number *</label>
+          <label className="required">Registration Number</label>
           <input
             value={otherReraForm.regNo}
             onChange={(e) =>
@@ -1273,7 +1274,7 @@ const handleDeleteOtherRera = (id) => {
         </div>
 
         <div>
-          <label>State / UT *</label>
+          <label className="required">State / UT </label>
           <select
   value={otherReraForm.stateId}
   onChange={(e) => {
@@ -1303,7 +1304,7 @@ const handleDeleteOtherRera = (id) => {
         </div>
 
         <div>
-          <label>District *</label>
+          <label className="required">District </label>
           <select
   value={otherReraForm.districtId}
   onChange={(e) => {

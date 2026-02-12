@@ -618,3 +618,10 @@
   min-height: 100vh;
   overflow-y: auto;
 }
+
+/* Required field star */
+label.required::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
+}

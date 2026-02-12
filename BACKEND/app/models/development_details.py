@@ -287,7 +287,6 @@ class DevelopmentDetailsModel:
                 project_type,
                 development_details,
                 external_development_work,
-                other_external_works,
                 work_description,
                 work_type,
                 pan_number,
