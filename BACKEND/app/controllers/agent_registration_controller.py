@@ -5,11 +5,11 @@ from sqlalchemy import text
 from app import db
 import os
 import logging
+import json 
 
 from app.models.agent_registration_model import AgentModel
 
 agent_bp = Blueprint("agent", __name__)
-
 UPLOAD_FOLDER = "uploads/agents"
 ALLOWED_EXT = {"pdf", "jpg", "jpeg", "png"}
 
@@ -46,49 +46,108 @@ def register_agent_step1():
         files = request.files
 
         required_files = ["photograph", "panProof", "addressProof"]
+
         for f in required_files:
             if f not in files or files[f].filename == "":
                 return jsonify({"success": False, "message": f"{f} missing"}), 400
 
         saved = {k: save_file(files[k]) for k in required_files}
 
-        data = data = {
-    "agent_name": form.get("agentName"),
-    "father_name": form.get("fatherName"),
-    "occupation_id": form.get("occupation"),
-    "email": form.get("email"),
-    "aadhaar": form.get("aadhaar"),
-    "pan": form.get("pan"),
-    "mobile": form.get("mobile"),
+        affidavit_file = None
+        if "selfAffidavit" in files and files["selfAffidavit"].filename != "":
+            affidavit_file = save_file(files["selfAffidavit"])
 
-    "landline": form.get("landline") or None,
-    "license_number": form.get("licenseNumber") or None,
-    "license_date": (
-        form.get("licenseDate")
-        if form.get("licenseDate")
-        else None
-    ),
+        # JSON lists from frontend
+        projects = form.get("projects")
+        litigations = form.get("litigations")
+        other_rera = form.get("otherReraList")
 
-    "address1": form.get("address1"),
-    "address2": form.get("address2") or None,
-    "state_id": form.get("state"),
-    "district": form.get("district"),
-    "mandal": form.get("mandal"),
-    "village": form.get("village"),
-    "pincode": form.get("pincode"),
+        print("PROJECTS RAW:", projects)
+        print("LITIGATIONS RAW:", litigations)
+        print("OTHER RERA RAW:", other_rera)
 
-    "photograph": saved["photograph"],
-    "pan_proof": saved["panProof"],
-    "address_proof": saved["addressProof"],
-}
+        projects_list = json.loads(projects) if projects else []
+        litigations_list = json.loads(litigations) if litigations else []
+                # Attach litigation certificate files
+        for i, l in enumerate(litigations_list):
 
+            interim_file = files.get(f"interimCert_{i}")
+            disposed_file = files.get(f"disposedCert_{i}")
+
+            if interim_file and interim_file.filename != "":
+                l["interim_order_certificate"] = save_file(interim_file)
+            else:
+                l["interim_order_certificate"] = None
+
+            if disposed_file and disposed_file.filename != "":
+                l["disposed_certificate"] = save_file(disposed_file)
+            else:
+                l["disposed_certificate"] = None
+        other_rera_list = json.loads(other_rera) if other_rera else []
+
+        data = {
+            "agent_type": form.get("agentType"),
+            "agent_name": form.get("agentName"),
+            "father_name": form.get("fatherName"),
+            "occupation_id": form.get("occupation"),
+            "email": form.get("email"),
+            "aadhaar": form.get("aadhaar"),
+            "pan": form.get("pan"),
+            "mobile": form.get("mobile"),
+
+            "landline": form.get("landline") or None,
+            "license_number": form.get("licenseNumber") or None,
+            "license_date": form.get("licenseDate") if form.get("licenseDate") else None,
+
+            "address1": form.get("address1"),
+            "address2": form.get("address2") or None,
+            "state_id": form.get("state"),
+            "district": form.get("district"),
+            "mandal": form.get("mandal"),
+            "village": form.get("village"),
+            "pincode": form.get("pincode"),
+
+            "photograph": saved["photograph"],
+            "pan_proof": saved["panProof"],
+            "address_proof": saved["addressProof"],
+
+            "self_declared_affidavit": affidavit_file,
+
+            "last_five_years_project_details": form.get("last_five_years_project_details"),
+            "any_civil_criminal_cases": form.get("any_civil_criminal_cases"),
+            "registration_other_states": form.get("registration_other_states"),
+        }
 
         result = AgentModel.create_agent_registration_step1(data)
 
-        if result["success"]:
-            return jsonify({"success": True, "agent_id": result["agent_id"]}), 201
+        if not result["success"]:
+            return jsonify(result), 500
 
-        return jsonify(result), 500
+        agent_id = result["agent_id"]
+
+        # insert projects
+        if projects_list:
+            res_projects = AgentModel.insert_agent_projects(agent_id, projects_list)
+            if not res_projects["success"]:
+                return jsonify(res_projects), 500
+
+        # insert litigations
+        if litigations_list:
+            res_litigations = AgentModel.insert_agent_litigations(agent_id, litigations_list)
+            if not res_litigations["success"]:
+                return jsonify(res_litigations), 500
+
+        # insert other state rera
+        if other_rera_list:
+            res_other = AgentModel.insert_agent_other_state_rera(agent_id, other_rera_list)
+            if not res_other["success"]:
+                return jsonify(res_other), 500
+
+        return jsonify({
+            "success": True,
+            "agent_id": agent_id,
+            "application_no": result["application_no"]
+        }), 201
 
     except Exception as e:
         logging.exception("Agent Step-1 failed")
@@ -271,19 +330,17 @@ def resume_application(application_no):
             "success": False,
             "message": str(e)
         }), 500
-
-@agent_bp.route("/resume-applicationss/<application_no>", methods=["GET"])
-def resume_applicationss(application_no):
+@agent_bp.route("/send-otp-email", methods=["POST"])
+def send_otp_email_preview():
     try:
-        result = AgentModel.agent_details_application_no(application_no)
+        data = request.get_json()
+        agent_id = data.get("agent_id")
 
-        if result["success"]:
-            return jsonify(result), 200
+        if not agent_id:
+            return jsonify({"success": False, "message": "agent_id required"}), 400
 
-        return jsonify(result), 404
+        result = AgentModel.send_otp_email_by_agent_id(agent_id)
+        return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({
-            "success": False,
-            "message": str(e)
-        }), 500
+        return jsonify({"success": False, "message": str(e)}), 500

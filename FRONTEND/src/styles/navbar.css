@@ -32,7 +32,7 @@
  .top-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* center content */
+  justify-content: left; /* center content */
   position: relative;
   padding: 12px 20px;
   background: #ffffff;
@@ -42,21 +42,31 @@
 .header-center {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left-corner;
   text-align: center;
 }
 
+/* circular logo */
 .header-logo {
-  width: 70px;
-  height: auto;
-  margin-bottom: 6px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;        /* ✅ circular */
+  object-fit: contain;
+  background: #ffffff;
+  border: 2px solid #0b4ea2; /* subtle blue ring */
+  padding: 0px;
+  text-align: center;
 }
 
 .header-title {
+  display: flex;          /* ✅ puts logo & text side by side */
+  align-items: center;    /* vertical alignment */
+  gap: 12px;              /* space between logo and text */
   font-size: 16px;
   font-weight: 600;
   color: #0b4ea2;
   letter-spacing: 0.5px;
+  margin: 0;
 }
 
 /* Right side button */
@@ -75,7 +85,7 @@
 
 /* ===== NAVBAR ===== */
 .navbar {
-  background: #0b4da2;
+  background: hsl(339, 47%, 73%);;
 } */
 
 .nav-list {
@@ -310,7 +320,11 @@ body {
    NAVBAR
 ===================================================== */
 .navbar {
-  background: linear-gradient(to right, oklch(71.49% 0.12422 211.24), #671f90de);
+  background: linear-gradient(
+    to right,
+    #7b001c,
+    #4b000f
+  );
 }
 
 
@@ -333,10 +347,10 @@ body {
 .nav-list > li:hover {
   background:  oklch(71.49% 0.12422 211.24);
 }
-.new-badge-a{
+.homenavbar-new-badge-a{
   color: red;
   text-decoration: none;
 }
-.new-badge-a:hover{
+.homenavbar-new-badge-a:hover{
   text-decoration: none;
 } 

@@ -6,7 +6,7 @@ import json
 
 
 from app.models.project_upload_documents import ProjectRegistrationDocument
-from app.models.project_registration_model import get_project_registration
+from app.models.project_registration_model import fetch_project_registration
 from app.models.development_details import DevelopmentDetailsModel
 from app.models.application_associate import ApplicationAssociate
 from app.models.architect import Architect
@@ -241,7 +241,7 @@ def build_project_preview_data(raw):
             "project_upload_documents": [],
         }
 
-    registration = get_project_registration(application_id, pan_number)
+    registration = fetch_project_registration(application_id, pan_number)
     if not registration:
         registration = {}
     basic_reg = get_project_registration_basic(application_id)

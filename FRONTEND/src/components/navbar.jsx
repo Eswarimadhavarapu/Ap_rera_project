@@ -16,8 +16,8 @@ const Navbar = () => {
       <div className="top-header">
         <div className="header-center">
           
-          <img src={Logo} alt="APRERA Logo" className="header-logo"/>
-          <p className="header-title">ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</p>
+          
+          <p className="header-title"><img src={Logo} alt="APRERA Logo" className="header-logo"/>ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</p>
         </div>
 
         <div className="top-header-right">
@@ -39,12 +39,12 @@ const Navbar = () => {
           <li className="dropdown">ABOUT US <span className="arrow">▾</span>
 
             <ul className="dropdown-menu">
-              <li onClick={() => navigate("/aprera")}>
+              {/* <li onClick={() => navigate("/aprera")}>
                 What is APRERA
-              </li>
+              </li> */}
               
               <li onClick={() => navigate("/organogram")}>
-                Organogram
+                Organisation Structure
               </li>
               
               <li onClick={() => navigate("/ourservices")}>
@@ -52,7 +52,7 @@ const Navbar = () => {
               </li>
               <li onClick={() => navigate("/recruitment")}>Recruitment</li>
               
-              <li onClick={() => navigate("/rti")}>Rti</li>
+              <li onClick={() => navigate("/rti")}>RTI</li>
              
                            <li onClick={() => navigate("/our-leadership")}>
                 Our Leadership
@@ -72,7 +72,7 @@ const Navbar = () => {
           </li>
 
           {/* <li>APREAT</li> */}
-          <li onClick={() => navigate("/apreat")}>APREAT</li>
+          
           <li className="dropdown">NOTIFICATIONS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
              <li onClick={() => navigate("/goinotifications")}>
@@ -132,7 +132,7 @@ const Navbar = () => {
       </ul>
               </li> */}
               {/* PROJECT REGISTRATION */}
-              <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
+              {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
                 Project Registration <span className="arrow">▸</span>
                 <ul className="sub-dropdown-menu">
                   <li>Apply for quarterly update</li>
@@ -154,7 +154,7 @@ const Navbar = () => {
                 
                 </ul>
               </li>
-                {/* Agent Registration with Sub Dropdown */}
+               
     <li className="sub-dropdown" onClick={() => navigate("/agent-registration")}>
   Agent Registration <span className="arrow">▸</span>
 
@@ -180,7 +180,7 @@ const Navbar = () => {
     </li>
     
   </ul>
-</li>
+</li> */}
               <li onClick={() => navigate("/feecalculater")}>
                 Fee Calculator
               </li>
@@ -200,16 +200,7 @@ const Navbar = () => {
           </li>
           <li className="dropdown">REPORTS <span className="arrow">▾</span>
             <ul className="dropdown-menu">
-              <li
-             onClick={() =>
-            window.open(
-            window.location.origin + "/statistics",
-            "_blank"
-            )
-             }
-            >
-            Statistics
-          </li>
+            
               <li>MIS reports</li>
               <li>GIS reports</li>
             </ul>
@@ -224,7 +215,18 @@ const Navbar = () => {
             </ul>
           </li>
           <li className="dropdown">JUDGEMENTS/ORDERS <span className="arrow">▾</span>
+          
             <ul className="dropdown-menu">
+                <li
+             onClick={() =>
+            window.open(
+            window.location.origin + "/statistics",
+            "_blank"
+            )
+             }
+            >
+            Statistics
+          </li>
                <li onClick={()=>navigate("/complaint-orders")}>Complaint Orders</li>
             </ul>
           </li>
@@ -255,6 +257,7 @@ const Navbar = () => {
           </li>
 
           <li>LOGIN</li>
+          <li onClick={() => navigate("/apreat")}>APREAT</li>
         </ul>
       </nav>
     </>

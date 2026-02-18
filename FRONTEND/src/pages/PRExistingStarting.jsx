@@ -363,7 +363,7 @@ const applicationNumber = location.state?.applicationNumber;
   const fetchExistingProject = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/project-registration/${applicationNumber}`
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration/${applicationNumber}`
       );
 
       const data = await res.json();

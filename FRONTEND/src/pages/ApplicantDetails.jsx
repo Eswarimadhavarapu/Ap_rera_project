@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "../styles/ApplicantDetails.css";
 import { apiGet,apiPost } from "../api/api";
 
+
 const ApplicantDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,11 +33,14 @@ const [litigationForm, setLitigationForm] = useState({
   presentStatus: "",
   interimOrder: "No",
   finalOrder: "No",
+  interimCert: null,
+  disposedCert: null,
 });
 const [uploadedFiles, setUploadedFiles] = useState({
   photograph: null,
   panProof: null,
   addressProof: null,
+  selfAffidavitFile: null,
 });
 
 
@@ -133,6 +137,7 @@ useEffect(() => {
           photograph: d.photograph || null,
           panProof: d.pan_proof || null,
           addressProof: d.address_proof || null,
+          selfAffidavitFile: d.self_declared_affidavit || null,
         });
       }
     })
@@ -463,6 +468,9 @@ const handleDeleteOtherRera = (id) => {
   if (!form.addressProof) return alert("Please Upload Address Proof");
    if (litigationStatus === null)
     return alert("Please select Yes or No for Litigations");
+  if (litigationStatus === "No" && !uploadedFiles.selfAffidavitFile) {
+  return alert("Please upload Self Declared Affidavit file");
+}
 
   if (showProjects === null)
     return alert("Please select Yes or No for Projects");
@@ -504,9 +512,41 @@ const handleDeleteOtherRera = (id) => {
     });
 
     // file fields
+    formData.append("agentType", agentType);
     formData.append("photograph", form.photograph);
     formData.append("panProof", form.panProof);
     formData.append("addressProof", form.addressProof);
+    if (uploadedFiles.selfAffidavitFile) {
+  formData.append("selfAffidavit", uploadedFiles.selfAffidavitFile);
+
+}
+formData.append("last_five_years_project_details", showProjects ? "Yes" : "No");
+formData.append("any_civil_criminal_cases", litigationStatus);   // "Yes" or "No"
+formData.append("registration_other_states", otherStateReg ? "Yes" : "No");
+formData.append("projects", JSON.stringify(projects));
+const cleanLitigations = litigations.map((l) => ({
+  caseNo: l.caseNo,
+  namePlace: l.namePlace,
+  petitioner: l.petitioner,
+  respondent: l.respondent,
+  facts: l.facts,
+  presentStatus: l.presentStatus,
+  interimOrder: l.interimOrder,
+  finalOrder: l.finalOrder,
+}));
+formData.append("litigations", JSON.stringify(cleanLitigations));
+
+// append interim and disposed certificate files separately
+litigations.forEach((l, index) => {
+  if (l.interimCert) {
+    formData.append(`interimCert_${index}`, l.interimCert);
+  }
+  if (l.disposedCert) {
+    formData.append(`disposedCert_${index}`, l.disposedCert);
+  }
+});
+formData.append("otherReraList", JSON.stringify(otherReraList));
+
 
     const response = await apiPost("/api/agent/register-step1", formData);
 
@@ -955,7 +995,7 @@ const handleDeleteOtherRera = (id) => {
                 Yes
               </label>
 
-              <label>
+             <label>
                 <input
                   type="radio"
                   name="litigation"
@@ -979,7 +1019,16 @@ const handleDeleteOtherRera = (id) => {
       </p>
     </div>
 
-    <input type="file" />
+    <input
+  type="file"
+  accept=".pdf,.jpg,.jpeg,.png"
+  onChange={(e) =>
+    setUploadedFiles({
+      ...uploadedFiles,
+      selfAffidavitFile: e.target.files[0],
+    })
+  }
+/>
   </div>
 )}
 
@@ -1162,7 +1211,16 @@ const handleDeleteOtherRera = (id) => {
                  {interimOrder === "Yes" && (
   <div>
     <label className="required">Interim Order Certificate</label>
-    <input type="file" />
+       <input
+      type="file"
+      accept=".pdf,.jpg,.jpeg,.png"
+      onChange={(e) =>
+        setLitigationForm({
+          ...litigationForm,
+          interimCert: e.target.files[0],
+        })
+      }
+    />
   </div>
 )}
 
@@ -1170,7 +1228,16 @@ const handleDeleteOtherRera = (id) => {
                  {finalOrder === "Yes" && (
   <div>
     <label className="required">Disposed Certificate </label>
-    <input type="file" />
+    <input
+      type="file"
+      accept=".pdf,.jpg,.jpeg,.png"
+      onChange={(e) =>
+        setLitigationForm({
+          ...litigationForm,
+          disposedCert: e.target.files[0],
+        })
+      }
+    />
   </div>
 )}
 

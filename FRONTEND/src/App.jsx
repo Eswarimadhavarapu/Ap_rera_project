@@ -102,6 +102,13 @@ import PreviewOther from "./pages/agentpreviewother";
 import AgentPaymentpage from "./pages/Agentpayment";
 import AgentUploadDocumentOtherthan from "./pages/AgentUploadDocumentOtherthan";
 import AgentDetailsOther from "./pages/AgentDetails";
+import ExistingAssociateDetails from "./pages/Existing_AssociateDetails";
+import OtherthanIndividualDD from "./pages/OtherthanIndividualDD";
+import OtherThanIndividual_ProjectPreview from "./pages/OtherThanIndividual_projectPreview";
+import OtherThanIndividualProjectDetails from "./pages/OtherThanIndividualprojectDetails";
+import OtherThanIndividualDevelopmentDetails from "./pages/other-than-individual_DevelopmentDetails";
+import OtherThanIndividualAssociateDetails from "./pages/other-than-individual_AssociateDetails";
+import OtherThanIndividualUploadDocument from "./pages/other-than-individual_UploadDocument";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -213,17 +220,15 @@ function App() {
           <Route path="/AgentUploadDocumentotherthan" element={<AgentUploadDocumentOtherthan />} />
           <Route path="/preview-other" element={<PreviewOther/>} />
           <Route path="/agent-paymentpage" element={<AgentPaymentpage/>} />
-             <Route
-  path="/existing-development-details-upload-docs/:id"
-  element={<UploadDocumentsWithApi />}/>
-  <Route
-  path="/existing-project-details"
-  element={<ExistingProjectDetails />}
-/>
-
-
-
-
+           <Route path="/existing-associate-details" element={<ExistingAssociateDetails/>} />
+           <Route path="/otherthanindividualdd" element={<OtherthanIndividualDD/>} />
+          <Route path="/existing-development-details-upload-docs/:id" element={<UploadDocumentsWithApi />}/>
+          <Route path="/existing-project-details" element={<ExistingProjectDetails />}/>
+          <Route path="/other-than-individual-project-details" element={<OtherThanIndividualProjectDetails />}/>
+          <Route path="/othertheninduvidual-preview" element={<OtherThanIndividual_ProjectPreview />}/>
+          <Route path="/other-than-individual-development-details" element={<OtherThanIndividualDevelopmentDetails />} />
+          <Route path="/other-than-individual-associate-details" element={<OtherThanIndividualAssociateDetails />} />
+          <Route path="/other-than-individual-upload-documents" element={<OtherThanIndividualUploadDocument />} />
         </Routes>
       </Layout>
     </BrowserRouter>

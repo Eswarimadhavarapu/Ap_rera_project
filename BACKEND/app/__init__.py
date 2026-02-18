@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from app.config import Config
 from app.models.database import db
@@ -72,6 +72,12 @@ def create_app():
     # Database Initialization
     # =========================
     db.init_app(app)
+    # ✅ ADD THIS BLOCK (UPLOAD SERVING)
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+
+    @app.route("/uploads/<path:filename>")
+    def serve_uploaded_file(filename):
+        return send_from_directory(UPLOAD_FOLDER, filename)
 
     # =========================
     # Register Blueprints
@@ -98,6 +104,10 @@ def create_app():
     )
     from app.controllers.login_controller import login_bp
     from app.controllers.agent_other_than_individual_registration_controller import ( agent_other_than_individual_registration_bp )
+    from app.controllers.othertheninduvidual_project_registration_controller import \
+    othertheninduvidual_project_registration_bp
+
+    from app.controllers.othertheninduvidual_project_preview_controller import othertheninduvidual_project_preview_bp
 
     app.register_blueprint(agent_other_than_individual_registration_bp, url_prefix="/api")
     app.register_blueprint(preview_bp, url_prefix="/api")
@@ -119,6 +129,11 @@ def create_app():
     projectapplicationdetailsextension_bp,
     url_prefix="/api")
     app.register_blueprint(login_bp, url_prefix="/api")
+    app.register_blueprint(
+    othertheninduvidual_project_registration_bp,
+    url_prefix="/api")
+  
+    app.register_blueprint(othertheninduvidual_project_preview_bp, url_prefix="/api")
   
 
     return app

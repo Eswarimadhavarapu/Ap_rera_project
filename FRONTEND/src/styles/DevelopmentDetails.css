@@ -59,7 +59,7 @@ font[color="red"] {
 
 .development-details-inputbox,
 select {
-  width: 100%;
+  width: 15%;
   height: 40px;
   padding: 6px 10px;
   border: 1px solid #c9c9c9;
@@ -412,4 +412,122 @@ input[type="file"] {
 
 .development-details-btn-save:hover {
   background: #084b8a;
+}
+
+/* =========================================================
+   EXACT MATCH – Other External Development Works (DESKTOP)
+========================================================= */
+
+.development-details-other-works-section
+.row.development-details-innerdivrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: nowrap;
+}
+
+/* Work Description */
+.development-details-other-works-section
+.development-details-col-sm-4:first-child {
+  flex: 0 0 32%;
+}
+
+/* Work Type */
+.development-details-other-works-section
+.development-details-col-sm-4:nth-child(2) {
+  flex: 0 0 32%;
+}
+
+/* Add Button column */
+.development-details-other-works-section
+.development-details-col-sm-2 {
+  flex: 0 0 auto;
+}
+
+/* Inputs – grey, compact */
+.development-details-other-works-section
+.development-details-inputbox,
+.development-details-other-works-section select {
+  width: 100% !important;
+  height: 38px;
+  background: #f7f7f7;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Add button – exact size */
+.development-details-other-works-section
+.development-details-btn-add {
+  height: 40px;
+  padding: 0 26px;
+  font-size: 15px;
+  font-weight: 700;
+  background: #0d6efd;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   SAVE / UPDATE BUTTON – RIGHT ALIGNED (NOT FULL WIDTH)
+========================================================= */
+
+.development-details-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+
+.development-details-btn-save {
+  width: auto;
+  min-width: 220px;
+  height: 42px;
+  background: #0d6efd;
+  font-size: 16px;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   MOBILE (STACKED – OPTIONAL)
+========================================================= */
+
+@media (max-width: 768px) {
+  .development-details-other-works-section
+  .row.development-details-innerdivrow {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .development-details-btn-add,
+  .development-details-btn-save {
+    width: 100%;
+  }
+
+  .development-details-form-actions {
+    justify-content: center;
+  }
+}
+.development-details-table {
+  width: 100%;
+  border-collapse: separate;   /* IMPORTANT */
+  border-spacing: 0;
+  border: 1px solid #cfd8dc;   /* Outer border */
+}
+
+/* All cells */
+.development-details-table th,
+.development-details-table td {
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 14px 18px;
+}
+
+/* Remove extra right border from last column */
+.development-details-table th:last-child,
+.development-details-table td:last-child {
+  border-right: none;
+}
+
+/* Remove extra bottom border from last row */
+.development-details-table tbody tr:last-child td {
+  border-bottom: none;
 }

@@ -10,14 +10,11 @@ class AgentOtherThanIndividualLitigation(db.Model):
     petitioner_name = db.Column(db.String(150))
     respondent_name = db.Column(db.String(150))
     case_facts = db.Column(db.Text)
-
     present_status = db.Column(db.String(100))
     interim_order = db.Column(db.Text)
     final_order_details = db.Column(db.Text)
     self_declared_affidavit = db.Column(db.String(255))
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
     def to_dict(self):
          return {
             "id": self.id,

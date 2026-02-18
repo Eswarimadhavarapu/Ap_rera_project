@@ -130,7 +130,7 @@ const AgentUploadDocuments = () => {
             </thead>
             <tbody>
               <tr>
-                <td>Income Tax Return – Year 1 *</td>
+                <td>Income Tax Return – Year 1<span style={{ color: "red" }}>*</span></td>
                 <td>
                   <input
                     type="file"
@@ -143,7 +143,7 @@ const AgentUploadDocuments = () => {
               </tr>
 
               <tr>
-                <td>Income Tax Return – Year 2 *</td>
+                <td>Income Tax Return – Year 2 <span style={{ color: "red" }}>*</span></td>
                 <td>
                   <input
                     type="file"
@@ -156,7 +156,7 @@ const AgentUploadDocuments = () => {
               </tr>
 
               <tr>
-                <td>Income Tax Return – Year 3 *</td>
+                <td>Income Tax Return – Year 3 <span style={{ color: "red" }}>*</span></td>
                 <td>
                   <input
                     type="file"

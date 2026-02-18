@@ -28,28 +28,86 @@ const Architects = ({
   // INPUT CHANGE HANDLER
   // -----------------------------
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    if (name === "state_ut") {
-      const stateId = value ? Number(value) : "";
-
-      setFormData((prev) => ({
-        ...prev,
-        state_ut: stateId,
-        district: "",
-      }));
-
-      if (stateId) {
-        onStateChange(stateId);
-      }
-      return;
-    }
+  // ⭐ State change logic (KEEP)
+  if (name === "state_ut") {
+    const stateId = value ? Number(value) : "";
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      state_ut: stateId,
+      district: "",
     }));
-  };
+
+    if (stateId) onStateChange(stateId);
+    return;
+  }
+
+  // ✅ Architect name → letters only
+  if (name === "architect_name" && !/^[a-zA-Z\s.]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Mobile → numbers only
+  if (name === "mobile_number" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ PIN → numbers only
+  if (name === "pin_code" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ COA Registration → A-Z / numbers / -
+  if (name === "coa_registration_number" && !/^[A-Za-z0-9/-]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Year + Projects → numbers only
+  if (
+    ["year_of_establishment", "number_of_key_projects"].includes(name) &&
+    !/^\d*$/.test(value)
+  ) {
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]:
+      name === "coa_registration_number"
+        ? value.toUpperCase()
+        : value.trimStart(),
+  }));
+};
+// ⭐ Architect Validation (Enterprise)
+const validateArchitect = () => {
+  const errors = {};
+
+  const currentYear = new Date().getFullYear();
+
+  if (formData.email_id &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email_id)) {
+    errors.email = "Invalid email format";
+  }
+
+  if (!/^\d{6}$/.test(formData.pin_code)) {
+    errors.pin = "PIN code must be 6 digits";
+  }
+
+  if (!/^[6-9]\d{9}$/.test(formData.mobile_number)) {
+    errors.mobile = "Enter valid 10 digit mobile number";
+  }
+
+  if (
+    formData.year_of_establishment &&
+    Number(formData.year_of_establishment) > currentYear
+  ) {
+    errors.year = "Year cannot be in future";
+  }
+
+  return errors;
+};
 
   // -----------------------------
   // ADD ARCHITECT
@@ -71,6 +129,12 @@ const Architects = ({
         return;
       }
     }
+    const validationErrors = validateArchitect();
+
+if (Object.keys(validationErrors).length > 0) {
+  alert(Object.values(validationErrors)[0]);
+  return;
+}
 
     try {
       const payload = {

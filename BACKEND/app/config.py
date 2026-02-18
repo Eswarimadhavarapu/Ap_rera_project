@@ -77,7 +77,7 @@ class Config:
         BASE_DIR, "app", "uploads", "complint_doc"
     )
 
-    MAX_CONTENT_LENGTH = 25 * 1024 * 1024  # 25 MB
+  
 
 
 # ========================

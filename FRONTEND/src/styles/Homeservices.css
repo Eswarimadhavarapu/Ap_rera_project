@@ -7,7 +7,7 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.main-title {
+.homemain-title {
   text-align: center;
   font-size: 24px;
   font-weight: 600;
@@ -15,39 +15,39 @@
 }
 
 /* REGISTRATION */
-.registration-grid {
+.homeregistration-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   margin-bottom: 60px;
 }
 
-.registration-card {
+.homeregistration-card {
   background: #fff2cc;
   border-radius: 12px;
   padding: 18px;
   text-align: center;
 }
 
-.registration-card img {
+.homeregistration-card img {
   width: 42px;
   margin-bottom: 10px;
 }
 
-.registration-card p {
+.homeregistration-card p {
   font-size: 14px;
   font-weight: 500;
 }
 
 /* SECTION TITLES */
-.section-title {
+.homeservices-section-title {
   font-size: 22px;
   font-weight: 600;
   margin: 40px 0 30px;
 }
 
 /* SERVICES GRID */
-.services-grid {
+.homeservices-services-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px 30px;
@@ -55,66 +55,73 @@
 }
 
 /* SERVICE CARD */
-.service-card {
+.homeservices-service-card {
   text-align: center;
   padding: 24px 16px;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
-.service-icon {
+.homeservices-service-icon {
   font-size: 40px;
-  color: #1a237e;
+  color: #666;
   margin-bottom: 10px;
 }
 
-.service-card p {
+.homeservices-service-card p {
   font-size: 14px;
   margin-bottom: 12px;
 }
 
-.underline {
+.homeservices-underline {
   width: 100%;
   height: 2px;
-  background: #1a237e;
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
   display: block;
   margin: 0 auto;
 }
 
 
 /* HOVER */
-.service-card:hover {
-  background: linear-gradient(135deg, #0d6efd, #6f42c1);
+.homeservices-service-card:hover { background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #858484
+  );
 }
 
-.service-card:hover p,
-.service-card:hover .service-icon {
+.homeservices-service-card:hover p,
+.homeservices-service-card:hover .homeservices-service-icon {
   color: #fff;
 }
 
-.service-card:hover .underline {
+.homeservices-service-card:hover .homeservices-underline {
   background: #fff;
 }
 
 /* RESPONSIVE */
 @media (max-width: 992px) {
-  .registration-grid {
+  .homeregistration-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .services-grid {
+  .homeservices-services-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 576px) {
-  .registration-grid,
-  .services-grid {
+  .homeregistration-grid,
+  .homeservices-services-grid {
     grid-template-columns: 1fr;
   }
 }
 
 /* SECTION DIVIDER (like Quick Links page) */
-.section-divider {
+.homesection-divider {
   width: 100%;
   height: 1px;
   background-color: #d0d0d0;
@@ -122,7 +129,7 @@
 }
 
 /* REMOVE small underline below section titles */
-.section-title::after {
+.homeservices-section-title::after {
   content: none !important;
   display: none !important;
 }

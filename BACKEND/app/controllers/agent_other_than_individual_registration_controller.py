@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from app.models.database import db
 
 from app.models.agent_other_than_individual_registration_entity_model import (
@@ -104,20 +105,10 @@ def register_agent():
             respondent_name=form.get("respondent_name"),
             case_facts=form.get("case_facts"),
             present_status=form.get("present_status"),
-           interim_order = save_file(
-    files.get("interim_certificate"),
-    "litigation_interim_order"
-),
-
-final_order_details = save_file(
-    files.get("final_certificate"),
-    "litigation_final_order"
-),
-
-self_declared_affidavit = save_file(
-    files.get("self_affidavit"),
-    "litigation_affidavit"
-)
+            interim_order = save_file(
+            files.get("interim_certificate"),"litigation_interim_order"),
+            final_order_details = save_file(files.get("final_certificate"),"litigation_final_order"),
+            self_declared_affidavit = save_file(files.get("self_affidavit"),"litigation_affidavit")
            
         )
         db.session.add(litigation)
@@ -299,3 +290,10 @@ def update_agent_itr_documents():
             "status": "error",
             "message": str(e)
         }), 500   
+    
+@agent_other_than_individual_registration_bp.route( "/agent_doc/<path:filename>")
+def serve_uploaded_file(filename):
+    return send_from_directory(
+        os.path.join(BASE_DIR, "uploads", "agent_doc"),
+        filename
+    )

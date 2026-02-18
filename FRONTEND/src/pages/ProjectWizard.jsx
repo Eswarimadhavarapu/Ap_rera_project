@@ -95,14 +95,47 @@ export default function ProjectWizard() {
   const [projectEntries, setProjectEntries] = useState([]);
   const [litigationEntries, setLitigationEntries] = useState([]);
   const [promoter2Entries, setPromoter2Entries] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [files, setFiles] = useState({});
+
+  // ⭐ Aadhaar Mask Formatter (ENTERPRISE LEVEL)
+const formatAadhaar = (value) => {
+  const digits = value.replace(/\D/g, "").slice(0, 12);
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+};
+
 
   const handleChange = (e) => {
-  const { name, value } = e.target;
+  let { name, value } = e.target;
 
-  // 🔒 Account Number: only digits, max 18
+  // 🔹 PAN → uppercase + limit
+  if (name === "panNumber") {
+    value = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+  }
+
+  // 🔹 IFSC / GST uppercase
+  // 🔹 IFSC → banking format
+if (name === "ifsc") {
+  value = value
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")   // allow only letters & numbers
+    .slice(0, 11);               // IFSC max length
+}
+
+
+  // 🔹 Aadhaar → store only digits internally
+  if (name === "aadhaar") {
+    value = value.replace(/\D/g, "").slice(0, 12);
+  }
+
+  // 🔹 Mobile → only numbers
+  if (name === "mobile") {
+    value = value.replace(/\D/g, "").slice(0, 10);
+  }
+
+  // 🔹 Account No → only numbers
   if (name === "accountNo") {
-    if (!/^\d*$/.test(value)) return; // block alphabets & symbols
-    if (value.length > 18) return;    // block more than 18 digits
+    value = value.replace(/\D/g, "").slice(0, 18);
   }
 
   setFormData((prev) => ({
@@ -111,18 +144,56 @@ export default function ProjectWizard() {
   }));
 };
 
-   
+// ⭐ FILE VALIDATION HANDLER
+const handleFileChange = (e, type) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
+  const ext = file.name.split(".").pop().toLowerCase();
+
+  // 🔹 Photograph → JPG ONLY
+  if (type === "photo") {
+    if (ext !== "jpg" && ext !== "jpeg") {
+      alert("Photograph must be JPG format only");
+      e.target.value = "";
+      return;
+    }
+  }
+
+  // 🔹 Remaining → PDF ONLY
+  if (type === "pdf") {
+    if (ext !== "pdf") {
+      alert("Only PDF files allowed");
+      e.target.value = "";
+      return;
+    }
+  }
+
+  // Save file
+  setFiles(prev => ({
+    ...prev,
+    [e.target.name]: file
+  }));
+};
 
   const handleSubmitInstructions = () => {
+  // 🔹 If EXISTING → go to existing page
+  if (applicationType === "existing") {
+    navigate("/projectregistrationexisting");
+    return;
+  }
+
+  // 🔹 If NEW → continue normal flow
   setCurrentScreen("form");
+
   const appNo = `100126${Math.floor(Math.random() * 900000 + 100000)}`;
 
   setFormData((prev) => ({ ...prev, applicationNo: appNo }));
 
-  // ✅ STORE APPLICATION NUMBER EARLY
+  // store application number
   sessionStorage.setItem("applicationNumber", appNo);
 };
+
 
 
   const handleGetDetails = () => {
@@ -297,58 +368,142 @@ setShowDetails(true);
     setPromoter2Entries(promoter2Entries.filter(entry => entry.id !== id));
   };
 
+
+
+// ✅ ⭐ ADD VALIDATION FUNCTION HERE (PASTE BELOW)
+const validateForm = () => {
+  const errors = [];
+
+  // =========================
+  // 🔹 BASIC CHECK
+  // =========================
+  if (!showDetails) {
+    errors.push("Click Get Details after entering PAN");
+    return errors;
+  }
+
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  const mobileRegex = /^[6-9]\d{9}$/;
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+  // =========================
+  // 🔹 PAN
+  // =========================
+  if (!panRegex.test(formData.panNumber)) {
+    errors.push("Invalid PAN Card Number");
+  }
+
+  // =========================
+  // 🔹 BANK DETAILS
+  // =========================
+  if (!formData.bankState) errors.push("Bank State is required");
+  if (!formData.bankName) errors.push("Bank Name is required");
+  if (!formData.branchName) errors.push("Branch Name is required");
+
+  if (!/^\d{18}$/.test(formData.accountNo)) {
+    errors.push("Account Number must be 18 digits");
+  }
+
+  if (!ifscRegex.test(formData.ifsc)) {
+    errors.push("Invalid IFSC Code");
+  }
+
+  if (!formData.accountHolder) {
+    errors.push("Account Holder Name required");
+  }
+
+  // =========================
+  // 🔹 PROMOTER DETAILS
+  // =========================
+  if (!formData.name) errors.push("Promoter Name required");
+  if (!formData.fatherName) errors.push("Father Name required");
+
+  if (!/^\d{12}$/.test(formData.aadhaar)) {
+    errors.push("Aadhaar must be 12 digits");
+  }
+
+  if (!mobileRegex.test(formData.mobile)) {
+    errors.push("Invalid Mobile Number");
+  }
+
+  if (!emailRegex.test(formData.email)) {
+    errors.push("Invalid Email Address");
+  }
+
+  if (!formData.stateUT) errors.push("Promoter State required");
+  if (!formData.district) errors.push("Promoter District required");
+
+  // =========================
+  // 🔹 YES/NO QUESTIONS REQUIRED
+  // =========================
+  if (!formData.otherStateReg) errors.push("Select Other State Registration");
+  if (!formData.lastFiveYears) errors.push("Select Last Five Years option");
+  if (!formData.litigation) errors.push("Select Litigation option");
+  if (!formData.promoter2) errors.push("Select Promoter 2 option");
+
+  // =========================
+  // 🔹 CONDITIONAL SECTIONS
+  // =========================
+  if (formData.otherStateReg === "yes" && reraEntries.length === 0) {
+    errors.push("Add at least one RERA entry");
+  }
+
+  if (formData.lastFiveYears === "yes" && projectEntries.length === 0) {
+    errors.push("Add at least one Project entry");
+  }
+
+  if (formData.litigation === "yes" && litigationEntries.length === 0) {
+    errors.push("Add at least one Litigation entry");
+  }
+
+  if (formData.promoter2 === "yes" && promoter2Entries.length === 0) {
+    errors.push("Add Promoter 2 details");
+  }
+
+  return errors;
+};
+
+
+
   const handleSaveAndContinue = async () => {
+  const errors = validateForm();
+
+  if (errors.length > 0) {
+    alert(errors[0]);
+    return;
+  }
+
   try {
-    if (!formData.bankState || !formData.bankName || !formData.accountNo) {
-      alert("Please fill all required bank details");
-      return;
-    }
-    // 🔒 Account number final validation
-if (!/^\d{18}$/.test(formData.accountNo)) {
-  alert("Account Number must be exactly 18 digits");
-  return;
-}
+    const response = await apiPost(
+      "/api/project-registration-wizard",
+      formData
+    );
 
-    if (!formData.name || !formData.fatherName || !formData.aadhaar || !formData.mobile || !formData.email) {
-      alert("Please fill all required promoter details");
-      return;
-    }
-    if (!formData.otherStateReg || !formData.lastFiveYears || !formData.litigation || !formData.promoter2) {
-      alert("Please answer all Yes/No questions");
-      return;
-    }
+    alert("Form saved successfully in DB! Moving to project-details");
 
-    // 🔥 SEND DATA TO BACKEND
-const response = await apiPost(
-  "/api/project-registration-wizard",
-  formData
-);
+    sessionStorage.setItem("panNumber", formData.panNumber);
+    sessionStorage.setItem("applicationNumber", formData.applicationNo);
 
-
-alert("Form saved successfully in DB! Moving to project-details");
-// ✅ STORE IN SESSION (SOURCE OF TRUTH)
-sessionStorage.setItem("panNumber", formData.panNumber);
-sessionStorage.setItem("applicationNumber", formData.applicationNo);
-
-// ✅ NAVIGATE
-navigate("/project-details", {
-  state: {
-    panNumber: formData.panNumber,
-    applicationNumber: formData.applicationNo,
-  },
-});
-
-
-
+    navigate("/project-details", {
+      state: {
+        panNumber: formData.panNumber,
+        applicationNumber: formData.applicationNo,
+      },
+    });
 
   } catch (error) {
     console.error(error);
     alert(
       "Failed to save form: " +
-        (error.response?.data?.error || error.message)
+      (error.response?.data?.error || error.message)
     );
   }
 };
+
+
+    // 🔥 SEND DATA TO BACKEND
+
 
 
   // Instructions Screen
@@ -561,13 +716,28 @@ navigate("/project-details", {
                   </div>
 
                   <div className="field">
-                    <label>IFSC Code<span className="projwizard-required">*</span></label>
-                    <input type="text" name="ifsc" value={formData.ifsc} onChange={handleChange} placeholder="IFSC Code" />
+  <label>IFSC Code<span className="projwizard-required">*</span></label>
+                    <input
+  type="text"
+  name="ifsc"
+  maxLength={11}
+  value={formData.ifsc}
+  onChange={handleChange}
+  placeholder="SBIN0001234"
+/>
+{errors.ifsc && <span className="error-text">{errors.ifsc}</span>}
+
                   </div>
 
                   <div className="field">
                     <label>Upload Bank Statement<span className="projwizard-required">*</span></label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="bankStatement"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </div>
                 </div>
               </div>
@@ -590,27 +760,62 @@ navigate("/project-details", {
 
                   <div className="field">
                     <label>PAN Card Number<span className="projwizard-required">*</span></label>
-                    <input type="text" name="panNumber" value={formData.panNumber} onChange={handleChange} placeholder="ODZPS3189E" readOnly />
+                    <input
+  type="text"
+  name="panNumber"
+  maxLength={10}
+  value={formData.panNumber}
+  onChange={handleChange}
+/>
+
                   </div>
 
                   <div className="field">
                     <label>Upload PAN Card<span className="projwizard-required">*</span></label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="panDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </div>
 
                   <div className="field">
                     <label>Aadhaar Number<span className="projwizard-required">*</span></label>
-                    <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleChange} placeholder="Aadhaar Number" />
+                    <input
+  type="text"
+  name="aadhaar"
+  inputMode="numeric"
+  value={formatAadhaar(formData.aadhaar)}
+  onChange={handleChange}
+  placeholder="1234 5678 9012"
+/>
+
                   </div>
 
                   <div className="field">
                     <label>Upload Aadhaar<span className="projwizard-required">*</span></label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="aadhaarDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </div>
 
                   <div className="field">
                     <label>Mobile Number <span className="projwizard-required">*</span></label>
-                    <input type="text" name="mobile" value={formData.mobile} onChange={handleChange} placeholder="Mobile Number" />
+                    <input
+  type="text"
+  name="mobile"
+  inputMode="numeric"
+  maxLength={10}
+  value={formData.mobile}
+  onChange={handleChange}
+/>
+
                   </div>
 
                   <div className="field">
@@ -648,7 +853,13 @@ navigate("/project-details", {
 
                   <div className="field">
                     <label>Upload Photograph<span className="projwizard-required">*</span></label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".jpg,.jpeg"
+  name="photo"
+  onChange={(e) => handleFileChange(e, "photo")}
+/>
+
                   </div>
 
                   <div className="field">
@@ -663,7 +874,13 @@ navigate("/project-details", {
 
                   <div className="field">
                     <label>Upload License certificate</label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="licenseDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </div>
 
                   <div className="field">
@@ -673,7 +890,13 @@ navigate("/project-details", {
 
                   <div className="field">
                     <label>Upload GST Num Document</label>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="gstDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </div>
                 </div>
               </div>
@@ -1192,14 +1415,26 @@ navigate("/project-details", {
                 <tr>
                   <td>Consolidated Income Tax Returns for the Past 3 Years<span className="projwizard-required">*</span></td>
                   <td>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="itrDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </td>
                   <td></td>
                 </tr>
                 <tr>
                   <td>Balance Sheet<span className="projwizard-required">*</span></td>
                   <td>
-                    <input type="file" />
+                    <input
+  type="file"
+  accept=".pdf"
+  name="balanceSheetDoc"
+  onChange={(e) => handleFileChange(e, "pdf")}
+/>
+
                   </td>
                   <td></td>
                 </tr>

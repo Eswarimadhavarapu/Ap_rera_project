@@ -411,7 +411,7 @@ const ExistingProjectDetails = () => {
 
           <button type="submit" className="btn btn-primary pull-right">
 
-            {isExistingProject ? "Continue" : "Save And Continue"}
+            {isExistingProject ? "Save And Continue" : "Save And Continue"}
 
           </button>
 

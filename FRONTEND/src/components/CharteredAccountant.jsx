@@ -27,29 +27,86 @@ const CharteredAccountant = ({
   // INPUT CHANGE
   // -----------------------------
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    if (name === "state_ut") {
-  const stateId = value ? Number(value) : "";
-
-  setFormData((prev) => ({
-    ...prev,
-    state_ut: stateId,
-    district: "",
-  }));
-
-  if (stateId) {
-    onStateChange(stateId);
-  }
-  return;
-}
-
+  // ⭐ State logic (KEEP)
+  if (name === "state_ut") {
+    const stateId = value ? Number(value) : "";
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      state_ut: stateId,
+      district: "",
     }));
-  };
+
+    if (stateId) {
+      onStateChange(stateId);
+    }
+    return;
+  }
+
+  // ✅ Accountant name → letters only
+  if (name === "accountant_name" && !/^[a-zA-Z\s.]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Mobile → numbers only
+  if (name === "mobile_number" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ PIN → numbers only
+  if (name === "pin_code" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ ICAI ID → uppercase letters + numbers
+  if (name === "icai_member_id" && !/^[A-Za-z0-9/-]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Projects → numbers only
+  if (name === "number_of_key_projects" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]:
+      name === "icai_member_id"
+        ? value.toUpperCase()
+        : value.trimStart(),
+  }));
+};
+
+// ⭐ Chartered Accountant Validation
+const validateAccountant = () => {
+  const errors = {};
+
+  if (!/^\d{6}$/.test(formData.pin_code)) {
+    errors.pin = "PIN code must be 6 digits";
+  }
+
+  if (!/^[6-9]\d{9}$/.test(formData.mobile_number)) {
+    errors.mobile = "Enter valid 10 digit mobile number";
+  }
+
+  if (
+    formData.email_id &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email_id)
+  ) {
+    errors.email = "Invalid email format";
+  }
+
+  if (
+    formData.number_of_key_projects &&
+    Number(formData.number_of_key_projects) < 0
+  ) {
+    errors.projects = "Projects cannot be negative";
+  }
+
+  return errors;
+};
 
   // -----------------------------
   // ADD
@@ -67,6 +124,12 @@ const CharteredAccountant = ({
     alert("Please fill all required fields");
     return;
   }
+  const validationErrors = validateAccountant();
+
+if (Object.keys(validationErrors).length > 0) {
+  alert(Object.values(validationErrors)[0]);
+  return;
+}
 
   try {
     const payload = {

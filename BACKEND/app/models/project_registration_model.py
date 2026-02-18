@@ -335,25 +335,25 @@ def insert_project_registration(data):
 # # ---------------------------------------------------------
 # # FETCH PROJECT REGISTRATION (BY PAN + APPLICATION NO)
 # # ---------------------------------------------------------
-# def get_project_registration(application_number, pan_number):
+def get_project_registration(application_number, pan_number):
 
-#     query = text("""
-#         SELECT *
-#         FROM project_registration
-#         WHERE application_number = :application_number
-#         AND pan_number = :pan_number
-#         LIMIT 1
-#     """)
+    query = text("""
+        SELECT *
+        FROM project_registration
+        WHERE application_number = :application_number
+        AND pan_number = :pan_number
+        LIMIT 1
+    """)
 
-#     result = db.session.execute(
-#         query,
-#         {
-#             "application_number": application_number,
-#             "pan_number": pan_number
-#         }
-#     ).mappings().first()
+    result = db.session.execute(
+        query,
+        {
+            "application_number": application_number,
+            "pan_number": pan_number
+        }
+    ).mappings().first()
 
-#     return dict(result) if result else None
+    return dict(result) if result else None
 # ---------------------------------------------------------
 # FETCH PROJECT REGISTRATION (NEW - FOR PREVIEW & PDF)
 # ---------------------------------------------------------
@@ -361,7 +361,7 @@ def insert_project_registration(data):
 from sqlalchemy import text
 
 
-def get_project_registration(application_number, pan_number):
+def fetch_project_registration(application_number, pan_number):
 
     query = text("""
     SELECT

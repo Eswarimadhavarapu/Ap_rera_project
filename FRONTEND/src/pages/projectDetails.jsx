@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate,useLocation } from "react-router-dom";
 
@@ -152,6 +151,22 @@ const totalProjectCost =
     : "";
 const handleInputChange = (e) => {
   const { name, value, type, checked } = e.target;
+  if (
+  [
+    "numberOfUnits",
+    "unitsSold",
+    "unitsAdvanceTaken",
+    "unitsAgreementSale",
+    "amountCollected",
+    "amountSpent",
+    "balanceAmount",
+  ].includes(name) &&
+  value !== "" &&
+  !/^\d*\.?\d*$/.test(value)
+) {
+  return;
+}
+
 
   // allow only numbers & decimals
   if (
@@ -203,29 +218,85 @@ const handleInputChange = (e) => {
 
   // 🔹 FILE HANDLER
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files[0],
-    }));
-  };
+  const { name, files } = e.target;
+  const file = files[0];
+  if (!file) return;
+
+  const ext = file.name.split(".").pop().toLowerCase();
+
+  // Only PDF allowed for certificates
+  if (
+    ["architectCertificate", "engineerCertificate", "caCertificate", "addressProof"].includes(name)
+  ) {
+    if (ext !== "pdf") {
+      alert("Only PDF files allowed");
+      e.target.value = "";
+      return;
+    }
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: file,
+  }));
+};
+
+  // ⭐⭐⭐ PASTE VALIDATION FUNCTION HERE
+const validateProjectDetails = () => {
+  const newErrors = {};
+
+  if (!formData.projectName.trim())
+    newErrors.projectName = "Project name required";
+
+  if (formData.projectType === "0")
+    newErrors.projectType = "Select project type";
+
+  if (formData.projectStatus === "0")
+    newErrors.projectStatus = "Select project status";
+
+  if (!formData.totalAreaOfLand)
+    newErrors.totalAreaOfLand = "Total land area required";
+
+  if (!formData.projectAddress1)
+    newErrors.projectAddress1 = "Address Line 1 required";
+
+  if (formData.projectDistrict === "0")
+    newErrors.projectDistrict = "Select district";
+
+  if (!/^\d{6}$/.test(formData.projectPincode))
+    newErrors.projectPincode = "Invalid pincode";
+
+  return newErrors;
+};
 
   // 🔹 SUBMIT
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.legalDeclarationAccepted) {
-      alert("Please accept the legal declaration");
-      return;
-    }
+  const validationErrors = validateProjectDetails();
+  setErrors(validationErrors);
 
-    const payload = new FormData();
+  if (Object.keys(validationErrors).length > 0) {
+    alert(Object.values(validationErrors)[0]);
+    return;
+  }
 
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== "") {
-        payload.append(key, value);
-      }
-    });
+  if (!formData.legalDeclarationAccepted) {
+    alert("Please accept the legal declaration");
+    return;
+    
+  }
+  // ✅ CREATE FORM DATA (THIS IS MISSING)
+const payload = new FormData();
+
+// append all form fields
+Object.entries(formData).forEach(([key, value]) => {
+  if (value !== null && value !== "") {
+    payload.append(key, value);
+  }
+});
+
+
     
 payload.append("panNumber", panNumber);
 payload.append("applicationNumber", applicationNumber);
