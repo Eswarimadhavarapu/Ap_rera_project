@@ -5,6 +5,7 @@ import "../styles/ApplicantDetails.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { apiGet, apiPost, BASE_URL } from "../api/api";
+import { useLocation } from "react-router-dom";
 
 
 const Preview = () => {
@@ -13,12 +14,13 @@ const Preview = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const location = useLocation();
 
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [verifying, setVerifying] = useState(false);
-
+  const completedStep = Number(localStorage.getItem("completedStep") || 0);
   // ================= PARSE FILE FUNCTION =================
   const parseFile = (file) => {
     if (!file) return null;
@@ -54,6 +56,17 @@ const openFile = (fileObj) => {
   window.open(url, "_blank");
 };
 
+useEffect(() => {
+  localStorage.setItem("completedStep", "3");
+}, []);
+useEffect(() => {
+  const step = Number(localStorage.getItem("completedStep") || 0);
+
+  // 🔥 mark preview as reached
+  if (step < 3) {
+    localStorage.setItem("completedStep", "3");
+  }
+}, []);
 
   // ================= LOAD PREVIEW =================
   useEffect(() => {
@@ -147,10 +160,11 @@ const openFile = (fileObj) => {
   return (
     <div className="agentpreview-main-container">
       {/* ================= BREADCRUMB ================= */}
-      <div class="agentpreview-page-wrapper">
+      <div className="agentpreview-page-wrapper">
+
       <div className="agentpreview-breadcrumb-bar">
         You are here :
-        <span> Home </span> /
+       <a href="/"><span className="agentpreview-link">Home </span> </a>/
         <span> Registration </span> /
         <span className="agentpreview-active"> Real Estate Agent Registration</span>
       </div>
@@ -158,17 +172,48 @@ const openFile = (fileObj) => {
       <div className="agentpreview-content-padding">
         <h2 className="agentpreview-page-title">Real Estate Agent Registration</h2>
          {/* Stepper */}
-          <div className="agentpreview-stepper">
-            {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
-              (s, i) => (
-                <div className="agentpreview-step" key={i}>
-                  <div className={`agentpreview-step-circle ${i <= 2 ? "active" : ""}`}>{i + 1}</div>
-                  <span>{s}</span>
-                </div>
-              )
-            )}
-          </div>
-<div className="agentpreview-print-area">
+    
+
+ <div className="applicantdetails-stepper">
+  {[
+    { label: "Agent Detail", step: 1, path: "/applicant-details" },
+    { label: "Upload Documents", step: 2, path: "/agent-upload-documents" },
+    { label: "Preview", step: 3, path: "/agent-preview" },
+    { label: "Payment", step: 4, path: "/agent-payment" },
+    { label: "Acknowledgement", step: 5, path: "/agent-acknowledgement" },
+  ].map((item) => {
+    const isActive = item.step <= completedStep;
+
+    // ✅ Payment should NOT be clickable in Preview
+    const isClickable =
+      item.step <= completedStep &&
+      item.step !== 4;
+
+    return (
+      <div
+        key={item.step}
+        className="applicantdetails-step"
+        style={{ cursor: isClickable ? "pointer" : "not-allowed" }}
+        onClick={() => {
+          if (!isClickable) return;
+          navigate(item.path);
+        }}
+      >
+        <div
+          className={`applicantdetails-circle ${
+            isActive ? "active" : ""
+          }`}
+        >
+          {item.step}
+        </div>
+        <span>{item.label}</span>
+      </div>
+    );
+  })}
+</div>
+
+
+<div className="agentpreview-print-area litigation-section">
         {/* ================= APPLICANT DETAILS ================= */}
         <h3 className="applicantdetails-section-title">Applicant Details</h3>
 
@@ -341,7 +386,8 @@ const openFile = (fileObj) => {
         </div>
 
         {/* ================= LITIGATIONS ================= */}
-        <div className="agentpreview-section-gap">
+        <div className="agentpreview-section-gap litigation-section">
+           <div className="print-section">   {/* 🔥 ADD THIS WRAPPER */}
           <h3 className="applicantdetails-section-title">Litigations</h3>
 
           <p className="agentpreview-preview-value">
@@ -388,6 +434,7 @@ const openFile = (fileObj) => {
               </tbody>
             </table>
           )}
+            </div>
         </div>
 
         {/* ================= OTHER STATE RERA ================= */}

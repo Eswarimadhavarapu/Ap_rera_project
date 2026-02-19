@@ -1,24 +1,55 @@
 import "../styles/ContactUs.css";
+import { Link } from "react-router-dom";
+
 
 export default function ContactUs() {
   return (
-    <div className="contactus-wrapper">
+    <div className="contactuss-wrapper">
 
       {/* Breadcrumb */}
-      <div className="contactus-breadcrumb-bar">
-        You are here : <span>Home</span> / <span>About Us</span> /{" "}
-        <span>Contact Us</span> / <b>APRERA</b>
-      </div>
+      <div className="contactuss-breadcrumb-bar">
+  You are here :
+  <Link to="/" className="contactuss-breadcrumb-home">
+    Home
+    <span className="contactuss-home-underline"></span>
+  </Link>
+  <span className="contactuss-breadcrumb-sep"> / </span>
+
+  <span className="contactuss-breadcrumb-text">About Us</span>
+  <span className="contactuss-breadcrumb-sep"> / </span>
+
+  <span className="contactuss-breadcrumb-text">Contact Us</span>
+  <span className="contactuss-breadcrumb-sep"> / </span>
+
+  <span className="contactuss-breadcrumb-active">Staff</span>
+</div>
 
       {/* Help Desk */}
-      <div className="contactus-helpdesk">
-        Help Desk : <span>📞 6304906011</span>
-      </div>
+     {/* PAGE HEADER */}
+<div className="contactuss-page-header">
+  <div className="contactuss-header-row">
+
+    {/* LEFT SIDE – EMPTY (or future title if needed) */}
+    <div></div>
+
+    {/* RIGHT SIDE – HELP DESK */}
+    <div className="contactuss-helpdesk contactus-blink-effect">
+      <span className="contactuss-helpdesk-text">Help Desk :</span>
+      <span className="contactuss-helpdesk-icon">
+        <img src="../../public/assets/images/image.png" />
+      </span>
+      <span className="contactuss-helpdesk-number">6304906011</span>
+    </div>
+
+  </div>
+</div>
+
+
 
       {/* A. CHAIRPERSON */}
       <section>
-        <h3 className="contactus-section-title">A. CHAIRPERSON</h3>
-        <table className="contactus-data-table">
+        <h3 className="contactuss-section-title">A. CHAIRPERSON</h3>
+        <table className="contactuss-data-table">
           <thead>
             <tr>
               <th>S.No.</th>
@@ -46,8 +77,8 @@ export default function ContactUs() {
 
       {/* B. MEMBERS */}
       <section>
-        <h3 className="contactus-section-title">B. MEMBERS</h3>
-        <table className="contactus-data-table">
+        <h3 className="contactuss-section-title">B. MEMBERS</h3>
+        <table className="contactuss-data-table">
           <thead>
             <tr>
               <th>S.No.</th>
@@ -60,13 +91,13 @@ export default function ContactUs() {
           </thead>
           <tbody>
             {[
-              ["1", "SRI RAJASEKHARA REDDY EADA", "rsr@ap-rera.in","Rajasekhar sir.jpeg"],
-              ["2", "SRI U.S.L.N. KAMESWARA RAO", "kameswararao@ap-rera.in", "kameswararao sir.jpeg"],
-              ["3", "SRI AVALA JAGANNADHA RAO", "ajrao1965@ap-rera.in", "JagannadhaRao Sir New.jpeg"],
-              ["4", "SRI MANTRIRAO VENKATA RATNAM", "mantrirao@ap-rera.in", "Venkata Ratnam Sir.jpg"],
-              ["5", "SRI SRINIVASA RAO DAMACHERLA", "dsrgntrm@ap-rera.in", "Srinivasa Rao Sir.jpg"],
-              ["6", "SRI VENKATESWARLU MERUVA", "venkatmember@ap-rera.in", "Venkateswarlu Sir.jpg"],
-              ["7", "SRI KULADEEP JUJJAVARAPU", "kuldeepmember@ap-rera.in", "Kuladeep Sir.png"],
+              ["1", "SRI RAJASEKHARA REDDY EADA", "rsr@ap-rera.in","../../public/assets/images/Rajasekhar sir.jpeg"],
+              ["2", "SRI U.S.L.N. KAMESWARA RAO", "kameswararao@ap-rera.in", "../../public/assets/images/kameswararao sir.jpeg"],
+              ["3", "SRI AVALA JAGANNADHA RAO", "ajrao1965@ap-rera.in", "../../public/assets/images/JagannadhaRao Sir New.jpeg"],
+              ["4", "SRI MANTRIRAO VENKATA RATNAM", "mantrirao@ap-rera.in", "../../public/assets/images/Venkata Ratnam Sir.jpg"],
+              ["5", "SRI SRINIVASA RAO DAMACHERLA", "dsrgntrm@ap-rera.in", "../../public/assets/images/Srinivasa Rao Sir.jpg"],
+              ["6", "SRI VENKATESWARLU MERUVA", "venkatmember@ap-rera.in", "../../public/assets/images/Venkateswarlu Sir.jpg"],
+              ["7", "SRI KULADEEP JUJJAVARAPU", "kuldeepmember@ap-rera.in", "../../public/assets/images/Kuladeep Sir.png"],
             ].map((m, i) => (
               <tr key={i}>
                 <td>{m[0]}</td>
@@ -85,8 +116,8 @@ export default function ContactUs() {
 
       {/* C. ADJUDICATION */}
       <section>
-        <h3 className="contactus-section-title">C. ADJUDICATION</h3>
-        <table className="contactus-data-table">
+        <h3 className="contactuss-section-title">C. ADJUDICATION</h3>
+        <table className="contactuss-data-table">
           <thead>
             <tr>
               <th>S.No.</th>
@@ -112,8 +143,8 @@ export default function ContactUs() {
 
       {/* D. RTI */}
       <section>
-        <h3 className="contactus-section-title">D. RTI</h3>
-        <table className="contactus-data-table">
+        <h3 className="contactuss-section-title">D. RTI</h3>
+        <table className="contactuss-data-table">
           <thead>
             <tr>
               <th>S.No.</th>
@@ -155,8 +186,8 @@ export default function ContactUs() {
 
       {/* E. ACCOUNTS & AUDIT */}
       <section>
-        <h3 className="contactus-section-title">E. ACCOUNTS & AUDIT</h3>
-        <table className="contactus-data-table">
+        <h3 className="contactuss-section-title">E. ACCOUNTS & AUDIT</h3>
+        <table className="contactuss-data-table">
           <thead>
             <tr>
               <th>S.No.</th>
@@ -182,10 +213,10 @@ export default function ContactUs() {
 
       {/* ================= OFFICE SECTION ================= */}
       <section>
-        <h3 className="contactus-section-title">Office</h3>
+        <h3 className="contactuss-section-title">Office</h3>
 
-        <div className="contactus-office-box">
-          <div className="contactus-office-left">
+        <div className="contactuss-office-box">
+          <div className="contactuss-office-left">
             <h4>ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</h4>
             <p>6th &amp; 7th Floors,</p>
             <p>APCRDA Project Office,</p>
@@ -193,12 +224,12 @@ export default function ContactUs() {
             <p>Amaravati, Guntur District,</p>
             <p>Andhra Pradesh. Pin - 522237.</p>
 
-            <p className="contactus-office-help">
+            <p className="contactuss-office-help">
               <strong>Help Desk :</strong>{" "}
               <span>6304906011</span> (All Working Days, 10AM - 5.30PM)
             </p>
 
-            <p className="contactus-office-mail">
+            <p className="contactuss-office-mail">
               Write to<br />
               authority.aprera@gmail.com<br />
               helpdesk-rera@ap.gov.in<br />
@@ -206,7 +237,7 @@ export default function ContactUs() {
             </p>
           </div>
 
-          <div className="contactus-office-right">
+          <div className="contactuss-office-right">
             <iframe
               title="APRERA Office"
               src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d61194.37276190021!2d80.496107!3d16.543844!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a35ed004f0fedc3%3A0x1f16a1b1d63e2a81!2sAPCRDA%20Project%20Office!5e0!3m2!1sen!2sin!4v1767983217513!5m2!1sen!2sin"

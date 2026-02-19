@@ -269,6 +269,10 @@ class AgentModel:
                     a.aadhaar,
                     a.pan,
                     a.mobile,
+                    a.landline,
+                    a.license_number,
+                    a.license_date,
+
 
                     a.address1,
                     a.address2,

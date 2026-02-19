@@ -4,10 +4,11 @@
 .agentpreview-main-container {
   width: 80%;
   margin: 16px auto;
-  background: #ffffff;
-  border: 1px solid #d6d6d6;   /* this is the ONLY border */
-  padding: 0;
-  box-shadow: none;           /* just in case */
+  background:#ffffff ;
+  padding: 10px 100px;
+  box-shadow: none;   
+   
+  /* just in case */
 }
 
 /* =========================
@@ -287,9 +288,9 @@
   }
 
   /* Allow long text to wrap properly */
-  .agentpreview-preview-value {
+  /* .agentpreview-preview-value {
     word-break: break-word !important;
-  }
+  } */
 
   /* Table fix */
   .agentpreview-doc-table {
@@ -412,11 +413,16 @@
   font-weight: 600;
 }
 
-/* Home highlight */
+/* Home highlight
 .agentpreview-breadcrumb-bar span:first-of-type {
   color: #ffeb3b;
-}
+  text-decoration: underline;
+} */
 
+.agentpreview-link{
+  color: yellow;
+  text-decoration: underline;
+}
 /* =========================
    FIX LEFT GAP IN BREADCRUMB
 ========================= */
@@ -456,7 +462,107 @@
 .agentpreview-page-wrapper {
   width: 90%;
   margin: 20px auto;
-  background:white;           /* white page */
-  border: 2px solid rgb(190, 176, 176);  /* full page border */
+  background: white;           /* white page */
+  border: 2px solid rgb(211, 207, 207);     /* full page border */
   box-sizing: border-box;
+}
+/* =========================
+   FINAL PRINT FIX (PREVIEW)
+========================= */
+
+@media print {
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* 🔴 Hide everything */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* ✅ Show only preview content */
+  .agentpreview-print-area,
+  .agentpreview-print-area * {
+    visibility: visible !important;
+  }
+
+  /* 🔥 Lock print content position */
+  .agentpreview-print-area {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    max-width: 190mm !important;
+
+    padding: 10mm !important;
+    background: white !important;
+
+    /* Government-style page border */
+    box-shadow: inset 0 0 0 2px #000;
+  }
+
+  /* ❌ Hide UI elements */
+  .agentpreview-action-buttons,
+  .agentpreview-form-footer-row,
+  .applicantdetails-stepper,
+  .agentpreview-breadcrumb-bar {
+    display: none !important;
+  }
+
+  /* ✅ Table safety */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    font-size: 11px !important;
+    padding: 6px !important;
+    white-space: normal !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ✅ Prevent section cut */
+  .agentpreview-preview-grid,
+  .agentpreview-doc-table,
+  .agentpreview-section-gap,
+  .agentpreview-declaration-center {
+    page-break-inside: avoid !important;
+  }
+  /* =========================
+   FORCE CLEAN PAGE BREAK
+   BEFORE LITIGATIONS
+========================= */
+
+  /* Always start litigations on a new page */
+  .litigation-section {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* 🔥 CRITICAL: keep heading + table together */
+  .print-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-section h3 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }       
 }

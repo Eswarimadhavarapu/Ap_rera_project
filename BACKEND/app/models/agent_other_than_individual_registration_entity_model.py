@@ -4,6 +4,12 @@ class AgentOtherThanIndividualEntity(db.Model):
     __tablename__ = "agent_entity_details_t"
 
     id = db.Column(db.Integer, primary_key=True)
+    organisation_id = db.Column(
+    db.Integer,
+    db.ForeignKey("agent_organisation_details_t.organisation_id"),
+    nullable=False
+)
+
     designation = db.Column(db.String(100))
     name = db.Column(db.String(150), nullable=False)
     email_id = db.Column(db.String(150))

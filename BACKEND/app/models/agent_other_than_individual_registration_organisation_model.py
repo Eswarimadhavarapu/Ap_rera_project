@@ -2,33 +2,22 @@ from app.models.database import db
 from datetime import datetime
 
 class AgentOtherThanIndividualOrganisation(db.Model):
-    __tablename__ = "agent_organisation_details_t"
-
-  
+    __tablename__ = "agent_organisation_details_t"  
     organisation_id = db.Column(db.Integer, primary_key=True)
-    application_id = db.Column(db.String(50), unique=True, nullable=False)
-
-   
+    application_id = db.Column(db.String(50), unique=True, nullable=False)   
     organisation_type = db.Column(db.String(50))        
     organisation_name = db.Column(db.String(200))
     registration_identifier = db.Column(db.String(100))
     registration_date = db.Column(db.Date)
-    registration_cert_doc = db.Column(db.String(255))
-
-   
+    registration_cert_doc = db.Column(db.String(255))  
     pan_card_number = db.Column(db.String(10))
     pan_card_doc = db.Column(db.String(255))
-
     gst_number = db.Column(db.String(15))
     gst_doc = db.Column(db.String(255))
-    legal_document = db.Column(db.String(255))
-
-   
+    legal_document = db.Column(db.String(255))   
     email_id = db.Column(db.String(150))
     mobile_number = db.Column(db.String(15))
     landline_number = db.Column(db.String(20))
-
-  
     address_line1 = db.Column(db.String(200))
     address_line2 = db.Column(db.String(200))
     state = db.Column(db.String(100))
@@ -37,9 +26,6 @@ class AgentOtherThanIndividualOrganisation(db.Model):
     village = db.Column(db.String(100))
     pincode = db.Column(db.String(10))
     address_proof_doc = db.Column(db.String(255))
-
-   
- 
     entity_details_id = db.Column(
         db.Integer,
         db.ForeignKey("agent_entity_details_t.id"),
@@ -59,9 +45,6 @@ class AgentOtherThanIndividualOrganisation(db.Model):
     
     last_five_year_projects = db.Column(db.JSON)
     other_state_rera_details = db.Column(db.JSON)
-
-   
-  
     itr_year1_doc = db.Column(db.String(255))
     itr_year2_doc = db.Column(db.String(255))
     itr_year3_doc = db.Column(db.String(255))

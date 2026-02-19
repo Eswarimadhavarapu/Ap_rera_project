@@ -1,10 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import "../styles/Upload.css";
-import { apiPost } from "../api/api";
+import { apiPost, apiGet } from "../api/api";
 
 const AgentUploadDocuments = () => {
   const navigate = useNavigate();
+
+   /* ================= STEP HANDLING ================= */
+ const completedStep = Number(localStorage.getItem("completedStep") || 0);
+
+
+  const steps = [
+  { name: "Agent Detail", path: "/applicant-details" },
+  { name: "Upload Documents", path: "/agent-upload-documents" },
+  { name: "Preview", path: "/agent-preview" },
+  { name: "Payment", path: "/agent-payment" },
+  { name: "Acknowledgement", path: "/agent-acknowledgement" },
+];
+
+//const currentStep = 2; // Upload Documents page index
+useEffect(() => {
+  const prev = Number(localStorage.getItem("completedStep") || 0);
+
+  // Upload page = step 2
+  if (prev < 2) {
+    localStorage.setItem("completedStep", "2");
+  }
+}, []);
+
+
+useEffect(() => {
+  const agentId = localStorage.getItem("agentId");
+  if (!agentId) return;
+
+  apiGet(`/api/agent/preview/${agentId}`).then((res) => {
+    if (res.success && res.data) {
+      setFiles({
+        itrYear1: res.data.itr_year1 || null,
+        itrYear2: res.data.itr_year2 || null,
+        itrYear3: res.data.itr_year3 || null,
+      });
+    }
+  });
+}, []);
 
   const [files, setFiles] = useState({
     itrYear1: null,
@@ -107,17 +146,44 @@ const AgentUploadDocuments = () => {
         <div className="ud-content">
           <h2 className="ud-title">Real Estate Agent Registration</h2>
 
-          {/* Stepper */}
-          <div className="ud-stepper">
-            {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
-              (s, i) => (
-                <div className="ud-step" key={i}>
-                  <div className={`ud-stepper-circle ${i <=1 ? "active" : ""}`}>{i + 1}</div>
-                  <span>{s}</span>
-                </div>
-              )
-            )}
-          </div>
+
+<div className="applicantdetails-stepper">
+  {[
+    { label: "Agent Detail", step: 1, path: "/applicant-details" },
+    { label: "Upload Documents", step: 2, path: "/agent-upload-documents" },
+    { label: "Preview", step: 3, path: "/agent-preview" },
+    { label: "Payment", step: 4, path: "/agent-payment" },
+    { label: "Acknowledgement", step: 5, path: "/agent-acknowledgement" },
+  ].map((item) => {
+    const isClickable =
+      item.step <= completedStep && item.step !== 4;
+
+    return (
+      <div
+        key={item.step}
+        className="applicantdetails-step"
+        style={{
+          cursor: isClickable ? "pointer" : "not-allowed",
+          opacity: isClickable ? 1 : 0.4,
+        }}
+        onClick={() => {
+          if (!isClickable) return;
+          navigate(item.path);
+        }}
+      >
+        <div
+          className={`applicantdetails-circle ${
+            item.step <= completedStep ? "active" : ""
+          }`}
+        >
+          {item.step}
+        </div>
+        <span>{item.label}</span>
+      </div>
+    );
+  })}
+</div>
+
 
           {/* ===== TABLE ===== */}
           <table className="ud-table">
@@ -130,7 +196,7 @@ const AgentUploadDocuments = () => {
             </thead>
             <tbody>
               <tr>
-                <td>Income Tax Return – Year 1<span style={{ color: "red" }}>*</span></td>
+                <td>Income Tax Return – Year 1 <span style={{ color: "red" }}>*</span></td>
                 <td>
                   <input
                     type="file"
@@ -139,7 +205,7 @@ const AgentUploadDocuments = () => {
                     onChange={handleFileChange}
                   />
                 </td>
-                <td>{files.itrYear1?.name}</td>
+                <td>{files.itrYear1?.name || files.itrYear1}</td>
               </tr>
 
               <tr>
@@ -152,7 +218,7 @@ const AgentUploadDocuments = () => {
                     onChange={handleFileChange}
                   />
                 </td>
-                <td>{files.itrYear2?.name}</td>
+                <td>{files.itrYear2?.name || files.itrYear2}</td>
               </tr>
 
               <tr>
@@ -165,7 +231,7 @@ const AgentUploadDocuments = () => {
                     onChange={handleFileChange}
                   />
                 </td>
-                <td>{files.itrYear3?.name}</td>
+                <td>{files.itrYear3?.name || files.itrYear3}</td>
               </tr>
             </tbody>
           </table>

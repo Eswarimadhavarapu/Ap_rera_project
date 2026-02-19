@@ -10,6 +10,16 @@ const AgentDetailsOther = () => {
   const location = useLocation();
   const passedPan = location.state?.pan || "";
 
+const getStep = () => {
+  if (location.pathname.includes("AgentUploadDocumentotherthan")) return 2;
+  if (location.pathname.includes("Preview")) return 3;
+  if (location.pathname.includes("Payment")) return 4;
+  if (location.pathname.includes("Acknowledgement")) return 5;
+  return 1;
+};
+
+const currentStep = getStep();
+
 // ================= VALIDATION HELPERS =================
 
 function isValidMobile(num) {
@@ -995,7 +1005,7 @@ console.log("===== FORM DATA END =====");
 
   try {
     const res = await fetch(
-      "https://7zgjxth4-5055.inc1.devtunnels.ms/api/agent/other-than-individual",
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
       {
         method: "POST",
         body: formData,
@@ -1904,35 +1914,39 @@ const handlePDFFile = (e, setter, field) => {
   </div>
    )} 
 
-      {/* Steps */}
- <div className="yagentdetails-stepper">
+   <div className="yagentdetails-stepper">
   <div className="yagentdetails-stepper-line"></div>
 
-  <div className="yagentdetails-step active">
-    <div className="yagentdetails-circle" >1</div>
+  <div
+    className={`yagentdetails-step ${currentStep >= 1 ? "active" : ""}`}
+    onClick={() => currentStep > 1 && navigate("/AgentDetailsOther")}
+    style={{ cursor: currentStep > 1 ? "pointer" : "default" }}
+  >
+    <div className="yagentdetails-circle">1</div>
     <p>Agent Detail</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 2 ? "active" : ""}`}>
     <div className="yagentdetails-circle">2</div>
     <p>Upload Documents</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 3 ? "active" : ""}`}>
     <div className="yagentdetails-circle">3</div>
     <p>Preview</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 4 ? "active" : ""}`}>
     <div className="yagentdetails-circle">4</div>
     <p>Payment</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 5 ? "active" : ""}`}>
     <div className="yagentdetails-circle">5</div>
     <p>Acknowledgement</p>
   </div>
-  </div>
+</div>
+
 
 
 
@@ -2683,33 +2697,58 @@ onChange={() => {
     {/* Row 2 — 🔥 MISSING FIELDS ADDED */}
     <div>
       <label>State/UT <span className="yagentdetails-required">*</span></label>
-      <select
-        value={directorStateId}
-        onChange={(e) => setDirectorStateId(e.target.value)}
-      >
-        <option value="">Select</option>
-        {states.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.state_name}
-          </option>
-        ))}
-      </select>
+     <select
+  value={directorStateId}
+  onChange={(e) => {
+    const selected = states.find(
+      (s) => s.id == e.target.value
+    );
+
+    setDirectorStateId(e.target.value);
+
+    setDirectorForm({
+      ...directorForm,
+      state: selected?.state_name || "",
+      district: "",   // reset district
+    });
+  }}
+>
+  <option value="">Select</option>
+  {states.map((s) => (
+    <option key={s.id} value={s.id}>
+      {s.state_name}
+    </option>
+  ))}
+</select>
+
     </div>
 
     <div>
       <label>District <span className="yagentdetails-required">*</span></label>
-      <select
-        value={directorDistrictId}
-        disabled={!directorStateId}
-        onChange={(e) => setDirectorDistrictId(e.target.value)}
-      >
-        <option value="">Select</option>
-        {directorDistricts.map((d) => (
-          <option key={d.id} value={d.id}>
-            {d.name}
-          </option>
-        ))}
-      </select>
+     <select
+  value={directorDistrictId}
+  disabled={!directorStateId}
+  onChange={(e) => {
+    const selected = directorDistricts.find(
+      (d) => d.id == e.target.value
+    );
+
+    setDirectorDistrictId(e.target.value);
+
+    setDirectorForm({
+      ...directorForm,
+      district: selected?.name || "",
+    });
+  }}
+>
+  <option value="">Select</option>
+  {directorDistricts.map((d) => (
+    <option key={d.id} value={d.id}>
+      {d.name}
+    </option>
+  ))}
+</select>
+
     </div>
 
     <div>
@@ -3452,11 +3491,14 @@ onChange={() => {
     onChange={(e) => {
       setTrusteeStateId(e.target.value);
 
-      setTrusteeForm({
-        ...trusteeForm,
-        state: e.target.value,
-        district: "",
-      });
+      const selected = states.find(s => s.id == e.target.value);
+
+setTrusteeForm({
+  ...trusteeForm,
+  state: selected?.state_name || "",   // ✅ save name
+  district: "",
+});
+
     }}
   >
     <option value="">Select</option>
@@ -3481,10 +3523,12 @@ onChange={() => {
     onChange={(e) => {
       setTrusteeDistrictId(e.target.value);
 
-      setTrusteeForm({
-        ...trusteeForm,
-        district: e.target.value,
-      });
+      const selected = trusteeDistricts.find(d => d.id == e.target.value);
+
+setTrusteeForm({
+  ...trusteeForm,
+  district: selected?.name || "",   // ✅ save name
+});
     }}
   >
     <option value="">Select</option>

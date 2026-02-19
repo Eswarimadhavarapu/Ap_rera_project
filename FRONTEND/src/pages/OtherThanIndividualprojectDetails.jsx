@@ -22,10 +22,10 @@ const OtherThanIndividualProjectDetails = () => {
   const location = useLocation();
 
 const panNumber =
-  location.state?.panNumber || sessionStorage.getItem("panNumber")||"SUNIL6565H";
+  location.state?.panNumber || sessionStorage.getItem("panNumber");
 
 const applicationNumber =
-  location.state?.applicationNumber || sessionStorage.getItem("applicationNumber")||"5555555566";
+  location.state?.applicationNumber || sessionStorage.getItem("applicationNumber");
 
 console.log("PAN Number:", panNumber);
 console.log("Application Number:", applicationNumber);
