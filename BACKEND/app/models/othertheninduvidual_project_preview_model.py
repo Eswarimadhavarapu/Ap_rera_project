@@ -18,6 +18,12 @@ from app.models.project_agent import AgentModel
 from app.models.project_engineer import ProjectEngineer
 from app.models.contractor import Contractor
 
+from app.models.organization_profile_model import (
+    get_org_profile,
+    get_org_rera_details,
+    get_org_members,
+    get_past_projects
+)
 
 
 def get_project_registration_basic(application_number):
@@ -228,6 +234,17 @@ def build_project_preview_data(raw):
     application_id = raw.get("applicationNumber")
     pan_number = raw.get("panNumber")
 
+    # --------------------------------------------------
+    # 🔥 ORGANIZATION PROFILE FETCH (FIXED)
+    # --------------------------------------------------
+    org_profile = get_org_profile(application_id) or {}
+    org_rera = get_org_rera_details(application_id) or {}
+    org_members = get_org_members(application_id) or []
+    past_projects = get_past_projects(application_id) or []
+
+
+    
+
     if not application_id or not pan_number:
         return {
             "project_details": {},
@@ -384,6 +401,8 @@ def build_project_preview_data(raw):
                     "mobile_number": con.mobile_number,
                 })
 
+                
+
     # -----------------------------
     # PROJECT DETAILS
     # -----------------------------
@@ -435,8 +454,8 @@ def build_project_preview_data(raw):
         "Project Website": registration.get("project_website_url") if registration else "NA (//)",
         
     # ====================================================
-# 🔥 AUTHORIZED SIGNATORY DETAILS (OTHER THAN INDIVIDUAL)
-# ====================================================
+    # 🔥 AUTHORIZED SIGNATORY DETAILS (OTHER THAN INDIVIDUAL)
+    # ====================================================
 "Authorized Signatory Name": registration.get("authorized_signatory_name") if registration else "N/A",
 "Authorized Signatory Mobile": registration.get("authorized_signatory_mobile") if registration else "N/A",
 "Authorized Signatory Email": registration.get("authorized_signatory_email") if registration else "N/A",
@@ -455,49 +474,38 @@ def build_project_preview_data(raw):
 
 
     # -----------------------------
-    # PROMOTER DETAILS
+    # ORGANISATION PROMOTER DETAILS (FINAL FIX)
     # -----------------------------
     promoter_details = {
-        "Promoter Name": registration.get("promoter_name") if registration else "N/A",
-        "Father Name": registration.get("promoter_father_name") if registration else "N/A",
-        "Mobile Number": registration.get("promoter_mobile") if registration else "N/A",
-        "Email": registration.get("promoter_email") if registration else "N/A",
-        "PAN": pan_number,
-        "Aadhaar": registration.get("promoter_aadhaar") if registration else "N/A",
-        "State": registration.get("promoter_state") if registration else "N/A",
-        "District": registration.get("promoter_district") if registration else "N/A",
-        "Landline": registration.get("promoter_landline") if registration else "N/A",
-        "Promoter Website": registration.get("promoter_website") if registration else "N/A",
-        "Bank State": registration.get("bank_state") if registration else "N/A",
-        "Bank Name": registration.get("bank_name") if registration else "N/A",
-        "Branch Name": registration.get("branch_name") if registration else "N/A",
-        "Account Number": registration.get("account_no") if registration else "N/A",
-        "IFSC Code": registration.get("ifsc") if registration else "N/A",
-        "Income Tax Year 1": registration.get("income_tax_year1_doc") if registration else "N/A",
-        "Income Tax Year 2": registration.get("income_tax_year2_doc") if registration else "N/A",
-        "Income Tax Year 3": registration.get("income_tax_year3_doc") if registration else "N/A",
-        "Consolidated IT Returns": registration.get("consolidated_it_returns") if registration else "N/A",
-        "Balance Sheet": registration.get("balance_sheet") if registration else "N/A",
-        "PAN Card Document": registration.get("pan_card_doc") if registration else "N/A",
-        "Aadhaar Document": registration.get("aadhaar_doc") if registration else "N/A",
-        "Bank Statement": registration.get("bank_statement_doc") if registration else "N/A",
-        "License Certificate": registration.get("license_cert") if registration else "N/A",
-        "License Number": registration.get("license_number") if registration else "N/A",
-        "License Issued Date": format_date(registration.get("license_issued_date")) if registration else "N/A",
-        "GST Number": registration.get("gst_number") if registration else "N/A",
-        "GST Document": registration.get("gst_doc") if registration else "N/A",
-        "Photo": registration.get("promoter_photo") if registration else "N/A",
-        "Account Holder Name": registration.get("account_holder") if registration else "N/A",
-        "Other State/UT RERA Registration": (
-        "Yes" if basic_reg.get("other_state_reg") == "Yes" else "No"
-        ),
-        "Projects Launched In The Past 5 Years": ("Yes" if basic_reg.get("last_five_years") == "Yes" else "No"),
-        "Any Civil/Criminal Cases": ("Yes" if basic_reg.get("litigation") == "Yes" else "No"),
-        "Promoter 2 Details": (
-            "Yes" if registration and registration.get("promoter2") == "Yes" else "No"
-        ),
+
+
+    "Type Of Promoter": org_profile.get("type_of_promoter", "N/A"),
+    "Organisation Name": org_profile.get("organization_name", "N/A"),
+    "CIN Number": org_profile.get("registration_number", "N/A"),
+    "Registration Date": format_date(org_profile.get("registration_date")),
+
+
+    "PAN": org_profile.get("pan_number", "N/A"),
+    "GST Number": org_profile.get("gst_number", "N/A"),
+
+    "Authorized Signatory Mobile": org_profile.get("authorized_signatory_mobile", "N/A"),
+    "Authorized Signatory Email": org_profile.get("authorized_signatory_email", "N/A"),
+
+    "Landline": org_profile.get("authorized_signatory_landline", "N/A"),
+    "Promoter Website": org_profile.get("website", "N/A"),
+
+    "State": org_profile.get("state", "N/A"),
+    "District": org_profile.get("district", "N/A"),
+
+    "Bank State": org_profile.get("bank_state", "N/A"),
+    "Bank Name": org_profile.get("bank_name", "N/A"),
+    "Branch Name": org_profile.get("branch_name", "N/A"),
+    "Account Number": org_profile.get("account_no", "N/A"),
+    "IFSC Code": org_profile.get("ifsc_code", "N/A"),
+    "Account Holder Name": org_profile.get("account_holder", "N/A"),
     }
-    
+
+
     # Material Facts
     material_facts = {
         "No of Units in the project": registration.get("total_units") if registration else "1",
@@ -607,4 +615,11 @@ def build_project_preview_data(raw):
         "material_facts": material_facts,
         "consultancy_details": consultancy,
         "other_development_works": other_dev_works,
+
+
+        # -------------------------------
+        "org_members": org_members,
+        "past_projects": past_projects,
+        "rera_details": org_rera,
+
     }

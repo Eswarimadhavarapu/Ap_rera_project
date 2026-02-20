@@ -84,10 +84,10 @@ const OtherThanIndividual_ProjectPreview = () => {
     const [externalDevWork, setExternalDevWork] = useState({});
 
   const panNumber =
-    location.state?.panNumber || sessionStorage.getItem("panNumber")||"PAVAN6565H";
+    location.state?.panNumber || sessionStorage.getItem("panNumber")||"PQRSX5678K";
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber")||"5656565656565";  
+    sessionStorage.getItem("applicationNumber")||"100126623468";  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -500,57 +500,63 @@ console.log("📄 Document pages:", documentPages.length);
           </table>
         </div>
 
-        {/* Promoter Details */}
+        {/* ORGANISATION DETAILS */}
         <section className="section">
-  <h2 className="section-title">Promoter Details</h2>
+  <h2 className="section-title">Organisation Details</h2>
 
   <table className="data-table">
-    <tbody>
-      <tr>
-        <td className="label-cell">Name</td>
-        <td>{allData?.promoter_details?.["Promoter Name"] || "N/A"}</td>
+  <tbody>
 
-        <td className="label-cell">Father Name</td>
-        <td>{allData?.promoter_details?.["Father Name"] || "N/A"}</td>
-      </tr>
+    <tr>
+      <td className="label-cell">Type Of Promoter</td>
+      <td>{allData?.promoter_details?.["Type Of Promoter"] || "N/A"}</td>
 
-      <tr>
-        <td className="label-cell">PAN Card Number</td>
-        <td>{allData?.promoter_details?.["PAN"] || "N/A"}</td>
-        <td className="label-cell">Aadhaar Number</td>
-        <td>{allData?.promoter_details?.["Aadhaar"] || "N/A"}</td>
-      </tr>
+      <td className="label-cell">Organisation Name</td>
+      <td>{allData?.promoter_details?.["Organisation Name"] || "N/A"}</td>
+    </tr>
 
-      <tr>
-        <td className="label-cell">Mobile Number</td>
-        <td>{allData?.promoter_details?.["Mobile Number"] || "N/A"}</td>
-        <td className="label-cell">Email ID</td>
-        <td>{allData?.promoter_details?.["Email"] || "N/A"}</td>
-      </tr>
+    <tr>
+      <td className="label-cell">CIN / Registration Number</td>
+      <td>{allData?.promoter_details?.["CIN Number"] || "N/A"}</td>
 
-      <tr>
-        <td className="label-cell">State/UT</td>
-        <td className="value-cell">
-  {allData?.promoter_details?.["State"] || "N/A"}
-</td>
-        <td className="label-cell">District</td>
-        <td className="value-cell">
-  {allData?.promoter_details?.["District"] || "N/A"}
-</td>
-      </tr>
+      <td className="label-cell">Registration Date</td>
+      <td>{allData?.promoter_details?.["Registration Date"] || "N/A"}</td>
+    </tr>
 
-      <tr>
-        <td className="label-cell">Landline Number</td>
-        <td className="value-cell">
-  {allData?.promoter_details?.["Landline"] || "N/A"}
-</td>
-        <td className="label-cell">Promoter Website</td>
-        <td className="value-cell">
-  {allData?.promoter_details?.["Promoter Website"] || "N/A"}
-</td>
-      </tr>
-    </tbody>
-  </table>
+    <tr>
+      <td className="label-cell">PAN Number</td>
+      <td>{allData?.promoter_details?.["PAN"] || "N/A"}</td>
+
+      <td className="label-cell">GST Number</td>
+      <td>{allData?.promoter_details?.["GST Number"] || "N/A"}</td>
+    </tr>
+
+    <tr>
+      <td className="label-cell">Authorized Signatory Mobile</td>
+      <td>{allData?.promoter_details?.["Authorized Signatory Mobile"] || "N/A"}</td>
+
+      <td className="label-cell">Authorized Signatory Email</td>
+      <td>{allData?.promoter_details?.["Authorized Signatory Email"] || "N/A"}</td>
+    </tr>
+
+    <tr>
+      <td className="label-cell">Landline Number</td>
+      <td>{allData?.promoter_details?.["Landline"] || "N/A"}</td>
+
+      <td className="label-cell">Promoter Website</td>
+      <td>{allData?.promoter_details?.["Promoter Website"] || "N/A"}</td>
+    </tr>
+
+    <tr>
+      <td className="label-cell">State / UT</td>
+      <td>{allData?.promoter_details?.["State"] || "N/A"}</td>
+
+      <td className="label-cell">District</td>
+      <td>{allData?.promoter_details?.["District"] || "N/A"}</td>
+    </tr>
+
+  </tbody>
+</table>
 
   <h3 className="subsection-title">Project Bank Details</h3>
   <table className="data-table">
@@ -644,116 +650,161 @@ console.log("📄 Document pages:", documentPages.length);
   </table>
 </section>
 
-{/* Promoter Details - Documents */}
+{/* ================= ORGANISATION DETAILS (OTHER THAN INDIVIDUAL) ================= */}
 <section className="section">
-  <h2 className="section-title">Promoter Details</h2>
+  <h2 className="section-title">Organisation Details</h2>
+
   <table className="data-table">
     <tbody>
+
       <tr>
-        <td className="label-cell">Name</td>
-        <td className="value-cell">{allData?.promoter_details?.["Promoter Name"] || "N/A"}</td>
+        <td className="label-cell">Type Of Promoter</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Type Of Promoter"] || "N/A"}
+        </td>
       </tr>
+
       <tr>
-        <td className="label-cell">Father Name</td>
-        <td className="value-cell">{allData?.promoter_details?.["Father Name"] || "N/A"}</td>
+        <td className="label-cell">Organisation Name</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Organisation Name"] || "N/A"}
+        </td>
       </tr>
+
+      <tr>
+        <td className="label-cell">CIN / Registration Number</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["CIN Number"] || "N/A"}
+        </td>
+      </tr>
+
+      <tr>
+        <td className="label-cell">Registration Date</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Registration Date"] || "N/A"}
+        </td>
+      </tr>
+
       <tr>
         <td className="label-cell">PAN Card Number</td>
-        <td className="value-cell">{allData?.promoter_details?.["PAN"] || "N/A"}</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["PAN"] || "N/A"}
+        </td>
       </tr>
+
       <tr>
         <td className="label-cell">PAN Card Document</td>
         <td className="value-cell">
-          {allData?.promoter_details?.["PAN Card Document"] !== "N/A" ? (
-            <a href={allData?.promoter_details?.["PAN Card Document"]} target="_blank" rel="noreferrer">
-              Test word.pdf
+          {allData?.promoter_details?.["PAN Card Document"] ? (
+            <a
+              href={allData?.promoter_details?.["PAN Card Document"]}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View Document
             </a>
           ) : "N/A"}
         </td>
       </tr>
+
       <tr>
-        <td className="label-cell">Aadhaar Number</td>
-        <td className="value-cell">{allData?.promoter_details?.["Aadhaar"] || "N/A"}</td>
-      </tr>
-      <tr>
-        <td className="label-cell">Aadhaar Upload</td>
+        <td className="label-cell">GST Number</td>
         <td className="value-cell">
-          {allData?.promoter_details?.["Aadhaar Document"] !== "N/A" ? (
-            <a href={allData?.promoter_details?.["Aadhaar Document"]} target="_blank" rel="noreferrer">
-              Test word.pdf
+          {allData?.promoter_details?.["GST Number"] || "N/A"}
+        </td>
+      </tr>
+
+      <tr>
+        <td className="label-cell">GST Document</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["GST Document"] ? (
+            <a
+              href={allData?.promoter_details?.["GST Document"]}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View Document
             </a>
           ) : "N/A"}
         </td>
       </tr>
+
       <tr>
-        <td className="label-cell">Mobile Number</td>
-        <td className="value-cell">{allData?.promoter_details?.["Mobile Number"] || "N/A"}</td>
+        <td className="label-cell">Authorized Signatory Mobile</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Authorized Signatory Mobile"] || "N/A"}
+        </td>
       </tr>
+
+      <tr>
+        <td className="label-cell">Authorized Signatory Email</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Authorized Signatory Email"] || "N/A"}
+        </td>
+      </tr>
+
+      <tr>
+        <td className="label-cell">Website</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Promoter Website"] || "N/A"}
+        </td>
+      </tr>
+
       <tr>
         <td className="label-cell">Landline Number</td>
-        <td className="value-cell">{allData?.promoter_details?.["Landline"] || "N/A"}</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["Landline"] || "N/A"}
+        </td>
       </tr>
+
       <tr>
-        <td className="label-cell">Email Id</td>
-        <td className="value-cell">{allData?.promoter_details?.["Email"] || "N/A"}</td>
+        <td className="label-cell">State / UT</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["State"] || "N/A"}
+        </td>
       </tr>
-      <tr>
-        <td className="label-cell">State/UT</td>
-        <td className="value-cell">{allData?.promoter_details?.["State"] || "N/A"}</td>
-      </tr>
+
       <tr>
         <td className="label-cell">District</td>
-        <td className="value-cell">{allData?.promoter_details?.["District"] || "N/A"}</td>
-      </tr>
-      <tr>
-        <td className="label-cell">License Number by the local bodies</td>
-        <td className="value-cell">{allData?.promoter_details?.["License Number"] || "N/A"}</td>
-      </tr>
-      <tr>
-        <td className="label-cell">License issued date</td>
-        <td className="value-cell">{allData?.promoter_details?.["License Issued Date"] || "N/A"}</td>
-      </tr>
-      <tr>
-        <td className="label-cell">Promoter Website Url</td>
-        <td className="value-cell">{allData?.promoter_details?.["Promoter Website"] || "NA (//)"}  </td>
-      </tr>
-      <tr>
-        <td className="label-cell">Upload License certificate</td>
         <td className="value-cell">
-          {allData?.promoter_details?.["License Certificate"] !== "N/A" ? (
-            <a href={allData?.promoter_details?.["License Certificate"]} target="_blank" rel="noreferrer">
+          {allData?.promoter_details?.["District"] || "N/A"}
+        </td>
+      </tr>
+
+      <tr>
+        <td className="label-cell">License Certificate</td>
+        <td className="value-cell">
+          {allData?.promoter_details?.["License Certificate"] ? (
+            <a
+              href={allData?.promoter_details?.["License Certificate"]}
+              target="_blank"
+              rel="noreferrer"
+            >
               View Document
             </a>
           ) : "N/A"}
         </td>
       </tr>
-      <tr>
-        <td className="label-cell">GST Num</td>
-        <td className="value-cell">{allData?.promoter_details?.["GST Number"] || "N/A"}</td>
-      </tr>
-      <tr>
-        <td className="label-cell">GST Num Document</td>
-        <td className="value-cell">
-          {allData?.promoter_details?.["GST Document"] !== "N/A" ? (
-            <a href={allData?.promoter_details?.["GST Document"]} target="_blank" rel="noreferrer">
-              View Document
-            </a>
-          ) : "N/A"}
-        </td>
-      </tr>
+
       <tr>
         <td className="label-cell">Photo</td>
         <td className="value-cell">
-          {allData?.promoter_details?.["Photo"] !== "N/A" ? (
-            <a href={allData?.promoter_details?.["Photo"]} target="_blank" rel="noreferrer">
+          {allData?.promoter_details?.["Photo"] ? (
+            <a
+              href={allData?.promoter_details?.["Photo"]}
+              target="_blank"
+              rel="noreferrer"
+            >
               View Photo
             </a>
           ) : "N/A"}
         </td>
       </tr>
+
     </tbody>
   </table>
 </section>
+
 
         {/* Project Details */}
         <section className="section page-break">

@@ -155,30 +155,54 @@ def register_agent():
 
         # ================= LITIGATIONS =================
 
+       # ================= LITIGATIONS =================
+
         litigations_data = json.loads(form.get("litigations", "[]"))
 
-        for index, l in enumerate(litigations_data):
+# 🔹 CASE 1 → If litigation exists
+        if litigations_data:
 
-            interim_file = files.get(f"interim_certificate_{index}")
-            final_file = files.get(f"final_certificate_{index}")
-            affidavit_file = files.get(f"affidavit_{index}")
+          for index, l in enumerate(litigations_data):
 
-            litigation = AgentOtherThanIndividualLitigation(
-                case_no=l.get("case_no"),
-                tribunal_name_place=l.get("tribunal_name_place"),
-                petitioner_name=l.get("petitioner_name"),
-                respondent_name=l.get("respondent_name"),
-                case_facts=l.get("case_facts"),
-                present_status=l.get("present_status"),
+           interim_file = files.get(f"interim_certificate_{index}")
+           final_file = files.get(f"final_certificate_{index}")
 
-                interim_order=save_file(interim_file, f"interim_order_{index}") if interim_file else None,
-                final_order_details=save_file(final_file, f"final_order_{index}") if final_file else None,
-                self_declared_affidavit=save_file(affidavit_file, f"affidavit_{index}") if affidavit_file else None,
+           litigation = AgentOtherThanIndividualLitigation(
+            case_no=l.get("case_no"),
+            tribunal_name_place=l.get("tribunal_name_place"),
+            petitioner_name=l.get("petitioner_name"),
+            respondent_name=l.get("respondent_name"),
+            case_facts=l.get("case_facts"),
+            present_status=l.get("present_status"),
 
-                organisation_id=org_id
-            )
+            interim_order=save_file(interim_file, f"interim_order_{index}") if interim_file else None,
+            final_order_details=save_file(final_file, f"final_order_{index}") if final_file else None,
+            self_declared_affidavit=None,
 
-            db.session.add(litigation)
+            organisation_id=org_id
+           )
+
+          db.session.add(litigation)
+
+# 🔹 CASE 2 → If NO litigation
+        else:
+
+         affidavit_file = files.get("self_affidavit")
+
+         litigation = AgentOtherThanIndividualLitigation(
+        case_no=None,
+        tribunal_name_place=None,
+        petitioner_name=None,
+        respondent_name=None,
+        case_facts=None,
+        present_status=None,
+        interim_order=None,
+        final_order_details=None,
+        self_declared_affidavit=save_file(affidavit_file, "self_affidavit") if affidavit_file else None,
+        organisation_id=org_id
+        )
+
+         db.session.add(litigation)
 
         db.session.commit()
 

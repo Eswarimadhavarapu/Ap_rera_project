@@ -34,12 +34,20 @@ const AgentDashboard = () => {
       });
   }, [activeTab, pan]);
 
-  const openApplication = (app) => {
-    sessionStorage.setItem("agent_id", app.agent_id);
-    sessionStorage.setItem("application_no", app.application_no);
+ const openApplication = (app) => {
+  // ✅ store agentId where ApplicantDetails expects it
+  localStorage.setItem("agentId", app.agent_id);
 
-    navigate("/applicant-details");
-  };
+  // optional (if needed later)
+  sessionStorage.setItem("application_no", app.application_no);
+
+  navigate("/applicant-details", {
+    state: {
+      agentId: app.agent_id,
+    },
+  });
+};
+
 
   return (
     <div className="agent-dashboard-wrapper">

@@ -169,12 +169,12 @@ const [otherReraList, setOtherReraList] = useState([]);
 
 
 useEffect(() => {
-  if (passedPan) {
-    // 🔥 NEW PAN = NEW APPLICATION
+  // ✅ clear ONLY when PAN comes from PAN-entry flow
+  if (passedPan && !location.state?.agentId) {
     localStorage.removeItem("agentId");
-    localStorage.removeItem("completedStep"); // ⭐ IMPORTANT
+    localStorage.removeItem("completedStep");
   }
-}, [passedPan]);
+}, [passedPan, location.state]);
 
 useEffect(() => {
   if (passedPan) {
@@ -211,9 +211,10 @@ useEffect(() => {
         mobile: agent_details.mobile || "",
         landline: agent_details.landline || "",
         licenseNumber: agent_details.license_number || "",
-        licenseDate: agent_details.license_date
-  ? agent_details.license_date.split("T")[0]
+       licenseDate: agent_details.license_date
+  ? new Date(agent_details.license_date).toISOString().slice(0, 10)
   : "",
+
         address1: agent_details.address1 || "",
         address2: agent_details.address2 || "",
         state: agent_details.state_id || "",

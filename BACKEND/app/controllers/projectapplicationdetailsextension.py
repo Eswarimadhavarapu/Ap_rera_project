@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.models.projectapplicationdetailsextension import (
-    get_project_basic_details_by_application_no
+    get_project_basic_details_by_application_no1
 )
 
 projectapplicationdetailsextension_bp = Blueprint(

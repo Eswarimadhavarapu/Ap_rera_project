@@ -643,6 +643,7 @@ AP RERA
     def get_partial_applications(pan):
         query = text("""
             SELECT
+                id AS agent_id,
                 application_no,
                 agent_name,
                 'Individual' AS name_type,

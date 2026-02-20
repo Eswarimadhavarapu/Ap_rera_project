@@ -1,3 +1,5 @@
+complaintregistration.css---------------------
+
 /* ================= PAGE WRAPPER ================= */
 .complaintregistration-page-wrapper {
   background: #efefef;
@@ -25,7 +27,12 @@
 }
 
 .complaintregistration-breadcrumb a {
-  color: #ffff00;
+  color: #e7eb24;
+  text-decoration: underline;
+}
+
+.comaplaintregistration-link-text{
+  color: #0072bc;
   text-decoration: underline;
 }
 
@@ -89,7 +96,7 @@
   font-size: 13px;
 }
 
-.complaintregistration-step-circle .complaintregistration-active {
+.complaintregistration-step-circle.complaintregistration-active {
   background: #4caf50;
 }
 

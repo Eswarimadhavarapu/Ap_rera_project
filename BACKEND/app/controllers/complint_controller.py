@@ -142,7 +142,7 @@ def upload_complaint_documents():
         filename = f"{uuid.uuid4()}_{file.filename}"
         file.save(os.path.join(UPLOAD_DIR, filename))
 
-        docs = complaint.complaint_documents or {}
+        docs = dict(complaint.complaint_documents or {})
 
         # FIXED-KEY ASSIGNMENT
         docs[doc_type] = filename
@@ -231,6 +231,7 @@ def get_complaint(complaint_id):
                 "subject": complaint.subject,
                 "relief_sought": complaint.relief_sought,
                 "application_type": complaint.application_type,
+                "complaint_regarding": complaint.complaint_regarding,
                 "description": complaint.description,
                 "complaint_facts": complaint.complaint_facts,
                 "complaint_documents": complaint.complaint_documents,
@@ -308,11 +309,12 @@ def list_complaints():
         logger.error(traceback.format_exc())
         return jsonify({"status": "error"}), 500
 
+from flask import send_from_directory
+
 @complint_bp.route("/complint/document/<filename>", methods=["GET"])
 def view_complaint_document(filename):
     try:
-        upload_dir = current_app.config["UPLOAD_FOLDER"]
-        return send_from_directory(upload_dir, filename, as_attachment=False)
+        return send_from_directory(UPLOAD_DIR, filename, as_attachment=False)
     except Exception:
         logger.error(traceback.format_exc())
         return jsonify({"error": "File not found"}), 404

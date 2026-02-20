@@ -1,3 +1,4 @@
+
 /* body {
   background: #f4f6f8;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -284,7 +285,7 @@
   align-items: center;
   margin-top: 30px;
   padding-top: 15px;
-  border-top: 1px solid #ddd;
+ 
 }
 
 /* ================= BACK BUTTON ================= */
@@ -325,4 +326,60 @@
 
 .capreviewpage-action-btn:hover {
   background-color: #1565c0;
+}
+
+.capreviewpage-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d6d6d6;
+  margin-top: 12px;
+  background: #ffffff;
+}
+
+/* Header */
+.capreviewpage-table th {
+  background: #3f556b;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border-right: 2px solid #ffffff;
+}
+
+/* Body */
+.capreviewpage-table td {
+  padding: 12px;
+  font-size: 13px;
+  color: #333;
+  border-top: 1px solid #d6d6d6;
+  border-right: 2px solid #d6d6d6;
+}
+
+/* Center S.No */
+.capreviewpage-table th:first-child,
+.capreviewpage-table td:first-child {
+  text-align: center;
+  width: 80px;
+}
+
+/* Remove last border */
+.capreviewpage-table th:last-child,
+.capreviewpage-table td:last-child {
+  border-right: none;
+}
+
+.capreviewpage-table a {
+  color: #0d6efd;        /* blue like screenshot */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.capreviewpage-table a:hover {
+  text-decoration: underline;
+}
+
+.capreviewpage-table a:visited {
+  color: #0d6efd;
 }

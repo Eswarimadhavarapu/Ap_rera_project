@@ -488,19 +488,27 @@ const otherStates = org.other_state_rera_details || [];
   <h3 className="mpreview-heading">Litigations</h3>
 
   <p className="mpreview-yesno">
-  <b>Any Civil/Criminal Cases :</b>{" "}
-  {hasLitigationFinal}
+    <b>Any Civil/Criminal Cases :</b> {hasLitigationFinal}
+  </p>
 
-</p>
+  {/* ✅ CASE: NO LITIGATION → Show Affidavit */}
+  {hasSelfAffidavit && (
+    <p>
+      <b>Self Declared Affidavit Document :</b>{" "}
+      <a
+        href={getFileUrl(litigations[0]?.self_declared_affidavit)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        View
+      </a>
+    </p>
+  )}
 
-
-  {hasLitigationFinal === "Yes" && (
-
-
+  {/* ✅ CASE: HAS LITIGATION → Show Table */}
+  {!hasSelfAffidavit && (
     <div className="mpreview-table-wrapper">
-
       <table className="mpreview-director-table wide-table">
-
         <thead>
           <tr>
             <th>S.No</th>
@@ -512,68 +520,45 @@ const otherStates = org.other_state_rera_details || [];
             <th>Present Status</th>
             <th>Interim Order</th>
             <th>Final Order if Disposed</th>
-            <th>Interim certificate</th>
-            <th>Final Order certificate</th>
-         
+            <th>Interim Certificate</th>
+            <th>Final Order Certificate</th>
           </tr>
         </thead>
 
         <tbody>
-
           {litigations.map((l, i) => (
             <tr key={i}>
-
               <td>{i + 1}</td>
-
               <td>{l.case_no}</td>
-
               <td>{l.tribunal_name_place}</td>
-
               <td>{l.petitioner_name}</td>
-
               <td>{l.respondent_name}</td>
-
               <td>{l.case_facts}</td>
-
               <td>{l.present_status}</td>
 
-               <td>{l.interim_order && l.interim_order !== "" ? "Yes" : "No"}</td>
+              <td>{l.interim_order ? "Yes" : "No"}</td>
+              <td>{l.final_order_details ? "Yes" : "No"}</td>
 
-               <td>{l.final_order_details && l.final_order_details !== "" ? "Yes" : "No"}</td>
-
-               <td>
+              <td>
                 {l.interim_order ? (
-                  <a
-                    href={getFileUrl(l.interim_order)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View Certificate
+                  <a href={getFileUrl(l.interim_order)} target="_blank">
+                    View
                   </a>
                 ) : "NA"}
               </td>
 
               <td>
                 {l.final_order_details ? (
-                  <a
-                    href={getFileUrl(l.final_order_details)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View Certificate
+                  <a href={getFileUrl(l.final_order_details)} target="_blank">
+                    View
                   </a>
                 ) : "NA"}
               </td>
-
             </tr>
           ))}
-
         </tbody>
-
       </table>
-
     </div>
-
   )}
 
 </section>
