@@ -5,6 +5,12 @@ class AgentOtherThanIndividualLitigation(db.Model):
     __tablename__ = "agent_litigations_details_t"
 
     id = db.Column(db.Integer, primary_key=True)
+    organisation_id = db.Column(
+    db.Integer,
+    db.ForeignKey("agent_organisation_details_t.organisation_id"),
+    nullable=False
+)
+
     case_no = db.Column(db.String(100))
     tribunal_name_place = db.Column(db.String(200))
     petitioner_name = db.Column(db.String(150))
@@ -15,6 +21,7 @@ class AgentOtherThanIndividualLitigation(db.Model):
     interim_order = db.Column(db.Text)
     final_order_details = db.Column(db.Text)
     self_declared_affidavit = db.Column(db.String(255))
+    organisation_id = db.Column(db.Integer, db.ForeignKey("agent_organisation_details_t.organisation_id"), nullable=False)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

@@ -20,9 +20,239 @@ body {
 /* ===========================
    ✅ NAVBAR CSS
 =========================== */
-.hp-home-new-navbar {
+.homenavbar-navbar {
   font-family: Arial, sans-serif;
 }
+.homenavbar-new-notice-board {
+  background: #fff;
+  padding: 2px 0;
+}
+
+.homenavbar-new-notice-line {
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 1px 0;
+}
+
+.homenavbar-new-notice-text {
+  display: inline-block;
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 100%;
+  animation: scrollLeft 40s linear infinite;
+}
+
+
+.hp-home-new-notice-text {
+  display: inline-block;
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 100%;
+  animation: scrollLeft 40s linear infinite;
+}
+
+.homenavbar-new-badge {
+  background: red;
+  color: yellow;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin: 0 8px;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.homenavbar-new-notice-line:hover .homenavbar-new-notice-text {
+  animation-play-state: paused;
+}
+
+/*----------------QuickLinks-------------------------*/
+.homequick-links-overlap {
+  position: relative;
+  z-index: 6;
+  margin-top: -120px;      /* 🔥 pulls box into hero */
+  padding-bottom: 40px;
+}
+.homequick-links-overlap {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* if any inner wrapper is adding shadow */
+.homequick-links-overlap > div {
+  box-shadow: none !important;
+}
+
+/* fallback – remove shadow from any direct child */
+.homequick-links-overlap * {
+  box-shadow: none !important;
+}
+
+/* lifted white container */
+.homequick-services-card {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 50px 50px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+}
+
+/* registration title */
+.homequick-services-card .homequick-main-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: #111;
+}
+
+/* wrapper safety */
+.homequick-services-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* base card */
+.homequick-services-card .service-card,
+.homequick-services-card .registration-card,
+.homequick-services-card .home-new-service-card {
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* hover / focus effect */
+.homequick-services-card .service-card:hover,
+.homequick-services-card .registration-card:hover,
+.homequick-services-card .home-new-service-card:hover {
+  transform: translateY(-12px) scale(1.05);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* mobile tap */
+.homequick-services-card .service-card:active,
+.homequick-services-card .registration-card:active,
+.homequick-services-card .home-new-service-card:active {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* icon animation */
+.homequick-services-card img,
+.homequick-services-card svg {
+  transition: transform 0.35s ease;
+}
+
+.homequick-services-card .service-card:hover img,
+.homequick-services-card .registration-card:hover img,
+.homequick-services-card .home-new-service-card:hover svg {
+  transform: scale(1.15);
+}
+
+
+/* main registration container */
+.homequick-services-card {
+  box-shadow: none !important;
+  filter: none !important;
+}
+.homequick-services-card {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+/* Services icons → light grey */
+.homequick-services-card .registration-card img {
+  filter: grayscale(100%) brightness(85%) contrast(90%) !important;
+}
+
+.homequick-registration-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.homequick-registration-card:hover {
+  background: linear-gradient(
+    to right,
+    #a0d4f1,
+    #686161
+  );
+  transform: translateY(-10px) scale(1.05);
+}
+
+.homequick-registration-card:hover
+  .homequick-registration-icon-wrap {
+  transform: scale(1.12);
+  transition: 0.3s ease;
+}
+
+/* card */
+.homequick-registration-card {
+  background-color: #c7c0c0;
+  border-radius: 12px;
+  padding: 22px 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+/* icon circle */
+.homequick-registration-icon-wrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* icon */
+.homequick-registration-icon {
+  font-size: 30px;
+  color: #817f7f;
+}
+/* text */
+.homequick-registration-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #584444;
+  line-height: 1.4;
+}
+.homequick-section-divider {
+  margin: 18px 0 !important;
+}
+/* Section divider line (full width) */
+.homequick-section-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 18px 0 22px;
+}
+
+/* responsive correction */
+@media (max-width: 900px) {
+  .quick-links-overlap {
+    margin-top: -60px;
+    padding: 0 14px 30px;
+  }
+
+  .homequick-services-card {
+    padding: 30px 20px;
+  }
+}
+
+
 
 .hp-home-new-top-bar {
   display: flex;
@@ -85,50 +315,12 @@ body {
   color: #000;
 }high */
 
-.hp-home-new-notice-board {
-  background: #fff;
-  padding: 2px 0;
-}
-
-.hp-home-new-notice-line {
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 1px 0;
-}
-
-.hp-home-new-notice-text {
-  display: inline-block;
-  color: red;
-  font-size: 16px;
-  font-weight: bold;
-  padding-left: 100%;
-  animation: scrollLeft 40s linear infinite;
-}
-
-.hp-home-new-badge {
-  background: red;
-  color: yellow;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin: 0 8px;
-}
-
-@keyframes scrollLeft {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-.hp-home-new-notice-line:hover .home-new-notice-text {
-  animation-play-state: paused;
-}
 
 /* ===========================
    ✅ HERO CSS
 =========================== */
 /* HERO */
-.passport-hero {
+.homepassport-hero {
   min-height: 520px;
   background-size: cover;
   background-position: center;
@@ -139,7 +331,7 @@ body {
   justify-content: center;
 }
 
-.passport-hero::before {
+.homepassport-hero::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -153,13 +345,15 @@ z-index: 1;
 
 
 }
-.passport-hero * {
+.homepassport-hero * {
   position: relative;
   z-index: 2;
 }
 
+
+
 /* LEADERS */
-.passport-leaders {
+.homepassport-leaders {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -172,7 +366,7 @@ z-index: 1;
 
 
 /* CARD */
-.passport-card {
+.homepassport-card {
   width: 210px;
   text-align: center;
   flex-shrink: 0;
@@ -181,7 +375,7 @@ z-index: 1;
 
 
 /* PASSPORT PHOTO */
-.passport-card img {
+.homepassport-card img {
   width: 100%;
   height: 270px;
   object-fit: cover;
@@ -193,7 +387,7 @@ z-index: 1;
 }
 
 /* NAME */
-.passport-card h4 {
+.homepassport-card h4 {
   font-size: 15px;
   font-weight: 700;
   color: #ffffff;
@@ -208,13 +402,13 @@ z-index: 1;
 }
 
 /* STATEMENT */
-.passport-statement-wrap {
+.homepassport-statement-wrap {
   height: 40px;
   text-align: center;
   overflow: hidden;
 }
 
-.passport-statement {
+.homepassport-statement {
   color: #ffffff;
   font-size: 22px;
   font-weight: 800;
@@ -334,7 +528,7 @@ z-index: 1;
   font-weight: bold;
 }
 
-.public-title-line {
+.home-new-title-line {
   width: 35px;
   height: 3px;
   background: #0a5ca8;
@@ -371,13 +565,13 @@ z-index: 1;
   font-size: 26px;
 }
 
-.public-arrow-list {
+.home-new-arrow-list {
   list-style: none;
   padding: 0;
   margin-top: 20px;
 }
 
-.public-arrow-list li {
+.home-new-arrow-list li {
   position: relative;
   padding: 12px 20px 12px 40px;
   margin-bottom: 10px;
@@ -386,7 +580,7 @@ z-index: 1;
   color: #333;
 }
 
-.public-arrow-list li::before {
+.home-new-arrow-list li::before {
   content: "▶";
   position: absolute;
   left: 15px;
@@ -394,7 +588,7 @@ z-index: 1;
   font-size: 12px;
 }
 
-.public-arrow-list li:nth-child(even) {
+.home-new-arrow-list li:nth-child(even) {
   background: #fff;
 }
 
@@ -1347,45 +1541,7 @@ background: linear-gradient(
    (Passport Seva Style Overlap)
 ====================================== */
 
-.quick-links-overlap {
-  position: relative;
-  z-index: 6;
-  margin-top: -120px;      /* 🔥 pulls box into hero */
-  padding-bottom: 40px;
-}
 
-/* lifted white container */
-.home-services-card {
-  max-width: 1280px;
-  margin: 0 auto;
-  background: #ffffff;
-
-  border-radius: 18px;
-  padding: 40px 50px 50px;
-
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
-}
-
-/* registration title */
-.home-services-card .hp-main-title {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 35px;
-  color: #111;
-}
-
-/* responsive correction */
-@media (max-width: 900px) {
-  .quick-links-overlap {
-    margin-top: -60px;
-    padding: 0 14px 30px;
-  }
-
-  .home-services-card {
-    padding: 30px 20px;
-  }
-}
 
 /* ======================================
    OUR PHILOSOPHY – CARD POP-UP ANIMATION
@@ -1438,78 +1594,8 @@ background: linear-gradient(
    REGISTRATION CARDS – POP-UP ANIMATION
 ====================================== */
 
-/* wrapper safety */
-.home-services-card {
-  position: relative;
-  overflow: visible;
-}
 
-/* base card */
-.home-services-card .service-card,
-.home-services-card .registration-card,
-.home-services-card .home-new-service-card {
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
-  position: relative;
-  z-index: 1;
-}
 
-/* hover / focus effect */
-.home-services-card .service-card:hover,
-.home-services-card .registration-card:hover,
-.home-services-card .home-new-service-card:hover {
-  transform: translateY(-12px) scale(1.05);
-  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.25);
-  z-index: 10;
-  cursor: pointer;
-}
-
-/* mobile tap */
-.home-services-card .service-card:active,
-.home-services-card .registration-card:active,
-.home-services-card .home-new-service-card:active {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
-}
-
-/* icon animation */
-.home-services-card img,
-.home-services-card svg {
-  transition: transform 0.35s ease;
-}
-
-.home-services-card .service-card:hover img,
-.home-services-card .registration-card:hover img,
-.home-services-card .home-new-service-card:hover svg {
-  transform: scale(1.15);
-}
-
-/* ======================================
-   FORCE REMOVE REGISTRATION OUTER SHADOW
-====================================== */
-
-/* main registration container */
-.home-services-card {
-  box-shadow: none !important;
-  filter: none !important;
-}
-
-/* overlap wrapper safety */
-.quick-links-overlap {
-  box-shadow: none !important;
-  filter: none !important;
-}
-
-/* if any inner wrapper is adding shadow */
-.quick-links-overlap > div {
-  box-shadow: none !important;
-}
-
-/* fallback – remove shadow from any direct child */
-.quick-links-overlap * {
-  box-shadow: none !important;
-}
 /* ======================================
    REDUCE GAP BETWEEN SERVICE SECTIONS
    (Promotors → Agent → Complaint)
@@ -1613,15 +1699,9 @@ background: linear-gradient(
 }
 
 /* Reduce extra space inside Services container */
-.home-services-card {
-  padding-top: 24px !important;
-  padding-bottom: 24px !important;
-}
 
-/* Reduce divider space */
-.hp-section-divider {
-  margin: 18px 0 !important;
-}
+
+
 
 
 /* ======================================
@@ -1670,26 +1750,203 @@ background: linear-gradient(
 }
 
 /* ======================================
-   NOTICE / PHILOSOPHY ICON COLOR FIX
-   (React Icons only)
+   HP-HOME – OUR PHILOSOPHY SECTION
 ====================================== */
 
-.notice-icon svg {
-  color:#817f7f!important;   /* light black  */
-}
-/* ======================================
-   OUR PHILOSOPHY – BACKGROUND FIX
-====================================== */
-
-/* Section background */
-.public-notice-section {
-  background-color: #eeeeee !important;  /* light grey */
+/* section background */
+.homepublic-notice-section {
+  background-color: #f2f2f2;
+  padding: 60px 20px;
 }
 
-/* Optional: container safety */
-.public-notice-container {
-  background: transparent !important;
+/* main container */
+.homepublic-notice-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
+/* section title */
+.homepublic-notice-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 40px;
+}
+
+/* ===============================
+   TOP CARDS GRID
+================================ */
+.homepublic-notice-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+/* card */
+.homepublic-notice-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border 0.35s ease,
+    background 0.35s ease;
+}
+
+/* hover card */
+.homepublic-notice-card:hover {
+  transform: translateY(-14px);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.25);
+  border: 1px solid #0a5ca8;
+  background: #f9fbfd;
+  cursor: pointer;
+}
+
+/* icon wrapper */
+.homepublic-notice-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f1f1f1;
+  transition: all 0.35s ease;
+}
+
+/* icon */
+.homepublic-notice-icon svg {
+  font-size: 30px;
+  color: #817f7f;
+  transition: all 0.35s ease;
+}
+
+/* icon hover */
+.homepublic-notice-card:hover
+.homepublic-notice-icon {
+  background: #0a5ca8;
+}
+
+.homepublic-notice-card:hover
+.homepublic-notice-icon svg {
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+/* card title */
+.homepublic-notice-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.homepublic-notice-card:hover h3 {
+  color: #0a5ca8;
+}
+
+/* description */
+.homepublic-notice-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===============================
+   RIGHT SIDE – MAGNIFYING TOWARDS
+================================ */
+.homepublic-philosophy-right {
+  margin-top: 30px;
+}
+
+/* title */
+.homepublic-philosophy-right h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 6px;
+}
+
+/* blue underline */
+.homepublic-title-line {
+  width: 40px;
+  height: 3px;
+  background: #0a5ca8;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   ARROW LIST (MATCH IMAGE 2)
+================================ */
+.homepublic-arrow-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* list item */
+.homepublic-arrow-list li {
+  position: relative;
+  padding: 10px 15px 10px 33px;
+  margin-bottom: 10px;
+
+  background: #ffffff;
+  font-size: 14px;
+  color: #333;
+
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    padding-left 0.15s ease;
+}
+
+/* alternating background */
+.homepublic-arrow-list li:nth-child(odd) {
+  background: #f7f7f7;
+}
+
+/* arrow */
+.homepublic-arrow-list li::before {
+  content: "▶";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0a5ca8;
+  font-size: 12px;
+}
+
+/* hover effect (SECOND IMAGE STYLE) */
+.homepublic-arrow-list li:hover {
+  background: #eef3f8;
+  box-shadow: inset 4px 0 0 #0a5ca8;
+  padding-left: 48px;
+  cursor: pointer;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  .homepublic-notice-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .homepublic-notice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* FORCE dashboard stats icons to light black */
 .stats-section .stats-item .stats-icon {
   color: #817f7f !important;   /* light grey */
@@ -1707,23 +1964,12 @@ background: linear-gradient(
 .home-new-expertise-icon img {
   filter: grayscale(100%) brightness(80%);
 }
-/* Services icons → light grey */
-.home-services-card .registration-card img {
-  filter: grayscale(100%) brightness(85%) contrast(90%) !important;
-}
+
 
 /* ======================================
    SERVICES SECTION – EXACT APRERA LINES
    (MATCHES IMAGE-2)
 ====================================== */
-
-/* Section divider line (full width) */
-.hp-section-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 18px 0 22px;
-}
 
 /* Services grid layout */
 .services-grid {
@@ -1760,3 +2006,8 @@ background: linear-gradient(
   background-color: #d6d6d6;
   margin: 6px auto 0;
 }
+
+/* ======================================
+   HP HOME – REGISTRATION ICON CARDS
+   (MATCH IMAGE-1 EXACTLY)
+====================================== */

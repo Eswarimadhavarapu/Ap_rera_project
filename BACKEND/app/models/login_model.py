@@ -16,7 +16,14 @@ def get_projects_by_pan(pan_number):
         SELECT
             pr.application_number,
             preg.name AS promoter_name,
+            preg.mobile AS promoter_mobile,
             pr.building_plan_no AS ba_no,
+            pr.project_name AS project_name,
+            pr.project_address1 AS project_address1,
+            pr.project_district AS project_district,
+            pr.project_mandal AS project_mandal,
+            pr.project_village AS project_village,
+            pr.project_pincode AS project_pincode,
             pr.building_permission_from AS validity_from,
             pr.building_permission_upto AS validity_to
         FROM project_registration pr

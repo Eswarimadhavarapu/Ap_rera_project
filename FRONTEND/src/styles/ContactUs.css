@@ -1,39 +1,86 @@
-.contactus-wrapper {
+/* ================= PAGE WRAPPER ================= */
+.contactuss-wrapper {
   max-width: 1200px;
   margin: 20px auto;
   background: #fff;
   padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid #000;
 }
 
-/* Breadcrumb */
-.contactus-breadcrumb-bar {
+/* ================= BREADCRUMB ================= */
+.contactuss-breadcrumb-bar {
   background: #1e88e5;
   color: white;
   padding: 8px 12px;
   font-size: 14px;
-}
-.contactus-breadcrumb-bar span {
-  color: yellow;
+
+  /* 🔥 outer border ki touch avvali */
+  margin: -20px -20px 15px -20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-/* Help desk */
-.contactus-helpdesk {
-  text-align: right;
-  font-size: 22px;
-  color: #1e88e5;
-  margin: 15px 0;
+/* Separator */
+.contactuss-breadcrumb-sep {
+  margin: 0 6px;
+  color: white;
 }
-.contactus-helpdesk span {
+
+/* HOME – only yellow */
+.contactuss-breadcrumb-home {
+  color: yellow;
+  font-weight: bold;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+}
+
+/* HOME underline */
+.contactuss-home-underline {
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: yellow;
+  margin-top: 2px;
+}
+
+/* About Us & Contact Us – white only */
+.contactuss-breadcrumb-text {
+  color: white;
+}
+
+/* Active page – Staff */
+.contactuss-breadcrumb-active {
+  color: white;
   font-weight: bold;
 }
 
-/* Section title */
-.contactus-section-title {
+/* ================= HELP DESK ================= */
+.contactuss-helpdesk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  color: #0b5fc2;
+  white-space: nowrap;
+  margin-left: auto;   /* 🔥 FINAL PUSH TO RIGHT */
+}
+
+
+.contactuss-helpdesk span {
+  font-weight: bold;
+}
+
+/* ================= SECTION TITLES ================= */
+.contactuss-section-title {
   font-size: 20px;
   font-weight: bold;
   margin: 25px 0 10px;
 }
-.contactus-section-title::after {
+
+.contactuss-section-title::after {
   content: "";
   width: 40px;
   height: 3px;
@@ -42,36 +89,38 @@
   margin-top: 6px;
 }
 
-/* Table */
-.contactus-data-table {
+/* ================= TABLE ================= */
+.contactuss-data-table {
   width: 100%;
   border-collapse: collapse;
   border: 1.5px solid #000;
   margin-bottom: 25px;
 }
 
-.contactus-data-table th {
+.contactuss-data-table th {
   background: #455a6b;
   color: white;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #d0d0d0;
+  text-align: center;
 }
 
-.contactus-data-table td {
+.contactuss-data-table td {
   padding: 10px;
   font-size: 14px;
   border: 1px solid #dcdcdc;
+  vertical-align: middle;
 }
 
-.contactus-data-table img {
+.contactuss-data-table img {
   width: 80px;
+  height: auto;
   border: 1px solid #ccc;
 }
 
 /* ================= OFFICE SECTION ================= */
-
-.contactus-office-box {
+.contactuss-office-box {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border: 1px dashed #000;
@@ -80,30 +129,125 @@
   margin-bottom: 30px;
 }
 
-.contactus-office-left h4 {
+.contactuss-office-left h4 {
   font-size: 15px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.contactus-office-left p {
+.contactuss-office-left p {
   margin: 4px 0;
   font-size: 14px;
+  line-height: 1.5;
 }
 
-.contactus-office-help span {
+.contactuss-office-help span {
   color: #1e88e5;
   font-weight: bold;
 }
 
-.contactus-office-right iframe {
+.contactuss-office-right iframe {
   width: 100%;
   height: 250px;
   border: 0;
 }
 
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
-  .contactus-office-box {
+  .contactuss-office-box {
     grid-template-columns: 1fr;
   }
+
+  .contactuss-helpdesk {
+    text-align: left;
+    margin-top: 10px;
+  }
+}
+
+
+/* ================= HELP DESK BLINK ================= */
+@keyframes blinkEffect {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.contactuss-helpdesk-blink {
+  font-weight: bold;
+  color: #1e88e5;
+  animation: blinkEffect 1s infinite;
+}
+/* PHOTO COLUMN – image perfect center (like reference) */
+.contactuss-data-table td:last-child {
+  text-align: center;          /* horizontal center */
+  vertical-align: middle;      /* vertical center */
+}
+
+/* IMAGE itself */
+.contactuss-data-table td:last-child img {
+  display: inline-block;       /* important for centering */
+  margin: auto;
+  width: 80px;
+  height: auto;
+  object-fit: cover;
+}
+
+.contactuss-helpdesk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  color: #0b5fc2;
+  white-space: nowrap;
+}
+
+/* TEXT */
+.contactuss-helpdesk-text {
+  font-weight: 500;
+}
+
+/* NUMBER */
+.contactuss-helpdesk-number {
+  font-weight: 700;
+}
+
+/* SAME ICON (NO CHANGE) */
+.contactuss-helpdesk-icon img {
+  width: 34px;
+  height: 34px;
+  
+}
+
+/* ================= ZOOM IN / OUT ================= */
+@keyframes blinkEffect {
+  0%   { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.contactuss-blink-effect {
+  animation: blinkEffect 0.9s infinite;
+}
+
+/* ================= PAGE HEADER ================= */
+.contactuss-page-header {
+  background: white;
+  padding: 20px;
+  border: none;
+  width: 100%;              /* 🔥 important */
+  box-sizing: border-box;
+}
+
+/* HEADER ROW – LEFT TITLE | RIGHT HELP DESK */
+.contactuss-header-row {
+  display: flex;
+  justify-content: space-between;  /* 🔥 key */
+  align-items: center;
+  width: 100%;                     /* 🔥 key */
 }

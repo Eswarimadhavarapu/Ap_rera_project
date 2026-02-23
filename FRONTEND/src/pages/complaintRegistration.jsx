@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import "../styles/complaintRegistration.css";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import PreviewPage from "./previewpage";
 import PaymentPage from "./paymentpage";
 //import ComplaintDetails from "./complaintdetails";
 import ComplaintDetails from "./complaintDetails";
-
+import ProjectWizard from "../components/ProjectWizard";
 /* ================= STEP WIZARD COMPONENT ================= */
 function StepWizard({ currentStep }) {
     const steps = [
@@ -23,8 +24,9 @@ function StepWizard({ currentStep }) {
                     return (
                         <div className="complaintregistration-stepwizard-step" key={step}>
                             <div
-                                className={`complaintregistration-step-circle ${currentStep === step ? "complaintregistration-active" : ""
-                                    }`}
+                               className={`complaintregistration-step-circle ${
+  step <= currentStep ? "complaintregistration-active" : ""
+}`}
                             >
                                 {step}
                             </div>
@@ -48,6 +50,13 @@ export default function ComplaintRegistration() {
   applicationType: "", // Form M or Form N
 });
 
+// ✅ ADD THIS HERE
+const complaintSteps = [
+  "Complaint Registration Details",
+  "Preview",
+  "Payment",
+  "Acknowledgement",
+];
 
 
 
@@ -121,7 +130,9 @@ export default function ComplaintRegistration() {
 
                 <h2 className="compalintregistration-main-heading">Complaint Registration</h2>
 
-                <StepWizard currentStep={currentStep} />
+              <StepWizard currentStep={currentStep} />
+
+
 
                 {/* STEP 1 */}
                 {currentStep === 1 && showInstructions && (
@@ -148,7 +159,7 @@ export default function ComplaintRegistration() {
                                 The Applicants are hereby informed to submit their application either in{" "}
                                 <a
                                     href="#"
-                                    className="link-text"
+                                    className="comaplaintregistration-link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("M");
@@ -159,7 +170,7 @@ export default function ComplaintRegistration() {
                                 or{" "}
                                 <a
                                     href="#"
-                                    className="link-text"
+                                    className="comaplaintregistration-link-text"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         downloadForm("N");

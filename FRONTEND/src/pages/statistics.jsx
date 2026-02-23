@@ -1,12 +1,15 @@
 import { useState } from "react";
 import "../styles/statistics.css";
 
+import AnalysisChart from "./AnalysisCharts";
+
 const Statistics = () => {
   const [activeTab, setActiveTab] = useState("year");
 
   return (
     <div className="stats-wrapper">
-      {/* Tabs */}
+
+      {/* ================= TABS ================= */}
       <div className="stats-tabs">
         <button
           className={activeTab === "year" ? "active" : ""}
@@ -27,6 +30,14 @@ const Statistics = () => {
           onClick={() => setActiveTab("district")}
         >
           District Wise Statistics (2017 to 2026)
+        </button>
+
+        {/* ✅ NEW 4TH TAB */}
+        <button
+          className={activeTab === "analysis" ? "active" : ""}
+          onClick={() => setActiveTab("analysis")}
+        >
+          Data Analysis
         </button>
       </div>
 
@@ -112,7 +123,7 @@ const Statistics = () => {
         </table>
       )}
 
-      {/* ================= DISTRICT WISE (EXACT DATA) ================= */}
+      {/* ================= DISTRICT WISE ================= */}
       {activeTab === "district" && (
         <table className="stats-table">
           <thead>
@@ -155,6 +166,42 @@ const Statistics = () => {
           </tbody>
         </table>
       )}
+
+      {/* ================= DATA ANALYSIS (4TH TAB) ================= */}
+      {activeTab === "analysis" && (
+        <section className="dashboard-wrapper">
+
+          <div className="dashboard-analysis-box">
+            <div className="dashboard-box-header">DATA ANALYSIS</div>
+
+            <div className="dashboard-filters">
+              <div>
+                Year :
+                <select>
+                  <option>2026</option>
+                </select>
+              </div>
+
+              <div>
+                Month :
+                <select>
+                  <option>All</option>
+                </select>
+              </div>
+            </div>
+
+            <h4 className="dashboard-analysis-title">
+              STATUS OF PROJECTS, AGENTS AND COMPLAINTS
+            </h4>
+
+            <AnalysisChart />
+          </div>
+
+         
+
+        </section>
+      )}
+
     </div>
   );
 };

@@ -778,3 +778,32 @@ html, body {
   color: #0a58ff;
   font-size: 18px;
 }
+/* ===== TABLE SCROLL FIX ===== */
+.yagentdetails-table-scroll {
+  width: 100%;
+  overflow-x: auto;   /* horizontal scroll */
+  overflow-y: hidden;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+}
+
+.yagentdetails-table {
+  border-collapse: collapse;
+  width: 100%;
+  white-space: nowrap; /* prevent wrapping */
+}
+/* ===== PROJECT DELETE BUTTON (BLUE) ===== */
+.yagentdetails-project-delete-btn {
+  background-color: #007bff;   /* Same blue as Add */
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.yagentdetails-project-delete-btn:hover {
+  background-color: #0056b3;
+}

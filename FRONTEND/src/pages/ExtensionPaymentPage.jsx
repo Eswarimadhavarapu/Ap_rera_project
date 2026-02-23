@@ -1,25 +1,50 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";   // ✅ ADD
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/ExtensionPaymentPage.css";
 
 const ExtensionPaymentPage = () => {
-  const navigate = useNavigate();                // ✅ ADD
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Receive Data from Previous Page
+  const projectData = location.state?.projectData;
+
+  // ✅ Safety Check
+  if (!projectData) {
+    return <p>No Payment Data Found</p>;
+  }
+
+  // ✅ Today Date
+  const todayDate = new Date().toLocaleDateString("en-GB");
+
+  // ✅ Generate Transaction ID only once
+  const generateTransactionId = () => {
+    return "TXN" + Date.now();
+  };
+  const [transactionId] = useState(generateTransactionId);
+
   const [selectedBank, setSelectedBank] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleMakePayment = () => {
-    // simulate payment success
     setTimeout(() => {
       setShowSuccessPopup(true);
     }, 500);
   };
+const closePopup = () => {
+  setShowSuccessPopup(false);
 
-  const closePopup = () => {
-    setShowSuccessPopup(false);
+  navigate("/certificate", {
+    state: {
+      projectData: {
+        ...projectData,
+        transactionId,
+        paymentDate: todayDate
+      }
+    }
+  });
+};
 
-    // ✅ OK click chesinappudu Certification Page open avutundi
-    navigate("/certificate");
-  };
 
   return (
     <div className="epp-payment-container">
@@ -28,30 +53,42 @@ const ExtensionPaymentPage = () => {
       <div className="epp-payment-box">
         <div className="epp-payment-header">Payment Details</div>
 
+        {/* 🔹 TOP SECTION */}
         <div className="epp-payment-top">
           <div>
-            <p><strong>Application Number :</strong> 100126160721</p>
-            <p><strong>Transaction Id :</strong> 3100126004</p>
-            <p><strong>APRERA GST No :</strong> 37AAAGA0918E1ZY</p>
+            <p>
+              <strong>Application Number :</strong>{" "}
+              {projectData.application_number}
+            </p>
+
+            <p>
+              <strong>Transaction Id :</strong> {transactionId}
+            </p>
+
+           <p><strong>APRERA GST No :</strong> 37AAAGA0918E1ZY</p>       
           </div>
+
           <div className="epp-payment-date">
-            <p><strong>Date :</strong> 24/01/2026</p>
+            <p>
+              <strong>Date :</strong> {todayDate}
+            </p>
           </div>
         </div>
 
+        {/* 🔹 TABLE SECTION */}
         <table className="epp-payment-table">
           <tbody>
             <tr>
               <td>Name</td>
-              <td>-</td>
+              <td>{projectData.promoter_name}</td>
             </tr>
             <tr>
               <td>Mobile No.</td>
-              <td>-</td>
+              <td>{projectData.promoter_mobile}</td>
             </tr>
             <tr>
               <td>Payment For</td>
-              <td>-</td>
+              <td>Project Extension</td>
             </tr>
             <tr>
               <td><strong>Registration Amount</strong></td>
@@ -60,6 +97,7 @@ const ExtensionPaymentPage = () => {
           </tbody>
         </table>
 
+        {/* 🔹 PAYMENT GATEWAY */}
         <div className="epp-gateway-section">
           <div className="epp-gateway-options">
             <p><strong>Select Payment Gateway :</strong></p>
@@ -97,7 +135,7 @@ const ExtensionPaymentPage = () => {
           </div>
         </div>
 
-        {/* PAYMENT ACTION BOX */}
+        {/* 🔹 PAYMENT ACTION */}
         {selectedBank && (
           <div className="epp-payment-action-box">
             <p>
@@ -108,6 +146,7 @@ const ExtensionPaymentPage = () => {
               <button className="epp-pay-btn" onClick={handleMakePayment}>
                 Make Payment
               </button>
+
               <button
                 className="epp-cancel-btn"
                 onClick={() => setSelectedBank("")}
@@ -119,7 +158,7 @@ const ExtensionPaymentPage = () => {
         )}
       </div>
 
-      {/* PAYMENT SUCCESS POPUP */}
+      {/* 🔹 SUCCESS POPUP */}
       {showSuccessPopup && (
         <div className="epp-payment-popup">
           <div className="epp-payment-popup-box success">

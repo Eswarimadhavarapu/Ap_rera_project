@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/QuickLinks.css";
 import "../styles/publicnotice.css";
 import "../styles/Homeservices.css";
+import "../styles/AboutAPRERA.css";
 
 // import { useNavigate } from "react-router-dom";
 // import test3 from "/assets/images/img21.png";
@@ -30,7 +31,9 @@ import {
   FaGavel,
   FaBuilding,
   FaUserTie,
+  FaFileAlt,
 } from "react-icons/fa";
+
 
 
 
@@ -69,79 +72,55 @@ import {
 =========================== */
 function Navbar() {
   return (
-    <header className="hp-home-new-navbar">
-      <div className="hp-home-new-top-bar">
-        {/* <div className="logo-center"> */}
-          {/* <img
-            // src="https://rera.ap.gov.in/RERA/images/finallogo-New4.jpg"
-            // alt="AP RERA"
-          /> */}
-          {/* <h1>ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</h1> */}
-        {/* </div> */}
+    <header className="homenavbar-new-navbar">   
 
-        {/* <button className="search-btn">QSEARCH RERA PROJECTS</button> */}
-      </div>
+      <div className="homenavbar-new-notice-board">
+         <div className="homenavbar-new-notice-line">
+          <span className="homenavbar-new-notice-text">
 
-      {/* <nav className="menu">
-        <a>HOME</a>
-        <a>ABOUT US</a>
-        <a>APREAT</a>
-        <a>NOTIFICATIONS</a>
-        <a>REGISTRATION</a>
-        <a>REPORTS</a>
-        <a>REGISTERED</a>
-        <a className="highlight">JUDGEMENTS / ORDERS</a>
-        <a>KNOWLEDGE HUB</a>
-        <a>LOGIN</a>
-      </nav> */}
-
-      <div className="hp-home-new-notice-board">
-         <div className="hp-home-new-notice-line">
-          <span className="hp-home-new-notice-text">
-            <a href="../../public/assets/pdfs/Circular-P-18.pdf" target="_blank" className="new-badge-a">
-           <span className="hp-home-new-badge">NEW</span>
+           <span className="homenavbar-new-badge">NEW</span>
             One Time Opportunity with 50% Concession on Late Fee for Un-registered
             Projects.
-            <span className="hp-home-new-badge">NEW</span>
-            </a>
+            <span className="homenavbar-new-badge">NEW</span>
+            
           </span>
         </div>
 
-        <div className="hp-home-new-notice-line">
-          <span className="hp-home-new-notice-text">
-            <span className="hp-home-new-badge">NEW</span>
+        <div className="homenavbar-new-notice-line">
+          <span className="homenavbar-new-notice-text">
+            <span className="homenavbar-new-badge">NEW</span>
             Quarterly Updates: All the promoters have to submit the Quarterly
             Updates of October 2025 – December 2025 on or before 21/01/2026
             without fail.
-            <span className="hp-home-new-badge">NEW</span>
+            <span className="homenavbar-new-badge">NEW</span>
           </span>
         </div>
 
-        <div className="hp-home-new-notice-line">
-          <span className="hp-home-new-notice-text">
-            <span className="hp-home-new-badge">NEW</span>
+        <div className="homenavbar-new-notice-line">
+          <span className="homenavbar-new-notice-text">
+            <span className="homenavbar-new-badge">NEW</span>
             All promoters are hereby informed that the Project Extension Module
             has been enabled online.
-            <span className="hp-home-new-badge">NEW</span>
+            <span className="homenavbar-new-badge">NEW</span>
           </span>
         </div>
 
-        <div className="hp-home-new-notice-line">
-          <span className="hp-home-new-notice-text">
-            <span className="hp-home-new-badge">NEW</span>
+        <div className="homenavbar-new-notice-line">
+          <span className="homenavbar-new-notice-text">
+            <span className="homenavbar-new-badge">NEW</span>
             Promoters are requested to display the APRERA Registration
             Certificate / ID at the respective project site for information of
             buyers.
-            <span className="hp-home-new-badge">NEW</span>
+            <span className="homenavbar-new-badge">NEW</span>
           </span>
         </div>
 
-        <div className="hp-home-new-notice-line">
-          <span className="hp-home-new-notice-text" onClick={() => navigate("/promotregistration")}>
-            <span className="hp-home-new-badge">NEW</span>
+        <div className="homenavbar-new-notice-line">
+          <span className="homenavbar-new-notice-text" onClick={() => navigate("/promotregistration")}>
+            <span className="homenavbar-new-badge">NEW</span>
             All the promoters are instructed to register themselves in the AP
             RERA web portal for creation of the Promoter's database.
-            <span className="hp-home-new-badge">NEW</span>
+            <span className="homenavbar-new-badge">NEW</span>
           </span>
         </div>
       </div>
@@ -162,11 +141,7 @@ const bgImages = [
 ];
 
 const heroStatements = [
-  "GREATER ACCOUNTABILITY, ASSURED.",
-  "BUYERS AND DEVELOPERS INTERESTS. PROTECTED.",
-  "HIGH QUALITY OF CONSTRUCTION. ENSURED.",
-  "SPEEDY DISPUTE REDRESSAL. ESTABLISHED.",
-  "FDI INFLOWS. REVIVED.",
+  
 ];
 
 function Hero() {
@@ -189,53 +164,94 @@ function Hero() {
 
   return (
     <section
-      className="passport-hero"
+      className="homepassport-hero"
       style={{ backgroundImage: `url(${bgImages[bgIndex]})` }}
     >
-      {/* Leaders */}
-      <div className="passport-leaders">
+       {/* ================= ABOUT AP RERA SECTION ================= */}
+      <section className="ap-home-about-section">
+        <div className="ap-home-about-container">
 
-        <div className="passport-card">
-          <img
-            src="https://www.imageshine.in/uploads/gallery/PNG-Images-of-Nara-Chandrababu-Naidu.png"
-            alt="Sri N. Chandrababu Naidu"
-          />
-          <h4>Sri N. Chandrababu Naidu</h4>
-          <p>
-            Hon'ble Chief Minister<br />
-            Government of Andhra Pradesh
-          </p>
+          {/* LEFT CONTENT */}
+          <div className="ap-home-about-left">
+           
+         <h2 style={{ fontSize: "32px", fontWeight: "700" }}>
+          About AP RERA
+          </h2>
+
+            <p style={{ fontSize: "18px", fontWeight: "500" }}>
+              The Real Estate (Regulation & Development) Act, 2016 has been established on 25th March,
+              2016 and considered as one of the landmark legislations passed by the Government of India.
+              Its objective is to reform the real estate sector in India, encouraging greater transparency,
+              citizen centricity, accountability and financial discipline. This is in line with the vast
+              and growing economy of India as in future many people will be investing in real estate
+              sector.
+            </p>
+
+           <p style={{ fontSize: "18px", fontWeight: "400" }}>
+              All sections of the Real Estate (Regulation & Development) Act, 2016 came into force
+              with effect from 1st May, 2017. The Andhra Pradesh Real Estate (Regulation & Development)
+              Rules, 2017 was approved by Government of Andhra Pradesh and notified on March 27, 2017.
+            </p>
+
+            <p style={{ fontSize: "18px", fontWeight: "400" }}>
+              For Buildings where the area of land proposed to be developed does not exceed five hundred
+              square meters or the number of apartments proposed to be developed does not exceed eight
+              inclusive of all phases.
+            </p>
+          </div>
+
+          {/* RIGHT CONTENT */}
+          <div className="ap-home-about-right">
+
+            {/* Vertical Line */}
+            <div className="ap-home-vertical-line"></div>
+
+            {/* Chief Minister */}
+            <div className="ap-home-cm-card">
+              <img
+                src="https://www.imageshine.in/uploads/gallery/PNG-Images-of-Nara-Chandrababu-Naidu.png"
+                alt="Sri N. Chandrababu Naidu"
+              />
+              <h4>Sri N. Chandrababu Naidu</h4>
+              <p>Hon’ble Chief Minister of Andhra Pradesh</p>
+            </div>
+
+            {/* Vertical Line */}
+            <div className="ap-home-vertical-line"></div>
+
+            {/* Side Leaders */}
+            <div className="ap-home-side-leaders">
+
+              <div className="ap-home-side-leader">
+                <img
+                  src="https://mallishetty.wordpress.com/wp-content/uploads/2016/05/narayanasir.jpg"
+                  alt="Sri P. Narayana"
+                />
+                <div>
+                  <h5>Sri P. Narayana</h5>
+                  <p>Hon’ble Minister for<br />MA & UD</p>
+                </div>
+              </div>
+
+              <div className="ap-home-side-leader">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvYbO0kkDIqnDiHndh_Fu04lmISxIKEP_fvw&s"
+                  alt="Sri A. Siva Reddy"
+                />
+                <div>
+                  <h5>Sri A. Siva Reddy</h5>
+                  <p>Hon’ble Chairperson,<br />AP RERA</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-
-        <div className="passport-card">
-          <img
-            src="https://mallishetty.wordpress.com/wp-content/uploads/2016/05/narayanasir.jpg"
-            alt="Sri P. Narayana"
-          />
-          <h4>Sri P. Narayana</h4>
-          <p>
-            Hon'ble Minister for<br />
-            MA & UD
-          </p>
-        </div>
-
-        <div className="passport-card">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvYbO0kkDIqnDiHndh_Fu04lmISxIKEP_fvw&s"
-            alt="Sri A. Siva Reddy"
-          />
-          <h4>Sri A. Siva Reddy</h4>
-          <p>
-            Chairperson<br />
-            Andhra Pradesh RERA
-          </p>
-        </div>
-
-      </div>
-
+      </section>
       {/* Statement */}
-      <div className="passport-statement-wrap">
-        <h2 key={statementIndex} className="passport-statement">
+      <div className="homepassport-statement-wrap">
+        <h2 key={statementIndex} className="homepassport-statement">
           {heroStatements[statementIndex]}
         </h2>
       </div>
@@ -317,31 +333,32 @@ function Services() {
   const navigate = useNavigate();
 
   const registrationLinks = [
-    {
-      title:
-        "Documents to be submitted while applying for project on agent registration",
-      Image: "/assets/images/img21.png",
-    },
-    {
-      title: "Project Registration",
-      Image: "/assets/images/img19.png",
-      path: "/project-registration-wizard",
-    },
-    {
-      title: "Agent Registration",
-      Image: "/assets/images/img13.png",
-      path: "/agent-registration",
-    },
-    {
-      title: "Complaint Registration",
-      Image: "/assets/images/img3.png",
-      path: "/complaintregistration",
-    },
-    {
-      title: "List of un-registered projects with APRERA",
-      Image: "/assets/images/img19.png",
-    },
-  ];
+  {
+    title:
+      "Documents to be submitted while applying for project on agent registration",
+    icon: FaFileAlt,
+  },
+  {
+    title: "Project Registration",
+    icon: FaBuilding,
+    path: "/project-registration-wizard",
+  },
+  {
+    title: "Agent Registration",
+    icon: FaUserTie,
+    path: "/agent-registration",
+  },
+  {
+    title: "Complaint Registration",
+    icon: FaEdit,
+    path: "/complaintregistration",
+  },
+  {
+    title: "List of un-registered projects with APRERA",
+    icon: FaListUl,
+  },
+];
+
   const promoterServices = [
     { title: "Apply for Quarterly Update", icon: FaSyncAlt },
     { title: "Apply for Project Extension", icon: FaArrowRight, path: "/otplogin" },
@@ -367,19 +384,19 @@ function Services() {
 
   const renderSection = (title, services) => (
     <>
-      <h3 className="section-title">{title}</h3>
-      <div className="services-grid">
+      <h3 className="homeservices-section-title">{title}</h3>
+      <div className="homeservices-services-grid">
         {services.map((item, index) => {
           const Icon = item.icon;
           return (
             <div
               key={index}
-              className="service-card"
+              className="homeservices-service-card"
               onClick={() => handleClick(item)}
             >
-              <Icon className="service-icon" />
+              <Icon className="homeservices-service-icon" />
               <p>{item.title}</p>
-              <span className="underline"></span>
+              <span className="homeservices-underline"></span>
             </div>
           );
         })}
@@ -388,24 +405,32 @@ function Services() {
   );
 
   return (
-  <section className="quick-links-overlap">
-    <div className="home-services-card">
-      <h2 className="hp-main-title">Services</h2>
+  <section className="homequick-links-overlap">
+    <div className="homequick-services-card">
+      <h2 className="homequick-main-title">Services</h2>
 
-      <div className="registration-grid">
-        {registrationLinks.map((link, index) => (
-          <div
-            key={index}
-            className="registration-card"
-            onClick={() => handleClick(link)}
-          >
-            <img src={link.Image} alt="" />
-            <p>{link.title}</p>
-          </div>
-        ))}
+     <div className="homequick-registration-grid">
+  {registrationLinks.map((link, index) => {
+    const Icon = link.icon;
+
+    return (
+      <div
+        key={index}
+        className="homequick-registration-card"
+        onClick={() => handleClick(link)}
+      >
+        <div className="homequick-registration-icon-wrap">
+          <Icon className="homequick-registration-icon" />
+        </div>
+
+        <p className="homequick-registration-text">{link.title}</p>
       </div>
+    );
+  })}
+</div>
 
-      <div className="hp-section-divider"></div>
+
+      <div className="homequick-section-divider"></div>
 
       {renderSection("Promotors Corner", promoterServices)}
       {renderSection("Real Estate Agent Corner", agentServices)}
@@ -445,24 +470,24 @@ function Publicnotice() {
   ];
 
   return (
-    <section className="public-notice-section">
-      <div className="public-notice-container">
-        <h2 className="public-notice-title">Our Philosophy</h2>
+    <section className="homepublic-notice-section">
+      <div className="homepublic-notice-container">
+        <h2 className="homepublic-notice-title">Our Philosophy</h2>
 
-        <div className="public-notice-grid">
+        <div className="homepublic-notice-grid">
           {notices.map((notice, index) => (
-            <div className="public-notice-card" key={index}>
-              <div className="public-notice-icon">{notice.icon}</div>
-              <h3 className="public-notice-title">{notice.title}</h3>
-              <p className="public-notice-text">{notice.description}</p>
+            <div className="homepublic-notice-card" key={index}>
+              <div className="homepublic-notice-icon">{notice.icon}</div>
+              {/* <h3 className="homepublic-notice-title">{notice.title}</h3> */}
+              <p className="homepublic-notice-text">{notice.description}</p>
             </div>
           ))}
         </div>
-        <div className="public-philosophy-right">
+        <div className="homepublic-philosophy-right">
           <h2>MAGNIFYING TOWARDS...</h2>
-          <div className="public-title-line"></div>
+          <div className="homepublic-title-line"></div>
 
-          <ul className="public-arrow-list">
+          <ul className="homepublic-arrow-list">
             <li>Ensuring accountability towards allottees and protect their interest.</li>
             <li>Infusing transparency, ensure fair-play and reduce frauds & delays.</li>
             <li>Introducing professionalism and pan India standardization.</li>
@@ -829,7 +854,8 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img13.png" alt="Consultation" />
+            <img src="/assets/images/imag13.png" alt="Consultation" />
+
           </div>
           <h3>CONSULTATION</h3>
           <p>
@@ -840,7 +866,7 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img14.png" alt="Promotion" />
+            <img src="/assets/images/imag14.png" alt="Promotion" />
           </div>
           <h3>PROMOTION</h3>
           <p>
@@ -851,7 +877,7 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img15.png" alt="Protection" />
+            <img src="/assets/images/imag15.png"   alt="Protection" />
           </div>
           <h3>PROTECTION</h3>
           <p>
@@ -862,7 +888,7 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img16.png" alt="Financial Discipline" />
+            <img src="/assets/images/imag16.png"   alt="Financial Discipline" />
           </div>
           <h3>FINANCIAL DISCIPLINE</h3>
           <p>
@@ -873,7 +899,7 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img17.png" alt="Quality Assurance" />
+            <img src="/assets/images/imag17.png" alt="Quality Assurance" />
           </div>
           <h3>QUALITY ASSURANCE</h3>
           <p>
@@ -884,7 +910,7 @@ function Expertise() {
 
         <div className="home-new-expertise-card">
           <div className="home-new-expertise-icon">
-            <img src="/assets/images/img18.png" alt="Dispute Redressal" />
+            <img src="/assets/images/imag18.png" alt="Dispute Redressal" />
           </div>
           <h3>DISPUTE REDRESSAL</h3>
           <p>

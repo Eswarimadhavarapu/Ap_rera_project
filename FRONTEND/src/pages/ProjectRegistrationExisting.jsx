@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/otplogin.css";
 
-const API_BASE = "https://7pcdv8zx-8080.inc1.devtunnels.ms/api";
+const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
 
 const ProjectRegistrationExisting = () => {
   const navigate = useNavigate();
@@ -84,8 +84,10 @@ const ProjectRegistrationExisting = () => {
 
       sessionStorage.setItem("loginResponse", JSON.stringify(data));
 
-      navigate("/ExtensionProcess", {
-        state: { loginData: data },
+      navigate("/prexistingtable", {
+         state: {
+    panNumber: pan   // ✅ ADD THIS
+  },
       });
 
     } catch (err) {
@@ -118,12 +120,13 @@ const ProjectRegistrationExisting = () => {
               </span>
 
               <span className="otplogin-bc-text">
-                {" "} / Registration / Project Registration / Apply for Project Extension / otp login
+                {" "} / Registration / Project Registration
               </span>
 
                
             </div>
           </div>
+          <div className="projectreg-heading">Project Registration</div>
 
           {/* ================= OTP CONTAINER ================= */}
           <div className="otplogin-otp-container">

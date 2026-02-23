@@ -8,7 +8,7 @@ const isProduction = import.meta.env.MODE === "production";
  * - Dev: DevTunnel backend (8080)
  * - Prod: real domain
  */
-const DEV_BACKEND_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+export const DEV_BACKEND_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
 
 // const DEV_BACKEND_URL = "http://localhost:8080";
 

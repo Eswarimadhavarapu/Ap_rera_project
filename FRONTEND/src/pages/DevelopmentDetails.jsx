@@ -1,32 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate,useLocation  } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { apiPost } from "../api/api";
 import '../styles/DevelopmentDetails.css';
 import ProjectWizard from "../components/ProjectWizard";
+import ReraLoader from "../components/ReraLoader";
+
 
 const DevelopmentDetails = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-const panNumber =
-  location.state?.panNumber || sessionStorage.getItem("panNumber");
+    const panNumber =
+        location.state?.panNumber || sessionStorage.getItem("panNumber");
 
-const applicationNumber =
-  location.state?.applicationNumber ||
-  sessionStorage.getItem("applicationNumber");
+    const applicationNumber =
+        location.state?.applicationNumber ||
+        sessionStorage.getItem("applicationNumber");
 
-  console.log("PAN Number:", panNumber);
-console.log("Application Number:", applicationNumber);
+    console.log("PAN Number:", panNumber);
+    console.log("Application Number:", applicationNumber);
 
-  useEffect(() => {
-  if (location.state?.panNumber && location.state?.applicationNumber) {
-    sessionStorage.setItem("panNumber", location.state.panNumber);
-    sessionStorage.setItem(
-      "applicationNumber",
-      location.state.applicationNumber
-    );
-  }
-}, [location.state]);
+    useEffect(() => {
+        if (location.state?.panNumber && location.state?.applicationNumber) {
+            sessionStorage.setItem("panNumber", location.state.panNumber);
+            sessionStorage.setItem(
+                "applicationNumber",
+                location.state.applicationNumber
+            );
+        }
+    }, [location.state]);
 
 
 
@@ -85,7 +87,7 @@ console.log("Application Number:", applicationNumber);
         description: '',
         type: 'Select'
     });
-     const [otherWorksList, setOtherWorksList] = useState([]);
+    const [otherWorksList, setOtherWorksList] = useState([]);
 
     const [expandedSections, setExpandedSections] = useState({
         plots: false,
@@ -94,35 +96,35 @@ console.log("Application Number:", applicationNumber);
         commercial: false
     });
 
-useEffect(() => {
-  if (!panNumber || !applicationNumber) {
-    alert("Session expired. Please start from Project Details.");
-    navigate("/project-details");
-  }
-}, [panNumber, applicationNumber, navigate]);
+    useEffect(() => {
+        if (!panNumber || !applicationNumber) {
+            alert("Session expired. Please start from Project Details.");
+            navigate("/project-details");
+        }
+    }, [panNumber, applicationNumber, navigate]);
 
 
 
     // Generate project ID on component mount
-   useEffect(() => {
-    const savedData = localStorage.getItem("developmentDetailsForm");
+    useEffect(() => {
+        const savedData = localStorage.getItem("developmentDetailsForm");
 
-    if (savedData) {
-        const data = JSON.parse(savedData);
+        if (savedData) {
+            const data = JSON.parse(savedData);
 
-        setProjectId(data.projectId || '');
-        setProjectType(data.projectType || 'residential');
-        setBuildingTypes(data.buildingTypes || {});
-        setPlotDetails(data.plotDetails || {});
-        setApartmentDetails(data.apartmentDetails || {});
-        setVillaDetails(data.villaDetails || {});
-        setCommercialDetails(data.commercialDetails || {});
-        setExternalDevelopmentWorks(data.externalDevelopmentWorks || []);
-        setOtherWorksList(data.otherWorksList || []);
-    } else {
-        generateProjectId(); // only if no saved data
-    }
-}, []);
+            setProjectId(data.projectId || '');
+            setProjectType(data.projectType || 'residential');
+            setBuildingTypes(data.buildingTypes || {});
+            setPlotDetails(data.plotDetails || {});
+            setApartmentDetails(data.apartmentDetails || {});
+            setVillaDetails(data.villaDetails || {});
+            setCommercialDetails(data.commercialDetails || {});
+            setExternalDevelopmentWorks(data.externalDevelopmentWorks || []);
+            setOtherWorksList(data.otherWorksList || []);
+        } else {
+            generateProjectId(); // only if no saved data
+        }
+    }, []);
 
 
     const generateProjectId = () => {
@@ -168,18 +170,29 @@ useEffect(() => {
         document.body.removeChild(link);
     };
 
+    const showReraLoaderAndRun = (action) => {
+        setIsSubmitting(true);
+
+        setTimeout(() => {
+            action();
+            setIsSubmitting(false);
+        }, 800); // ⏱ feels like real AP-RERA site
+    };
+
+
+
     const handleBuildingTypeChange = (type) => {
-  setBuildingTypes(prev => ({
-    ...prev,
-    [type]: !prev[type]
-  }));
+        showReraLoaderAndRun(() => {
+            setBuildingTypes(prev => ({
+                ...prev,
+                [type]: !prev[type]
+            }));
 
-
-
-        setExpandedSections(prev => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
+            setExpandedSections(prev => ({
+                ...prev,
+                [type]: !prev[type]
+            }));
+        });
     };
 
     const handleInputChange = (section, field, value) => {
@@ -236,8 +249,8 @@ useEffect(() => {
         setExternalDevelopmentWorks(updatedWorks);
     };
     const handleDeleteOtherWork = (id) => {
-    setOtherWorksList(prev => prev.filter(item => item.id !== id));
-};
+        setOtherWorksList(prev => prev.filter(item => item.id !== id));
+    };
 
     const toggleSection = (section) => {
         setExpandedSections(prev => ({
@@ -276,45 +289,54 @@ useEffect(() => {
         return labels[type] || type;
     };
     const handleAddOtherWork = () => {
-    if (!otherWork.description.trim()) {
-        alert("Please enter Work Description");
-        return;
-    }
+        if (!otherWork.description.trim()) {
+            alert("Please enter Work Description");
+            return;
+        }
 
-    if (otherWork.type === "Select") {
-        alert("Please select Work Type");
-        return;
-    }
+        if (otherWork.type === "Select") {
+            alert("Please select Work Type");
+            return;
+        }
 
-    const newItem = {
-        id: Date.now(),
-        description: otherWork.description,
-        type: otherWork.type
+        const newItem = {
+            id: Date.now(),
+            description: otherWork.description,
+            type: otherWork.type
+        }
+        showReraLoaderAndRun(() => {
+            const newItem = {
+                id: Date.now(),
+                description: otherWork.description,
+                type: otherWork.type
+            };
+
+
+
+            setOtherWorksList(prev => [...prev, newItem]);
+
+            // Reset inputs
+            setOtherWork({
+                description: '',
+                type: 'Select'
+            });
+        });
     };
+    const saveFormToLocalStorage = () => {
+        const data = {
+            projectId,
+            projectType,
+            buildingTypes,
+            plotDetails,
+            apartmentDetails,
+            villaDetails,
+            commercialDetails,
+            externalDevelopmentWorks,
+            otherWorksList
+        };
 
-    setOtherWorksList(prev => [...prev, newItem]);
-
-    // Reset inputs
-    setOtherWork({
-        description: '',
-        type: 'Select'
-    });
-};
- const saveFormToLocalStorage = () => {
-    const data = {
-        projectId,
-        projectType,
-        buildingTypes,
-        plotDetails,
-        apartmentDetails,
-        villaDetails,
-        commercialDetails,
-        externalDevelopmentWorks,
-        otherWorksList
+        localStorage.setItem("developmentDetailsForm", JSON.stringify(data));
     };
-
-    localStorage.setItem("developmentDetailsForm", JSON.stringify(data));
-};
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -329,8 +351,8 @@ useEffect(() => {
             formData.append('project_type', projectType);
             formData.append('work_description', otherWork.description || '');
             formData.append('work_type', otherWork.type || 'Select');
-formData.append("pan_number", panNumber);
-formData.append("application_number", applicationNumber);
+            formData.append("pan_number", panNumber);
+            formData.append("application_number", applicationNumber);
 
 
 
@@ -344,7 +366,7 @@ formData.append("application_number", applicationNumber);
                     no_plots: parseInt(plotDetails.totalPlots) || 0,
                     no_blocks: parseInt(plotDetails.no_blocks) || 0
                 };
-                
+
                 // Append file if selected
                 if (plotDetails.plotFile) {
                     formData.append(`${key}_file`, plotDetails.plotFile);
@@ -358,7 +380,7 @@ formData.append("application_number", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(apartmentDetails.totalBlocks) || 0
                 };
-                
+
                 // Append file if selected
                 if (apartmentDetails.apartmentFile) {
                     formData.append(`${key}_file`, apartmentDetails.apartmentFile);
@@ -377,7 +399,7 @@ formData.append("application_number", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(villaDetails.totalBlocks) || 0
                 };
-                
+
                 // Append file if selected
                 if (villaDetails.villaFile) {
                     formData.append(`${key}_file`, villaDetails.villaFile);
@@ -395,7 +417,7 @@ formData.append("application_number", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(commercialDetails.totalBlocks) || 0
                 };
-                
+
                 // Append file if selected
                 if (commercialDetails.commercialFile) {
                     formData.append(`${key}_file`, commercialDetails.commercialFile);
@@ -427,10 +449,10 @@ formData.append("application_number", applicationNumber);
 
             // Append external_development_work as JSON string
             formData.append('external_development_work', JSON.stringify(externalDevelopmentWork));
-             formData.append('other_external_works', JSON.stringify(otherWorksList));
+            formData.append('other_external_works', JSON.stringify(otherWorksList));
             // 4. Send the request to backend
             console.log('Submitting form to https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details');
-            
+
             // const response = await axios.post(
             //     'https://vhrvnq33-8080.inc1.devtunnels.ms/api/development-details',
             //     formData,
@@ -440,60 +462,60 @@ formData.append("application_number", applicationNumber);
             //     }
             // );
             const response = await apiPost(
-  "/api/development-details",
-  formData
-);
+                "/api/development-details",
+                formData
+            );
 
-console.log("Response:", response);
-            
+            console.log("Response:", response);
+
 
             //console.log('Response:', response.data);
-            
-           //if (response.status === 201)
+
+            //if (response.status === 201)
             if (response && response.id) {
 
 
-    // 🔹 1. Prepare data you want to carry forward
-    const submittedData = {
-        projectId,
-        projectType,
-        buildingTypes,
-        plotDetails,
-        apartmentDetails,
-        villaDetails,
-        commercialDetails,
-        externalDevelopmentWorks,
-        otherWorksList
-    };
+                // 🔹 1. Prepare data you want to carry forward
+                const submittedData = {
+                    projectId,
+                    projectType,
+                    buildingTypes,
+                    plotDetails,
+                    apartmentDetails,
+                    villaDetails,
+                    commercialDetails,
+                    externalDevelopmentWorks,
+                    otherWorksList
+                };
 
-    // 🔹 2. SAVE TO localStorage (THIS IS WHAT YOU ASKED)
-    localStorage.setItem(
-        "developmentDetailsSubmitted",
-        JSON.stringify(submittedData)
-    );
+                // 🔹 2. SAVE TO localStorage (THIS IS WHAT YOU ASKED)
+                localStorage.setItem(
+                    "developmentDetailsSubmitted",
+                    JSON.stringify(submittedData)
+                );
 
-    // 🔹 3. Mark wizard step complete
-    completeStep(3);
+                // 🔹 3. Mark wizard step complete
+                completeStep(3);
 
-    // 🔹 4. Navigate to next page WITH DATA
-     alert("Details submited succefully.");
-navigate("/associate-details", {
-  state: {
-    panNumber,
-    applicationNumber,
-    developmentData: submittedData
-  }
-});
- 
+                // 🔹 4. Navigate to next page WITH DATA
+                alert("Details submited succefully.");
+                navigate("/associate-details", {
+                    state: {
+                        panNumber,
+                        applicationNumber,
+                        developmentData: submittedData
+                    }
+                });
 
-}
- else {
+
+            }
+            else {
                 alert('Unexpected response from server');
             }
-            
+
         } catch (error) {
             console.error('Error submitting form:', error);
-            
+
             let errorMessage = 'Submission failed';
             if (error.response) {
                 console.error('Server responded with:', error.response.data);
@@ -505,7 +527,7 @@ navigate("/associate-details", {
                 console.error('Request setup error:', error.message);
                 errorMessage += `: ${error.message}`;
             }
-            
+
             alert(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -517,6 +539,7 @@ navigate("/associate-details", {
 
     return (
         <div className="development-details-container_pd">
+            {isSubmitting && <ReraLoader />}
             {/* Header Navigation */}
             <div className="development-details-breadcrumb1">
                 <span>You are here : </span>
@@ -525,73 +548,75 @@ navigate("/associate-details", {
                 <span>Registration / Project Registration</span>
             </div>
 
-           
-            
+
+
             <ProjectWizard currentStep={3} />
 
             <form onSubmit={handleSubmit} className="development-details-form">
                 <div className="development-detailsform-section">
                     <h3 className="development-details-subheading">Development Details</h3>
-                    
+
                     <div className="development-details-row development-details-innerdivrow">
                         <div className="development-details-col-sm-12">
                             <div className="development-details-form-group">
                                 <label className="development-details-label">
                                     Project Consists of<font color="red">*</font>
                                 </label>
-                                
-                              <table className="development-details-custom_checkbox" style={{ width: '100%' }}>
-  <tbody>
-    <tr>
-      {/* Plots - Disabled */}
-      <td>
-        <input
-          id="chkPlots"
-          type="checkbox"
-          checked={buildingTypes.plots}
-          disabled
-        />
-        <label htmlFor="chkPlots">Plots</label>
-      </td>
 
-      {/* Apartments/Flats */}
-      <td>
-        <input
-          id="chkApartments"
-          type="checkbox"
-          checked={buildingTypes.apartmentsFlats}
-          onChange={() => handleBuildingTypeChange('apartmentsFlats')}
-        />
-        <label htmlFor="chkApartments">Apartments/Flats</label>
-      </td>
+                                <table className="development-details-custom_checkbox" style={{ width: '100%' }}>
+                                    <tbody>
+                                        <tr>
+                                            {/* Plots - Disabled */}
+                                            <td>
+                                                <input
+                                                    id="chkPlots"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.plots}
+                                                    onChange={() => handleBuildingTypeChange('plots')}
 
-      {/* Villas */}
-      <td>
-        <input
-          id="chkVillas"
-          type="checkbox"
-        checked={buildingTypes.villas}
-          onChange={() => handleBuildingTypeChange('villas')}
-        />
-        <label htmlFor="chkVillas">Villas</label>
-      </td>
+                                                />
+                                                <label htmlFor="chkPlots">Plots</label>
+                                            </td>
 
-      {/* Commercial - Disabled */}
-      <td>
-        <input
-          id="chkCommercial"
-          type="checkbox"
-          checked={buildingTypes.commercial}
-          disabled
-        />
-        <label htmlFor="chkCommercial">Commercial</label>
-      </td>
-    </tr>
-  </tbody>
-</table>
+                                            {/* Apartments/Flats */}
+                                            <td>
+                                                <input
+                                                    id="chkApartments"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.apartmentsFlats}
+                                                    onChange={() => handleBuildingTypeChange('apartmentsFlats')}
+                                                />
+                                                <label htmlFor="chkApartments">Apartments/Flats</label>
+                                            </td>
+
+                                            {/* Villas */}
+                                            <td>
+                                                <input
+                                                    id="chkVillas"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.villas}
+                                                    onChange={() => handleBuildingTypeChange('villas')}
+                                                />
+                                                <label htmlFor="chkVillas">Villas</label>
+                                            </td>
+
+                                            {/* Commercial */}
+                                            <td>
+                                                <input
+                                                    id="chkCommercial"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.commercial}
+                                                    onChange={() => handleBuildingTypeChange('commercial')}
+
+                                                />
+                                                <label htmlFor="chkCommercial">Commercial</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
                             </div>
-                            
+
                             <div className="development-details-note-section-of-developmentdetails">
                                 <label className="development-details-label-note-developmentdetails">
                                     <strong>Note:</strong><br />
@@ -605,16 +630,19 @@ navigate("/associate-details", {
                         </div>
                     </div>
 
-                    {/* Accordion Sections */}
+
                     <div className="development-details-accordion-wrapper">
                         {/* Plot Details Section */}
                         {buildingTypes.plots && (
                             <div className="development-details-accordion-section">
-                                <div 
-                                    className={`development-details-accordion-header ${expandedSections.plots ? 'development-details-active' : ''}`}
-                                    onClick={() => toggleSection('plots')}
+                                <div
+                                    className={`development-details-accordion-header ${expandedSections.plots ? "development-details-active" : ""
+                                        }`}
+                                    onClick={() => toggleSection("plots")}
                                 >
-                                    <span className="development-details-accordion-icon">+</span>
+
+
+                                    <span className="development-details-accordion-icon">{expandedSections.plots ? '−' : '+'}</span>
                                     Plot Details
                                 </div>
                                 {expandedSections.plots && (
@@ -622,11 +650,11 @@ navigate("/associate-details", {
                                         <div className="development-details-row development-details-innerdivrow_pd">
                                             <div className="development-details-col-xs-12 development-details-dvborder">
                                                 <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
                                                         onClick={(e) => handleTemplateDownload(e, 'plot')}
-                                                        style={{fontSize: '16px'}}
+                                                        style={{ fontSize: '16px' }}
                                                     >
                                                         Click here to download Plot Details Excel Template
                                                     </a>
@@ -636,8 +664,8 @@ navigate("/associate-details", {
                                                         <label className="development-details-label">
                                                             Total No of Plots<font color="red">*</font>
                                                         </label>
-                                                        <input 
-                                                            type="text" 
+                                                        <input
+                                                            type="text"
                                                             maxLength="6"
                                                             className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Plots"
@@ -647,47 +675,42 @@ navigate("/associate-details", {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="development-details-col-sm-3">
-                                                    <div className="development-details-form-group">
-                                                        <label className="development-details-label">
-                                                            No of Blocks<font color="red">*</font>
-                                                        </label>
-                                                        <input 
-                                                            type="text" 
-                                                            maxLength="6"
-                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
-                                                            placeholder="No of Blocks"
-                                                            value={plotDetails.no_blocks}
-                                                            onChange={(e) => handleInputChange('plots', 'no_blocks', e.target.value)}
-                                                            required={buildingTypes.plots}
-                                                        />
-                                                    </div>
-                                                </div>
+
                                                 <div className="development-details-col-xs-4">
                                                     <div className="development-details-form-group">
                                                         <label className="development-details-label">
-                                                            Upload Plot Details<font color="red">*</font>
+                                                            Upload Plot Details{!plotDetails.file_path && <font color="red">*</font>}
                                                         </label>
-                                                        <input 
+                                                        <input
                                                             type="file"
                                                             className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('plots', e.target.files[0])}
-                                                            required={buildingTypes.plots}
+                                                            required={buildingTypes.plots && !plotDetails.file_path}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="development-details-col-xs-3">
                                                     <div className="development-details-form-group">
-                                                        <p className="development-details-file-info-text">
-                                                            Select Excel file
-                                                        </p>
+                                                        <button
+                                                            type="button"
+                                                            className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+                                                        >
+                                                            Upload Excel
+                                                        </button>
                                                     </div>
                                                 </div>
+                                                {plotDetails.file_path && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
+                                                            ✓ Previously uploaded: <strong>{plotDetails.file_path.split('\\').pop().split('/').pop()}</strong>
+                                                        </p>
+                                                    </div>
+                                                )}
                                                 {plotDetails.plotFile && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info">
-                                                            Selected file: <strong>{plotDetails.plotFile.name}</strong> 
+                                                        <p className="development-details-file-info" style={{ background: '#e7f3ff', padding: '10px', borderRadius: '5px' }}>
+                                                            📎 New file selected: <strong>{plotDetails.plotFile.name}</strong>
                                                             ({Math.round(plotDetails.plotFile.size / 1024)} KB)
                                                         </p>
                                                     </div>
@@ -698,211 +721,207 @@ navigate("/associate-details", {
                                 )}
                             </div>
                         )}
-
                         {/* Apartment/Flat Details Section */}
-{buildingTypes.apartmentsFlats && (
-  <div className="development-details-accordion-section">
-    <div
-      className={`development-details-accordion-header ${
-        expandedSections.apartments ? "development-details-active" : ""
-      }`}
-      onClick={() => toggleSection("apartments")}
-    >
-      <span className="development-details-accordion-icon">
-        {expandedSections.apartments ? "−" : "+"}
-      </span>
-      Apartment/Flat Details
-    </div>
+                        {buildingTypes.apartmentsFlats && (
+                            <div className="development-details-accordion-section">
+                                <div
+                                    className={`development-details-accordion-header ${expandedSections.apartments ? "development-details-active" : ""
+                                        }`}
+                                    onClick={() => toggleSection("apartments")}
+                                >
+                                    <span className="development-details-accordion-icon">
+                                        {expandedSections.apartments ? "−" : "+"}
+                                    </span>
+                                    Apartment/Flat Details
+                                </div>
 
-    {expandedSections.apartments && (
-      <div className="development-details-accordion-content">
-        <div className="development-details-row development-details-innerdivrow">
-          <div className="development-details-col-xs-12 development-details-dvborder">
+                                {expandedSections.apartments && (
+                                    <div className="development-details-accordion-content">
+                                        <div className="development-details-row development-details-innerdivrow">
+                                            <div className="development-details-col-xs-12 development-details-dvborder">
 
-            {/* ✅ Download link */}
-            <div className="development-details-form-group">
-              <a
-                href="#"
-                className="development-details-lnk-link"
-                onClick={(e) => handleTemplateDownload(e, "flat")}
-                style={{ fontSize: "16px" }}
-              >
-                Click here to download Flat Details Excel Template
-              </a>
-            </div>
+                                                {/* ✅ Download link */}
+                                                <div className="development-details-form-group">
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
+                                                        onClick={(e) => handleTemplateDownload(e, "flat")}
+                                                        style={{ fontSize: "16px" }}
+                                                    >
+                                                        Click here to download Flat Details Excel Template
+                                                    </a>
+                                                </div>
 
-            {/* ✅ Column-1 Total Blocks */}
-            <div className="development-details-col-sm-3">
-              <div className="development-details-form-group">
-                <label className="development-details-label">
-                  Total No of Blocks<font color="red">*</font>
-                </label>
-                <input
-                  type="text"
-                  maxLength="6"
-                  className="development-details-form-control development-details-inputbox development-details-allownumeric"
-                  placeholder="Total No of Blocks"
-                  value={apartmentDetails.totalBlocks}
-                  onChange={(e) =>
-                    handleInputChange("apartments", "totalBlocks", e.target.value)
-                  }
-                  required={buildingTypes.apartmentsFlats}
-                />
-              </div>
-            </div>
+                                                {/* ✅ Column-1 Total Blocks */}
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
+                                                            Total No of Blocks<font color="red">*</font>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            maxLength="6"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
+                                                            placeholder="Total No of Blocks"
+                                                            value={apartmentDetails.totalBlocks}
+                                                            onChange={(e) =>
+                                                                handleInputChange("apartments", "totalBlocks", e.target.value)
+                                                            }
+                                                            required={buildingTypes.apartmentsFlats}
+                                                        />
+                                                    </div>
+                                                </div>
 
-            {/* ✅ Column-2 File upload */}
-            <div className="development-details-col-xs-4">
-              <div className="development-details-form-group">
-                <label className="development-details-label">
-                  Upload Flat Details<font color="red">*</font>
-                </label>
-                <input
-                  type="file"
-                  className="development-details-form-control development-details-inputbox"
-                  accept=".xlsx,.xls"
-                  onChange={(e) => handleFileChange("apartments", e.target.files[0])}
-                  required={buildingTypes.apartmentsFlats}
-                />
-              </div>
-            </div>
+                                                {/* ✅ Column-2 File upload */}
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
+                                                            Upload Flat Details<font color="red">*</font>
+                                                        </label>
+                                                        <input
+                                                            type="file"
+                                                            className="development-details-form-control development-details-inputbox"
+                                                            accept=".xlsx,.xls"
+                                                            onChange={(e) => handleFileChange("apartments", e.target.files[0])}
+                                                            required={buildingTypes.apartmentsFlats}
+                                                        />
+                                                    </div>
+                                                </div>
 
-            {/* ✅ Column-3 Upload Excel Button */}
-            <div className="development-details-col-xs-3">
-              <div className="development-details-form-group">
-                <button
-                  type="button"
-                  className="development-details-btn development-details-btn-primary development-details-btnmargintop"
-                >
-                  Upload Excel
-                </button>
-              </div>
-            </div>
+                                                {/* ✅ Column-3 Upload Excel Button */}
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <button
+                                                            type="button"
+                                                            className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+                                                        >
+                                                            Upload Excel
+                                                        </button>
+                                                    </div>
+                                                </div>
 
-            {/* ✅ Selected file info */}
-            {apartmentDetails.apartmentFile && (
-              <div className="development-details-col-xs-12">
-                <p className="development-details-file-info">
-                  Selected file: <strong>{apartmentDetails.apartmentFile.name}</strong>{" "}
-                  ({Math.round(apartmentDetails.apartmentFile.size / 1024)} KB)
-                </p>
-              </div>
-            )}
+                                                {/* ✅ Selected file info */}
+                                                {apartmentDetails.apartmentFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{apartmentDetails.apartmentFile.name}</strong>{" "}
+                                                            ({Math.round(apartmentDetails.apartmentFile.size / 1024)} KB)
+                                                        </p>
+                                                    </div>
+                                                )}
 
-          </div>
-        </div>
-      </div>
-    )}
-  </div>
-)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
- {/* Villa Details Section */}
-{buildingTypes.villas && (
-  <div className="development-details-accordion-section">
-    <div
-      className={`development-details-accordion-header ${
-        expandedSections.villas ? "development-details-active" : ""
-      }`}
-      onClick={() => toggleSection("villas")}
-    >
-      <span className="development-details-accordion-icon">
-        {expandedSections.villas ? "−" : "+"}
-      </span>
-      Villa Details
-    </div>
+                        {/* Villa Details Section */}
+                        {buildingTypes.villas && (
+                            <div className="development-details-accordion-section">
+                                <div
+                                    className={`development-details-accordion-header ${expandedSections.villas ? "development-details-active" : ""
+                                        }`}
+                                    onClick={() => toggleSection("villas")}
+                                >
+                                    <span className="development-details-accordion-icon">
+                                        {expandedSections.villas ? "−" : "+"}
+                                    </span>
+                                    Villa Details
+                                </div>
 
-    {expandedSections.villas && (
-      <div className="development-details-accordion-content">
-        <div className="development-details-row development-details-innerdivrow">
-          <div className="development-details-col-xs-12 development-details-dvborder">
+                                {expandedSections.villas && (
+                                    <div className="development-details-accordion-content">
+                                        <div className="development-details-row development-details-innerdivrow">
+                                            <div className="development-details-col-xs-12 development-details-dvborder">
 
-            {/* ✅ Download Link */}
-            <div className="development-details-form-group">
-              <a
-                href="#"
-                className="development-details-lnk-link"
-                onClick={(e) => handleTemplateDownload(e, "villa")}
-                style={{ fontSize: "16px" }}
-              >
-                Click here to download Villa Details Excel Template
-              </a>
-            </div>
+                                                {/* ✅ Download Link */}
+                                                <div className="development-details-form-group">
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
+                                                        onClick={(e) => handleTemplateDownload(e, "villa")}
+                                                        style={{ fontSize: "16px" }}
+                                                    >
+                                                        Click here to download Villa Details Excel Template
+                                                    </a>
+                                                </div>
 
-            {/* ✅ Column-1 Total blocks */}
-            <div className="development-details-col-sm-3">
-              <div className="development-details-form-group">
-                <label className="development-details-label">
-                  Total No of Villas<font color="red">*</font>
-                </label>
-                <input
-                  type="text"
-                  maxLength="6"
-                  className="development-details-form-control development-details-inputbox development-details-allownumeric"
-                  placeholder="Total No of Villas"
-                  value={villaDetails.totalBlocks}
-                  onChange={(e) =>
-                    handleInputChange("villas", "totalBlocks", e.target.value)
-                  }
-                  required={buildingTypes.villas}
-                />
-              </div>
-            </div>
+                                                {/* ✅ Column-1 Total blocks */}
+                                                <div className="development-details-col-sm-3">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
+                                                            Total No of Villas<font color="red">*</font>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            maxLength="6"
+                                                            className="development-details-form-control development-details-inputbox development-details-allownumeric"
+                                                            placeholder="Total No of Villas"
+                                                            value={villaDetails.totalBlocks}
+                                                            onChange={(e) =>
+                                                                handleInputChange("villas", "totalBlocks", e.target.value)
+                                                            }
+                                                            required={buildingTypes.villas}
+                                                        />
+                                                    </div>
+                                                </div>
 
-            {/* ✅ Column-2 File upload */}
-<div className="development-details-col-xs-4">
-  <div className="development-details-form-group">
-    <label className="development-details-label">
-      Upload Villa Details<font color="red">*</font>
-    </label>
-    <input
-      type="file"
-      className="development-details-form-control development-details-inputbox"
-      accept=".xlsx,.xls"
-      onChange={(e) => handleFileChange("villas", e.target.files[0])}
-      required={buildingTypes.villas}
-    />
-  </div>
-</div>
+                                                {/* ✅ Column-2 File upload */}
+                                                <div className="development-details-col-xs-4">
+                                                    <div className="development-details-form-group">
+                                                        <label className="development-details-label">
+                                                            Upload Villa Details<font color="red">*</font>
+                                                        </label>
+                                                        <input
+                                                            type="file"
+                                                            className="development-details-form-control development-details-inputbox"
+                                                            accept=".xlsx,.xls"
+                                                            onChange={(e) => handleFileChange("villas", e.target.files[0])}
+                                                            required={buildingTypes.villas}
+                                                        />
+                                                    </div>
+                                                </div>
 
 
-            {/* ✅ Column-3 Upload Excel Button */}
-<div className="development-details-col-xs-3">
-  <div className="development-details-form-group">
-    <button
-      type="button"
-      className="development-details-btn development-details-btn-primary development-details-btnmargintop"
-    >
-      Upload Excel
-    </button>
-  </div>
-</div>
+                                                {/* ✅ Column-3 Upload Excel Button */}
+                                                <div className="development-details-col-xs-3">
+                                                    <div className="development-details-form-group">
+                                                        <button
+                                                            type="button"
+                                                            className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+                                                        >
+                                                            Upload Excel
+                                                        </button>
+                                                    </div>
+                                                </div>
 
 
-            {/* ✅ Selected file name */}
-            {villaDetails.villaFile && (
-              <div className="development-details-col-xs-12">
-                <p className="development-details-file-info">
-                  Selected file: <strong>{villaDetails.villaFile.name}</strong>{" "}
-                  ({Math.round(villaDetails.villaFile.size / 1024)} KB)
-                </p>
-              </div>
-            )}
+                                                {/* ✅ Selected file name */}
+                                                {villaDetails.villaFile && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info">
+                                                            Selected file: <strong>{villaDetails.villaFile.name}</strong>{" "}
+                                                            ({Math.round(villaDetails.villaFile.size / 1024)} KB)
+                                                        </p>
+                                                    </div>
+                                                )}
 
-          </div>
-        </div>
-      </div>
-    )}
-  </div>
-)}
-
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                         {/* Commercial Details Section */}
                         {buildingTypes.commercial && (
                             <div className="development-details-accordion-section">
-                                <div 
+                                <div
                                     className={`development-details-accordion-header ${expandedSections.commercial ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('commercial')}
                                 >
-                                    <span className="accordion-icon">+</span>
+                                    <span className="development-details-accordion-icon">{expandedSections.commercial ? '−' : '+'}</span>
                                     Commercial Details
                                 </div>
                                 {expandedSections.commercial && (
@@ -910,11 +929,11 @@ navigate("/associate-details", {
                                         <div className="development-details-row development-details-innerdivrow">
                                             <div className="development-details-col-xs-12 development-details-dvborder">
                                                 <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
                                                         onClick={(e) => handleTemplateDownload(e, 'commercial')}
-                                                        style={{fontSize: '16px'}}
+                                                        style={{ fontSize: '16px' }}
                                                     >
                                                         Click here to download Commercial Details Excel Template
                                                     </a>
@@ -924,8 +943,8 @@ navigate("/associate-details", {
                                                         <label className="development-details-label">
                                                             Total No of Blocks<font color="red">*</font>
                                                         </label>
-                                                        <input 
-                                                            type="text" 
+                                                        <input
+                                                            type="text"
                                                             maxLength="6"
                                                             className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Blocks"
@@ -938,28 +957,38 @@ navigate("/associate-details", {
                                                 <div className="development-details-col-xs-4">
                                                     <div className="development-details-form-group">
                                                         <label className="development-details-label">
-                                                            Upload Commercial Details<font color="red">*</font>
+                                                            Upload Commercial Details{!commercialDetails.file_path && <font color="red">*</font>}
                                                         </label>
-                                                        <input 
+                                                        <input
                                                             type="file"
                                                             className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
                                                             onChange={(e) => handleFileChange('commercial', e.target.files[0])}
-                                                            required={buildingTypes.commercial}
+                                                            required={buildingTypes.commercial && !commercialDetails.file_path}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="development-details-col-xs-3">
                                                     <div className="development-details-form-group">
-                                                        <p className="development-details-file-info-text">
-                                                            Will be uploaded with form
-                                                        </p>
+                                                        <button
+                                                            type="button"
+                                                            className="development-details-btn development-details-btn-primary development-details-btnmargintop"
+                                                        >
+                                                            Upload Excel
+                                                        </button>
                                                     </div>
                                                 </div>
+                                                {commercialDetails.file_path && (
+                                                    <div className="development-details-col-xs-12">
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
+                                                            ✓ Previously uploaded: <strong>{commercialDetails.file_path.split('\\').pop().split('/').pop()}</strong>
+                                                        </p>
+                                                    </div>
+                                                )}
                                                 {commercialDetails.commercialFile && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info">
-                                                            Selected file: <strong>{commercialDetails.commercialFile.name}</strong> 
+                                                        <p className="development-details-file-info" style={{ background: '#e7f3ff', padding: '10px', borderRadius: '5px' }}>
+                                                            📎 New file selected: <strong>{commercialDetails.commercialFile.name}</strong>
                                                             ({Math.round(commercialDetails.commercialFile.size / 1024)} KB)
                                                         </p>
                                                     </div>
@@ -975,7 +1004,7 @@ navigate("/associate-details", {
                     {/* External Development Work */}
                     <div className="development-details-external-development-section">
                         <h4 className="development-details-section-title">External Development Work</h4>
-                        
+
                         <table className="development-details-development-table">
                             <thead>
                                 <tr>
@@ -1020,7 +1049,7 @@ navigate("/associate-details", {
                                 <div className="development-details-col-sm-4">
                                     <div className="development-details-form-group">
                                         <label className="development-details-label">Work Description</label>
-                                        <input 
+                                        <input
                                             type="text"
                                             className="development-details-form-control development-details-inputbox"
                                             placeholder="Work Description"
@@ -1032,7 +1061,7 @@ navigate("/associate-details", {
                                 <div className="development-details-col-sm-4">
                                     <div className="development-details-form-group">
                                         <label className="development-details-label">Work Type</label>
-                                        <select 
+                                        <select
                                             className="development-details-form-control development-details-inputbox"
                                             value={otherWork.type}
                                             onChange={(e) => handleInputChange('otherWork', 'type', e.target.value)}
@@ -1046,54 +1075,54 @@ navigate("/associate-details", {
                                 </div>
                                 <div className="development-details-col-sm-2">
                                     <div className="development-details-form-group">
-                                       <button
+                                        <button
                                             type="button"
                                             className="development-details-btn development-details-btn-default development-details-btn-add"
                                             onClick={handleAddOtherWork}
                                         >
-                                              Add
-                                    </button>
+                                            Add
+                                        </button>
 
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {otherWorksList.length > 0 && (
-    <div className="development-details-table-responsive development-details-mt-3">
-        <table className="development-details-table development-details-table-bordered">
-            <thead style={{ backgroundColor: '#3f5367', color: '#fff' }}>
-                <tr>
-                    <th style={{ width: '10%' }}>S.No</th>
-                    <th>Work Description</th>
-                    <th>Work Type</th>
-                    <th style={{ width: '15%' }}>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {otherWorksList.map((item, index) => (
-                    <tr key={item.id}>
-                        <td>{index + 1}</td>
-                        <td>{item.description}</td>
-                        <td>{item.type}</td>
-                        <td>
-                            <button
-                                type="button"
-                                className="development-details-btn development-details-btn-primary development-details-btn-sm"
-                                onClick={() => handleDeleteOtherWork(item.id)}
-                            >
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>
-)}
+                            <div className="development-details-table-responsive development-details-mt-3">
+                                <table className="development-details-table development-details-table-bordered">
+                                    <thead style={{ backgroundColor: '#3f5367', color: '#fff' }}>
+                                        <tr>
+                                            <th style={{ width: '10%' }}>S.No</th>
+                                            <th>Work Description</th>
+                                            <th>Work Type</th>
+                                            <th style={{ width: '15%' }}>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {otherWorksList.map((item, index) => (
+                                            <tr key={item.id}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.description}</td>
+                                                <td>{item.type}</td>
+                                                <td>
+                                                    <button
+                                                        type="button"
+                                                        className="development-details-btn development-details-btn-primary development-details-btn-sm"
+                                                        onClick={() => handleDeleteOtherWork(item.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
 
                         <div className="development-details-form-actions">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="development-details-btn development-details-btn-primary development-details-btn-save"
                                 disabled={isSubmitting}
                             >

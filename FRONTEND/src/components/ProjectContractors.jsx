@@ -43,28 +43,95 @@ const ProjectContractors = ({
   // INPUT CHANGE HANDLER
   // -----------------------------
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    if (name === "state_ut") {
-      const stateId = value ? Number(value) : "";
-
-      setFormData((prev) => ({
-        ...prev,
-        state_ut: stateId,
-        district: "",
-      }));
-
-      if (stateId && onStateChange) {
-        onStateChange(stateId);
-      }
-      return;
-    }
+  // ⭐ State logic (keep same)
+  if (name === "state_ut") {
+    const stateId = value ? Number(value) : "";
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      state_ut: stateId,
+      district: "",
     }));
-  };
+
+    if (stateId && onStateChange) {
+      onStateChange(stateId);
+    }
+    return;
+  }
+
+  // ✅ Contractor Name → letters only
+  if (name === "contractor_name" && !/^[a-zA-Z\s.]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Nature of work → letters + /
+  if (name === "nature_of_work" && !/^[a-zA-Z\s/]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Mobile → numbers only
+  if (name === "mobile_number" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ PIN → numbers only
+  if (name === "pin_code" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Year & projects → numbers only
+  if (
+    ["year_of_establishment", "number_of_key_projects"].includes(name) &&
+    !/^\d*$/.test(value)
+  ) {
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value.trimStart(),
+  }));
+};
+// ⭐ Contractor Validation
+const validateContractor = () => {
+  const errors = {};
+  const currentYear = new Date().getFullYear();
+
+  if (!/^\d{6}$/.test(formData.pin_code)) {
+    errors.pin = "PIN code must be 6 digits";
+  }
+
+  if (!/^[6-9]\d{9}$/.test(formData.mobile_number)) {
+    errors.mobile = "Enter valid 10 digit mobile number";
+  }
+
+  if (
+    formData.email_id &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email_id)
+  ) {
+    errors.email = "Invalid email format";
+  }
+
+  if (
+    formData.year_of_establishment &&
+    Number(formData.year_of_establishment) > currentYear
+  ) {
+    errors.year = "Year cannot be future year";
+  }
+
+  if (
+    formData.number_of_key_projects &&
+    Number(formData.number_of_key_projects) < 0
+  ) {
+    errors.projects = "Projects cannot be negative";
+  }
+
+  return errors;
+};
+
+
 
   // -----------------------------
   // ADD CONTRACTOR
@@ -82,6 +149,12 @@ const ProjectContractors = ({
       alert("Please fill all required fields");
       return;
     }
+    const validationErrors = validateContractor();
+
+if (Object.keys(validationErrors).length > 0) {
+  alert(Object.values(validationErrors)[0]);
+  return;
+}
 
     try {
       const payload = {

@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { apiPost, apiGet } from "../api/api";
 import '../styles/DevelopmentDetails.css';
-import ProjectWizard from "../components/ProjectWizard";
+import ReraLoader from "../components/ReraLoader";
+import ExistingProjectWizard from '../components/ExistingProjectWizard';
 
 const ExistingDevelopmentDetails = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
     const panNumber =
-  location.state?.panNumber || sessionStorage.getItem("panNumber");
+        location.state?.panNumber || sessionStorage.getItem("panNumber");
 
-const applicationNumber =
-  location.state?.applicationNumber || sessionStorage.getItem("applicationNumber");
+    const applicationNumber =
+        location.state?.applicationNumber || sessionStorage.getItem("applicationNumber");
 
-console.log("🔍 PAN Number:", panNumber);
-console.log("🔍 Application Number:", applicationNumber);
+    console.log("🔍 PAN Number:", panNumber);
+    console.log("🔍 Application Number:", applicationNumber);
 
     useEffect(() => {
         if (location.state?.panNumber && location.state?.applicationNumber) {
@@ -31,11 +32,11 @@ console.log("🔍 Application Number:", applicationNumber);
     const [hasExistingData, setHasExistingData] = useState(false);
 
     const [buildingTypes, setBuildingTypes] = useState({
-  plots: false,
-  apartmentsFlats: false,
-  villas: false,
-  commercial: false
-});
+        plots: false,
+        apartmentsFlats: false,
+        villas: false,
+        commercial: false
+    });
 
 
     const [plotDetails, setPlotDetails] = useState({
@@ -86,11 +87,11 @@ console.log("🔍 Application Number:", applicationNumber);
     const [otherWorksList, setOtherWorksList] = useState([]);
 
     const [expandedSections, setExpandedSections] = useState({
-    plots: false,
-    apartmentsFlats: false,
-    villas: false,
-    commercial: false
-});
+        plots: false,
+        apartmentsFlats: false,
+        villas: false,
+        commercial: false
+    });
 
 
     // Fetch existing data from API
@@ -105,7 +106,7 @@ console.log("🔍 Application Number:", applicationNumber);
         try {
             setIsLoading(true);
             console.log("📡 Fetching from API...");
-            
+
             const response = await apiGet(
                 `/api/development-details?application_number=${applicationNumber}&pan_number=${panNumber}`
             );
@@ -113,19 +114,19 @@ console.log("🔍 Application Number:", applicationNumber);
             console.log("📥 Full API Response:", response);
 
             // ✅ Handle response structure: response.data contains the actual data
-           const apiData = response?.data?.data || response?.data;
-           console.log("✅ FINAL apiData USED:", apiData);
+            const apiData = response?.data?.data || response?.data;
+            console.log("✅ FINAL apiData USED:", apiData);
 
 
 
-            
+
             console.log("📦 Extracted API Data:", apiData);
 
             // Check if data exists (check for id in the data object)
             if (apiData && apiData.id) {
                 setHasExistingData(true);
                 console.log("✅ Data found - Pre-filling form");
-                
+
                 // Set project basics
                 setProjectId(apiData.project_id || '');
                 setProjectType(apiData.project_type || 'residential');
@@ -142,17 +143,17 @@ console.log("🔍 Application Number:", applicationNumber);
                     villas: !!devDetails.Villas,
                     commercial: !!devDetails.Commercial
                 };
-                
+
                 console.log("🏘️ Building Types Found:", newBuildingTypes);
                 setBuildingTypes(newBuildingTypes);
 
                 // Auto-expand sections that have data
-               setExpandedSections({
-    plots: newBuildingTypes.plots,
-    apartmentsFlats: newBuildingTypes.apartmentsFlats,
-    villas: newBuildingTypes.villas,
-    commercial: newBuildingTypes.commercial
-});
+                setExpandedSections({
+                    plots: newBuildingTypes.plots,
+                    apartmentsFlats: newBuildingTypes.apartmentsFlats,
+                    villas: newBuildingTypes.villas,
+                    commercial: newBuildingTypes.commercial
+                });
 
 
                 // Pre-fill Plot Details
@@ -168,14 +169,14 @@ console.log("🔍 Application Number:", applicationNumber);
 
                 // Pre-fill Apartment Details
                 if (devDetails.Apartments_Flats) {
-  setApartmentDetails({
-    totalBlocks: devDetails.Apartments_Flats.no_blocks?.toString() || '',
-    no_blocks: devDetails.Apartments_Flats.no_blocks?.toString() || '',
-    file_path: devDetails.Apartments_Flats.file_path || '',
-    apartmentFile: null,
-    rows: devDetails.Apartments_Flats.rows || []   // ✅ THIS LINE
-  });
-}
+                    setApartmentDetails({
+                        totalBlocks: devDetails.Apartments_Flats.no_blocks?.toString() || '',
+                        no_blocks: devDetails.Apartments_Flats.no_blocks?.toString() || '',
+                        file_path: devDetails.Apartments_Flats.file_path || '',
+                        apartmentFile: null,
+                        rows: devDetails.Apartments_Flats.rows || []   // ✅ THIS LINE
+                    });
+                }
 
 
                 // Pre-fill Villa Details
@@ -203,7 +204,7 @@ console.log("🔍 Application Number:", applicationNumber);
                 // Pre-fill External Development Work percentages
                 const extWork = apiData.external_development_work || {};
                 console.log("🚧 External Work Data:", extWork);
-                
+
                 const updatedExt = externalDevelopmentWorks.map(work => {
                     const key = work.type
                         .replace(/[^a-zA-Z0-9]/g, '_')
@@ -242,10 +243,10 @@ console.log("🔍 Application Number:", applicationNumber);
 
     // Load data on mount
     useEffect(() => {
-  if (panNumber && applicationNumber) {
-    fetchDevelopmentDetails();
-  }
-}, [panNumber, applicationNumber]);
+        if (panNumber && applicationNumber) {
+            fetchDevelopmentDetails();
+        }
+    }, [panNumber, applicationNumber]);
 
 
     const generateProjectId = () => {
@@ -291,17 +292,28 @@ console.log("🔍 Application Number:", applicationNumber);
         link.click();
         document.body.removeChild(link);
     };
+    const showReraLoaderAndRun = (action) => {
+        setIsSubmitting(true);
+
+        setTimeout(() => {
+            action();
+            setIsSubmitting(false);
+        }, 800); // ⏱ feels like real AP-RERA site
+    };
+
 
     const handleBuildingTypeChange = (type) => {
-        setBuildingTypes(prev => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
+        showReraLoaderAndRun(() => {
+            setBuildingTypes(prev => ({
+                ...prev,
+                [type]: !prev[type]
+            }));
 
-        setExpandedSections(prev => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
+            setExpandedSections(prev => ({
+                ...prev,
+                [type]: !prev[type]
+            }));
+        });
     };
 
     const handleInputChange = (section, field, value) => {
@@ -402,13 +414,23 @@ console.log("🔍 Application Number:", applicationNumber);
             id: Date.now(),
             description: otherWork.description,
             type: otherWork.type
-        };
+        }
+        showReraLoaderAndRun(() => {
+            const newItem = {
+                id: Date.now(),
+                description: otherWork.description,
+                type: otherWork.type
+            };
 
-        setOtherWorksList(prev => [...prev, newItem]);
 
-        setOtherWork({
-            description: '',
-            type: 'Select'
+
+            setOtherWorksList(prev => [...prev, newItem]);
+
+            // Reset inputs
+            setOtherWork({
+                description: '',
+                type: 'Select'
+            });
         });
     };
 
@@ -434,7 +456,7 @@ console.log("🔍 Application Number:", applicationNumber);
                     no_plots: parseInt(plotDetails.totalPlots) || 0,
                     no_blocks: parseInt(plotDetails.no_blocks) || 0
                 };
-                
+
                 if (plotDetails.plotFile) {
                     formData.append(`${key}_file`, plotDetails.plotFile);
                 }
@@ -446,7 +468,7 @@ console.log("🔍 Application Number:", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(apartmentDetails.totalBlocks) || 0
                 };
-                
+
                 if (apartmentDetails.apartmentFile) {
                     formData.append(`${key}_file`, apartmentDetails.apartmentFile);
                 } else if (!apartmentDetails.file_path) {
@@ -462,7 +484,7 @@ console.log("🔍 Application Number:", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(villaDetails.totalBlocks) || 0
                 };
-                
+
                 if (villaDetails.villaFile) {
                     formData.append(`${key}_file`, villaDetails.villaFile);
                 } else if (!villaDetails.file_path) {
@@ -478,7 +500,7 @@ console.log("🔍 Application Number:", applicationNumber);
                     no_plots: 0,
                     no_blocks: parseInt(commercialDetails.totalBlocks) || 0
                 };
-                
+
                 if (commercialDetails.commercialFile) {
                     formData.append(`${key}_file`, commercialDetails.commercialFile);
                 } else if (!commercialDetails.file_path) {
@@ -508,7 +530,7 @@ console.log("🔍 Application Number:", applicationNumber);
             formData.append('other_external_works', JSON.stringify(otherWorksList));
 
             console.log('📤 Submitting form to /api/development-details');
-            
+
             const response = await apiPost("/api/development-details", formData);
 
             console.log("📥 Submit Response:", response);
@@ -531,21 +553,21 @@ console.log("🔍 Application Number:", applicationNumber);
 
                 alert("Details submitted successfully.");
 
-navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
-  state: {
-    panNumber,
-    applicationNumber,
-    developmentData: submittedData
-  }
-});
+                navigate('/existing-associate-details', {
+                    state: {
+                        panNumber,
+                        applicationNumber,
+                        developmentData: submittedData
+                    }
+                });
 
             } else {
                 alert('Unexpected response from server');
             }
-            
+
         } catch (error) {
             console.error('❌ Error submitting form:', error);
-            
+
             let errorMessage = 'Submission failed';
             if (error.response) {
                 console.error('Server responded with:', error.response.data);
@@ -557,7 +579,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                 console.error('Request setup error:', error.message);
                 errorMessage += `: ${error.message}`;
             }
-            
+
             alert(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -574,7 +596,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                     <span> / </span>
                     <span>Registration / Project Registration</span>
                 </div>
-                <ProjectWizard currentStep={3} />
+                <ExistingProjectWizard currentStep={3} />
                 <div style={{ textAlign: 'center', padding: '50px' }}>
                     <div style={{ fontSize: '24px', marginBottom: '20px' }}>⏳</div>
                     <h3>Loading development details...</h3>
@@ -583,9 +605,10 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
             </div>
         );
     }
-
     return (
         <div className="development-details-container_pd">
+            {(isLoading || isSubmitting) && <ReraLoader />}
+
             <div className="development-details-breadcrumb1">
                 <span>You are here : </span>
                 <a href="/">Home</a>
@@ -593,7 +616,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                 <span>Registration / Project Registration</span>
             </div>
 
-            <ProjectWizard currentStep={3} />
+
+            <ExistingProjectWizard currentStep={3} />
 
             {hasExistingData && (
                 <div style={{
@@ -613,65 +637,65 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                     <h3 className="development-details-subheading">
                         Existing Development Details {hasExistingData ? '(Edit Mode)' : ''}
                     </h3>
-                    
+
                     <div className="development-details-row development-details-innerdivrow">
                         <div className="development-details-col-sm-12">
                             <div className="development-details-form-group">
                                 <label className="development-details-label">
                                     Project Consists of<font color="red">*</font>
                                 </label>
-                                
+
                                 <table className="development-details-custom_checkbox" style={{ width: '100%' }}>
                                     <tbody>
                                         <tr>{/* Plots */}
-<td>
-  <input
-    id="chkPlots"
-    type="checkbox"
-    checked={buildingTypes.plots}
-    onChange={() => handleBuildingTypeChange("plots")}
-  />
-  <label htmlFor="chkPlots">Plots</label>
-</td>
+                                            <td>
+                                                <input
+                                                    id="chkPlots"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.plots}
+                                                    onChange={() => handleBuildingTypeChange("plots")}
+                                                />
+                                                <label htmlFor="chkPlots">Plots</label>
+                                            </td>
 
-{/* Apartments/Flats */}
-<td>
-  <input
-    id="chkApartments"
-    type="checkbox"
-    checked={buildingTypes.apartmentsFlats}
-    onChange={() => handleBuildingTypeChange("apartmentsFlats")}
-  />
-  <label htmlFor="chkApartments">Apartments/Flats</label>
-</td>
+                                            {/* Apartments/Flats */}
+                                            <td>
+                                                <input
+                                                    id="chkApartments"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.apartmentsFlats}
+                                                    onChange={() => handleBuildingTypeChange("apartmentsFlats")}
+                                                />
+                                                <label htmlFor="chkApartments">Apartments/Flats</label>
+                                            </td>
 
-{/* Villas */}
-<td>
-  <input
-    id="chkVillas"
-    type="checkbox"
-    checked={buildingTypes.villas}
-    onChange={() => handleBuildingTypeChange("villas")}
-  />
-  <label htmlFor="chkVillas">Villas</label>
-</td>
+                                            {/* Villas */}
+                                            <td>
+                                                <input
+                                                    id="chkVillas"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.villas}
+                                                    onChange={() => handleBuildingTypeChange("villas")}
+                                                />
+                                                <label htmlFor="chkVillas">Villas</label>
+                                            </td>
 
-{/* Commercial */}
-<td>
-  <input
-    id="chkCommercial"
-    type="checkbox"
-    checked={buildingTypes.commercial}
-    onChange={() => handleBuildingTypeChange("commercial")}
-  />
-  <label htmlFor="chkCommercial">Commercial</label>
-</td>
+                                            {/* Commercial */}
+                                            <td>
+                                                <input
+                                                    id="chkCommercial"
+                                                    type="checkbox"
+                                                    checked={buildingTypes.commercial}
+                                                    onChange={() => handleBuildingTypeChange("commercial")}
+                                                />
+                                                <label htmlFor="chkCommercial">Commercial</label>
+                                            </td>
 
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <div className="development-details-note-section-of-developmentdetails">
                                 <label className="development-details-label-note-developmentdetails">
                                     <strong>Note:</strong><br />
@@ -689,12 +713,11 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                         {/* Plot Details Section */}
                         {buildingTypes.plots && (
                             <div className="development-details-accordion-section">
-  <div
-  className={`development-details-accordion-header ${
-    expandedSections.plots ? "development-details-active" : ""
-  }`}
-  onClick={() => toggleSection("plots")}
->
+                                <div
+                                    className={`development-details-accordion-header ${expandedSections.plots ? "development-details-active" : ""
+                                        }`}
+                                    onClick={() => toggleSection("plots")}
+                                >
 
 
                                     <span className="development-details-accordion-icon">{expandedSections.plots ? '−' : '+'}</span>
@@ -705,11 +728,11 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                         <div className="development-details-row development-details-innerdivrow_pd">
                                             <div className="development-details-col-xs-12 development-details-dvborder">
                                                 <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
                                                         onClick={(e) => handleTemplateDownload(e, 'plot')}
-                                                        style={{fontSize: '16px'}}
+                                                        style={{ fontSize: '16px' }}
                                                     >
                                                         Click here to download Plot Details Excel Template
                                                     </a>
@@ -719,8 +742,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                         <label className="development-details-label">
                                                             Total No of Plots<font color="red">*</font>
                                                         </label>
-                                                        <input 
-                                                            type="text" 
+                                                        <input
+                                                            type="text"
                                                             maxLength="6"
                                                             className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Plots"
@@ -730,13 +753,13 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                         />
                                                     </div>
                                                 </div>
-                                
+
                                                 <div className="development-details-col-xs-4">
                                                     <div className="development-details-form-group">
                                                         <label className="development-details-label">
                                                             Upload Plot Details{!plotDetails.file_path && <font color="red">*</font>}
                                                         </label>
-                                                        <input 
+                                                        <input
                                                             type="file"
                                                             className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
@@ -757,15 +780,15 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                 </div>
                                                 {plotDetails.file_path && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px'}}>
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
                                                             ✓ Previously uploaded: <strong>{plotDetails.file_path.split('\\').pop().split('/').pop()}</strong>
                                                         </p>
                                                     </div>
                                                 )}
                                                 {plotDetails.plotFile && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{background: '#e7f3ff', padding: '10px', borderRadius: '5px'}}>
-                                                            📎 New file selected: <strong>{plotDetails.plotFile.name}</strong> 
+                                                        <p className="development-details-file-info" style={{ background: '#e7f3ff', padding: '10px', borderRadius: '5px' }}>
+                                                            📎 New file selected: <strong>{plotDetails.plotFile.name}</strong>
                                                             ({Math.round(plotDetails.plotFile.size / 1024)} KB)
                                                         </p>
                                                     </div>
@@ -781,9 +804,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                         {buildingTypes.apartmentsFlats && (
                             <div className="development-details-accordion-section">
                                 <div
-                                    className={`development-details-accordion-header ${
-                                       expandedSections.apartmentsFlats ? "development-details-active" : ""
-                                    }`}
+                                    className={`development-details-accordion-header ${expandedSections.apartmentsFlats ? "development-details-active" : ""
+                                        }`}
                                     onClick={() => toggleSection("apartmentsFlats")}
                                 >
                                     <span className="development-details-accordion-icon">
@@ -855,41 +877,41 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
 
                                                 {apartmentDetails.file_path && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px'}}>
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
                                                             ✓ Previously uploaded: <strong>{apartmentDetails.file_path.split('\\').pop().split('/').pop()}</strong>
                                                         </p>
                                                     </div>
                                                 )}
 
                                                 {/* ✅ TABLE STARTS HERE */}
-{apartmentDetails.rows.length > 0 && (
-  <div style={{ marginTop: 20, width: "100%", overflowX: "auto" }}>
-    <table
-      className="development-details-development-table"
-      style={{ width: "100%" }}
-    >
-      <thead>
-        <tr>
-          {Object.keys(apartmentDetails.rows[0]).map((key) => (
-            <th key={key}>{key}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {apartmentDetails.rows.map((row, i) => (
-          <tr key={i}>
-            {Object.values(row).map((val, j) => (
-              <td key={j}>{val}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)}
-{/* ✅ TABLE ENDS HERE */}
+                                                {apartmentDetails.rows.length > 0 && (
+                                                    <div style={{ marginTop: 20, width: "100%", overflowX: "auto" }}>
+                                                        <table
+                                                            className="development-details-development-table"
+                                                            style={{ width: "100%" }}
+                                                        >
+                                                            <thead>
+                                                                <tr>
+                                                                    {Object.keys(apartmentDetails.rows[0]).map((key) => (
+                                                                        <th key={key}>{key}</th>
+                                                                    ))}
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {apartmentDetails.rows.map((row, i) => (
+                                                                    <tr key={i}>
+                                                                        {Object.values(row).map((val, j) => (
+                                                                            <td key={j}>{val}</td>
+                                                                        ))}
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                )}
+                                                {/* ✅ TABLE ENDS HERE */}
 
-                                                
+
 
                                             </div>
                                         </div>
@@ -902,9 +924,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                         {buildingTypes.villas && (
                             <div className="development-details-accordion-section">
                                 <div
-                                    className={`development-details-accordion-header ${
-                                        expandedSections.villas ? "development-details-active" : ""
-                                    }`}
+                                    className={`development-details-accordion-header ${expandedSections.villas ? "development-details-active" : ""
+                                        }`}
                                     onClick={() => toggleSection("villas")}
                                 >
                                     <span className="development-details-accordion-icon">
@@ -976,7 +997,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
 
                                                 {villaDetails.file_path && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px'}}>
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
                                                             ✓ Previously uploaded: <strong>{villaDetails.file_path.split('\\').pop().split('/').pop()}</strong>
                                                         </p>
                                                     </div>
@@ -984,7 +1005,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
 
                                                 {villaDetails.villaFile && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{background: '#e7f3ff', padding: '10px', borderRadius: '5px'}}>
+                                                        <p className="development-details-file-info" style={{ background: '#e7f3ff', padding: '10px', borderRadius: '5px' }}>
                                                             📎 New file selected: <strong>{villaDetails.villaFile.name}</strong>{" "}
                                                             ({Math.round(villaDetails.villaFile.size / 1024)} KB)
                                                         </p>
@@ -994,7 +1015,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 )}
                             </div>
                         )}
@@ -1002,7 +1023,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                         {/* Commercial Details Section */}
                         {buildingTypes.commercial && (
                             <div className="development-details-accordion-section">
-                                <div 
+                                <div
                                     className={`development-details-accordion-header ${expandedSections.commercial ? 'development-details-active' : ''}`}
                                     onClick={() => toggleSection('commercial')}
                                 >
@@ -1014,11 +1035,11 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                         <div className="development-details-row development-details-innerdivrow">
                                             <div className="development-details-col-xs-12 development-details-dvborder">
                                                 <div className="development-details-form-group">
-                                                    <a 
-                                                        href="#" 
-                                                        className="development-details-lnk-link" 
+                                                    <a
+                                                        href="#"
+                                                        className="development-details-lnk-link"
                                                         onClick={(e) => handleTemplateDownload(e, 'commercial')}
-                                                        style={{fontSize: '16px'}}
+                                                        style={{ fontSize: '16px' }}
                                                     >
                                                         Click here to download Commercial Details Excel Template
                                                     </a>
@@ -1028,8 +1049,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                         <label className="development-details-label">
                                                             Total No of Blocks<font color="red">*</font>
                                                         </label>
-                                                        <input 
-                                                            type="text" 
+                                                        <input
+                                                            type="text"
                                                             maxLength="6"
                                                             className="development-details-form-control development-details-inputbox development-details-allownumeric"
                                                             placeholder="Total No of Blocks"
@@ -1044,7 +1065,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                         <label className="development-details-label">
                                                             Upload Commercial Details{!commercialDetails.file_path && <font color="red">*</font>}
                                                         </label>
-                                                        <input 
+                                                        <input
                                                             type="file"
                                                             className="development-details-form-control development-details-inputbox"
                                                             accept=".xlsx,.xls"
@@ -1065,15 +1086,15 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                                 </div>
                                                 {commercialDetails.file_path && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px'}}>
+                                                        <p className="development-details-file-info" style={{ color: '#28a745', fontWeight: 'bold', background: '#d4edda', padding: '10px', borderRadius: '5px' }}>
                                                             ✓ Previously uploaded: <strong>{commercialDetails.file_path.split('\\').pop().split('/').pop()}</strong>
                                                         </p>
                                                     </div>
                                                 )}
                                                 {commercialDetails.commercialFile && (
                                                     <div className="development-details-col-xs-12">
-                                                        <p className="development-details-file-info" style={{background: '#e7f3ff', padding: '10px', borderRadius: '5px'}}>
-                                                            📎 New file selected: <strong>{commercialDetails.commercialFile.name}</strong> 
+                                                        <p className="development-details-file-info" style={{ background: '#e7f3ff', padding: '10px', borderRadius: '5px' }}>
+                                                            📎 New file selected: <strong>{commercialDetails.commercialFile.name}</strong>
                                                             ({Math.round(commercialDetails.commercialFile.size / 1024)} KB)
                                                         </p>
                                                     </div>
@@ -1089,7 +1110,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                     {/* External Development Work */}
                     <div className="development-details-external-development-section">
                         <h4 className="development-details-section-title">External Development Work</h4>
-                        
+
                         <table className="development-details-development-table">
                             <thead>
                                 <tr>
@@ -1134,7 +1155,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                 <div className="development-details-col-sm-4">
                                     <div className="development-details-form-group">
                                         <label className="development-details-label">Work Description</label>
-                                        <input 
+                                        <input
                                             type="text"
                                             className="development-details-form-control development-details-inputbox"
                                             placeholder="Work Description"
@@ -1146,7 +1167,7 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                                 <div className="development-details-col-sm-4">
                                     <div className="development-details-form-group">
                                         <label className="development-details-label">Work Type</label>
-                                        <select 
+                                        <select
                                             className="development-details-form-control development-details-inputbox"
                                             value={otherWork.type}
                                             onChange={(e) => handleInputChange('otherWork', 'type', e.target.value)}
@@ -1206,8 +1227,8 @@ navigate(`/existing-development-details-upload-docs/${applicationNumber}`, {
                         )}
 
                         <div className="development-details-form-actions">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="development-details-btn development-details-btn-primary development-details-btn-save"
                                 disabled={isSubmitting}
                             >

@@ -2,163 +2,100 @@
    PAGE CONTAINER
 ========================= */
 .agentpreview-main-container {
-  width: 92%;
+  width: 80%;
   margin: 16px auto;
-  background: #ffffff;
-  border: 1px solid #d6d6d6;   /* this is the ONLY border */
-  padding: 0;
-  box-shadow: none;           /* just in case */
+  background:#ffffff ;
+  padding: 10px 100px;
+  box-shadow: none;   
+   
+  /* just in case */
 }
 
 /* =========================
    BREADCRUMB
 ========================= */
 
-.agentpreview-breadcrumb-bar {
-  background: #1087e6;
-  color: #ffffff;
-  font-size: 14px;
-  padding: 8px 16px;
-  box-sizing: border-box;
-}
+
 
 .agentpreview-breadcrumb-bar span {
   margin: 0 4px;
 }
 
-.agentpreview-breadcrumb-bar .agentpreview-active {
+.agentpreview-breadcrumb-bar .active {
   font-weight: 600;
 }
 
 /* =========================
    CONTENT WRAPPER
 ========================= */
-/* ===== CONTENT ===== */
-.agentpreview-content {
+
+.agentpreview-content-padding {
   padding: 20px;
 }
 
-/* ===== TITLE ===== */
+/* =========================
+   TITLE
+========================= */
 
-
-.agentpreview-title {
+.agentpreview-page-title {
   font-size: 22px;
+  border-bottom: 3px solid #1087e6;
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 20px;
-  font-weight: normal;
-  position: relative;
-}
-.agentpreview-title::after {
-    content: "";
-    bottom: -8px;
-    width: 50px;
-    height: 4px;
-    left: -6px;
-    background-color: #1e90ff;
-    margin-left: 20px;
-    position: absolute;
 }
 
-/* STEPPER */
-.agentpreview-stepper {
-  display: flex;
-  justify-content: space-between;
-  margin: 30px 0;
-  border: 1px solid #ddd;
-  padding: 15px;
-}
-
-.agentpreview-step {
-  text-align: center;
-  width: 100%;
-}
-
-.agentpreview-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  margin: auto;
-  line-height: 26px;
-  color: #999;
-}
-
-.agentpreview-circle.active {
-  background: green;
-  color: #fff;
-  border-color: green;
-}
 /* =========================
-   STEPPER WITH BIGGER BOX
+   STEPPER
 ========================= */
 
-.agentpreview-stepper {
+.agentpreview-step-box {
   position: relative;
   display: flex;
   justify-content: space-between;
-
-  /* 🔥 INCREASE BOX SIZE */
-  padding: 35px 35px 35px;
-  margin: 30px 0 40px;
-
-  border: 1px solid #ddd;
-  background: #ffffff;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border: none;                /* no inner box */
 }
 
-/* 🔹 HORIZONTAL CONNECTING LINE */
-.agentpreview-stepper::before {
-  content: "";
+.agentpreview-step-line {
   position: absolute;
-
-  /* 🔥 MOVE LINE TO CENTER */
-  top: 52px;
-  left: 60px;
-  right: 60px;
-
+  top: 32px;
+  left: 40px;
+  right: 40px;
   height: 2px;
   background: #cfcfcf;
-  z-index: 0;
 }
 
-/* EACH STEP */
-.agentpreview-step {
+.agentpreview-step-item {
   text-align: center;
   z-index: 1;
-  width: 100%;
 }
 
-/* STEP CIRCLE */
-.agentpreview-circle {
-  width: 38px;
-  height: 38px;
+.agentpreview-step-circle {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid #bdbdbd;
-  background: #ffffff;
-
+  border: 2px solid #bbb;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin: auto;
   font-size: 14px;
-  font-weight: 600;
+}
+
+.agentpreview-step-circle.completed,
+.agentpreview-step-circle.active {
+  background: #0bb35c;
+  color: #fff;
+  border-color: #0bb35c;
+}
+
+.agentpreview-step-item p {
+  margin-top: 6px;
+  font-size: 13px;
   color: #555;
-}
-
-/* ACTIVE STEP */
-.agentpreview-circle.active {
-  background: #17a65b;
-  border-color: #17a65b;
-  color: #ffffff;
-}
-
-/* STEP LABEL */
-.agentpreview-step span {
-  display: block;
-  margin-top: 12px; /* 🔥 more space below circle */
-  font-size: 14px;
-  color: #000;
 }
 
 /* =========================
@@ -275,7 +212,7 @@
   font-size: 14px;
 }
 
-.agentpreview-submit-btn.agentpreview-primary {
+.agentpreview-submit-btn.primary {
   background: #0a5fb4;
 }
 /* ===== DECLARATION CENTER ===== */
@@ -330,36 +267,302 @@
 .agentpreview-otp-row button:hover {
   background-color: #084c9e;
 }
+
+.agentpreview-section-gap {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+  .agentpreview-main-container {
+    width: 100% !important;
+    border: none !important;
+  }
+
+  /* 🔥 IMPORTANT FIX - MAKE GRID FLEXIBLE */
+  .agentpreview-preview-grid {
+    display: grid !important;
+    grid-template-columns: 150px 1fr 150px 1fr !important;
+    column-gap: 15px !important;
+    row-gap: 8px !important;
+    font-size: 13px !important;
+  }
+
+  /* Allow long text to wrap properly */
+  /* .agentpreview-preview-value {
+    word-break: break-word !important;
+  } */
+
+  /* Table fix */
+  .agentpreview-doc-table {
+    width: 100% !important;
+    font-size: 13px !important;
+  }
+
+  /* Prevent section breaking */
+  .agentpreview-preview-grid,
+  .agentpreview-doc-table,
+  .agentpreview-declaration-center {
+    page-break-inside: avoid;
+  }
+.agentpreview-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+
+/* =========================
+   STEPPER WITH BIGGER BOX
+========================= */
+
+.agentpreview-stepper {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+
+  /* 🔥 INCREASE BOX SIZE */
+  padding: 35px 35px 35px;
+  margin: 30px 0 40px;
+
+  border: 1px solid #ddd;
+  background: #ffffff;
+}
+
+/* 🔹 HORIZONTAL CONNECTING LINE */
+.agentpreview-stepper::before {
+  content: "";
+  position: absolute;
+
+  /* 🔥 MOVE LINE TO CENTER */
+  top: 52px;
+  left: 60px;
+  right: 60px;
+
+  height: 2px;
+  background: #cfcfcf;
+  z-index: 0;
+}
+
+/* EACH STEP */
+.agentpreview-step {
+  text-align: center;
+  z-index: 1;
+  width: 100%;
+}
+
+/* STEP CIRCLE */
+.agentpreview-step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #bdbdbd;
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: auto;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* ACTIVE STEP */
+.agentpreview-step-circle.active {
+  background: #17a65b;
+  border-color: #17a65b;
+  color: #ffffff;
+}
+
+/* STEP LABEL */
+.agentpreview-step span {
+  display: block;
+  margin-top: 12px; /* 🔥 more space below circle */
+  font-size: 14px;
+  color: #000;
+}
+/* ===== FULL WIDTH BREADCRUMB FIX ===== */
+
+/* =========================
+   BREADCRUMB (CORRECT STYLE)
+========================= */
+
+.agentpreview-breadcrumb-bar {
+  background: #1087e6;
+  color: #ffffff;
+  font-size:18px;
+
+  /* SAME WIDTH AS main-container */
+  width: 80%;
+  margin: 0 auto;
+
+  /* SAME SIDE SPACING AS CONTENT */
+  padding: 10px 20px;
+
+  box-sizing: border-box;
+}
+
+.agentpreview-breadcrumb-bar span {
+  margin: 0 6px;
+}
+
+.agentpreview-breadcrumb-bar .active {
+  font-weight: 600;
+}
+
+/* Home highlight
+.agentpreview-breadcrumb-bar span:first-of-type {
+  color: #ffeb3b;
+  text-decoration: underline;
+} */
+
 .agentpreview-link{
   color: yellow;
   text-decoration: underline;
 }
-.agentpreview-applicant-back-btn{
-  color: white;
-  background-color:#084c9e;
-  border: 3px solid #084c9e;
-  padding: 3px;
+/* =========================
+   FIX LEFT GAP IN BREADCRUMB
+========================= */
+
+.agentpreview-breadcrumb-bar {
+  width: 100% !important;          /* fill container */
+  margin: 0 !important;            /* remove centering gap */
+  padding: 12px 20px !important;   /* inner spacing */
+  box-sizing: border-box !important;
 }
-/* ================= PRINT FIX ================= */
+/* ===============================
+   FORCE BREADCRUMB FULL WIDTH
+   (LEFT + RIGHT COVER)
+=============================== */
+
+.agentpreview-breadcrumb-bar {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+/* 🔥 Extend blue background to BOTH sides */
+.agentpreview-breadcrumb-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 2000vw;          /* extend far left */
+  right: -200vw;         /* extend far right */
+  height: 100%;
+  background: #1087e6;
+  z-index: -1;
+}
+/* =========================
+   COMPLETE PAGE BORDER
+========================= */
+
+.agentpreview-page-wrapper {
+  width: 90%;
+  margin: 20px auto;
+  background: white;           /* white page */
+  border: 2px solid rgb(211, 207, 207);     /* full page border */
+  box-sizing: border-box;
+}
+/* =========================
+   FINAL PRINT FIX (PREVIEW)
+========================= */
+
 @media print {
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* 🔴 Hide everything */
   body * {
-    visibility: hidden;
+    visibility: hidden !important;
   }
 
-  #print-area,
-  #print-area * {
-    visibility: visible;
+  /* ✅ Show only preview content */
+  .agentpreview-print-area,
+  .agentpreview-print-area * {
+    visibility: visible !important;
   }
 
-  #print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+  /* 🔥 Lock print content position */
+  .agentpreview-print-area {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    max-width: 190mm !important;
+
+    padding: 10mm !important;
+    background: white !important;
+
+    /* Government-style page border */
+    box-shadow: inset 0 0 0 2px #000;
   }
 
-  /* hide buttons while printing */
-  button {
+  /* ❌ Hide UI elements */
+  .agentpreview-action-buttons,
+  .agentpreview-form-footer-row,
+  .applicantdetails-stepper,
+  .agentpreview-breadcrumb-bar {
     display: none !important;
   }
+
+  /* ✅ Table safety */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    font-size: 11px !important;
+    padding: 6px !important;
+    white-space: normal !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ✅ Prevent section cut */
+  .agentpreview-preview-grid,
+  .agentpreview-doc-table,
+  .agentpreview-section-gap,
+  .agentpreview-declaration-center {
+    page-break-inside: avoid !important;
+  }
+  /* =========================
+   FORCE CLEAN PAGE BREAK
+   BEFORE LITIGATIONS
+========================= */
+
+  /* Always start litigations on a new page */
+  .litigation-section {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* 🔥 CRITICAL: keep heading + table together */
+  .print-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-section h3 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }       
 }

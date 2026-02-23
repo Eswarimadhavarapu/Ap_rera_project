@@ -13,24 +13,89 @@ const ProjectAgent = ({ applicationNumber, panNumber, agents = [], onUpdate }) =
   // Handle Input Change
   // -------------------------------
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const { name, value } = e.target;
+
+  // ✅ Mobile → numbers only
+  if (name === "mobile_number" && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  // ✅ Agent Name → letters, space, dot only
+  if (name === "agent_name" && !/^[a-zA-Z\s.]*$/.test(value)) {
+    return;
+  }
+
+  // ✅ AP RERA Registration No
+  // allow only A-Z, numbers, / and -
+  if (name === "rera_registration_no" && !/^[A-Za-z0-9/-]*$/.test(value)) {
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: name === "rera_registration_no"
+      ? value.toUpperCase() // auto uppercase RERA
+      : value.trimStart(),
+  }));
+};
+
+ // ⭐ Enterprise validation for Project Agent
+const validateAgent = () => {
+  const errors = {};
+
+  const rera = formData.rera_registration_no.trim();
+  const name = formData.agent_name.trim();
+  const address = formData.agent_address.trim();
+  const mobile = formData.mobile_number.trim();
+
+  if (!rera) errors.rera = "RERA Registration No required";
+  if (!name) errors.name = "Agent name required";
+  if (!address) errors.address = "Agent address required";
+  if (!mobile) errors.mobile = "Mobile number required";
+
+  // 🔹 India Mobile Validation
+  if (mobile && !/^[6-9]\d{9}$/.test(mobile)) {
+    errors.mobile = "Enter valid 10 digit mobile number";
+  }
+
+  // 🔹 Agent Name letters only
+  if (name && !/^[a-zA-Z\s.]+$/.test(name)) {
+    errors.name = "Only letters allowed in agent name";
+  }
+
+  // 🔹 RERA basic check
+  if (rera && rera.length < 6) {
+    errors.rera = "Invalid RERA Registration Number";
+  }
+
+  // 🔹 Prevent duplicate agents
+  if (
+    agents.some(
+      (a) =>
+        (a.rera_registration_no || a.registration_number) === rera
+    )
+  ) {
+    errors.rera = "Agent already added";
+  }
+
+  return errors;
+};
 
   // -------------------------------
   // Add Project Agent
   // -------------------------------
+
   const handleAdd = async () => {
     const { rera_registration_no, agent_name, agent_address, mobile_number } =
       formData;
 
-    if (!rera_registration_no || !agent_name || !agent_address || !mobile_number) {
-      alert("Please fill all required fields");
-      return;
-    }
+    const validationErrors = validateAgent();
+
+if (Object.keys(validationErrors).length > 0) {
+  alert(Object.values(validationErrors)[0]);
+  return;
+}
+
 
     try {
       // 1️⃣ CREATE AGENT

@@ -33,7 +33,7 @@
 from app.models.database import db
 from sqlalchemy import text
 
-def get_project_basic_details_by_application_no(application_number):
+def get_project_basic_details_by_application_no1(application_number):
     query = text("""
         SELECT
             preg.application_no AS application_number,

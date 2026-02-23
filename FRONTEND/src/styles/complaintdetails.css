@@ -1,3 +1,5 @@
+
+
 /* ================= GLOBAL ================= */
 body {
   background: #e6edf3;
@@ -92,22 +94,22 @@ body {
 }
 
 /* ================= FIELD WRAPPER ================= */
-.field {
+.cr-field {
   display: flex;
   flex-direction: column;
 }
 
 /* ================= RADIO GROUP ================= */
-.radio-line,
-.radio-inline {
+.cr-radio-line,
+.cr-radio-inline {
   display: flex;
   gap: 24px;
   align-items: center;
   height: 42px;
 }
 
-.radio-line label,
-.radio-inline label {
+.cr-radio-line label,
+.cr-radio-inline label {
   font-weight: normal;
   display: flex;
   align-items: center;
@@ -115,11 +117,11 @@ body {
 }
 
 /* ================= RERA BLOCK ================= */
-.rera-block {
+.cr-rera-block {
   margin-bottom: 10px;
 }
 
-.rera-label {
+.cr-rera-label {
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -138,7 +140,7 @@ body {
 }
 
 /* Inline name field inside declaration */
-.inline-input {
+.cr-inline-input {
   width: 220px;
   height: 32px;
   padding: 4px 6px;
@@ -161,7 +163,7 @@ body {
   font-size: 14px;
   margin: 27px 60px;
 }
-.proceed-btn{
+.cr-proceed-btn{
    width: 150px !important;
   height: 35px !important;
   padding: 0;
@@ -194,7 +196,7 @@ body {
 } */
 
 /* ================= ERROR POPUP ================= */
-.error-toast {
+.cr-error-toast {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
@@ -207,11 +209,11 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-.error-toast-text {
+.cr-error-toast-text {
   font-weight: 600;
 }
 
-.error-toast-close {
+.cr-error-toast-close {
   position: absolute;
   right: 15px;
   top: 12px;
@@ -273,9 +275,9 @@ label span {
 }
 
 /* -------- RADIO / CHECKBOX ROW HEIGHT MATCH -------- */
-.radio-line,
-.radio-inline,
-.radio-group {
+.cr-radio-line,
+.cr-radio-inline,
+.cr-radio-group {
   min-height: 42px;
   display: flex;
   align-items: center;
@@ -283,8 +285,8 @@ label span {
 }
 
 /* -------- LABEL ALIGNMENT -------- */
-.radio-line label,
-.radio-inline label {
+.cr-radio-line label,
+.cr-radio-inline label {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -309,7 +311,7 @@ label span {
 
 
 /* ===== Description complaint section ONLY ===== */
-.complaint-desc-section {
+.cr-complaint-desc-section {
   width: 100%;
   max-width: 100%;
   padding: 0;
@@ -317,7 +319,7 @@ label span {
 }
 
 /* Grid limited INSIDE white box */
-.complaint-desc-section .cr-row-3 {
+.cr-complaint-desc-section .cr-row-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: 16px;
@@ -327,14 +329,14 @@ label span {
 }
 
 /* Inputs never overflow */
-.complaint-desc-section input {
+.cr-complaint-desc-section input {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
 /* Add button alignment */
-.complaint-desc-section .add-btn-wrap {
+.cr-complaint-desc-section .cr-add-btn-wrap {
   display: flex;
   align-items: flex-end;
 }
@@ -352,7 +354,7 @@ label span {
   border-radius: 10px;
 }
 
-.btn-delete{
+.cr-btn-delete{
   width: 60px;
   height: 35px;
   background-color: #0b5394;
@@ -360,4 +362,76 @@ label span {
  
   border-radius: 3px;
   
+}
+
+.cr-add-btn{
+  width: 60px;
+  height: 35px;
+  background-color: #0b5394;
+  color: white;
+ 
+  border-radius: 3px;
+
+}
+
+/* ===== Common table style ===== */
+.cr-data-table,
+.cr-doc-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d6d6d6;
+  margin-top: 12px;
+  background: #fff;
+}
+
+.cr-data-table th,
+.cr-doc-table th {
+  background: #3f556b;
+  color: #fff;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border-right: 2px solid #fff;
+}
+
+.cr-data-table td,
+.cr-doc-table td {
+  padding: 12px;
+  font-size: 13px;
+  color: #333;
+  border-top: 1px solid #d6d6d6;
+  border-right: 2px solid #d6d6d6;
+}
+
+/* Remove last border */
+.cr-data-table th:last-child,
+.cr-data-table td:last-child,
+.cr-doc-table th:last-child,
+.cr-doc-table td:last-child {
+  border-right: none;
+}
+
+/* Center first & last columns */
+.cr-data-table th:first-child,
+.cr-data-table td:first-child,
+.cr-data-table th:last-child,
+.cr-data-table td:last-child,
+.cr-doc-table th:first-child,
+.cr-doc-table td:first-child,
+.cr-doc-table th:last-child,
+.cr-doc-table td:last-child {
+  text-align: center;
+}
+
+/* Doc table View link */
+.cr-doc-table a {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.cr-doc-table a:hover {
+  text-decoration: underline;
 }

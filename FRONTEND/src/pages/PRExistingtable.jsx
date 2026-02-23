@@ -6,7 +6,10 @@ const PRExistingtable = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const panNumber = location.state?.panNumber;
+  const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
+
+const panNumber =
+  location.state?.panNumber || storedLogin?.pan_number;
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ const PRExistingtable = () => {
 
   return (
     <div className="extension-pa-page">
-      <h2 className="extension-pa-title">Extension process</h2>
+      {/* <h2 className="extension-pa-title">Extension process</h2> */}
 
       {!panNumber && (
         <p style={{ color: "red" }}>

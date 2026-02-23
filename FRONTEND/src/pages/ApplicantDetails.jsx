@@ -6,13 +6,15 @@ import { apiGet,apiPost } from "../api/api";
 const ApplicantDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const completedStep = Number(localStorage.getItem("completedStep") || 0);
+
   const passedPan = location.state?.pan || "";
   const [litigationStatus, setLitigationStatus] = useState(null);
   const [occupations, setOccupations] = useState([]);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [agentType, setAgentType] = useState("Individual");
 
-  const applicationNo = sessionStorage.getItem("application_no");
+  //const applicationNo = sessionStorage.getItem("application_no");
   const [interimOrder, setInterimOrder] = useState(null);
   const [finalOrder, setFinalOrder] = useState(null);
   const [otherStateReg, setOtherStateReg] = useState(null);
@@ -32,11 +34,17 @@ const [litigationForm, setLitigationForm] = useState({
   presentStatus: "",
   interimOrder: "No",
   finalOrder: "No",
+  interimCert: null,
+  disposedCert: null,
 });
 const [uploadedFiles, setUploadedFiles] = useState({
   photograph: null,
   panProof: null,
   addressProof: null,
+  //selfAffidavitFile: null,
+});
+const [savedFiles, setSavedFiles] = useState({
+  selfAffidavit: null,
 });
 
 
@@ -87,6 +95,8 @@ const [otherReraList, setOtherReraList] = useState([]);
     addressProof: null,
     
   });
+  //const completedStep = Number(localStorage.getItem("completedStep") || 0);
+
 
   //   const [files, setFiles] = useState({
   //   photograph: null,
@@ -95,77 +105,217 @@ const [otherReraList, setOtherReraList] = useState([]);
   // });
     /* ================= LOAD SAVED FORM ================= */
 
+// useEffect(() => {
+//   if (!applicationNo) return;
+
+//   apiGet(`api/agent/resume-applicationss/${applicationNo}`)
+//     .then((res) => {
+//       if (res.success && res.data) {
+//         const d = res.data;
+
+//         setForm((prev) => ({
+//           ...prev,
+
+//           // -------- BASIC DETAILS --------
+//           agentName: d.agent_name || "",
+//           fatherName: d.father_name || "",
+//           occupation: d.occupation_id || "",
+//           email: d.email || "",
+//           aadhaar: d.aadhaar || "",
+//           pan: d.pan || "",
+//           mobile: d.mobile || "",
+//           landline: d.landline || "",
+//           licenseNumber: d.license_number || "",
+//           licenseDate: d.license_date || "",
+
+//           // -------- ADDRESS --------
+//           address1: d.address1 || "",
+//           address2: d.address2 || "",
+//           state: d.state_id || "",
+//           district: d.district || "",
+//           mandal: d.mandal || "",
+//           village: d.village || "",
+//           pincode: d.pincode || "",
+//         }));
+
+//         // -------- FILE INFO (display only) --------
+//         setUploadedFiles({
+//           photograph: d.photograph || null,
+//           panProof: d.pan_proof || null,
+//           addressProof: d.address_proof || null,
+//           selfAffidavitFile: d.self_declared_affidavit || null,
+//         });
+//       }
+//     })
+//     .catch((err) => {
+//       console.error("Resume error:", err);
+//     });
+// }, [applicationNo]);
+
+// useEffect(() => {
+//   const agentId = localStorage.getItem("agentId");
+//   if (agentId) {
+//     localStorage.setItem("completedStep", "1");
+//   }
+// }, []);
+// useEffect(() => {
+//   const completed = Number(localStorage.getItem("completedStep") || 0);
+
+//   // 🔥 ensure agent step stays completed
+//   if (completed < 1) {
+//     localStorage.setItem("completedStep", "1");
+//   }
+// }, []);
+
+
 useEffect(() => {
-  if (!applicationNo) return;
+  // ✅ clear ONLY when PAN comes from PAN-entry flow
+  if (passedPan && !location.state?.agentId) {
+    localStorage.removeItem("agentId");
+    localStorage.removeItem("completedStep");
+  }
+}, [passedPan, location.state]);
 
-  apiGet(`api/agent/resume-applicationss/${applicationNo}`)
+useEffect(() => {
+  if (passedPan) {
+    setForm((prev) => ({
+      ...prev,
+      pan: passedPan,
+    }));
+  }
+}, [passedPan]);
+
+
+useEffect(() => {
+  // 🚫 If new PAN flow, do NOT load preview
+  if (passedPan) return;
+
+  const agentId = location.state?.agentId || localStorage.getItem("agentId");
+  if (!agentId) return;
+
+  apiGet(`/api/agent/preview/${agentId}`)
     .then((res) => {
-      if (res.success && res.data) {
-        const d = res.data;
+      if (!res.success) return;
 
-        setForm((prev) => ({
-          ...prev,
+      const { agent_details, projects, litigations, other_state_rera } = res.data;
 
-          // -------- BASIC DETAILS --------
-          agentName: d.agent_name || "",
-          fatherName: d.father_name || "",
-          occupation: d.occupation_id || "",
-          email: d.email || "",
-          aadhaar: d.aadhaar || "",
-          pan: d.pan || "",
-          mobile: d.mobile || "",
-          landline: d.landline || "",
-          licenseNumber: d.license_number || "",
-          licenseDate: d.license_date || "",
+      /* ================= BASIC FORM ================= */
+      setForm({
+        agentName: agent_details.agent_name || "",
+        fatherName: agent_details.father_name || "",
+        occupation: agent_details.occupation_id || "",
+        occupationName: agent_details.occupation_name || "",
+        email: agent_details.email || "",
+        aadhaar: agent_details.aadhaar || "",
+        pan: agent_details.pan || "",
+        mobile: agent_details.mobile || "",
+        landline: agent_details.landline || "",
+        licenseNumber: agent_details.license_number || "",
+       licenseDate: agent_details.license_date
+  ? new Date(agent_details.license_date).toISOString().slice(0, 10)
+  : "",
 
-          // -------- ADDRESS --------
-          address1: d.address1 || "",
-          address2: d.address2 || "",
-          state: d.state_id || "",
-          district: d.district || "",
-          mandal: d.mandal || "",
-          village: d.village || "",
-          pincode: d.pincode || "",
-        }));
+        address1: agent_details.address1 || "",
+        address2: agent_details.address2 || "",
+        state: agent_details.state_id || "",
+        district: agent_details.district || "",
+        mandal: agent_details.mandal || "",
+        village: agent_details.village || "",
+        pincode: agent_details.pincode || "",
+      });
 
-        // -------- FILE INFO (display only) --------
-        setUploadedFiles({
-          photograph: d.photograph || null,
-          panProof: d.pan_proof || null,
-          addressProof: d.address_proof || null,
-        });
-      }
-    })
-    .catch((err) => {
-      console.error("Resume error:", err);
+      /* ================= FILES ================= */
+      setUploadedFiles({
+        photograph: agent_details.photograph,
+        panProof: agent_details.pan_proof,
+        addressProof: agent_details.address_proof,
+       // selfAffidavitFile: agent_details.self_declared_affidavit,
+      });
+      setSavedFiles({
+  selfAffidavit: agent_details.self_declared_affidavit,
+});
+
+
+      /* ================= PROJECTS ================= */
+      setShowProjects(
+        agent_details.last_five_years_project_details === "Yes"
+      );
+      setProjects(
+        projects.map((p) => ({
+          id: p.id,
+          name: p.project_name,
+        }))
+      );
+
+      /* ================= LITIGATIONS ================= */
+      setLitigationStatus(agent_details.any_civil_criminal_cases);
+      setLitigations(
+        litigations.map((l) => ({
+          id: l.id,
+          caseNo: l.case_no,
+          namePlace: l.tribunal_place,
+          petitioner: l.petitioner_name,
+          respondent: l.respondent_name,
+          facts: l.case_facts,
+          presentStatus: l.present_status,
+          interimOrder: l.interim_order,
+          finalOrder: l.final_order,
+          interimCert: l.interim_order_certificate,
+          disposedCert: l.disposed_certificate,
+        }))
+      );
+      // ✅ Restore Interim & Final Order radios
+if (litigations && litigations.length > 0) {
+  setInterimOrder(litigations[0].interim_order || "No");
+  setFinalOrder(litigations[0].final_order || "No");
+}
+
+
+      /* ================= OTHER STATE RERA ================= */
+      setOtherStateReg(agent_details.registration_other_states === "Yes");
+      setOtherReraList(
+        other_state_rera.map((r) => ({
+          id: r.id,
+          regNo: r.registration_number,
+          stateId: r.state_id,
+          stateName: r.state_name,
+          districtName: r.district,
+        }))
+      );
+      setOtherReraForm({
+  regNo: "",
+  stateId: "",
+  stateName: "",
+  districtId: "",
+  districtName: "",
+});
+
     });
-}, [applicationNo]);
+}, []);
 
 
+  //  useEffect(() => {
+  //   if (!passedPan) return;
 
+  //   const savedForm = localStorage.getItem(`applicantForm_${passedPan}`);
 
-   useEffect(() => {
-    if (!passedPan) return;
+  //   if (savedForm) {
+  //     setForm(JSON.parse(savedForm));
+  //   } else {
+  //     setForm((prev) => ({ ...prev, pan: passedPan }));
+  //   }
+  // }, [passedPan]);
 
-    const savedForm = localStorage.getItem(`applicantForm_${passedPan}`);
+  // useEffect(() => {
+  // if (!form.pan) return;
 
-    if (savedForm) {
-      setForm(JSON.parse(savedForm));
-    } else {
-      setForm((prev) => ({ ...prev, pan: passedPan }));
-    }
-  }, [passedPan]);
+  // localStorage.setItem(
+  //   `applicantForm_${form.pan}`,
+  //   JSON.stringify(form)
+  // );
 
-  useEffect(() => {
-  if (!form.pan) return;
-
-  localStorage.setItem(
-    `applicantForm_${form.pan}`,
-    JSON.stringify(form)
-  );
-
-  localStorage.setItem("currentPan", form.pan);
-  }, [form]);
+  // localStorage.setItem("currentPan", form.pan);
+  // }, [form]);
 
 
 //  useEffect(() => {
@@ -241,26 +391,42 @@ useEffect(() => {
 
   // Fetch mandals when district changes
   useEffect(() => {
-    if (form.district) {
-      apiGet(`/api/mandals/${form.district}`)
-        .then((res) => {
-          setMandals(res || []);
-          setVillages([]);
-        })
-        .catch((err) => console.error("Mandals API error:", err));
-    }
-  }, [form.district]);
+  if (!form.district) return;
+
+  apiGet(`/api/mandals/${form.district}`)
+    .then((res) => {
+      setMandals(res || []);
+    })
+    .catch((err) => console.error("Mandals API error:", err));
+}, [form.district]);
+
 
   // Fetch villages when mandal changes
   useEffect(() => {
-    if (form.mandal) {
-      apiGet(`/api/villages/${form.mandal}`)
-        .then((res) => {
-          setVillages(res || []);
-        })
-        .catch((err) => console.error("Villages API error:", err));
-    }
-  }, [form.mandal]);
+  if (!form.mandal) return;
+
+  apiGet(`/api/villages/${form.mandal}`)
+    .then((res) => {
+      setVillages(res || []);
+    })
+    .catch((err) => console.error("Villages API error:", err));
+}, [form.mandal]);
+
+useEffect(() => {
+  if (
+    villages.length > 0 &&
+    form.village &&
+    !villages.find(v => v.id == form.village)
+  ) {
+    // re-set village after villages are loaded
+    setForm(prev => ({
+      ...prev,
+      village: prev.village,
+    }));
+  }
+}, [villages]);
+
+
 useEffect(() => {
   apiGet("/api/states")
     .then((res) => {
@@ -446,13 +612,15 @@ const handleDeleteOtherRera = (id) => {
   const handleSaveContinue = async () => {
 
   if (!form.agentName) return alert("Please Enter Agent Name");
-  if (!form.photograph) return alert("Please Upload Photograph");
+  if (!form.photograph && !uploadedFiles.photograph)
+  return alert("Please Upload Photograph");
   if (!form.fatherName) return alert("Please Enter Father Name");
   if (!form.occupation) return alert("Please Select Occupation");
   if (!form.email) return alert("Please Enter Email");
   if (form.aadhaar.length !== 12) return alert("Aadhaar Number must be 12 digits");
-  if (!form.pan) return alert("Please Enter PAN Card Number");
-  if (!form.panProof) return alert("Please Upload PAN Card");
+  if (!form.panProof && !uploadedFiles.panProof)
+  return alert("Please Upload PAN Card");
+  if (form.pan.length !== 10) return alert("PAN Card must be 10 digits");
   if (!form.mobile) return alert("Please Enter Mobile Number");
   if (!form.address1) return alert("Please Enter Address Line 1");
   if (!form.state) return alert("Please Select State");
@@ -460,9 +628,13 @@ const handleDeleteOtherRera = (id) => {
   if (!form.mandal) return alert("Please Select Mandal");
   if (!form.village) return alert("Please Select Local Area / Village");
   if (!form.pincode) return alert("Please Enter PIN Code");
-  if (!form.addressProof) return alert("Please Upload Address Proof");
+ if (!form.addressProof && !uploadedFiles.addressProof)
+  return alert("Please Upload Address Proof");
    if (litigationStatus === null)
     return alert("Please select Yes or No for Litigations");
+  if (litigationStatus === "No" && !uploadedFiles.selfAffidavitFile) {
+  return alert("Please upload Self Declared Affidavit file");
+}
 
   if (showProjects === null)
     return alert("Please select Yes or No for Projects");
@@ -488,6 +660,11 @@ const handleDeleteOtherRera = (id) => {
   if (otherStateReg === true && otherReraList.length === 0) {
     return alert("Please add at least one Other State RERA registration");
   }
+  {uploadedFiles.photograph && (
+  <small style={{ color: "green" }}>Already uploaded</small>
+)}
+
+
 
   try {
     const formData = new FormData();
@@ -504,23 +681,70 @@ const handleDeleteOtherRera = (id) => {
     });
 
     // file fields
+    formData.append("agentType", agentType);
     formData.append("photograph", form.photograph);
     formData.append("panProof", form.panProof);
     formData.append("addressProof", form.addressProof);
+    if (uploadedFiles.selfAffidavitFile) {
+  formData.append("selfAffidavit", uploadedFiles.selfAffidavitFile);
 
-    const response = await apiPost("/api/agent/register-step1", formData);
+}
+formData.append("last_five_years_project_details", showProjects ? "Yes" : "No");
+formData.append("any_civil_criminal_cases", litigationStatus);   // "Yes" or "No"
+formData.append("registration_other_states", otherStateReg ? "Yes" : "No");
+formData.append("projects", JSON.stringify(projects));
+const cleanLitigations = litigations.map((l) => ({
+  caseNo: l.caseNo,
+  namePlace: l.namePlace,
+  petitioner: l.petitioner,
+  respondent: l.respondent,
+  facts: l.facts,
+  presentStatus: l.presentStatus,
+  interimOrder: l.interimOrder,
+  finalOrder: l.finalOrder,
+}));
+formData.append("litigations", JSON.stringify(cleanLitigations));
 
-    if (response.success) {
-      localStorage.setItem("agentId", response.agent_id);
-       // ✅ show popup instead of navigating
-      setShowSuccessPopup(true);
-    } else {
+// append interim and disposed certificate files separately
+litigations.forEach((l, index) => {
+  if (l.interimCert) {
+    formData.append(`interimCert_${index}`, l.interimCert);
+  }
+  if (l.disposedCert) {
+    formData.append(`disposedCert_${index}`, l.disposedCert);
+  }
+});
+formData.append("otherReraList", JSON.stringify(otherReraList));
+
+
+   // append agent_id
+formData.append("agent_id", localStorage.getItem("agentId"));
+
+// ✅ ACTUAL API CALL
+const response = await apiPost("/api/agent/register-step1", formData);
+
+
+
+   if (response.success) {
+  localStorage.setItem("agentId", response.agent_id);
+
+  // ✅ THIS IS THE ONLY PLACE STEP-1 MUST BE SET
+  localStorage.setItem("completedStep", "1");
+
+  setShowSuccessPopup(true);
+}
+else {
       alert(response.message || "Failed to save applicant details");
     }
   } catch (error) {
     console.error(error);
     alert("Something went wrong while saving");
   }
+  if (response.success) {
+  setSavedFiles({
+    selfAffidavit: uploadedFiles.selfAffidavitFile,
+  });
+}
 };
 
   /* -------------------- UI -------------------- */
@@ -539,16 +763,50 @@ const handleDeleteOtherRera = (id) => {
           <h2 className="applicantdetails-page-title">Real Estate Agent Registration</h2>
 
           {/* Stepper */}
-          <div className="applicantdetails-stepper">
-            {["Agent Detail", "Upload Documents", "Preview", "Payment", "Acknowledgement"].map(
-              (s, i) => (
-                <div className="applicantdetails-step" key={i}>
-                  <div className={`applicantdetails-circle ${i === 0 ? "active" : ""}`}>{i + 1}</div>
-                  <span>{s}</span>
-                </div>
-              )
-            )}
-          </div>
+      <div className="applicantdetails-stepper">
+  {[
+    { label: "Agent Detail", path: "/applicant-details", step: 1 },
+    { label: "Upload Documents", path: "/agent-upload-documents", step: 2 },
+    { label: "Preview", path: "/agent-preview", step: 3 },
+    { label: "Payment", path: "", step: 4 },
+    { label: "Acknowledgement", path: "/agent-acknowledgement", step: 5 },
+  ].map((item) => {
+    const isClickable = item.step <= completedStep + 1;
+     (item.step === completedStep + 1 && completedStep < 3);
+
+    return (
+      <div
+        key={item.step}
+        className="applicantdetails-step"
+        style={{
+          cursor: isClickable ? "pointer" : "not-allowed",
+          opacity: isClickable ? 1 : 0.4,
+        }}
+        onClick={() => {
+          if (!isClickable) {
+            alert("Please complete previous step first");
+            return;
+          }
+
+          navigate(item.path, {
+            state: { agentId: localStorage.getItem("agentId") },
+          });
+        }}
+      >
+        <div
+          className={`applicantdetails-circle ${
+             item.step === 1 || item.step <= completedStep ? "active" : ""
+          }`}
+        >
+          {item.step}
+        </div>
+
+        <span>{item.label}</span>
+      </div>
+    );
+  })}
+</div>
+
 
           {/* Applicant Details */}
           <section className="applicantdetails-section">
@@ -583,7 +841,7 @@ const handleDeleteOtherRera = (id) => {
             <div className="applicantdetails-grid-4">
               <div>
                 <label className="required">Agent Name</label>
-                <input name="agentName" value={form.agentName} onChange={handleChange} />
+                <input name="agentName" value={form.agentName} onChange={handleChange} placeholder="Agent Name"/>
               </div>
 
               <div>
@@ -597,11 +855,17 @@ const handleDeleteOtherRera = (id) => {
                     }
                   }}
                 />
+                
+{/* {uploadedFiles.photograph && (
+  <small style={{ color: "green" }}>
+    ✔ Photograph already uploaded
+  </small>
+)} */}
               </div>
 
               <div>
                 <label className="required">Father's Name</label>
-                <input name="fatherName" value={form.fatherName} onChange={handleChange} />
+                <input name="fatherName" value={form.fatherName} onChange={handleChange} placeholder="Father Name"/>
               </div>
 
               <div>
@@ -631,7 +895,8 @@ const handleDeleteOtherRera = (id) => {
 
               <div>
                 <label className="required">Email Id</label>
-                <input type="email" name="email" value={form.email} onChange={handleChange} />
+                <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email Id"
+ />
               </div>
 
               <div>
@@ -640,6 +905,8 @@ const handleDeleteOtherRera = (id) => {
                   name="aadhaar"
                   value={form.aadhaar}
                   maxLength="12"
+                  placeholder="Aadhaar Number"
+
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, "");
                     setForm({ ...form, aadhaar: value });
@@ -672,6 +939,12 @@ const handleDeleteOtherRera = (id) => {
                     }
                   }}
                 />
+                
+{/* {uploadedFiles.panProof && (
+  <small style={{ color: "green" }}>
+    ✔ PAN card already uploaded
+  </small>
+)} */}
               </div>
 
               <div>
@@ -680,6 +953,8 @@ const handleDeleteOtherRera = (id) => {
                   name="mobile"
                   value={form.mobile}
                   maxLength="10"
+                  placeholder="Mobile Number"
+
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, "");
                     setForm({ ...form, mobile: value });
@@ -689,7 +964,17 @@ const handleDeleteOtherRera = (id) => {
 
               <div>
                 <label>Land Line Number</label>
-                <input name="landline" value={form.landline} onChange={handleChange} />
+                <input
+  name="landline"
+  value={form.landline}
+  placeholder="STD Code - Landline Number"
+  maxLength="15"
+  onChange={(e) => {
+    const value = e.target.value.replace(/[^0-9-]/g, "");
+    setForm({ ...form, landline: value });
+  }}
+/>
+
               </div>
 
               <div>
@@ -698,6 +983,8 @@ const handleDeleteOtherRera = (id) => {
                   name="licenseNumber"
                   value={form.licenseNumber}
                   onChange={handleChange}
+                  placeholder="License Number by the local bodies"
+
                 />
               </div>
 
@@ -708,6 +995,8 @@ const handleDeleteOtherRera = (id) => {
                   name="licenseDate"
                   value={form.licenseDate}
                   onChange={handleChange}
+                  placeholder="License Issued Date"
+
                 />
               </div>
             </div>
@@ -720,12 +1009,14 @@ const handleDeleteOtherRera = (id) => {
             <div className="applicantdetails-grid-4">
               <div>
                 <label className="required">Address Line 1</label>
-                <input name="address1" value={form.address1} onChange={handleChange} />
+                <input name="address1" value={form.address1} onChange={handleChange} placeholder="Address Line 1"
+ />
               </div>
 
               <div>
                 <label>Address Line 2</label>
-                <input name="address2" value={form.address2} onChange={handleChange} />
+                <input name="address2" value={form.address2} onChange={handleChange} placeholder="Address Line 2"
+ />
               </div>
 
               <div>
@@ -826,6 +1117,8 @@ const handleDeleteOtherRera = (id) => {
                   name="pincode"
                   value={form.pincode}
                   maxLength="6"
+                  placeholder="PIN Code"
+
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, "");
                     setForm({ ...form, pincode: value });
@@ -844,6 +1137,11 @@ const handleDeleteOtherRera = (id) => {
                     }
                   }}
                 />
+                {/* {uploadedFiles.addressProof && (
+  <small style={{ color: "green" }}>
+    ✔ Address proof already uploaded
+  </small>
+)} */}
               </div>
             </div>
           </section>
@@ -955,7 +1253,7 @@ const handleDeleteOtherRera = (id) => {
                 Yes
               </label>
 
-              <label>
+             <label>
                 <input
                   type="radio"
                   name="litigation"
@@ -979,7 +1277,23 @@ const handleDeleteOtherRera = (id) => {
       </p>
     </div>
 
-    <input type="file" />
+    <input
+  type="file"
+  accept=".pdf,.jpg,.jpeg,.png"
+  onChange={(e) =>
+    setUploadedFiles({
+      ...uploadedFiles,
+      selfAffidavitFile: e.target.files[0],
+    })
+  }
+/>
+{/* {savedFiles.selfAffidavit && (
+  <small style={{ color: "green" }}>
+    ✔ Self affidavit already uploaded
+  </small>
+)} */}
+
+
   </div>
 )}
 
@@ -999,6 +1313,8 @@ const handleDeleteOtherRera = (id) => {
             name="caseNo"
             value={litigationForm.caseNo}
             onChange={handleLitigationChange}
+            placeholder="Case No."
+
           />
                   </div>
 
@@ -1008,6 +1324,8 @@ const handleDeleteOtherRera = (id) => {
             name="namePlace"
             value={litigationForm.namePlace}
             onChange={handleLitigationChange}
+            placeholder="Name & Place of Tribunal/Authority"
+
           />
                   </div>
 
@@ -1017,6 +1335,8 @@ const handleDeleteOtherRera = (id) => {
             name="petitioner"
             value={litigationForm.petitioner}
             onChange={handleLitigationChange}
+            placeholder="Name of the Petitioner"
+
           />
                   </div>
 
@@ -1026,15 +1346,19 @@ const handleDeleteOtherRera = (id) => {
             name="respondent"
             value={litigationForm.respondent}
             onChange={handleLitigationChange}
+            placeholder="Name of the Respondent"
+
           />
                   </div>
 
                   <div>
-                    <label className="required">Facts of b Case/Contents of the Case</label>
+                    <label className="required">Facts of the Case/Contents of the Case</label>
                     <input
             name="facts"
             value={litigationForm.facts}
             onChange={handleLitigationChange}
+            placeholder="Facts of the Case/Contents of the Case"
+
           />
                   </div>
 
@@ -1162,7 +1486,16 @@ const handleDeleteOtherRera = (id) => {
                  {interimOrder === "Yes" && (
   <div>
     <label className="required">Interim Order Certificate</label>
-    <input type="file" />
+       <input
+      type="file"
+      accept=".pdf,.jpg,.jpeg,.png"
+      onChange={(e) =>
+        setLitigationForm({
+          ...litigationForm,
+          interimCert: e.target.files[0],
+        })
+      }
+    />
   </div>
 )}
 
@@ -1170,7 +1503,16 @@ const handleDeleteOtherRera = (id) => {
                  {finalOrder === "Yes" && (
   <div>
     <label className="required">Disposed Certificate </label>
-    <input type="file" />
+    <input
+      type="file"
+      accept=".pdf,.jpg,.jpeg,.png"
+      onChange={(e) =>
+        setLitigationForm({
+          ...litigationForm,
+          disposedCert: e.target.files[0],
+        })
+      }
+    />
   </div>
 )}
 
@@ -1267,6 +1609,8 @@ const handleDeleteOtherRera = (id) => {
           <label className="required">Registration Number</label>
           <input
             value={otherReraForm.regNo}
+            placeholder="Registration Number"
+
             onChange={(e) =>
               setOtherReraForm({ ...otherReraForm, regNo: e.target.value })
             }

@@ -1,26 +1,51 @@
-import "../styles/PreviewOther.css";
+import "../styles/previewOther.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
 
+const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
 const getFileUrl = (path) => {
   if (!path) return "#";
-  return `${BASE_URL}/${path}`;
+  return `${BASE_URL}/api/${path}`;
 };
+
 
 const PreviewOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
+    // ✅ Get Yes/No from AgentDetails
+  // ===== YES / NO FLAGS (FROM NAVIGATION OR API) =====
+const navState = location.state || {};
 
-  /* ================= STATE ================= */
 
-  const [apiData, setApiData] = useState(null);
+const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
+  const [states, setStates] = useState([]);
+const [districts, setDistricts] = useState([]);
 
-  /* ================= IDS ================= */
+   // ✅ SECOND: IDS
+  const organisation_id = location.state?.organisation_id;
+  const pan_card_number = location.state?.pan_card_number;
+
+//const data = apiData || {};
+
+const org = apiData?.organisation || {};
+
+const hasProjects =
+  navState.hasProjects ||
+  (org?.last_five_year_projects?.length > 0 ? "Yes" : "No");
+
+const hasOtherRera =
+  navState.hasOtherRera ||
+  (org?.other_state_rera_details?.length > 0 ? "Yes" : "No");
+
+
+
+  
+
+
 
   const [ids] = useState(() => ({
     application_id: location.state?.application_id,
@@ -28,7 +53,7 @@ const PreviewOther = () => {
     pan_card_number: location.state?.pan_card_number,
   }));
 
-  const { application_id, organisation_id, pan_card_number } = ids;
+
 
   /* ================= API CALL ================= */
 
@@ -68,33 +93,44 @@ const PreviewOther = () => {
     fetchData();
   }, [organisation_id, pan_card_number, navigate]);
 
-/* ================= DATA ================= */
+const fetchMasters = async () => {
+  try {
+    const stateRes = await axios.get(`${BASE_URL}/api/states`);
+    const districtRes = await axios.get(`${BASE_URL}/api/districts`);
 
-const data = apiData || {};
+    setStates(stateRes.data || []);
+    setDistricts(districtRes.data || []);
+  } catch (err) {
+    console.error("Master fetch error", err);
+  }
+};
 
-const org = apiData?.organisation || {};
+fetchMasters();
+
+
 
 const itrs = apiData?.itr || {
   itr1: apiData?.itr_year1_doc,
   itr2: apiData?.itr_year2_doc,
   itr3: apiData?.itr_year3_doc,
 };
+const directors = apiData?.entities || [];
+const getStateName = (id) =>
+  states.find((s) => s.id === id)?.state_name || id;
 
-const director = apiData?.entity || {};
-const auth = apiData?.authorized || {};
-const litigation = apiData?.litigation || {};
+const getDistrictName = (id) =>
+  districts.find((d) => d.id === id)?.district_name || id;
 
-const directors = apiData?.entity ? [apiData.entity] : [];
+const authorizedList = apiData?.authorized || [];
+const litigations = apiData?.litigations || [];
+const auth = authorizedList[0] || {};
+const hasLitigationFinal =
+  litigations.length > 0 ? "Yes" : "No";
 
 const projects = org.last_five_year_projects || [];
-
-const litigations = apiData?.litigation ? [apiData.litigation] : [];
-
 const otherStates = org.other_state_rera_details || [];
 
-const hasProjects = projects.length > 0;
-const hasLitigation = litigations.length > 0;
-const hasOtherState = otherStates.length > 0;
+
 
   /* ================= LOADING / ERROR ================= */
 
@@ -253,7 +289,13 @@ const hasOtherState = otherStates.length > 0;
 
 <section className="mpreview-section">
 
-  <h3 className="mpreview-heading">Director Details</h3>
+ <h3 className="mpreview-heading">
+  {org.organisation_type === "Trust/Society"
+    ? "Trustee Details"
+    : org.organisation_type === "Partnership/LLP Firm"
+    ? "Partner Details"
+    : "Director Details"}
+</h3>
 
   {/* Scroll Wrapper */}
   <div className="mpreview-table-wrapper">
@@ -290,7 +332,7 @@ const hasOtherState = otherStates.length > 0;
 
             <td>{i + 1}</td>
 
-            <td>Indian</td> {/* Static if API not sending */}
+            <td>{d.entity_type}</td> {/* Static if API not sending */}
 
             <td>{d.designation}</td>
 
@@ -304,9 +346,9 @@ const hasOtherState = otherStates.length > 0;
 
             <td>{d.mobile_number}</td>
 
-            <td>{d.state_ut}</td>
+            <td>{getStateName(d.state_ut)}</td>
+<td>{getDistrictName(d.district)}</td>
 
-            <td>{d.district}</td>
 
             <td>{d.address_line1}</td>
 
@@ -316,43 +358,39 @@ const hasOtherState = otherStates.length > 0;
 
             <td>{d.pan_card_number}</td>
 
-            <td>
-              <a
-                href={getFileUrl(d.address_proof)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View Address
-              </a>
-            </td>
+     <td>
+  {d.address_proof ? (
+    <a href={getFileUrl(d.address_proof)} target="_blank">
+      View Address
+    </a>
+  ) : "NA"}
+</td>
 
-            <td>
-              <a
-                href={getFileUrl(d.pan_card_doc)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View PAN
-              </a>
-            </td>
+<td>
+  {d.pan_card_doc ? (
+    <a href={getFileUrl(d.pan_card_doc)} target="_blank">
+      View PAN
+    </a>
+  ) : "NA"}
+</td>
 
-            <td>
-              <a
-                href={getFileUrl(d.aadhaar_doc)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View Aadhaar
-              </a>
-            </td>
+<td>
+  {d.aadhaar_doc ? (
+    <a href={getFileUrl(d.aadhaar_doc)} target="_blank">
+      View Aadhaar
+    </a>
+  ) : "NA"}
+</td>
 
-            <td>
-              <img
-                src={getFileUrl(d.photograph)}
-                alt="Photo"
-                className="mpreview-photo"
-              />
-            </td>
+<td>
+  {d.photograph ? (
+    <img
+      src={getFileUrl(d.photograph)}
+      className="mpreview-photo"
+      alt="Entity"
+    />
+  ) : "NA"}
+</td>
 
           </tr>
         ))}
@@ -408,11 +446,12 @@ const hasOtherState = otherStates.length > 0;
   </h3>
 
   <p className="mpreview-yesno">
-    <b>Last five years project details :</b>{" "}
-    {hasProjects ? "Yes" : "No"}
-  </p>
+  <b>Last five years project details :</b> {hasProjects}
+</p>
 
-  {hasProjects && (
+
+  {hasProjects === "Yes" && (
+
 
     <table className="mpreview-director-table">
 
@@ -449,17 +488,27 @@ const hasOtherState = otherStates.length > 0;
   <h3 className="mpreview-heading">Litigations</h3>
 
   <p className="mpreview-yesno">
-  <b>Any Civil/Criminal Cases :</b>{" "}
-  {hasLitigation === "Yes" ? "Yes" : "No"}
-</p>
+    <b>Any Civil/Criminal Cases :</b> {hasLitigationFinal}
+  </p>
 
+  {/* ✅ CASE: NO LITIGATION → Show Affidavit */}
+  {hasSelfAffidavit && (
+    <p>
+      <b>Self Declared Affidavit Document :</b>{" "}
+      <a
+        href={getFileUrl(litigations[0]?.self_declared_affidavit)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        View
+      </a>
+    </p>
+  )}
 
-  {hasLitigation && (
-
+  {/* ✅ CASE: HAS LITIGATION → Show Table */}
+  {!hasSelfAffidavit && (
     <div className="mpreview-table-wrapper">
-
       <table className="mpreview-director-table wide-table">
-
         <thead>
           <tr>
             <th>S.No</th>
@@ -471,68 +520,45 @@ const hasOtherState = otherStates.length > 0;
             <th>Present Status</th>
             <th>Interim Order</th>
             <th>Final Order if Disposed</th>
-            <th>Interim certificate</th>
-            <th>Final Order certificate</th>
-         
+            <th>Interim Certificate</th>
+            <th>Final Order Certificate</th>
           </tr>
         </thead>
 
         <tbody>
-
           {litigations.map((l, i) => (
             <tr key={i}>
-
               <td>{i + 1}</td>
-
               <td>{l.case_no}</td>
-
               <td>{l.tribunal_name_place}</td>
-
               <td>{l.petitioner_name}</td>
-
               <td>{l.respondent_name}</td>
-
               <td>{l.case_facts}</td>
-
               <td>{l.present_status}</td>
 
-               <td>{l.interim_order && l.interim_order !== "" ? "Yes" : "No"}</td>
+              <td>{l.interim_order ? "Yes" : "No"}</td>
+              <td>{l.final_order_details ? "Yes" : "No"}</td>
 
-               <td>{l.final_order_details && l.final_order_details !== "" ? "Yes" : "No"}</td>
-
-               <td>
+              <td>
                 {l.interim_order ? (
-                  <a
-                    href={getFileUrl(l.interim_order)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View Certificate
+                  <a href={getFileUrl(l.interim_order)} target="_blank">
+                    View
                   </a>
                 ) : "NA"}
               </td>
 
               <td>
                 {l.final_order_details ? (
-                  <a
-                    href={getFileUrl(l.final_order_details)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View Certificate
+                  <a href={getFileUrl(l.final_order_details)} target="_blank">
+                    View
                   </a>
                 ) : "NA"}
               </td>
-
             </tr>
           ))}
-
         </tbody>
-
       </table>
-
     </div>
-
   )}
 
 </section>
@@ -548,11 +574,12 @@ const hasOtherState = otherStates.length > 0;
   </h3>
 
   <p className="mpreview-yesno">
-    <b>Do you have registration in other states :</b>{" "}
-    {hasOtherState ? "Yes" : "No"}
-  </p>
+  <b>Do you have registration in other states :</b> {hasOtherRera}
+</p>
 
-  {hasOtherState && (
+
+  {hasOtherRera === "Yes" && (
+
 
     <div className="mpreview-table-wrapper">
 
@@ -613,23 +640,24 @@ const hasOtherState = otherStates.length > 0;
 
           <td>1</td>
 
-          <td>
-             <a href={getFileUrl(org.itr_year1_doc)} target="_blank" rel="noreferrer">
-              View
-            </a>
-          </td>
+       <td>
+  {org.itr_year1_doc ? (
+    <a href={getFileUrl(org.itr_year1_doc)} target="_blank">View</a>
+  ) : "NA"}
+</td>
 
-          <td>
-             <a href={getFileUrl(org.itr_year2_doc)} target="_blank" rel="noreferrer">
-              View
-            </a>
-          </td>
+<td>
+  {org.itr_year2_doc ? (
+    <a href={getFileUrl(org.itr_year2_doc)} target="_blank">View</a>
+  ) : "NA"}
+</td>
 
-          <td>
-             <a href={getFileUrl(org.itr_year3_doc)} target="_blank" rel="noreferrer">
-              View
-            </a>
-          </td>
+<td>
+  {org.itr_year3_doc ? (
+    <a href={getFileUrl(org.itr_year3_doc)} target="_blank">View</a>
+  ) : "NA"}
+</td>
+
 
         </tr>
 
@@ -703,7 +731,7 @@ const hasOtherState = otherStates.length > 0;
     navigate("/agent-paymentpage", {
       state: {
         application_no: org.application_id,
-        name:director.name,
+        name: directors[0]?.name || "",
         mobile: org.mobile_number,
       },
     })

@@ -163,7 +163,7 @@ export default function ComplaintDetails({
   const [activeError, setActiveError] = useState("");
   const docFileRef = useRef(null);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([]);    
 
   const handleAddRow = () => {
     if (!form.agreed || !form.delivered || !form.deviation) {
@@ -318,6 +318,12 @@ export default function ComplaintDetails({
     setForm((p) => ({
       ...p,
       [name]: type === "checkbox" ? checked : value,
+
+      // ⭐ AUTO-FILL DECLARANT NAME
+      ...(name === "complainantName" && {
+        declarantName: value,
+      }),
+
     }));
 
     /* ================= CLEAR FIELD ERROR ================= */
@@ -388,10 +394,10 @@ export default function ComplaintDetails({
         }
 
         if (!form.complainantEmail) {
-  newErrors.complainantEmail = "Please Enter Email Id";
-} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.complainantEmail)) {
-  newErrors.complainantEmail = "Please Enter a Valid Email Id";
-}
+          newErrors.complainantEmail = "Please Enter Email Id";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.complainantEmail)) {
+          newErrors.complainantEmail = "Please Enter a Valid Email Id";
+        }
 
 
         if (!form.cAddress1) {
@@ -407,10 +413,10 @@ export default function ComplaintDetails({
         }
 
         if (!form.cPincode) {
-  newErrors.cPincode = "Please Enter Pincode";
-} else if (!/^[1-9][0-9]{5}$/.test(form.cPincode)) {
-  newErrors.cPincode = "Please Enter a Valid 6-digit Pincode";
-}
+          newErrors.cPincode = "Please Enter Pincode";
+        } else if (!/^[1-9][0-9]{5}$/.test(form.cPincode)) {
+          newErrors.cPincode = "Please Enter a Valid 6-digit Pincode";
+        }
 
       }
     }
@@ -430,7 +436,7 @@ export default function ComplaintDetails({
           newErrors.projectName = "Please Enter Project Name";
         }
 
-         if (!form.projectName) {
+        if (!form.projectName) {
           newErrors.projectName = "Please Enter Project Name";
         }
         if (!form.respondentName) {
@@ -444,74 +450,74 @@ export default function ComplaintDetails({
         }
 
         if (!form.respondentEmail) {
-  newErrors.respondentEmail = "Please Enter Email ID";
-} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
-  newErrors.respondentEmail = "Please Enter a Valid Email ID";
-}
+          newErrors.respondentEmail = "Please Enter Email ID";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
+          newErrors.respondentEmail = "Please Enter a Valid Email ID";
+        }
 
       }
     }
     // ⭐ EXTRA FIX — Agent vs Allottee case
-const isAgentAgainstAllottee =
-  form.complaintAgainst === "Allottee" &&
-  form.complaintBy === "Agent";
+    const isAgentAgainstAllottee =
+      form.complaintAgainst === "Allottee" &&
+      form.complaintBy === "Agent";
 
-if (isAgentAgainstAllottee) {
+    if (isAgentAgainstAllottee) {
 
-  if (!form.projectName) {
-    newErrors.projectName = "Please Enter Project Name";
-  }
+      if (!form.projectName) {
+        newErrors.projectName = "Please Enter Project Name";
+      }
 
-  if (!form.respondentName) {
-    newErrors.respondentName = "Please Enter Name";
-  }
+      if (!form.respondentName) {
+        newErrors.respondentName = "Please Enter Name";
+      }
 
-  // ✅ MOBILE VALIDATION
-  if (!form.respondentMobile) {
-    newErrors.respondentMobile = "Please Enter Mobile Number";
-  } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
-    newErrors.respondentMobile = "Please Enter Valid 10-digit Mobile Number";
-  }
+      // ✅ MOBILE VALIDATION
+      if (!form.respondentMobile) {
+        newErrors.respondentMobile = "Please Enter Mobile Number";
+      } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
+        newErrors.respondentMobile = "Please Enter Valid 10-digit Mobile Number";
+      }
 
-  // ✅ EMAIL VALIDATION
-  if (!form.respondentEmail) {
-    newErrors.respondentEmail = "Please Enter Email ID";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
-    newErrors.respondentEmail = "Please Enter Valid Email ID";
-  }
+      // ✅ EMAIL VALIDATION
+      if (!form.respondentEmail) {
+        newErrors.respondentEmail = "Please Enter Email ID";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
+        newErrors.respondentEmail = "Please Enter Valid Email ID";
+      }
 
-  // ⭐ Fee receipt required when Agent complains against Allottee
-  if (!form.feeReceiptFile) {
-    newErrors.feeReceiptFile = "Please upload Fee Receipt";
-  }
+      // ⭐ Fee receipt required when Agent complains against Allottee
+      if (!form.feeReceiptFile) {
+        newErrors.feeReceiptFile = "Please upload Fee Receipt";
+      }
 
-  // ✅ DESCRIPTION VALIDATION
-  if (!form.description) {
-    newErrors.description = "Please Enter Description of Complaint";
-  }
-}
+      // ✅ DESCRIPTION VALIDATION
+      if (!form.description) {
+        newErrors.description = "Please Enter Description of Complaint";
+      }
+    }
 
 
-        // ✅ RESPONDENT ADDRESS VALIDATION
-if (showRespondentAddress) {
-  if (!form.rAddress1) {
-    newErrors.rAddress1 = "Please enter Address Line 1";
-  }
+    // ✅ RESPONDENT ADDRESS VALIDATION
+    if (showRespondentAddress) {
+      if (!form.rAddress1) {
+        newErrors.rAddress1 = "Please enter Address Line 1";
+      }
 
-  if (!form.rState) {
-    newErrors.rState = "Please select State";
-  }
+      if (!form.rState) {
+        newErrors.rState = "Please select State";
+      }
 
-  if (!form.rDistrict) {
-    newErrors.rDistrict = "Please select District";
-  }
+      if (!form.rDistrict) {
+        newErrors.rDistrict = "Please select District";
+      }
 
-  if (!form.rPincode) {
-    newErrors.rPincode = "Please enter PIN Code";
-  } else if (!/^[1-9][0-9]{5}$/.test(form.rPincode)) {
-    newErrors.rPincode = "Please enter a valid 6-digit PIN Code";
-  }
-}
+      if (!form.rPincode) {
+        newErrors.rPincode = "Please enter PIN Code";
+      } else if (!/^[1-9][0-9]{5}$/.test(form.rPincode)) {
+        newErrors.rPincode = "Please enter a valid 6-digit PIN Code";
+      }
+    }
 
     if (!form.subject) {
       newErrors.subject = "Please Enter Subject of Complaint";
@@ -520,129 +526,129 @@ if (showRespondentAddress) {
     if (!form.relief) {
       newErrors.relief = "Please Enter Relief Sought";
     }
-// =====================================================
-// ⭐ DETAILS OF COMPLAINT – DYNAMIC VALIDATION (ADD HERE)
-// =====================================================
+    // =====================================================
+    // ⭐ DETAILS OF COMPLAINT – DYNAMIC VALIDATION (ADD HERE)
+    // =====================================================
 
-// If Subject = Any Other → subjectOther required
-if (form.subject === "Any Other" && !form.subjectOther?.trim()) {
-  newErrors.subjectOther = "Please enter Subject of Complaint";
-}
+    // If Subject = Any Other → subjectOther required
+    if (form.subject === "Any Other" && !form.subjectOther?.trim()) {
+      newErrors.subjectOther = "Please enter Subject of Complaint";
+    }
 
-// If Relief = Any Other → reliefOther required
-if (form.relief === "Any Other" && !form.reliefOther?.trim()) {
-  newErrors.reliefOther = "Please enter Relief Sought from APRERA";
-}
-
-
-// 1️⃣ Interim Order required ONLY when complaintAgainst = Promoter
-if (form.complaintAgainst === "Promoter" && !form.interimOrder) {
-  newErrors.interimOrder = "Please select Interim Order";
-}
+    // If Relief = Any Other → reliefOther required
+    if (form.relief === "Any Other" && !form.reliefOther?.trim()) {
+      newErrors.reliefOther = "Please enter Relief Sought from APRERA";
+    }
 
 
-// 2️⃣ Upload document ONLY when Interim Order = Yes
-if (
-  form.complaintAgainst === "Promoter" &&
-  form.interimOrder === "Yes" &&
-  !form.interimFile
-) {
-  newErrors.interimFile = "Please upload relevant document";
-}
+    // 1️⃣ Interim Order required ONLY when complaintAgainst = Promoter
+    if (form.complaintAgainst === "Promoter" && !form.interimOrder) {
+      newErrors.interimOrder = "Please select Interim Order";
+    }
 
 
-// 3️⃣ Agreement upload required in Promoter ↔ Allottee cases
-const isPromoterByAllottee =
-  form.complaintAgainst === "Promoter" &&
-  form.complaintBy === "Allottee";
-
-const isAllotteeByPromoter =
-  form.complaintAgainst === "Allottee" &&
-  form.complaintBy === "Promoter";
-
-if ((isPromoterByAllottee || isAllotteeByPromoter) && !form.agreementFile) {
-  newErrors.agreementFile = "Please upload Agreement for Sale";
-}
+    // 2️⃣ Upload document ONLY when Interim Order = Yes
+    if (
+      form.complaintAgainst === "Promoter" &&
+      form.interimOrder === "Yes" &&
+      !form.interimFile
+    ) {
+      newErrors.interimFile = "Please upload relevant document";
+    }
 
 
-// 4️⃣ Complaint Regarding required when complaintBy = Allottee
-if (form.complaintBy === "Allottee" && !form.complaintRegarding?.trim()) {
-  newErrors.complaintRegarding = "Please enter Complaint Regarding";
-}
+    // 3️⃣ Agreement upload required in Promoter ↔ Allottee cases
+    const isPromoterByAllottee =
+      form.complaintAgainst === "Promoter" &&
+      form.complaintBy === "Allottee";
+
+    const isAllotteeByPromoter =
+      form.complaintAgainst === "Allottee" &&
+      form.complaintBy === "Promoter";
+
+    if ((isPromoterByAllottee || isAllotteeByPromoter) && !form.agreementFile) {
+      newErrors.agreementFile = "Please upload Agreement for Sale";
+    }
+
+
+    // 4️⃣ Complaint Regarding required when complaintBy = Allottee
+    if (form.complaintBy === "Allottee" && !form.complaintRegarding?.trim()) {
+      newErrors.complaintRegarding = "Please enter Complaint Regarding";
+    }
 
 
 
-if (isAgentAgainstAllottee) {
-  // ⭐ Fee receipt required when Agent complains against Allottee
-  if (!form.feeReceiptFile) {
-    newErrors.feeReceiptFile = "Please upload Fee Receipt";
-  }
+    if (isAgentAgainstAllottee) {
+      // ⭐ Fee receipt required when Agent complains against Allottee
+      if (!form.feeReceiptFile) {
+        newErrors.feeReceiptFile = "Please upload Fee Receipt";
+      }
 
-  // ✅ DESCRIPTION VALIDATION
-  if (!form.description) {
-    newErrors.description = "Please Enter Description of Complaint";
-  }
-}
-// ⭐ Promoter complaining against Allottee
-const isPromoterAgainstAllottee =
-  form.complaintAgainst === "Allottee" &&
-  form.complaintBy === "Promoter";
+      // ✅ DESCRIPTION VALIDATION
+      if (!form.description) {
+        newErrors.description = "Please Enter Description of Complaint";
+      }
+    }
+    // ⭐ Promoter complaining against Allottee
+    const isPromoterAgainstAllottee =
+      form.complaintAgainst === "Allottee" &&
+      form.complaintBy === "Promoter";
 
-if (isPromoterAgainstAllottee) {
-   // ✅ Project Name REQUIRED
-  if (!form.projectName) {
-    newErrors.projectName = "Please Enter Project Name";
-  }
+    if (isPromoterAgainstAllottee) {
+      // ✅ Project Name REQUIRED
+      if (!form.projectName) {
+        newErrors.projectName = "Please Enter Project Name";
+      }
 
-  // ✅ Respondent basic details
-  if (!form.respondentName) {
-    newErrors.respondentName = "Please Enter Name";
-  }
+      // ✅ Respondent basic details
+      if (!form.respondentName) {
+        newErrors.respondentName = "Please Enter Name";
+      }
 
-  if (!form.respondentMobile) {
-    newErrors.respondentMobile = "Please Enter Mobile Number";
-  } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
-    newErrors.respondentMobile = "Please Enter Valid Mobile Number";
-  }
+      if (!form.respondentMobile) {
+        newErrors.respondentMobile = "Please Enter Mobile Number";
+      } else if (!/^[6-9]\d{9}$/.test(form.respondentMobile)) {
+        newErrors.respondentMobile = "Please Enter Valid Mobile Number";
+      }
 
-  if (!form.respondentEmail) {
-    newErrors.respondentEmail = "Please Enter Email ID";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
-    newErrors.respondentEmail = "Please Enter Valid Email ID";
-  }
+      if (!form.respondentEmail) {
+        newErrors.respondentEmail = "Please Enter Email ID";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.respondentEmail)) {
+        newErrors.respondentEmail = "Please Enter Valid Email ID";
+      }
 
-  // ✅ Address required
-  if (!form.rAddress1) newErrors.rAddress1 = "Please Enter Address Line 1";
-  if (!form.rState) newErrors.rState = "Please Select State";
-  if (!form.rDistrict) newErrors.rDistrict = "Please Select District";
+      // ✅ Address required
+      if (!form.rAddress1) newErrors.rAddress1 = "Please Enter Address Line 1";
+      if (!form.rState) newErrors.rState = "Please Select State";
+      if (!form.rDistrict) newErrors.rDistrict = "Please Select District";
 
-  if (!form.rPincode) {
-    newErrors.rPincode = "Please Enter PIN Code";
-  } else if (!/^[1-9][0-9]{5}$/.test(form.rPincode)) {
-    newErrors.rPincode = "Please Enter Valid 6-digit PIN Code";
-  }
+      if (!form.rPincode) {
+        newErrors.rPincode = "Please Enter PIN Code";
+      } else if (!/^[1-9][0-9]{5}$/.test(form.rPincode)) {
+        newErrors.rPincode = "Please Enter Valid 6-digit PIN Code";
+      }
 
-  // ✅ ONLY description required in complaint section
-  if (!form.description) {
-    newErrors.description = "Please Enter Description of Complaint";
-  }
-}
+      // ✅ ONLY description required in complaint section
+      if (!form.description) {
+        newErrors.description = "Please Enter Description of Complaint";
+      }
+    }
 
 
     // ✅ DESCRIPTION VALIDATION
-// ✅ DESCRIPTION VALIDATION (skip for Promoter by Allottee)
-if (
-  !isPromoterByAllottee &&   // ⭐ IMPORTANT CONDITION
-  (
-    form.complaintBy === "Allottee" ||
-    form.complaintBy === "Others" ||
-    form.complaintBy === "Promoter" ||
-    (form.complaintAgainst === "Promoter" && form.complaintBy === "Agent")
-  ) &&
-  !form.description
-) {
-  newErrors.description = "Please Enter Description of Complaint";
-}
+    // ✅ DESCRIPTION VALIDATION (skip for Promoter by Allottee)
+    if (
+      !isPromoterByAllottee &&   // ⭐ IMPORTANT CONDITION
+      (
+        form.complaintBy === "Allottee" ||
+        form.complaintBy === "Others" ||
+        form.complaintBy === "Promoter" ||
+        (form.complaintAgainst === "Promoter" && form.complaintBy === "Agent")
+      ) &&
+      !form.description
+    ) {
+      newErrors.description = "Please Enter Description of Complaint";
+    }
 
 
 
@@ -658,13 +664,13 @@ if (
     if (isComplaintByAllottee && !form.complaintRegarding) {
       newErrors.complaintRegarding = "Please enter Complaint Regarding";
     }
-  // ✅ FEE RECEIPT VALIDATION
-const requireFeeReceipt =
-  form.complaintBy === "Allottee" && !isPromoterByAllottee;
+    // ✅ FEE RECEIPT VALIDATION
+    const requireFeeReceipt =
+      form.complaintBy === "Allottee" && !isPromoterByAllottee;
 
-if (requireFeeReceipt && !form.feeReceiptFile) {
-  newErrors.feeReceiptFile = "Please upload Fee Receipt";
-}
+    if (requireFeeReceipt && !form.feeReceiptFile) {
+      newErrors.feeReceiptFile = "Please upload Fee Receipt";
+    }
 
 
 
@@ -719,54 +725,48 @@ if (requireFeeReceipt && !form.feeReceiptFile) {
 
       // STEP 1: Create complaint (POST /complint/create)
       const complaintPayload = {
-        complainant: {
-  type: form.complaintBy || "",
-
-// ⭐ THIS MUST MATCH BACKEND
-  registered_id:
-    form.complainantRERA === "Yes" ? form.agentId || null : null,
-
-  // ⭐ Normal details
-  name: form.complainantName || "",
-  mobile: form.complainantMobile || "",
-  email: form.complainantEmail || "",
-
-  address_line1: form.cAddress1 || "",
-  address_line2: form.cAddress2 || "",
-  state: form.cState || "",
-  district: form.cDistrict || "",
-  pincode: form.cPincode || "",
-},
-
-       respondent: {
-  type: form.complaintAgainst || "",
-
-  // ⭐ RERA VALUES (MOST IMPORTANT FIX)
-  is_rera_registered: form.respondentRERA === "Yes",
-  registration_id:
-    form.respondentRERA === "Yes" ? form.promoterRegId || null : null,
-
-  // ⭐ Normal fields (only useful when NO)
-  project_name: form.projectName || "",
-  name: form.respondentName || "",
-  phone: form.respondentMobile || "",
-  email: form.respondentEmail || "",
-
-  address_line1: form.rAddress1 || "",
-  address_line2: form.rAddress2 || "",
-  state: form.rState || "",
-  district: form.rDistrict || "",
-  pincode: form.rPincode || "",
-},
-
-        complaint: {
+        complainant:
+        {
+          type: form.complaintBy || "",
+          registered_id: form.complainantRERA === "Yes" ? form.agentId || null : null,
+          name: form.complainantName || "",
+          mobile: form.complainantMobile || "",
+          email: form.complainantEmail || "",
+          address_line1: form.cAddress1 || "",
+          address_line2: form.cAddress2 || "",
+          state: form.cState || "",
+          district: form.cDistrict || "",
+          pincode: form.cPincode || "",
+        },
+        respondent:
+        {
+          type: form.complaintAgainst || "",
+          is_rera_registered: form.respondentRERA === "Yes",
+          registration_id: form.respondentRERA === "Yes" ? form.promoterRegId || null : null,
+          project_name: form.projectName || "",
+          name: form.respondentName || "",
+          phone: form.respondentMobile || "",
+          email: form.respondentEmail || "",
+          address_line1: form.rAddress1 || "",
+          address_line2: form.rAddress2 || "",
+          state: form.rState || "",
+          district: form.rDistrict || "",
+          pincode: form.rPincode || "",
+        },
+        complaint:
+        {
           subject: form.subject || "",
           relief_sought: form.relief || "",
-          description: form.description || "",
           application_type: form.applicationType,
-          complaint_facts: {
-            complaint_regarding: form.complaintRegarding || null,
-          },
+          complaint_regarding: form.complaintRegarding,
+          description: isPromoterByAllottee ? " " : form.description || "",
+          complaint_facts: isPromoterByAllottee && rows.length > 0 ?
+            {
+              agreed: rows[0].agreed,
+              delivered: rows[0].delivered,
+              deviation: rows[0].deviation,
+            } : null,
+
         },
       };
 
@@ -873,10 +873,10 @@ if (requireFeeReceipt && !form.feeReceiptFile) {
   const respondentRERA_Yes = form.respondentRERA === "Yes";
   const respondentRERA_No = form.respondentRERA === "No";
   // ✅ ONE shared condition for Respondent Address (UI + validation sync)
-const showRespondentAddress =
-  isAgainstAllottee ||
-  (isAgent && respondentRERA_No) ||
-  (isPromoter && respondentRERA_No);
+  const showRespondentAddress =
+    isAgainstAllottee ||
+    (isAgent && respondentRERA_No) ||
+    (isPromoter && respondentRERA_No);
 
 
   const showSubjectOther = form.subject === "Any Other";
@@ -917,10 +917,10 @@ const showRespondentAddress =
 
       {/* 🔴 SINGLE ERROR POPUP (ONE BY ONE) */}
       {activeError && (
-        <div className="error-toast" style={{ top: "90px" }}>
-          <span className="error-toast-text">{activeError}</span>
+        <div className="cr-error-toast" style={{ top: "90px" }}>
+          <span className="cr-error-toast-text">{activeError}</span>
           <button
-            className="error-toast-close"
+            className="cr-error-toast-close"
             onClick={() => setActiveError("")}
           >
             ×
@@ -1011,7 +1011,7 @@ const showRespondentAddress =
 
           <div className="cr-row-3">
             {/* Address Line 1 */}
-            <div className="field">
+            <div className="cr-field">
               <label>
                 Address Line 1 <span>*</span>
               </label>
@@ -1024,7 +1024,7 @@ const showRespondentAddress =
             </div>
 
             {/* Address Line 2 */}
-            <div className="field">
+            <div className="cr-field">
               <label>Address Line 2</label>
               <input
                 name="cAddress2"
@@ -1035,7 +1035,7 @@ const showRespondentAddress =
             </div>
 
             {/* State / UT */}
-            <div className="field">
+            <div className="cr-field">
               <label>
                 State / UT <span>*</span>
               </label>
@@ -1057,7 +1057,7 @@ const showRespondentAddress =
             </div>
 
             {/* District */}
-            <div className="field">
+            <div className="cr-field">
               <label>
                 District <span>*</span>
               </label>
@@ -1076,7 +1076,7 @@ const showRespondentAddress =
             </div>
 
             {/* PIN Code */}
-            <div className="field">
+            <div className="cr-field">
               <label>
                 PIN Code <span>*</span>
               </label>
@@ -1097,11 +1097,11 @@ const showRespondentAddress =
       {showComplainantBlock && (
         <>
           <h4>Details of the Complainant</h4>
-          <div className="rera-block">
-            <label className="rera-label">
+          <div className="cr-rera-block">
+            <label className="cr-rera-label">
               Is He/She Registered with AP RERA:
             </label>
-            <div className="radio-line">
+            <div className="cr-radio-line">
               <label>
                 <input
                   type="radio"
@@ -1143,7 +1143,7 @@ const showRespondentAddress =
             <>
               {/* ---------- BASIC DETAILS (3 FIELDS) ---------- */}
               <div className="cr-row-3">
-                <div className="field">
+                <div className="cr-field">
                   <label>Name of the Complainant <span>*</span></label>
                   <input
                     name="complainantName"
@@ -1153,7 +1153,7 @@ const showRespondentAddress =
                   />
                 </div>
 
-                <div className="field">
+                <div className="cr-field">
                   <label>Mobile No <span>*</span></label>
                   <input
                     name="complainantMobile"
@@ -1163,7 +1163,7 @@ const showRespondentAddress =
                   />
                 </div>
 
-                <div className="field">
+                <div className="cr-field">
                   <label>Email ID <span>*</span></label>
                   <input
                     name="complainantEmail"
@@ -1179,7 +1179,7 @@ const showRespondentAddress =
 
               {/* ---------- ADDRESS LINE 1 & 2 ---------- */}
               <div className="cr-row-3">
-                <div className="field">
+                <div className="cr-field">
                   <label>Address Line 1 <span>*</span></label>
                   <input
                     name="cAddress1"
@@ -1189,7 +1189,7 @@ const showRespondentAddress =
                   />
                 </div>
 
-                <div className="field">
+                <div className="cr-field">
                   <label>Address Line 2</label>
                   <input
                     name="cAddress2"
@@ -1202,7 +1202,7 @@ const showRespondentAddress =
 
                 {/* ---------- STATE / DISTRICT / PIN ---------- */}
 
-                <div className="field">
+                <div className="cr-field">
                   <label>State / UT <span>*</span></label>
                   <select
                     name="cState"
@@ -1219,7 +1219,7 @@ const showRespondentAddress =
                   </select>
                 </div>
 
-                <div className="field">
+                <div className="cr-field">
                   <label>District <span>*</span></label>
                   <select
                     name="cDistrict"
@@ -1233,7 +1233,7 @@ const showRespondentAddress =
                   </select>
                 </div>
 
-                <div className="field">
+                <div className="cr-field">
                   <label>PIN Code <span>*</span></label>
                   <input
                     name="cPincode"
@@ -1255,7 +1255,7 @@ const showRespondentAddress =
           {(isAgent || isPromoter) && (
             <>
               <label>Is He/She Registered with AP RERA:</label>
-              <div className="radio-line">
+              <div className="cr-radio-line">
                 <label>
                   <input
                     type="radio"
@@ -1293,7 +1293,7 @@ const showRespondentAddress =
 
           {(isAllottee || (isAgent && respondentRERA_No) || (isPromoter && respondentRERA_No)) && (
             <div className="cr-row-3">
-              <div className="field">
+              <div className="cr-field">
                 <label>Project Name <span><span>*</span></span></label>
                 <input
                   name="projectName"
@@ -1303,7 +1303,7 @@ const showRespondentAddress =
                 />
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>
                   {isPromoter
                     ? "Promoter Name (Preferably Company Name)"
@@ -1322,7 +1322,7 @@ const showRespondentAddress =
                 />
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>Mobile No <span>*</span></label>
                 <input
                   name="respondentMobile"
@@ -1332,7 +1332,7 @@ const showRespondentAddress =
                 />
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>Email ID <span>*</span></label>
                 <input
                   name="respondentEmail"
@@ -1356,7 +1356,7 @@ const showRespondentAddress =
           <>
             <h4>Respondent Communication Address</h4>
             <div className="cr-row-3">
-              <div className="field">
+              <div className="cr-field">
                 <label>Address Line 1 <span>*</span></label>
                 <input
                   name="rAddress1"
@@ -1366,7 +1366,7 @@ const showRespondentAddress =
                 />
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>Address Line 2</label>
                 <input
                   name="rAddress2"
@@ -1376,7 +1376,7 @@ const showRespondentAddress =
                 />
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>State / UT <span>*</span></label>
                 <select
                   name="rState"
@@ -1393,7 +1393,7 @@ const showRespondentAddress =
                 </select>
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>District <span>*</span></label>
                 <select
                   name="rDistrict"
@@ -1407,7 +1407,7 @@ const showRespondentAddress =
                 </select>
               </div>
 
-              <div className="field">
+              <div className="cr-field">
                 <label>PIN Code <span>*</span></label>
                 <input
                   name="rPincode"
@@ -1429,7 +1429,7 @@ const showRespondentAddress =
         {isPromoterByAllottee ? (
           <>
             {/* Subject of Complaint */}
-            <div className="field">
+            <div className="cr-field">
               <label>Subject of Complaint <span>*</span></label>
               <select
                 name="subject"
@@ -1449,7 +1449,7 @@ const showRespondentAddress =
 
             {/* Any Other – Subject */}
             {form.subject === "Any Other" && (
-              <div className="field">
+              <div className="cr-field">
                 <label>Any Other <span>*</span></label>
                 <input
                   name="subjectOther"
@@ -1461,7 +1461,7 @@ const showRespondentAddress =
             )}
 
             {/* Relief Sought */}
-            <div className="field">
+            <div className="cr-field">
               <label>Relief Sought from APRERA <span>*</span></label>
               <select
                 name="relief"
@@ -1480,7 +1480,7 @@ const showRespondentAddress =
 
             {/* Any Other – Relief */}
             {form.relief === "Any Other" && (
-              <div className="field">
+              <div className="cr-field">
                 <label>Any Other <span>*</span></label>
                 <input
                   name="reliefOther"
@@ -1494,7 +1494,7 @@ const showRespondentAddress =
         ) : (
           <>
             {/* 🟢 ALL OTHER CONDITIONS → NORMAL INPUTS */}
-            <div className="field">
+            <div className="cr-field">
               <label>Subject of Complaint <span>*</span></label>
               <input
                 name="subject"
@@ -1504,7 +1504,7 @@ const showRespondentAddress =
               />
             </div>
 
-            <div className="field">
+            <div className="cr-field">
               <label>Relief Sought from APRERA <span>*</span></label>
               <input
                 name="relief"
@@ -1518,9 +1518,9 @@ const showRespondentAddress =
 
 
         {form.complaintAgainst === "Promoter" && (
-          <div className="field">
+          <div className="cr-field">
             <label>Interim Order <span>*</span></label>
-            <div className="radio-inline">
+            <div className="cr-radio-inline">
               <label>
                 <input
                   type="radio"
@@ -1548,7 +1548,7 @@ const showRespondentAddress =
         {/* ===== Description of Complaint + Agreed/Delivered/Deviation ===== */}
 
         {(isComplaintByOthers || byPromoter) && (
-          <div className="field">
+          <div className="cr-field">
             <div>
               <label>Description of Complaint <span>*</span></label>
               <input
@@ -1564,7 +1564,7 @@ const showRespondentAddress =
 
         {isAgentAgainstPromoter && (
           <div>
-            <div className="field">
+            <div className="cr-field">
               <label>Description of Complaint <span>*</span></label>
               <input
                 name="description"
@@ -1664,9 +1664,6 @@ const showRespondentAddress =
             </div>
           </div>
         )}
-
-
-
         {isPromoterByAllottee && (
           <div className="cr-row-3">
             <div>
@@ -1680,9 +1677,6 @@ const showRespondentAddress =
             </div>
           </div>
         )}
-
-
-
         {isComplaintByAllottee && (
           <div className="cr-row-3">
             <div>
@@ -1798,7 +1792,7 @@ const showRespondentAddress =
 
           {/* ===== Table ===== */}
           {rows.length > 0 && (
-            <table className="data-table">
+            <table className="cr-data-table">
               <thead>
                 <tr>
                   <th>S.No.</th>
@@ -1818,7 +1812,7 @@ const showRespondentAddress =
                     <td>
                       <button
                         type="button"
-                        className="btn-delete"
+                        className="cr-btn-delete"
                         onClick={() => handleDelete(index)}
                       >
                         Delete
@@ -1856,14 +1850,14 @@ const showRespondentAddress =
         <button
           type="button"
           onClick={handleAddDoc}
-          className="add-btn"
+          className="cr-add-btn"
         >
           Add
         </button>
       </div>
 
       {supportingDocs.length > 0 && (
-        <table className="doc-table">
+        <table className="cr-doc-table">
           <thead>
             <tr>
               <th>S.No</th>
@@ -1889,7 +1883,7 @@ const showRespondentAddress =
                 <td>
                   <button
                     type="button"
-                    className="btn-delete"
+                    className="cr-btn-delete"
                     onClick={() =>
                       setSupportingDocs((p) => p.filter((x) => x.id !== d.id))
                     }
@@ -1929,8 +1923,8 @@ const showRespondentAddress =
             type="text"
             name="declarantName"
             value={form.declarantName || ""}
-            onChange={handleChange}
-            className="inline-input"
+            readOnly
+            className="cr-inline-input"
           />
           , the complainant do hereby verify that the contents of above are true to my
           personal knowledge and belief and that I have not suppressed any material
@@ -1940,7 +1934,7 @@ const showRespondentAddress =
 
       <div className="cr-footer">
         <button
-          className="proceed-btn"
+          className="cr-proceed-btn"
           onClick={handleSaveAndContinue}
           disabled={isSubmitting}
         >

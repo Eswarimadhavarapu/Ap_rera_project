@@ -399,3 +399,62 @@
   color: #333;
   font-weight: 500;
 }
+/* ================= PRINT ONLY SETTINGS ================= */
+@media print {
+
+  /* Hide AP RERA header + menu */
+  header,
+  nav,
+  .site-header,
+  .top-bar,
+  .navbar,
+  .mpreview-title {
+    display: none !important;
+  }
+
+  /* Hide stepper */
+  .mpreview-stepper {
+    display: none !important;
+  }
+
+  /* Hide breadcrumb if any */
+  .breadcrumb,
+  .breadcrumb-wrapper {
+    display: none !important;
+  }
+
+  /* Remove page margins */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Start content from top */
+  .mpreview-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+@media print {
+
+  /* Hide site top header */
+  .ap-rera-header,
+  .ap-header,
+  .top-header,
+  .header,
+  .site-header {
+    display: none !important;
+  }
+}
+/* ===== NORMAL WIDTH TABLE (FOR PROJECTS, SMALL TABLES) ===== */
+.mpreview-normal-table {
+  width: 100% !important;
+  min-width: auto !important;
+  table-layout: fixed;
+}
+
+.mpreview-normal-table th,
+.mpreview-normal-table td {
+  word-wrap: break-word;
+  white-space: normal;
+}

@@ -8,53 +8,136 @@ import { apiGet } from "../api/api";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
-const passedPan = location.state?.pan || "";
+  const passedPan = location.state?.pan || "";
+
+const getStep = () => {
+  if (location.pathname.includes("AgentUploadDocumentotherthan")) return 2;
+  if (location.pathname.includes("Preview")) return 3;
+  if (location.pathname.includes("Payment")) return 4;
+  if (location.pathname.includes("Acknowledgement")) return 5;
+  return 1;
+};
+
+const currentStep = getStep();
+
+// ================= VALIDATION HELPERS =================
+
+function isValidMobile(num) {
+  return /^[6-9]\d{9}$/.test(num);
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPAN(pan) {
+  return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan);
+}
+
+function isValidPincode(pin) {
+  return /^5\d{5}$/.test(pin);
+}
+
+function isValidAadhaar(num) {
+  return /^\d{12}$/.test(num);
+}
+
+function isValidDIN(num) {
+  return /^\d{8}$/.test(num);
+}
+
+// ===== JPG IMAGE VALIDATION =====
+function isJPGImage(file) {
+  return (
+    file &&
+    (file.type === "image/jpeg" ||
+     file.type === "image/jpg")
+  );
+}
+// ===== PDF VALIDATION =====
+function isPDFFile(file) {
+  return file && file.type === "application/pdf";
+}
+
+// ===== ADDRESS VALIDATION =====
+
+// Allow letters, numbers, space, , . / - # ()
+const isValidAddress = (value) => {
+  const regex = /^[A-Z0-9\s,./\-#()]+$/i;
+  return (
+    value.trim().length >= 5 &&   // min 5 chars
+    value.trim().length <= 200 && // max 200 chars
+    regex.test(value)
+  );
+};
+
+// Format address (remove extra spaces)
+const formatAddress = (value) => {
+  return value
+    .replace(/\s+/g, " ") // remove multiple spaces
+    .trimStart();         // no leading space
+};
 
 
-  // ================= VALIDATIONS =================
 
-// CIN (21 chars AlphaNumeric)
-const validateCIN = (cin) =>
-  /^[A-Z0-9]{21}$/.test(cin);
+// ===== INPUT FORMATTERS =====
+// Mobile: only numbers, max 10, start 6-9
+const formatMobile = (value) => {
+  let val = value.replace(/\D/g, "").slice(0, 10);
 
-// PAN (ABCDE1234F)
-const validatePAN = (pan) =>
-  /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan);
+  // Must start with 6,7,8,9
+  if (val.length > 0 && !/^[6-9]/.test(val)) {
+    return "";
+  }
 
-// Email
-const validateEmail = (email) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return val;
+};
 
-// Mobile: Starts with 6/7/8/9 and total 10 digits
-const validateMobile = (mobile) =>
-  /^[6-9][0-9]{9}$/.test(mobile);
+// Numbers only with max length
+const onlyNumbers = (value, max) =>
+  value.replace(/\D/g, "").slice(0, max);
 
-// Pincode (Start with 5, 6 digits)
-const validatePincode = (pin) =>
-  /^[5][0-9]{5}$/.test(pin);
+// CIN → 23 chars uppercase alphanumeric
+const formatCIN = (value) =>
+  value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 23);
 
-// Aadhaar (12 digits)
-const validateAadhaar = (aadhaar) =>
-  /^[0-9]{12}$/.test(aadhaar);
 
-// DIN (8 digits)
-const validateDIN = (din) =>
-  /^[0-9]{8}$/.test(din);
+// PAN → Uppercase
+// ===== PAN FORMAT (allow A–Z, a–z, 0–9, max 10 chars) =====
+const formatPAN = (value) =>
+  value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 10);
 
-// Address (Alphanumeric + , . / -)
-const validateAddress = (address) =>
-  /^[A-Za-z0-9\s,./-]+$/.test(address);
 
-// JPG Only
-const isJPG = (file) =>
-  file && file.type === "image/jpeg";
+// ===== REGISTRATION / CIN / TRUST FORMAT =====
+// allow A–Z, a–z, 0–9 and special characters, max 23 chars
+const formatRegistrationNo = (value) =>
+  value.slice(0, 23);
 
-// PDF Only
-const isPDF = (file) =>
-  file && file.type === "application/pdf";
+
+const isValidRegistrationNo = (value) => {
+  return value.length > 0 && value.length <= 23;
+};
 
 
 
+// ===== PINCODE HELPERS =====
+
+// Allow only 6 digits and must start with 5
+const formatPincode = (value) => {
+  // Remove non-digits
+  let val = value.replace(/\D/g, "");
+
+  // Limit to 6 digits
+  val = val.slice(0, 6);
+
+  // First digit must be 5
+  if (val.length > 0 && val[0] !== "5") {
+    return "";
+  }
+
+
+  return val;
+};
 
 
   // ===============================
@@ -119,8 +202,6 @@ useEffect(() => {
     JSON.stringify(form)
   );
 }, [form]);
-
-
 
   // ===== Projects (Past 5 Years) =====
 const [hasProjects, setHasProjects] = useState("");
@@ -202,11 +283,10 @@ const handleOrganisationTypeChange = (value) => {
 };
 
 
-const [trusteeForm, setTrusteeForm] = useState({
-  nationality: "",
+// ===== INDIAN TRUSTEE FORM =====
+const [indianTrusteeForm, setIndianTrusteeForm] = useState({
   designation: "",
   name: "",
-  din: "NA",
   email: "",
   mobile: "",
   state: "",
@@ -222,27 +302,71 @@ const [trusteeForm, setTrusteeForm] = useState({
   addressProof: null,
 });
 
+// ===== FOREIGNER TRUSTEE FORM =====
+const [foreignerTrusteeForm, setForeignerTrusteeForm] = useState({
+  designation: "",
+  name: "",
+  email: "",
+  mobile: "",
+  address1: "",
+  address2: "",
+  photo: null,
+  addressProof: null,
+});
+// ===== ACTIVE TRUSTEE FORM (AUTO SWITCH) =====
+const trusteeForm =
+  trusteeType === "Indian"
+    ? indianTrusteeForm
+    : foreignerTrusteeForm;
+
+const setTrusteeForm =
+  trusteeType === "Indian"
+    ? setIndianTrusteeForm
+    : setForeignerTrusteeForm;
+
+
+
 
 
 const handleAddTrustee = () => {
-
   const {
-    designation,
-    name,
-    email,
-    mobile,
-    state,
-    district,
-    address1,
-    pincode,
-  } = trusteeForm;
-  if (!otherReraForm) return null;
+  designation,
+  name,
+  email,
+  mobile,
+  address1,
+} = trusteeForm;
+
 
 
   if (!designation || !name || !email || !mobile || !address1) {
     alert("Please fill mandatory fields");
     return;
   }
+  // Email validation
+if (!isValidEmail(email)) {
+  alert("Enter valid Trustee Email");
+  return;
+}
+
+// Mobile validation
+if (!isValidMobile(mobile)) {
+  alert("Trustee mobile must start with 6-9 and be 10 digits");
+  return;
+}
+
+// PAN (Indian only)
+if (trusteeType === "Indian" && trusteeForm.pan && !isValidPAN(trusteeForm.pan)) {
+  alert("Invalid Trustee PAN");
+  return;
+}
+
+// Aadhaar (Indian only)
+if (trusteeType === "Indian" && !isValidAadhaar(trusteeForm.aadhaar)) {
+  alert("Invalid Trustee Aadhaar");
+  return;
+}
+
 
   const newTrustee = {
     id: Date.now(),
@@ -329,7 +453,36 @@ const handleAddPartner = () => {
 
 
 
+const [directorForm, setDirectorForm] = useState({
+  name: "",
+  email: "",
+  mobile: "",
+  designation: "",
+  state: "",
+  district: "",
+  address1: "",
+  address2: "",
+  pincode: "",
+  pan: "",
+  aadhaar: "",
+  din: "",
+});
 
+// ===== FOREIGNER DIRECTOR =====
+const [foreignerDirector, setForeignerDirector] = useState({
+  designation: "",
+  name: "",
+  mobile: "",
+  email: "",
+  address1: "",
+  address2: "",
+  din: "", 
+  photo: null,
+  addressProof: null,
+});
+const [directorStateId, setDirectorStateId] = useState("");
+const [directorDistrictId, setDirectorDistrictId] = useState("");
+const [directorDistricts, setDirectorDistricts] = useState([]);
 // ===== TRUSTEE / PARTNER LOCATION =====
 const [trusteeStateId, setTrusteeStateId] = useState("");
 const [trusteeDistrictId, setTrusteeDistrictId] = useState("");
@@ -337,47 +490,8 @@ const [trusteeDistricts, setTrusteeDistricts] = useState([]);
 
 
 // ================= AUTO SAVE FORM =================
-useEffect(() => {
-  const data = {
-    form,
-    files,
-    directors,
-    trustees,
-    partners,
-    projects,
-   // litigations,
-    otherReraList,
-    stateData,
-    districtData,
-    mandalData,
-    villageData,
-    hasProjects,
-    hasLitigation,
-    hasOtherRera,
-    hasInterimOrder,
-    hasFinalOrder,
-  };
 
-  localStorage.setItem("agentDetailsDraft", JSON.stringify(data));
-}, [
-  form,
-  files,
-  directors,
-  trustees,
-  partners,
-  projects,
-  litigations,
-  otherReraList,
-  stateData,
-  districtData,
-  mandalData,
-  villageData,
-  hasProjects,
-  hasLitigation,
-  hasOtherRera,
-  hasInterimOrder,
-  hasFinalOrder,
-]);
+
 
 // ================= LOAD SAVED FORM =================
 useEffect(() => {
@@ -396,6 +510,40 @@ useEffect(() => {
   setDirectors(data.directors || []);
   setTrustees(data.trustees || []);
   setPartners(data.partners || []);
+  // 🔥 RESTORE TRUSTEE FORMS
+setIndianTrusteeForm(data.indianTrusteeForm || {});
+setForeignerTrusteeForm(data.foreignerTrusteeForm || {});
+setTrusteeType(data.trusteeType || "");
+
+// 🔥 RESTORE PARTNER FORM
+setPartnerForm(data.partnerForm || initialPartnerForm);
+
+// 🔥 RESTORE DIRECTOR
+setDirectorForm(data.directorForm || {});
+setForeignerDirector({
+  designation: "",
+  name: "",
+  mobile: "",
+  email: "",
+  address1: "",
+  address2: "",
+  din: "",
+  photo: null,
+  addressProof: null,
+  ...data.foreignerDirector, // ✅ override if exists
+});
+
+
+// 🔥 RESTORE IDS
+setTrusteeStateId(data.trusteeStateId || "");
+setTrusteeDistrictId(data.trusteeDistrictId || "");
+
+setDirectorStateId(data.directorStateId || "");
+setDirectorDistrictId(data.directorDistrictId || "");
+
+setOtherReraStateId(data.otherReraStateId || "");
+setOtherReraDistrictId(data.otherReraDistrictId || "");
+
   setProjects(data.projects || []);
   setOtherReraList(data.otherReraList || []);
 
@@ -411,20 +559,96 @@ useEffect(() => {
   setHasFinalOrder(data.hasFinalOrder || "");
 }, [passedPan]);
 
-useEffect(() => {
-  if (performance.navigation.type === 1) {
-    localStorage.removeItem("agentDetailsDraft");
-  }
-}, []);
 
-// ================= CLEAR ON REFRESH =================
+// ================= AUTO SAVE FORM =================
 useEffect(() => {
-  const nav = performance.getEntriesByType("navigation")[0];
- if (nav && nav.type === "reload") {
-    localStorage.removeItem("agentDetailsDraft");
-  }
-  
-}, []);
+  const data = {
+    form,
+    files,
+    directors,
+    trustees,
+    partners,
+
+    indianTrusteeForm,
+    foreignerTrusteeForm,
+    trusteeType,
+
+    partnerForm,
+
+    directorForm,
+    foreignerDirector,
+
+    projects,
+    litigations,
+
+    otherReraList,
+
+    stateData,
+    districtData,
+    mandalData,
+    villageData,
+
+    hasProjects,
+    hasLitigation,
+    hasOtherRera,
+    hasInterimOrder,
+    hasFinalOrder,
+
+    trusteeStateId,
+    trusteeDistrictId,
+
+    directorStateId,
+    directorDistrictId,
+
+    otherReraStateId,
+    otherReraDistrictId,
+  };
+
+  localStorage.setItem(
+    "agentDetailsDraft",
+    JSON.stringify(data)
+  );
+}, [
+  form,
+  files,
+  directors,
+  trustees,
+  partners,
+
+  indianTrusteeForm,
+  foreignerTrusteeForm,
+  trusteeType,
+
+  partnerForm,
+
+  directorForm,
+  foreignerDirector,
+
+  projects,
+  litigations,
+
+  otherReraList,
+
+  stateData,
+  districtData,
+  mandalData,
+  villageData,
+
+  hasProjects,
+  hasLitigation,
+  hasOtherRera,
+  hasInterimOrder,
+  hasFinalOrder,
+
+  trusteeStateId,
+  trusteeDistrictId,
+
+  directorStateId,
+  directorDistrictId,
+
+  otherReraStateId,
+  otherReraDistrictId,
+]);
 
   // ===============================
   // LOAD STATES (PAGE LOAD)
@@ -501,10 +725,10 @@ useEffect(() => {
 // ===== DIRECTOR DETAILS =====
 const [showDirectorSection, setShowDirectorSection] = useState(false);
 const [directorType, setDirectorType] = useState(""); // Indian | Foreigner
+const [showDirectorForm, setShowDirectorForm] = useState(true);
+
 // ===== DIRECTOR LOCATION =====
-const [directorStateId, setDirectorStateId] = useState("");
-const [directorDistrictId, setDirectorDistrictId] = useState("");
-const [directorDistricts, setDirectorDistricts] = useState([]);
+
 const [showAddDirector, setShowAddDirector] = useState("");
 const [addDirectorRadio, setAddDirectorRadio] = useState("");
 
@@ -512,32 +736,6 @@ const [addDirectorRadio, setAddDirectorRadio] = useState("");
 
 
 
-const [directorForm, setDirectorForm] = useState({
-  name: "",
-  email: "",
-  mobile: "",
-  designation: "",
-  state: "",
-  district: "",
-  address1: "",
-  address2: "",
-  pincode: "",
-  pan: "",
-  aadhaar: "",
-  din: "",
-});
-
-// ===== FOREIGNER DIRECTOR =====
-const [foreignerDirector, setForeignerDirector] = useState({
-  designation: "",
-  name: "",
-  mobile: "",
-  email: "",
-  address1: "",
-  address2: "",
-  photo: null,
-  addressProof: null,
-});
 
 const [foreignerDirectors, setForeignerDirectors] = useState([]);
 
@@ -638,12 +836,28 @@ formData.append("village", villageData.name);
   formData.append("pincode", form.pincode);
   formData.append("address_proof_doc", files.addressProof);
 
-  /* ================= AUTHORIZED ================= */
-  formData.append("authorized_name", form.signName);
-  formData.append("authorized_mobile", form.signMobile);
-  formData.append("authorized_email", form.signEmail);
-  formData.append("authorized_photo", files.authPhoto);
-  formData.append("board_resolution", files.boardResolution);
+ /* ================= AUTHORIZED ================= */
+
+// Send multiple authorized persons (even if 1)
+formData.append(
+  "authorized_persons",
+  JSON.stringify([
+    {
+      name: form.signName,
+      mobile: form.signMobile,
+      email: form.signEmail
+    }
+  ])
+);
+
+// Files for authorized person (index based)
+if (files.authPhoto) {
+  formData.append("authorized_photo_0", files.authPhoto);
+}
+
+if (files.boardResolution) {
+  formData.append("board_resolution_0", files.boardResolution);
+}
 
   /* ================= PROJECTS ================= */
   formData.append(
@@ -660,104 +874,108 @@ formData.append("village", villageData.name);
 
   /* ================= LITIGATIONS ================= */
  /* ================= LITIGATION ================= */
+/* ================= LITIGATION ================= */
 
 if (litigations.length > 0) {
-  const l = litigations[0]; // backend supports one
 
-  formData.append("case_no", l.caseNo);
-  formData.append("tribunal_name_place", l.namePlace);
+  formData.append(
+    "litigations",
+    JSON.stringify(
+      litigations.map((l) => ({
+        case_no: l.caseNo,
+        tribunal_name_place: l.namePlace,
+        petitioner_name: l.petitioner,
+        respondent_name: l.respondent,
+        case_facts: l.facts,
+        present_status: l.status,
+        interim_order: l.interimOrder,
+        final_order: l.finalOrder
+      }))
+    )
+  );
 
-  formData.append("petitioner_name", l.petitioner);
-  formData.append("respondent_name", l.respondent);
+  // Send files separately
+  litigations.forEach((l, index) => {
+    if (l.interimCert) {
+      formData.append(`interim_certificate_${index}`, l.interimCert);
+    }
 
-  formData.append("case_facts", l.facts);
-  formData.append("present_status", l.status);
+    if (l.finalCert) {
+      formData.append(`final_certificate_${index}`, l.finalCert);
+    }
+  });
+}
 
- if (l.interimCert) {
-    formData.append("interim_certificate", l.interimCert);
-  }
-
-  // ✅ Send Final File
-  if (l.finalCert) {
-    formData.append("final_certificate", l.finalCert);
-  }
   /* ===== SELF AFFIDAVIT (WHEN NO CASES) ===== */
 if (hasLitigation === "No" && affidavitFile) {
   formData.append("self_affidavit", affidavitFile);
-}
+
 
 }
 
 /* ================= ENTITY (DIRECTOR / PARTNER / TRUSTEE) ================= */
 
 
-  /* ================= ENTITY (DIRECTOR / TRUSTEE / PARTNER) ================= */
+/* ================= ENTITY (MULTIPLE) ================= */
 
-let entity = null;
-let entityType = "";
+let entityList = [];
 
-// COMPANY / JV / GOVT → DIRECTOR
 if (
   form.orgType === "Company" ||
   form.orgType === "Joint Venture" ||
   form.orgType === "Government Department/Local Bodies/Government Bodies"
 ) {
-  entity = directors[0];
-  entityType = "DIRECTOR";
+  entityList = directors;
 }
 
-// TRUST → TRUSTEE
 else if (form.orgType === "Trust/Society") {
-  entity = trustees[0];
-  entityType = "TRUSTEE";
+  entityList = trustees;
 }
 
-// PARTNERSHIP → PARTNER
 else if (form.orgType === "Partnership/LLP Firm") {
-  entity = partners[0];
-  entityType = "PARTNER";
+  entityList = partners;
 }
 
-if (!entity) {
-  alert("Please add at least one Director / Trustee / Partner");
+if (entityList.length === 0) {
+  alert("Please add at least one entity");
   return;
 }
 
-/* ===== COMMON FIELDS ===== */
+formData.append(
+  "entities",
+  JSON.stringify(
+    entityList.map((entity) => ({
+      designation: entity.designation,
+      name: entity.name,
+      email: entity.email,
+      mobile: entity.mobile,
+      state: entity.state || "NA",
+      district: entity.district || "NA",
+      address1: entity.address1,
+      address2: entity.address2 || "NA",
+      pincode: entity.pincode || "NA",
+      pan: entity.pan || "NA",
+      aadhaar: entity.aadhaar || "NA",
+      din: entity.din || "NA",
+      nationality: entity.nationality || "Indian"
+    }))
+  )
+);
 
-formData.append("entity_type", entityType);
+/* ===== ENTITY FILES ===== */
+entityList.forEach((entity, index) => {
+  if (entity.panDoc)
+    formData.append(`entity_pan_doc_${index}`, entity.panDoc);
 
-formData.append("entity_designation", entity.designation);
-formData.append("entity_name", entity.name);
-formData.append("entity_email", entity.email);
-formData.append("entity_mobile", entity.mobile);
+  if (entity.aadhaarDoc)
+    formData.append(`entity_aadhaar_doc_${index}`, entity.aadhaarDoc);
 
-formData.append("entity_state", entity.state || "NA");
-formData.append("entity_district", entity.district || "NA");
+  if (entity.photo)
+    formData.append(`entity_photo_${index}`, entity.photo);
 
-formData.append("entity_address_line1", entity.address1);
-formData.append("entity_address_line2", entity.address2 || "NA");
-
-formData.append("entity_pincode", entity.pincode || "NA");
-
-formData.append("entity_pan_number", entity.pan || "NA");
-formData.append("entity_aadhaar_number", entity.aadhaar || "NA");
-
-formData.append("din_number", entity.din || "NA");
-
-/* ===== FILES ===== */
-
-if (entity.panDoc)
-  formData.append("entity_pan_doc", entity.panDoc);
-
-if (entity.aadhaarDoc)
-  formData.append("entity_aadhaar_doc", entity.aadhaarDoc);
-
-if (entity.photo)
-  formData.append("entity_photo", entity.photo);
-
-if (entity.addressProof)
-  formData.append("entity_address_proof", entity.addressProof);
+  if (entity.addressProof)
+    formData.append(`entity_address_proof_${index}`, entity.addressProof);
+});
 
   /* ================= OTHER STATE RERA ================= */
 formData.append(
@@ -803,16 +1021,19 @@ console.log("===== FORM DATA END =====");
       return;
     }
 
-   alert("Agent Details submitted successfully ✅");
+  alert("Agent Details submitted successfully ✅");
 
 navigate("/AgentUploadDocumentotherthan", {
   state: {
     application_id: data.application_id,
     organisation_id: data.organisation_id,
-    organization_pan_curd: data.organization_pan_curd,
+    pan_card_number: data.PAN_card_number,    
     status: data.status,
+    hasProjects,
+    hasOtherRera,
   },
 });
+
 
 
   } catch (error) {
@@ -822,10 +1043,378 @@ navigate("/AgentUploadDocumentotherthan", {
 };
 
 
-  // ===============================
-  // SAVE & CONTINUE
-  // ===============================
- const handleSaveAndContinue = () => {
+
+
+const validateMandatoryFields = () => {
+  /* ========= 1️⃣ ORGANISATION TYPE ========= */
+  if (!form.orgType) return "Please select Organisation Type";
+
+  /* ========= 2️⃣ ORGANISATION NAME ========= */
+  if (!form.orgName) return "Please enter Organisation Name";
+
+  /* =====================================================
+     3️⃣ TYPE-WISE FIELDS (IN SCREEN ORDER)
+     ===================================================== */
+
+  /* ===== COMPANY / JOINT VENTURE ===== */
+  if (form.orgType === "Company" || form.orgType === "Joint Venture") {
+    if (!form.cin) return "Please enter CIN Number";
+    if (!form.regDate) return "Please select Date of Registration";
+    if (!files.regCert) return "Upload Registration Certificate";
+  }
+
+  /* ===== TRUST / SOCIETY ===== */
+  if (form.orgType === "Trust/Society") {
+    if (!form.trustNumber) return "Please enter Trust Number";
+    if (!form.trustRegDate) return "Please select Date of Trust Registration";
+    if (!files.trustDeed) return "Upload Trust Deed";
+    if (!files.regCert) return "Upload Registration Certificate";
+  }
+
+  /* ===== PARTNERSHIP / LLP ===== */
+  if (form.orgType === "Partnership/LLP Firm") {
+    if (!form.regNumber) return "Please enter Registration Number";
+    if (!form.regDate) return "Please select Date of Registration";
+    if (!files.partnershipDeed) return "Upload Partnership Deed";
+    if (!files.regCert) return "Upload Registration Certificate";
+  }
+
+  /* ===== GOVERNMENT ===== */
+  if (form.orgType === "Government Department/Local Bodies/Government Bodies") {
+    if (!form.regNumber) return "Please enter Registration Number";
+    if (!form.regDate) return "Please select Date of Registration";
+    if (!files.regCert) return "Upload Registration Certificate";
+  }
+
+  /* ========= 4️⃣ PAN SECTION ========= */
+  if (!form.pan) return "Please enter PAN Card Number";
+  if (!files.panDoc) return "Upload PAN Card";
+
+  /* ========= 5️⃣ CONTACT ========= */
+  if (!form.email) return "Please enter Email Id";
+  if (!form.mobile) return "Please enter Mobile Number";
+
+  /* ========= 6️⃣ GST ========= */
+  if (form.gst && !files.gstDoc)
+    return "Upload GST Number Document";
+
+  /* ========= 7️⃣ MEMORANDUM (ONLY COMPANY/JV) ========= */
+  if (
+    (form.orgType === "Company" || form.orgType === "Joint Venture") &&
+    !files.memorandumDoc
+  ) {
+    return "Upload Memorandum of Articles / Bye-laws";
+  }
+  /* =====================================================
+     6️⃣ LOCAL ADDRESS FOR COMMUNICATION  ⭐ NEW SECTION
+     ===================================================== */
+
+  if (!form.address1) return "Please enter Address Line 1";
+  if (!stateData?.id) return "Please select State";
+  if (!districtData?.id) return "Please select District";
+  if (!mandalData?.id) return "Please select Mandal";
+  if (!villageData?.id) return "Please select Village";
+  if (!form.pincode) return "Please enter PIN Code";
+  if (!files.addressProof) return "Upload Address Proof";
+/* =====================================================
+   7️⃣ DIRECTOR DETAILS VALIDATION
+   Only for Company / Joint Venture / Government
+   ===================================================== */
+
+/* =====================================================
+   7️⃣ DIRECTOR DETAILS VALIDATION
+   Only for Company / JV / Government
+   ===================================================== */
+
+
+
+/* =====================================================
+   7️⃣ DIRECTOR DETAILS VALIDATION
+   Only for Company / JV / Government
+   ===================================================== */
+
+/* =====================================================
+   7️⃣ DIRECTOR DETAILS VALIDATION
+   ===================================================== */
+
+if (
+  form.orgType === "Company" ||
+  form.orgType === "Joint Venture" ||
+  form.orgType === "Government Department/Local Bodies/Government Bodies"
+) {
+
+  /* ===== 1. DIRECTOR NOT ADDED YET ===== */
+  if (directors.length === 0) {
+
+    if (!directorType) {
+      return "Please select Director Type (Indian / Foreigner)";
+    }
+
+    /* ---------- INDIAN ---------- */
+    if (directorType === "Indian") {
+      const d = directorForm;
+
+      if (!d.designation) return "Please select Director Designation";
+      if (!d.name) return "Please enter Director Name";
+      if (!d.email) return "Please enter Director Email Id";
+      if (!d.mobile) return "Please enter Director Mobile Number";
+
+      if (!directorStateId) return "Please select Director State";
+      if (!directorDistrictId) return "Please select Director District";
+
+      if (!d.address1) return "Please enter Director Address Line 1";
+      if (!d.pincode) return "Please enter Director PIN Code";
+
+      if (!d.pan) return "Please enter Director PAN Number";
+      if (!d.panDoc) return "Upload Director PAN Card";
+
+      if (!d.aadhaar) return "Please enter Director Aadhaar Number";
+      if (!d.aadhaarDoc) return "Upload Director Aadhaar";
+      if (!d.photo) return "Upload Director Photograph";
+      if (
+        form.orgType !==
+          "Government Department/Local Bodies/Government Bodies" &&
+        !d.din
+      ) {
+        return "Please enter Director DIN Number";
+      }
+    }
+
+    /* ---------- FOREIGNER ---------- */
+    if (directorType === "Foreigner") {
+      const d = foreignerDirector;
+
+      if (!d.designation) return "Please select Director Designation";
+      if (!d.name) return "Please enter Director Name";
+      if (!d.email) return "Please enter Director Email Id";
+      if (!d.mobile) return "Please enter Director Mobile Number";
+      if (!d.address1) return "Please enter Director Address Line 1";
+      if (!d.photo) return "Upload Director Photograph";
+      if (!d.addressProof) return "Upload Director Address Proof";
+        if (
+        form.orgType !==
+          "Government Department/Local Bodies/Government Bodies" &&
+        !d.din
+      ) {
+        return "Please enter Director DIN Number";
+      }
+    }
+  }
+
+  /* ===== 2. DIRECTOR ALREADY ADDED ===== */
+  else {
+    const d = directors[0];
+
+    if (!d.designation) return "Director designation missing";
+    if (!d.name) return "Director name missing";
+    if (!d.email) return "Director email missing";
+    if (!d.mobile) return "Director mobile missing";
+
+    if (
+      form.orgType !==
+        "Government Department/Local Bodies/Government Bodies" &&
+      !d.din
+    ) {
+      return "Director DIN missing";
+    }
+
+    if (!d.photo) return "Director photo missing";
+    if (!d.addressProof) return "Director address proof missing";
+  }
+}
+
+/* =====================================================
+   8️⃣ AUTHORIZED SIGNATORY VALIDATION
+   ===================================================== */
+
+if (!form.signName) {
+  return "Please enter Authorized Signatory Name";
+}
+
+if (!form.signMobile) {
+  return "Please enter Authorized Signatory Mobile Number";
+}
+
+if (!form.signEmail) {
+  return "Please enter Authorized Signatory Email Id";
+}
+
+if (!files.authPhoto) {
+  return "Upload Authorized Signatory Photograph";
+}
+
+if (!files.boardResolution) {
+  return "Upload Board Resolution for Authorized Signatory";
+}
+
+/* =====================================================
+   9️⃣ PROJECTS IN LAST 5 YEARS VALIDATION
+   ===================================================== */
+
+/* =====================================================
+   PROJECTS IN LAST 5 YEARS VALIDATION
+   ===================================================== */
+
+// ❗ Must select Yes or No first
+/* ===== MUST SELECT YES/NO ===== */
+if (!hasProjects) {
+  return "Please select Last five years project details";
+}
+
+/* ===== IF YES SELECTED ===== */
+if (hasProjects === "Yes") {
+
+  // typed but not added
+  if (projectName.trim() && projects.length === 0) {
+    return "Please click Add to save the project";
+  }
+
+  // nothing typed & nothing added
+  if (!projectName.trim() && projects.length === 0) {
+    return "Please enter and add at least one Project Name";
+  }
+}
+
+
+/* ---------- If NO selected ---------- */
+// No extra validation needed
+/* ================= LITIGATION VALIDATION ================= */
+/* =====================================================
+   LITIGATION VALIDATION – PURE FIELD WISE
+   ===================================================== */
+
+/* ---------- Nothing selected ---------- */
+if (!hasLitigation) {
+  return "Please select Any Civil/Criminal Cases (Yes or No)";
+}
+
+
+/* =====================================================
+   WHEN YES SELECTED → VALIDATE FORM DIRECTLY
+   ===================================================== */
+if (hasLitigation === "Yes") {
+
+  /* ✅ If already added to table, skip everything */
+  if (litigations.length > 0) {
+    // DO NOTHING - continue to next validation section
+  } else {
+
+    const l = litigationForm;
+
+    if (!l.caseNo)
+      return "Please enter Case Number";
+
+    if (!l.namePlace)
+      return "Please enter Name & Place of Tribunal/Authority";
+
+    if (!l.petitioner)
+      return "Please enter Petitioner Name";
+
+    if (!l.respondent)
+      return "Please enter Respondent Name";
+
+    if (!l.facts)
+      return "Please enter Facts of the Case";
+
+    if (!l.status)
+      return "Please select Present Status of the Case";
+
+    if (!hasInterimOrder)
+      return "Please select Interim Order (Yes or No)";
+
+    if (!hasFinalOrder)
+      return "Please select Details of Final Order (Yes or No)";
+
+    if (hasInterimOrder === "Yes" && !l.interimCert)
+      return "Please add Interim Order Certificate";
+
+    if (hasFinalOrder === "Yes" && !l.finalCert)
+      return "Please upload Disposed Certificate";
+
+    return "Please click Add to save Any Civil/Criminal Cases Details";
+  }
+}
+
+
+/* =====================================================
+   WHEN NO SELECTED
+   ===================================================== */
+if (hasLitigation === "No") {
+  if (!affidavitFile) {
+    return "Please upload Self Declared Affidavit";
+  }
+}
+
+/* =====================================================
+   OTHER STATE / UT RERA VALIDATION
+   ===================================================== */
+
+/* 1️⃣ Must select Yes or No */
+
+if (!hasOtherRera) {
+  return "Please select Do you have registration in other states (Yes or No)";
+}
+
+if (hasOtherRera === "Yes") {
+
+  // ✅ If at least one record is added, no need to validate input fields
+  if (otherReraList.length > 0) {
+    return null;
+  }
+
+  // ❗ If nothing added, then validate fields
+  if (!otherReraForm.regNumber)
+    return "Please enter Registration Number";
+
+  if (!otherReraStateId)
+    return "Please select State/UT";
+
+  if (!otherReraDistrictId)
+    return "Please select District";
+
+  return "Please click Add to save Other State RERA details";
+}
+
+
+  return null; // ✅ ALL VALID
+};
+
+
+
+  const handleSaveAndContinue = () => {
+
+  // ===== REGISTRATION NUMBER VALIDATION =====
+const error = validateMandatoryFields();
+
+  if (error) {
+    alert(error); // same popup style as your screenshot
+    return;
+  }
+
+
+let regValue = "";
+
+if (form.orgType === "Company" || form.orgType === "Joint Venture") {
+  regValue = form.cin;
+}
+
+else if (form.orgType === "Trust/Society") {
+  regValue = form.trustNumber;
+}
+
+else if (
+  form.orgType === "Partnership/LLP Firm" ||
+  form.orgType === "Government Department/Local Bodies/Government Bodies"
+) {
+  regValue = form.regNumber;
+}
+
+if (!isValidRegistrationNo(regValue)) {
+  return alert(
+    "Registration/CIN/Trust Number must contain only A-Z and 0-9 (max 23 characters)"
+  );
+}
+
 
   /* ================= REQUIRED FIELDS ================= */
 
@@ -859,9 +1448,41 @@ if (form.orgType === "Trust/Society" && !form.trustRegDate) {
 
   if (!form.mobile)
     return alert("Please enter Mobile Number");
+  // ===== FORMAT VALIDATIONS =====
 
-  if (!form.address1)
-    return alert("Please enter Address Line 1");
+// Organisation Mobile
+if (!isValidMobile(form.mobile)) {
+  return alert("Mobile must start with 6-9 and be 10 digits");
+}
+
+// Organisation Email
+if (!isValidEmail(form.email)) {
+  return alert("Enter valid Email (example: abc2@gmail.com)");
+}
+
+// PAN
+if (!isValidPAN(form.pan)) {
+  return alert("PAN must be in format ABCDE2345G");
+}
+
+// Authorized Mobile
+if (!isValidMobile(form.signMobile)) {
+  return alert("Authorized mobile must be 10 digits (6-9 start)");
+}
+
+// Authorized Email
+if (!isValidEmail(form.signEmail)) {
+  return alert("Enter valid Authorized Email");
+}
+
+
+  // ===== ADDRESS VALIDATION =====
+if (!isValidAddress(form.address1)) {
+  return alert(
+    "Address Line 1 must be 5–200 characters and contain valid characters"
+  );
+}
+
 if (
   !stateData.id ||
   !districtData.id ||
@@ -871,8 +1492,11 @@ if (
   return alert("Please select complete Address");
 
 
-  if (!form.pincode)
-    return alert("Please enter PIN Code");
+// PINCODE VALIDATION (ALL ORG TYPES)
+if (!isValidPincode(form.pincode)) {
+  return alert("PIN Code must be 6 digits and start with 5 (Example: 534350)");
+}
+
 
   if (!form.signName)
     return alert("Please enter Authorized Signatory Name");
@@ -882,100 +1506,6 @@ if (
 
   if (!form.signEmail)
     return alert("Please enter Authorized Email");
-
-
-
-  /* ================= FORMAT VALIDATIONS ================= */
-
-  // PAN
-  if (!validatePAN(form.pan))
-    return alert("Invalid PAN format (Example: ABCDE1234F)");
-
-  // Email
-  if (!validateEmail(form.email))
-    return alert("Invalid Email format");
-
-  // Mobile
-  if (!validateMobile(form.mobile))
-    return alert("Mobile must start with 6/7/8/9 and be 10 digits");
-
-  // Authorized Mobile
-  if (!validateMobile(form.signMobile))
-    return alert("Authorized mobile must be valid 10 digit number");
-
-  // PIN Code
-  if (!validatePincode(form.pincode))
-    return alert("PIN Code must be 6 digits and start with 5");
-
- /* ===== LITIGATION VALIDATION ===== */
-
-// When YES → check certificates
-if (hasLitigation === "Yes") {
-
-  if (litigations.length === 0) {
-    return alert("Please add at least one litigation");
-  }
-
-  if (hasInterimOrder === "Yes" && !litigations[0]?.interimCert) {
-    return alert("Please upload Interim Order Certificate");
-  }
-
-  if (hasFinalOrder === "Yes" && !litigations[0]?.finalCert) {
-    return alert("Please upload Disposed Certificate");
-  }
-}
-
-// When NO → check affidavit
-if (hasLitigation === "No" && !affidavitFile) {
-  return alert("Please upload Self Declared Affidavit");
-}
-
-
-  /* ================= DIRECTOR VALIDATION ================= */
-
-  if (showDirectorSection && directors.length === 0)
-    return alert("Please add at least one Director");
-
-  if (directors.length > 0) {
-    const d = directors[0];
-
-    // ===== DIRECTOR VALIDATION BEFORE SUBMIT =====
-if (directors.length > 0) {
-  const d = directors[0];
-
-  // ✅ Only Indian needs Aadhaar
-  if (d.nationality === "Indian") {
-
-    if (!isValidAadhaar(d.aadhaar)) {
-      alert("Director Aadhaar must be 12 digits");
-      return;
-    }
-
-  }
-
-  // ✅ Both need DIN
-  if (!isValidDIN(d.din)) {
-    alert("Director DIN must be 8 digits");
-    return;
-  }
-
-  // ✅ Both need valid mobile
-  if (!isValidMobile(d.mobile)) {
-    alert("Director Mobile must start with 6-9 and be 10 digits");
-    return;
-  }
-}
-
-
-    if (!validateDIN(d.din))
-      return alert("Director DIN must be 8 digits");
-
-    if (!validateMobile(d.mobile))
-      return alert("Director mobile number is invalid");
-  }
-
-
-
   /* ================= FILE VALIDATIONS ================= */
 
   if (!files.regCert)
@@ -988,6 +1518,38 @@ if (directors.length > 0) {
     return alert("Please upload Memorandum Document");
 /* ===== AFFIDAVIT (WHEN NO CASES) ===== */
 
+// ===== FINAL PHOTO CHECK =====
+const allPhotos = [
+  files.authPhoto,
+  ...directors.map(d => d.photo),
+  ...trustees.map(t => t.photo),
+];
+
+for (let photo of allPhotos) {
+  if (photo && !isJPGImage(photo)) {
+    alert("All photos must be JPG format");
+    return;
+  }
+}
+
+// ===== FINAL PDF VALIDATION =====
+const allPDFs = [
+  files.regCert,
+  files.panDoc,
+  files.gstDoc,
+  files.addressProof,
+  files.boardResolution,
+  files.memorandumDoc,
+  files.partnershipDeed,
+  files.trustDeed,
+];
+
+for (let file of allPDFs) {
+  if (file && !isPDFFile(file)) {
+    alert("All documents must be in PDF format");
+    return;
+  }
+}
 
 
   /* ================= ALL VALIDATIONS PASSED ================= */
@@ -1210,10 +1772,22 @@ const handleAddForeignerDirector = () => {
   } = foreignerDirector;
 
   // ===== Mandatory Check =====
-  if (!designation || !name || !mobile || !email || !address1 || !din) {
-    alert("Please fill all mandatory Foreigner Director fields");
-    return;
-  }
+  if (
+  !designation ||
+  !name ||
+  !mobile ||
+  !email ||
+  !address1 ||
+  (
+    form.orgType !==
+      "Government Department/Local Bodies/Government Bodies" &&
+    !din
+  )
+) {
+  alert("Please fill all mandatory Foreigner Director fields");
+  return;
+}
+
 
   // ===== Format Validation =====
   if (!isValidMobile(mobile)) {
@@ -1221,26 +1795,32 @@ const handleAddForeignerDirector = () => {
     return;
   }
 
-  if (!isValidEmail(email)) {
-    alert("Enter valid Email ID");
-    return;
-  }
 
-  if (!isValidDIN(din)) {
-    alert("DIN must be 8 digits");
-    return;
-  }
+ // DIN only if not Government
+if (
+  form.orgType !==
+    "Government Department/Local Bodies/Government Bodies" &&
+  !isValidDIN(din)
+) {
+  alert("DIN must be 8 digits");
+  return;
+}
+
 
   // ❌ NO Aadhaar Validation Here (Foreigner)
 
   // ===== Save Foreigner =====
-  setDirectors([
-    ...directors,
-    {
+  setDirectors(prev => [
+  ...prev,   // ⭐ keeps old directors
+  {
       nationality: "Foreigner",
       designation,
       name,
-      din,
+      din:
+      form.orgType ===
+      "Government Department/Local Bodies/Government Bodies"
+        ? "NA"
+        : din,
       aadhaar: "NA", // 🔥 Always NA
       email,
       mobile,
@@ -1261,6 +1841,8 @@ const handleAddForeignerDirector = () => {
       id: Date.now(),
     },
   ]);
+  setShowDirectorForm(false);
+
 
   // Reset
   setForeignerDirector({
@@ -1276,16 +1858,44 @@ const handleAddForeignerDirector = () => {
   });
 };
 
+// ===== COMMON JPG PHOTO HANDLER =====
+const handleJPGPhoto = (e, setter, field) => {
+  const file = e.target.files[0];
 
-// ===== VALIDATION HELPERS =====
-const isValidMobile = (num) => /^[6-9]\d{9}$/.test(num);
+  if (!file) return;
 
-const isValidAadhaar = (num) => /^\d{12}$/.test(num);
+  if (!isJPGImage(file)) {
+    alert("Only JPG / JPEG images are allowed");
 
-const isValidDIN = (num) => /^\d{8}$/.test(num);
+    e.target.value = ""; // reset input
+    return;
+  }
 
-const isValidEmail = (email) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setter(prev => ({
+    ...prev,
+    [field]: file,
+  }));
+};
+// ===== COMMON PDF HANDLER =====
+const handlePDFFile = (e, setter, field) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  // ❌ Not PDF
+  if (!isPDFFile(file)) {
+    alert("Only PDF files are allowed");
+
+    e.target.value = ""; // reset input
+    return;
+  }
+
+  // ✅ Valid PDF
+  setter(prev => ({
+    ...prev,
+    [field]: file,
+  }));
+};
 
 
  return (
@@ -1304,54 +1914,72 @@ const isValidEmail = (email) =>
   </div>
    )} 
 
-      {/* Steps */}
- <div className="yagentdetails-stepper">
+   <div className="yagentdetails-stepper">
   <div className="yagentdetails-stepper-line"></div>
 
-  <div className="yagentdetails-step active">
+  <div
+    className={`yagentdetails-step ${currentStep >= 1 ? "active" : ""}`}
+    onClick={() => currentStep > 1 && navigate("/AgentDetailsOther")}
+    style={{ cursor: currentStep > 1 ? "pointer" : "default" }}
+  >
     <div className="yagentdetails-circle">1</div>
     <p>Agent Detail</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 2 ? "active" : ""}`}>
     <div className="yagentdetails-circle">2</div>
     <p>Upload Documents</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 3 ? "active" : ""}`}>
     <div className="yagentdetails-circle">3</div>
     <p>Preview</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 4 ? "active" : ""}`}>
     <div className="yagentdetails-circle">4</div>
     <p>Payment</p>
   </div>
 
-  <div className="yagentdetails-step">
+  <div className={`yagentdetails-step ${currentStep >= 5 ? "active" : ""}`}>
     <div className="yagentdetails-circle">5</div>
     <p>Acknowledgement</p>
   </div>
-  </div>
+</div>
 
 
 
-      {/* Agent Type */}
-     <section className="yagentdetails-agent-type-section">
+
+     {/* Agent Type */}
+<section className="yagentdetails-agent-type-section">
   <h3 className="yagentdetails-agent-type-title">Agent Type</h3>
 
   <div className="yagentdetails-agent-type-options">
+
+    {/* ❌ Individual (Disabled) */}
     <label className="yagentdetails-agent-type-item">
-      <input type="radio" name="agentType" />
-      <span>Individual</span>
+      <input
+        type="radio"
+        name="agentType"
+        value="Individual"
+        disabled        // 🔥 Not clickable
+      />
+      <span style={{ color: "#999" }}>Individual</span>
     </label>
 
+    {/* ✅ Other (Selected by Default) */}
     <label className="yagentdetails-agent-type-item">
-      <input type="radio" name="agentType" defaultChecked />
+      <input
+        type="radio"
+        name="agentType"
+        value="Other"
+        defaultChecked  // 🔥 Selected by default
+      />
       <span>Other than individual</span>
     </label>
+
   </div>
-  </section>
+</section>
 
         
 
@@ -1411,7 +2039,7 @@ const isValidEmail = (email) =>
 
 
           <div>
-            <label>Organisation Name<span className="yagentdetails-required">*</span></label>
+            <label>Organisation Name <span className="yagentdetails-required">*</span></label>
             <input
   type="text"
   name="orgName"
@@ -1453,12 +2081,20 @@ const isValidEmail = (email) =>
       </label>
 
       <input
-        type="text"
-        name="cin"
-        value={form.cin}
-        onChange={handleChange}
-        placeholder="CIN Number"
-      />
+  type="text"
+  name="cin"
+  maxLength="23"
+  value={form.cin}
+  onChange={(e) =>
+  setForm({
+    ...form,
+    cin: formatRegistrationNo(e.target.value),
+  })
+}
+
+  placeholder="CIN Number"
+/>
+
     </div>
 
     {/* DATE */}
@@ -1491,7 +2127,13 @@ const isValidEmail = (email) =>
         type="text"
         name="trustNumber"
         value={form.trustNumber}
-        onChange={handleChange}
+        onChange={(e) =>
+  setForm({
+    ...form,
+    trustNumber: formatRegistrationNo(e.target.value),
+  })
+}
+
         placeholder="Trust Number"
       />
     </div>
@@ -1546,7 +2188,13 @@ const isValidEmail = (email) =>
           type="text"
           name="regNumber"
           value={form.regNumber}
-          onChange={handleChange}
+          onChange={(e) =>
+  setForm({
+    ...form,
+    regNumber: formatRegistrationNo(e.target.value),
+  })
+}
+
           placeholder="Registration Number"
         />
       </div>
@@ -1569,29 +2217,46 @@ const isValidEmail = (email) =>
 
           <div>
             <label>Upload Registration Certificate <span className="yagentdetails-required">*</span></label>
-            <input type="file" onChange={(e) => setFiles({ ...files, regCert: e.target.files[0] })} />
-
-          </div>
-
-          <div>
-            <label>PAN Card Number<span className="yagentdetails-required">*</span></label>
-          <input
-  type="text"
-  name="pan"
-  value={form.pan}
-  disabled={!!passedPan}
+            <input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "regCert")
+  }
 />
 
 
+          </div>
+
+          <div>
+            <label>PAN Card Number <span className="yagentdetails-required">*</span></label>
+           <input
+  type="text"
+  name="pan"
+  maxLength="10"
+  value={form.pan}
+  disabled={!!passedPan}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      pan: formatPAN(e.target.value),
+    })
+  }
+/>
+
 
           </div>
 
           <div>
-            <label>Upload PAN Card<span className="yagentdetails-required">*</span></label>
-            <input type="file" onChange={(e) =>
-  setFiles({ ...files, panDoc: e.target.files[0] })
-}
- />
+            <label>Upload PAN Card <span className="yagentdetails-required">*</span></label>
+            <input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "panDoc")
+  }
+/>
+
 
           </div>
 
@@ -1617,10 +2282,11 @@ const isValidEmail = (email) =>
   onChange={(e) =>
     setForm({
       ...form,
-      mobile: e.target.value.replace(/\D/g, ""),
+      mobile: formatMobile(e.target.value),
     })
   }
 />
+
 
 
 
@@ -1649,18 +2315,21 @@ const isValidEmail = (email) =>
 
           <div>
             <label>Upload GST Num Document</label>
-            <input type="file" onChange={(e) =>
-  setFiles({ ...files, gstDoc: e.target.files[0] })
-}
- />
+            <input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "gstDoc")
+  }
+/>
+
 
           </div>
          {/* ===== MEMORANDUM (ONLY FOR COMPANY) ===== */}
 {(form.orgType === "Company" || form.orgType === "Joint Venture") && (
   <div>
     <label>
-      Upload Memorandum of Articles/Bye-laws
-      <span className="yagentdetails-required">*</span>
+      Upload Memorandum of Articles/Bye-laws <span className="yagentdetails-required">*</span>
     </label>
 
     <input
@@ -1760,25 +2429,41 @@ const isValidEmail = (email) =>
 
 <div className="yagentdetails-director-grid">
             <div>
-              <label>Address Line 1 *</label>
+             <label className="label-inline">
+  Address Line 1 <span className="required">*</span>
+</label>
               <input
-                name="address1"
-                value={form.address1}
-                onChange={handleChange}
-              />
+  name="address1"
+  value={form.address1}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      address1: formatAddress(e.target.value),
+    })
+  }
+/>
+
             </div>
 
             <div>
               <label>Address Line 2</label>
               <input
-                name="address2"
-                value={form.address2}
-                onChange={handleChange}
-              />
+  name="address2"
+  value={form.address2}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      address2: formatAddress(e.target.value),
+    })
+  }
+/>
+
             </div>
 
             <div>
-              <label>State *</label>
+             <label className="label-inline">
+  State <span className="required">*</span>
+</label>
               <select
   value={stateData.id}
   onChange={(e) => {
@@ -1801,7 +2486,9 @@ const isValidEmail = (email) =>
             </div>
 
             <div>
-              <label>District *</label>
+              <label className="label-inline">
+  District <span className="required">*</span>
+</label>
             <select
   value={districtData.id}
   onChange={(e) => {
@@ -1824,7 +2511,9 @@ const isValidEmail = (email) =>
             </div>
 
             <div>
-              <label>Mandal *</label>
+              <label className="label-inline">
+  Mandal <span className="required">*</span>
+</label>
              <select
   value={mandalData.id}
   onChange={(e) => {
@@ -1847,7 +2536,9 @@ const isValidEmail = (email) =>
             </div>
 
             <div>
-              <label>Local Area / Village *</label>
+              <label className="label-inline">
+  Local Area / Village <span className="required">*</span>
+</label>
              <select
   value={villageData.id}
   onChange={(e) => {
@@ -1870,21 +2561,35 @@ const isValidEmail = (email) =>
             </div>
 
             <div>
-              <label>PIN Code *</label>
-              <input
-                name="pincode"
-                value={form.pincode}
-                onChange={handleChange}
-              />
+              <label className="label-inline">
+  PIN Code <span className="required">*</span>
+</label>
+ <input
+  name="pincode"
+  maxLength="6"
+  value={form.pincode}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      pincode: formatPincode(e.target.value),
+    })
+  }
+/>
+
+
             </div>
             
 
           <div>
             <label>Upload Address Proof <span className="yagentdetails-required">*</span></label>
-           <input type="file" onChange={(e) =>
-  setFiles({ ...files, addressProof: e.target.files[0] })
-}
- />
+           <input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "addressProof")
+  }
+/>
+
 
           </div>
           </div>
@@ -1907,7 +2612,10 @@ const isValidEmail = (email) =>
             name="directorType"
             value="Indian"
             checked={directorType === "Indian"}
-            onChange={() => setDirectorType("Indian")}
+onChange={() => {
+  setDirectorType("Indian");
+  setShowDirectorForm(true);
+}}
           />
           Indian
         </label>
@@ -1918,7 +2626,10 @@ const isValidEmail = (email) =>
             name="directorType"
             value="Foreigner"
             checked={directorType === "Foreigner"}
-            onChange={() => setDirectorType("Foreigner")}
+onChange={() => {
+  setDirectorType("Foreigner");
+  setShowDirectorForm(true);
+}}
           />
           Foreigner
         </label>
@@ -1926,7 +2637,7 @@ const isValidEmail = (email) =>
     </div>
 
     {/* ===== INDIAN DIRECTOR FORM ===== */}
-    {directorType === "Indian" && (
+    {showDirectorForm && directorType === "Indian" && (
   <div className="yagentdetails-director-grid">
 
     {/* Row 1 */}
@@ -1955,52 +2666,89 @@ const isValidEmail = (email) =>
     <div>
       <label>Email Id <span className="yagentdetails-required">*</span></label>
       <input
-        type="email"
-        onChange={(e) =>
-          setDirectorForm({ ...directorForm, email: e.target.value })
-        }
-      />
+  type="email"
+  value={directorForm.email}
+  onChange={(e) =>
+    setDirectorForm({
+      ...directorForm,
+      email: e.target.value,
+    })
+  }
+/>
+
     </div>
 
     <div>
       <label>Mobile Number <span className="yagentdetails-required">*</span></label>
       <input
-        onChange={(e) =>
-          setDirectorForm({ ...directorForm, mobile: e.target.value })
-        }
-      />
+  maxLength="10"
+  value={directorForm.mobile}
+  onChange={(e) =>
+    setDirectorForm({
+      ...directorForm,
+      mobile: formatMobile(e.target.value),
+    })
+  }
+/>
+
+
     </div>
 
     {/* Row 2 — 🔥 MISSING FIELDS ADDED */}
     <div>
       <label>State/UT <span className="yagentdetails-required">*</span></label>
-      <select
-        value={directorStateId}
-        onChange={(e) => setDirectorStateId(e.target.value)}
-      >
-        <option value="">Select</option>
-        {states.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.state_name}
-          </option>
-        ))}
-      </select>
+     <select
+  value={directorStateId}
+  onChange={(e) => {
+    const selected = states.find(
+      (s) => s.id == e.target.value
+    );
+
+    setDirectorStateId(e.target.value);
+
+    setDirectorForm({
+      ...directorForm,
+      state: selected?.state_name || "",
+      district: "",   // reset district
+    });
+  }}
+>
+  <option value="">Select</option>
+  {states.map((s) => (
+    <option key={s.id} value={s.id}>
+      {s.state_name}
+    </option>
+  ))}
+</select>
+
     </div>
 
     <div>
       <label>District <span className="yagentdetails-required">*</span></label>
-      <select
-        value={directorDistrictId}
-        disabled={!directorStateId}
-        onChange={(e) => setDirectorDistrictId(e.target.value)}
-      >
-        <option value="">Select</option>
-        {directorDistricts.map((d) => (
-          <option key={d.id} value={d.id}>
-            {d.name}
-          </option>
-        ))}
-      </select>
+     <select
+  value={directorDistrictId}
+  disabled={!directorStateId}
+  onChange={(e) => {
+    const selected = directorDistricts.find(
+      (d) => d.id == e.target.value
+    );
+
+    setDirectorDistrictId(e.target.value);
+
+    setDirectorForm({
+      ...directorForm,
+      district: selected?.name || "",
+    });
+  }}
+>
+  <option value="">Select</option>
+  {directorDistricts.map((d) => (
+    <option key={d.id} value={d.id}>
+      {d.name}
+    </option>
+  ))}
+</select>
+
     </div>
 
     <div>
@@ -2024,38 +2772,59 @@ const isValidEmail = (email) =>
     {/* Row 3 */}
     <div>
       <label>Pincode <span className="yagentdetails-required">*</span></label>
-      <input
-        onChange={(e) =>
-          setDirectorForm({ ...directorForm, pincode: e.target.value })
-        }
-      />
+    <input
+  maxLength="6"
+  value={directorForm.pincode}
+  onChange={(e) =>
+    setDirectorForm({
+      ...directorForm,
+      pincode: formatPincode(e.target.value),
+    })
+  }
+/>
+
     </div>
 
     <div>
       <label>PAN Card Number <span className="yagentdetails-required">*</span></label>
       <input
-        onChange={(e) =>
-          setDirectorForm({ ...directorForm, pan: e.target.value })
-        }
-      />
+  maxLength="10"
+  value={directorForm.pan}
+  onChange={(e) =>
+    setDirectorForm({
+      ...directorForm,
+      pan: formatPAN(e.target.value),
+    })
+  }
+/>
+
     </div>
 
     <div>
       <label>Upload PAN Card <span className="yagentdetails-required">*</span></label>
 <input
   type="file"
+  accept="application/pdf"
   onChange={(e) =>
-    setDirectorForm({ ...directorForm, panDoc: e.target.files[0] })
+    handlePDFFile(e, setDirectorForm, "panDoc")
   }
-/>    </div>
+/>
+
+   </div>
 
     <div>
       <label>Aadhaar Number <span className="yagentdetails-required">*</span></label>
       <input
-        onChange={(e) =>
-          setDirectorForm({ ...directorForm, aadhaar: e.target.value })
-        }
-      />
+  maxLength="12"
+  value={directorForm.aadhaar}
+  onChange={(e) =>
+    setDirectorForm({
+      ...directorForm,
+      aadhaar: onlyNumbers(e.target.value, 12),
+    })
+  }
+/>
+
     </div>
 
     {/* Row 4 */}
@@ -2063,20 +2832,25 @@ const isValidEmail = (email) =>
       <label>Upload Aadhaar <span className="yagentdetails-required">*</span></label>
       <input
   type="file"
+  accept="application/pdf"
   onChange={(e) =>
-    setDirectorForm({ ...directorForm, aadhaarDoc: e.target.files[0] })
+    handlePDFFile(e, setDirectorForm, "aadhaarDoc")
   }
 />
+
+
     </div>
 
     <div>
       <label>Photograph <span className="yagentdetails-required">*</span></label>
      <input
   type="file"
+  accept="image/jpeg"
   onChange={(e) =>
-    setDirectorForm({ ...directorForm, photo: e.target.files[0] })
+    handleJPGPhoto(e, setDirectorForm, "photo")
   }
 />
+
     </div>
 
     <div>
@@ -2089,20 +2863,24 @@ const isValidEmail = (email) =>
 />
     </div>
 
-    <div>
-      <label>DIN Number <span className="yagentdetails-required">*</span></label>
-      <input
-  maxLength="8"
-  value={directorForm.din}
-  onChange={(e) =>
-    setDirectorForm({
-      ...directorForm,
-      din: e.target.value.replace(/\D/g, "")
-    })
-  }
-/>
+    {/* ===== DIN (HIDE FOR GOVERNMENT) ===== */}
+{form.orgType !==
+  "Government Department/Local Bodies/Government Bodies" && (
+  <div>
+    <label>DIN Number <span className="yagentdetails-required">*</span></label>
+    <input
+      maxLength="8"
+      value={directorForm.din}
+      onChange={(e) =>
+        setDirectorForm({
+          ...directorForm,
+          din: onlyNumbers(e.target.value, 8),
+        })
+      }
+    />
+  </div>
+)}
 
-    </div>
      <div className="yagentdetails-add-btn-grid">
       <button
         type="button"
@@ -2121,26 +2899,25 @@ const isValidEmail = (email) =>
   } = directorForm;
 
   // ===== Mandatory Check =====
-  if (
-    !designation ||
-    !name ||
-    !email ||
-    !mobile ||
-    !address1 ||
-    !pincode ||
-    !pan ||
-    !aadhaar ||
-    !din
-  ) {
+if (
+  !designation ||
+  !name ||
+  !email ||
+  !mobile ||
+  !address1 ||
+  !pincode ||
+  !pan ||
+  !aadhaar ||
+  (form.orgType !==
+    "Government Department/Local Bodies/Government Bodies" &&
+    !din)
+) {
+
     alert("Please fill all mandatory Director fields");
     return;
   }
 
-  // ===== Format Validations =====
-  if (!isValidMobile(mobile)) {
-    alert("Mobile must start with 6-9 and be 10 digits");
-    return;
-  }
+ 
 
   if (!isValidEmail(email)) {
     alert("Enter valid Email ID");
@@ -2152,10 +2929,16 @@ const isValidEmail = (email) =>
     return;
   }
 
-  if (!isValidDIN(din)) {
-    alert("DIN must be 8 digits");
-    return;
-  }
+  // DIN only if not Government
+if (
+  form.orgType !==
+    "Government Department/Local Bodies/Government Bodies" &&
+  !isValidDIN(din)
+) {
+  alert("DIN must be 8 digits");
+  return;
+}
+
 
   // ===== Save Director =====
   setDirectors([
@@ -2184,6 +2967,8 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
       id: Date.now(),
     },
   ]);
+  setShowDirectorForm(false);
+
 }}
 
       >
@@ -2197,7 +2982,7 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
 
     {/* ===== FOREIGNER PLACEHOLDER ===== */}
-    {directorType === "Foreigner" && (
+    {showDirectorForm && directorType === "Foreigner" && (
       <p style={{ marginTop: "10px" }}>
       </p>
     )}
@@ -2205,7 +2990,7 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 )}
 
 {/* ===== FOREIGNER DIRECTOR ===== */}
-{directorType === "Foreigner" && (
+{showDirectorForm && directorType === "Foreigner" && (
   <>
     <div className="yagentdetails-director-grid">
 
@@ -2242,14 +3027,17 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
       <div>
         <label>Mobile Number <span className="yagentdetails-required">*</span></label>
         <input
-          value={foreignerDirector.mobile}
-          onChange={(e) =>
-            setForeignerDirector({
-              ...foreignerDirector,
-              mobile: e.target.value,
-            })
-          }
-        />
+  maxLength="10"
+  value={foreignerDirector.mobile}
+  onChange={(e) =>
+    setForeignerDirector({
+      ...foreignerDirector,
+      mobile: formatMobile(e.target.value),
+    })
+  }
+/>
+
+
       </div>
 
       <div>
@@ -2295,41 +3083,66 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
       <div>
         <label>Upload Photograph <span className="yagentdetails-required">*</span></label>
         <input
-          type="file"
-          onChange={(e) =>
-            setForeignerDirector({
-              ...foreignerDirector,
-              photo: e.target.files[0],
-            })
-          }
-        />
+  type="file"
+  accept="image/jpeg"
+  onChange={(e) =>
+    handleJPGPhoto(e, setForeignerDirector, "photo")
+  }
+/>
+
+
+{foreignerDirector.photo && (
+  <p style={{ fontSize: "12px", color: "#555", marginTop: "4px" }}>
+    Selected: {foreignerDirector.photo.name}
+  </p>
+)}
+
       </div>
 
       <div>
         <label>Upload Address Proof <span className="yagentdetails-required">*</span></label>
         <input
-          type="file"
-          onChange={(e) =>
-            setForeignerDirector({
-              ...foreignerDirector,
-              addressProof: e.target.files[0],
-            })
-          }
-        />
+  type="file"
+  onChange={(e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    setForeignerDirector({
+      ...foreignerDirector,
+      addressProof: file,
+    });
+  }}
+/>
+
+{/* Show file name */}
+{foreignerDirector.addressProof && (
+  <p style={{ fontSize: "12px", color: "#555", marginTop: "4px" }}>
+    Selected: {foreignerDirector.addressProof.name}
+  </p>
+)}
+
       </div>
 
-      <div>
-        <label>DIN Number <span className="yagentdetails-required">*</span></label>
-        <input
-          value={foreignerDirector.din}
-          onChange={(e) =>
-            setForeignerDirector({
-              ...foreignerDirector,
-              din: e.target.value,
-            })
-          }
-        />
-      </div>
+      {/* ===== DIN (HIDE FOR GOVERNMENT) ===== */}
+{form.orgType !==
+  "Government Department/Local Bodies/Government Bodies" && (
+  <div>
+    <label>DIN Number <span className="yagentdetails-required">*</span></label>
+    <input
+      maxLength="8"
+      value={foreignerDirector.din}
+onChange={(e) =>
+  setForeignerDirector({
+    ...foreignerDirector,
+    din: onlyNumbers(e.target.value, 8),
+  })
+}
+
+    />
+  </div>
+)}
+
 
     </div>
     <div className="yagentdetails-add-btn-wrapper">
@@ -2504,6 +3317,11 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
     className={`yagentdetails-view-link ${
       !d.panDoc ? "disabled-link" : ""
     }`}
+    onClick={() => {
+      if (d.panDoc) {
+        window.open(URL.createObjectURL(d.panDoc), "_blank");
+      }
+    }}
   >
     View PAN Card
   </span>
@@ -2516,10 +3334,16 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
     className={`yagentdetails-view-link ${
       !d.aadhaarDoc ? "disabled-link" : ""
     }`}
+    onClick={() => {
+      if (d.aadhaarDoc) {
+        window.open(URL.createObjectURL(d.aadhaarDoc), "_blank");
+      }
+    }}
   >
     View Aadhaar Card
   </span>
 </td>
+
 
 
 
@@ -2562,8 +3386,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
             type="radio"
             name="trusteeType"
             checked={trusteeType === "Indian"}
-            onChange={() => setTrusteeType("Indian")}
-          />
+onChange={() => {
+  setTrusteeType("Indian");
+}}          />
           Indian
         </label>
 
@@ -2572,8 +3397,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
             type="radio"
             name="trusteeType"
             checked={trusteeType === "Foreigner"}
-            onChange={() => setTrusteeType("Foreigner")}
-          />
+            onChange={() => {
+  setTrusteeType("Foreigner");
+}}          />
           Foreigner
         </label>
       </div>
@@ -2613,7 +3439,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
 
   <div>
-    <label>Name *</label>
+    <label>
+  Name <span className="required">*</span>
+</label>
     <input
       value={trusteeForm.name}
       onChange={(e) =>
@@ -2623,7 +3451,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Email Id *</label>
+    <label>
+  Email Id <span className="required">*</span>
+</label>
     <input
       type="email"
       value={trusteeForm.email}
@@ -2634,28 +3464,41 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Mobile Number *</label>
+   <label>
+  Mobile Number <span className="required">*</span>
+</label>
     <input
-      value={trusteeForm.mobile}
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, mobile: e.target.value })
-      }
-    />
+  maxLength="10"
+  value={trusteeForm.mobile}
+  onChange={(e) =>
+    setTrusteeForm({
+      ...trusteeForm,
+      mobile: formatMobile(e.target.value),
+    })
+  }
+/>
+
+
   </div>
 
   <div>
-  <label>State/UT *</label>
+  <label>
+  State/UT <span className="required">*</span>
+</label>
 
   <select
     value={trusteeStateId}
     onChange={(e) => {
       setTrusteeStateId(e.target.value);
 
-      setTrusteeForm({
-        ...trusteeForm,
-        state: e.target.value,
-        district: "",
-      });
+      const selected = states.find(s => s.id == e.target.value);
+
+setTrusteeForm({
+  ...trusteeForm,
+  state: selected?.state_name || "",   // ✅ save name
+  district: "",
+});
+
     }}
   >
     <option value="">Select</option>
@@ -2670,7 +3513,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
 
   <div>
-  <label>District *</label>
+  <label>
+  District <span className="required">*</span>
+</label>
 
   <select
     value={trusteeDistrictId}
@@ -2678,10 +3523,12 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
     onChange={(e) => {
       setTrusteeDistrictId(e.target.value);
 
-      setTrusteeForm({
-        ...trusteeForm,
-        district: e.target.value,
-      });
+      const selected = trusteeDistricts.find(d => d.id == e.target.value);
+
+setTrusteeForm({
+  ...trusteeForm,
+  district: selected?.name || "",   // ✅ save name
+});
     }}
   >
     <option value="">Select</option>
@@ -2696,7 +3543,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
 
   <div>
-    <label>Address Line 1 *</label>
+    <label>
+  Address Line 1 <span className="required">*</span>
+</label>
     <input
       value={trusteeForm.address1}
       onChange={(e) =>
@@ -2716,27 +3565,43 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Pincode *</label>
-    <input
-      value={trusteeForm.pincode}
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, pincode: e.target.value })
-      }
-    />
+   <label>
+  PINCode <span className="required">*</span>
+</label>
+   <input
+  maxLength="6"
+  value={trusteeForm.pincode}
+  onChange={(e) =>
+    setTrusteeForm({
+      ...trusteeForm,
+      pincode: formatPincode(e.target.value),
+    })
+  }
+/>
+
   </div>
 
   <div>
-    <label>PAN Card Number *</label>
+    <label>
+  PAN Card Number <span className="required">*</span>
+</label>
     <input
-      value={trusteeForm.pan}
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, pan: e.target.value })
-      }
-    />
+  maxLength="10"
+  value={trusteeForm.pan}
+  onChange={(e) =>
+    setTrusteeForm({
+      ...trusteeForm,
+      pan: formatPAN(e.target.value),
+    })
+  }
+/>
+
   </div>
 
   <div>
-    <label>Upload PAN Card *</label>
+    <label>
+  Upload PAN Card <span className="required">*</span>
+</label>
     <input
       type="file"
       onChange={(e) =>
@@ -2746,7 +3611,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Aadhaar Number *</label>
+    <label>
+  Aadhaar Number <span className="required">*</span>
+</label>
    <input
   maxLength="12"
   value={trusteeForm.aadhaar}
@@ -2761,7 +3628,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Upload Aadhaar *</label>
+    <label>
+  Upload Aadhaar Card <span className="required">*</span>
+</label>
     <input
       type="file"
       onChange={(e) =>
@@ -2771,13 +3640,17 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Photograph *</label>
+    <label>
+  Photograph <span className="required">*</span>
+</label>
     <input
-      type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, photo: e.target.files[0] })
-      }
-    />
+  type="file"
+  accept="image/jpeg"
+  onChange={(e) =>
+    handleJPGPhoto(e, setTrusteeForm, "photo")
+  }
+/>
+
   </div>
 
   <div>
@@ -2840,7 +3713,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Name *</label>
+    <label>
+  Name <span className="required">*</span>
+</label>
     <input
       value={trusteeForm.name}
       onChange={(e) =>
@@ -2850,7 +3725,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Email *</label>
+    <label>
+  Email Id <span className="required">*</span>
+</label>
     <input
       type="email"
       value={trusteeForm.email}
@@ -2861,18 +3738,27 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Mobile *</label>
+    <label>
+  Mobile Number <span className="required">*</span>
+</label>
     <input
-      value={trusteeForm.mobile}
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, mobile: e.target.value })
-      }
-    />
+  maxLength="10"
+  value={trusteeForm.mobile}
+  onChange={(e) =>
+    setTrusteeForm({
+      ...trusteeForm,
+      mobile: formatMobile(e.target.value),
+    })
+  }
+/>
+
   </div>
 
   <div>
-    <label>Address Line 1 *</label>
-    <input
+<label>
+  Address Line 1 <span className="required">*</span>
+</label>    
+<input
       value={trusteeForm.address1}
       onChange={(e) =>
         setTrusteeForm({ ...trusteeForm, address1: e.target.value })
@@ -2891,18 +3777,22 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </div>
 
   <div>
-    <label>Photo *</label>
-    <input
-      type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, photo: e.target.files[0] })
-      }
-    />
+<label>
+  Upload Photograph <span className="required">*</span>
+</label>      <input
+  type="file"
+  accept="image/jpeg"
+  onChange={(e) =>
+    handleJPGPhoto(e, setTrusteeForm, "photo")
+  }
+/>
+
   </div>
 
   <div>
-    <label>Address Proof </label>
-    <input
+<label>
+  Upload Address Proof <span className="required">*</span>
+</label>      <input
       type="file"
       onChange={(e) =>
         setTrusteeForm({ ...trusteeForm, addressProof: e.target.files[0] })
@@ -3179,7 +4069,7 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
 <div className="yagentdetails-director-grid">
             <div>
-              <label>Name *</label>
+              <label>Name <span className="required">*</span></label>
               <input
                 name="signName"
                 value={form.signName}
@@ -3188,16 +4078,27 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
             </div>
 
             <div>
-              <label>Mobile Number *</label>
+              <label>
+  Mobile Number <span className="required">*</span>
+</label>
               <input
-                name="signMobile"
-                value={form.signMobile}
-                onChange={handleChange}
-              />
+  name="signMobile"
+  maxLength="10"
+  value={form.signMobile}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      signMobile: formatMobile(e.target.value),
+    })
+  }
+/>
+
             </div>
 
             <div>
-              <label>Email Id *</label>
+             <label>
+  Email Id <span className="required">*</span>
+</label>
               <input
                 name="signEmail"
                 value={form.signEmail}
@@ -3206,19 +4107,28 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
             </div>
             <div>
             <label>Photo <span className="yagentdetails-required">*</span></label>
-            <input type="file" onChange={(e) =>
-  setFiles({ ...files, authPhoto: e.target.files[0] })
-}
- />
+           <input
+  type="file"
+  accept="image/jpeg"
+  onChange={(e) =>
+    handleJPGPhoto(e, setFiles, "authPhoto")
+  }
+/>
+
+
 
           </div>
 
           <div>
             <label>Board Resolution for Authorized Signatory <span className="yagentdetails-required">*</span></label>
-           <input type="file" onChange={(e) =>
-  setFiles({ ...files, boardResolution: e.target.files[0] })
-}
- />
+           <input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "boardResolution")
+  }
+/>
+
 
           </div>
         </div>
@@ -3315,11 +4225,13 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
                 <td>{p.name}</td>
                 <td>
                   <button
-                    type="button"
-                    onClick={() => handleDeleteProject(p.id)}
-                  >
-                    Delete
-                  </button>
+  type="button"
+  className="yagentdetails-project-delete-btn"
+  onClick={() => handleDeleteProject(p.id)}
+>
+  Delete
+</button>
+
                 </td>
               </tr>
             ))}
@@ -3361,7 +4273,7 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
           checked={hasLitigation === "No"}
        onChange={() => {
   setHasLitigation("No");
-  setAffidavitFile(null);
+ // setAffidavitFile(null);
   setHasInterimOrder("");
   setHasFinalOrder("");
   setLitigations([]);
@@ -3533,14 +4445,13 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   <div>
     <label>Interim Order Certificate <span className="yagentdetails-required">*</span></label>
     <input
-      type="file"
-      onChange={(e) =>
-        setLitigationForm({
-          ...litigationForm,
-          interimCert: e.target.files[0],
-        })
-      }
-    />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setLitigationForm, "interimCert")
+  }
+/>
+
   </div>
 )}
 
@@ -3549,14 +4460,13 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   <div>
     <label>Disposed Certificate <span className="yagentdetails-required">*</span></label>
     <input
-      type="file"
-      onChange={(e) =>
-        setLitigationForm({
-          ...litigationForm,
-          finalCert: e.target.files[0],
-        })
-      }
-    />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setLitigationForm, "finalCert")
+  }
+/>
+
   </div>
 )}
 
@@ -3576,7 +4486,12 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
   </button>
 </div>
 {litigations.length > 0 && (
-  <table className="yagentdetails-table" style={{ marginTop: "15px" }}>
+  <div className="yagentdetails-table-scroll">
+    <table
+      className="yagentdetails-table"
+      style={{ marginTop: "15px", minWidth: "1200px" }}
+    >
+
     <thead>
   <tr>
     <th>S.No.</th>
@@ -3654,6 +4569,7 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 </tbody>
 
   </table>
+  </div>
 )}
 
 
@@ -3817,23 +4733,21 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
         <div>
           <label>State/UT <span className="yagentdetails-required">*</span></label>
-          <select
+        <select
   value={otherReraStateId}
- onChange={(e) => {
-  const val = e.target.value;
-  const selected = states.find(s => s.id == val);
+  onChange={(e) => {
+    const selected = states.find(s => s.id == e.target.value);
 
-  setOtherReraStateId(val);
+    setOtherReraStateId(e.target.value);
 
-  setOtherReraForm(prev => ({
-    ...prev,
-    state: selected?.state_name || "",
-    district: "",
-  }));
-}}
-
-
+    setOtherReraForm(prev => ({
+      ...prev,
+      state: selected?.state_name || "", // ✅ STORE NAME
+      district: "",
+    }));
+  }}
 >
+
   <option value="">Select</option>
 
   {states.map((s) => (
@@ -3846,23 +4760,21 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
 
         <div>
           <label>District <span className="yagentdetails-required">*</span></label>
-          <select
+         <select
   value={otherReraDistrictId}
   disabled={!otherReraStateId}
   onChange={(e) => {
-  const val = e.target.value;
-  const selected = otherReraDistricts.find(d => d.id == val);
+    const selected = otherReraDistricts.find(d => d.id == e.target.value);
 
-  setOtherReraDistrictId(val);
+    setOtherReraDistrictId(e.target.value);
 
-  setOtherReraForm(prev => ({
-    ...prev,
-    district: selected?.name || "",
-  }));
-}}
-
-
+    setOtherReraForm(prev => ({
+      ...prev,
+      district: selected?.name || "", // ✅ STORE NAME
+    }));
+  }}
 >
+
   <option value="">Select</option>
 
   {otherReraDistricts.map((d) => (

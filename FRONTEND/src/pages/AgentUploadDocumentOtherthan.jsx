@@ -12,12 +12,17 @@ export default function AgentUploadDocumentOtherthan() {
 const [showError, setShowError] = useState("");
 const location = useLocation();
 
+console.log("📦 LOCATION STATE FULL:", location.state);
+
 const {
   application_id,
   organisation_id,
-  organization_pan_curd,
+  pan_card_number,
   status,
 } = location.state || {};
+
+
+
 
 
   /* ✅ FIXED FUNCTION NAME */
@@ -48,11 +53,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // ✅ CHECK NAVIGATION DATA
-  if (!application_id || !organisation_id || !organization_pan_curd) {
-    setShowError("Session expired. Please submit Agent Details again.");
-    return;
-  }
+ 
 
   try {
     const formData = new FormData();
@@ -60,7 +61,7 @@ const handleSubmit = async () => {
     // ✅ SEND BACKEND REQUIRED IDS
     formData.append("application_id", application_id);
     formData.append("organisation_id", organisation_id);
-    formData.append("pan_card_number", organization_pan_curd);
+    formData.append("pan_card_number", pan_card_number);
 
     // ✅ SEND FILES
     formData.append("itr_year1_doc", files.year1);
@@ -84,13 +85,14 @@ const handleSubmit = async () => {
 
     alert("ITR Documents Uploaded Successfully ✅");
 
-    navigate("/preview-other", {
+  navigate("/preview-other", {
   state: {
     application_id,
     organisation_id,
-    pan_card_number: organization_pan_curd,
+    pan_card_number,
   },
 });
+
 
 
   } catch (err) {
@@ -205,7 +207,7 @@ const handleSubmit = async () => {
                 />
               </td>
            <td
-  onClick={() => downloadFile(files.year2)}
+  onClick={() => downloadFile(files.year1)}
   style={{ cursor: "pointer", color: "#1e90ff", textDecoration: "underline" }}
 >
   {files.year1?.name}

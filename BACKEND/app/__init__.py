@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from app.config import Config
 from app.models.database import db
@@ -72,6 +72,12 @@ def create_app():
     # Database Initialization
     # =========================
     db.init_app(app)
+    # ✅ ADD THIS BLOCK (UPLOAD SERVING)
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+
+    @app.route("/uploads/<path:filename>")
+    def serve_uploaded_file(filename):
+        return send_from_directory(UPLOAD_FOLDER, filename)
 
     # =========================
     # Register Blueprints
@@ -90,14 +96,35 @@ def create_app():
     from app.controllers.associate_controller import associate_bp
     from app.controllers.application_associate_controller import application_associate_bp
     from app.controllers.project_preview_controller import preview_bp
-    from app.controllers.project_preview_extensionprocess_controller import (
-    preview_extensionprocess_bp
-    )
+    
     from app.controllers.projectapplicationdetailsextension import (
     projectapplicationdetailsextension_bp
     )
     from app.controllers.login_controller import login_bp
     from app.controllers.agent_other_than_individual_registration_controller import ( agent_other_than_individual_registration_bp )
+    from app.controllers.othertheninduvidual_project_registration_controller import \
+    othertheninduvidual_project_registration_bp
+
+    from app.controllers.othertheninduvidual_project_preview_controller import othertheninduvidual_project_preview_bp
+    
+    # ram
+    from app.controllers.rera_other_t_indv_controller import rera_other_t_indv_bp
+    from app.controllers.past_project_other_t_indv_controller import past_project_other_t_indv_bp
+    from app.controllers.litigation_other_t_indv_controller import litigation_other_t_indv_bp
+    from app.controllers.promoter2_other_t_indv_controller import promoter2_other_t_indv_bp
+    from app.controllers.files_other_t_indv_controller import files_other_t_indv_bp
+    from app.controllers.promoter_other_t_indv_controller import promoter_other_t_indv_bp
+    from app.controllers.org_member_other_t_indv_controller import org_member_other_t_indv_bp
+
+    app.register_blueprint(promoter_other_t_indv_bp)
+    app.register_blueprint(org_member_other_t_indv_bp)
+    app.register_blueprint(rera_other_t_indv_bp)
+    app.register_blueprint(past_project_other_t_indv_bp)
+    app.register_blueprint(litigation_other_t_indv_bp)
+    app.register_blueprint(promoter2_other_t_indv_bp)
+    app.register_blueprint(files_other_t_indv_bp)
+
+
 
     app.register_blueprint(agent_other_than_individual_registration_bp, url_prefix="/api")
     app.register_blueprint(preview_bp, url_prefix="/api")
@@ -114,11 +141,16 @@ def create_app():
     app.register_blueprint(occupation_controller, url_prefix="/api")
     app.register_blueprint(agent_bp, url_prefix="/api/agent")
     app.register_blueprint(otp_bp, url_prefix="/api/otp")
-    app.register_blueprint(preview_extensionprocess_bp, url_prefix="/api")
+   
     app.register_blueprint(
     projectapplicationdetailsextension_bp,
     url_prefix="/api")
     app.register_blueprint(login_bp, url_prefix="/api")
+    app.register_blueprint(
+    othertheninduvidual_project_registration_bp,
+    url_prefix="/api")
+  
+    app.register_blueprint(othertheninduvidual_project_preview_bp, url_prefix="/api")
   
 
     return app

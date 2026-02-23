@@ -5,6 +5,12 @@ class AgentOtherThanIndividualAuthorized(db.Model):
     __tablename__ = "agent_authorized_details_t"
 
     id = db.Column(db.Integer, primary_key=True)
+    organisation_id = db.Column(
+    db.Integer,
+    db.ForeignKey("agent_organisation_details_t.organisation_id"),
+    nullable=False
+)
+
     name = db.Column(db.String(150), nullable=False)
     mobile_number = db.Column(db.String(15))
     email_id = db.Column(db.String(150))
@@ -12,7 +18,7 @@ class AgentOtherThanIndividualAuthorized(db.Model):
     board_resolution = db.Column(db.String(255))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-  
+   
     def to_dict(self):
         return {
             "id": self.id,
