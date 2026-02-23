@@ -2022,20 +2022,23 @@ const handleFileChange = (e, type) => {
     [name]: value,
   }));
 };
+const handleSubmitInstructions = () => {
 
+  // ⭐ IF USER SELECTS EXISTING
+  if (applicationType === "existing") {
+    navigate("/projectregistrationexisting");
+    return;
+  }
 
+  // ⭐ IF USER SELECTS NEW (YOUR CURRENT FLOW)
+  setCurrentScreen("form");
 
+  const appNo = `100126${Math.floor(Math.random() * 900000 + 100000)}`;
 
+  setFormData((prev) => ({ ...prev, applicationNo: appNo }));
 
-  const handleSubmitInstructions = () => {
-    setCurrentScreen("form");
-    const appNo = `100126${Math.floor(Math.random() * 900000 + 100000)}`;
-
-    setFormData((prev) => ({ ...prev, applicationNo: appNo }));
-
-    // ✅ STORE APPLICATION NUMBER EARLY
-    sessionStorage.setItem("applicationNumber", appNo);
-  };
+  sessionStorage.setItem("applicationNumber", appNo);
+};
 
 
   const handleGetDetails = () => {

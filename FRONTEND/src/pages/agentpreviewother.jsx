@@ -18,12 +18,9 @@ const PreviewOther = () => {
   // ===== YES / NO FLAGS (FROM NAVIGATION OR API) =====
 const navState = location.state || {};
 
-
 const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null)
-  const [states, setStates] = useState([]);
-const [districts, setDistricts] = useState([]);
 
    // ✅ SECOND: IDS
   const organisation_id = location.state?.organisation_id;
@@ -93,20 +90,6 @@ const hasOtherRera =
     fetchData();
   }, [organisation_id, pan_card_number, navigate]);
 
-const fetchMasters = async () => {
-  try {
-    const stateRes = await axios.get(`${BASE_URL}/api/states`);
-    const districtRes = await axios.get(`${BASE_URL}/api/districts`);
-
-    setStates(stateRes.data || []);
-    setDistricts(districtRes.data || []);
-  } catch (err) {
-    console.error("Master fetch error", err);
-  }
-};
-
-fetchMasters();
-
 
 
 const itrs = apiData?.itr || {
@@ -115,17 +98,14 @@ const itrs = apiData?.itr || {
   itr3: apiData?.itr_year3_doc,
 };
 const directors = apiData?.entities || [];
-const getStateName = (id) =>
-  states.find((s) => s.id === id)?.state_name || id;
-
-const getDistrictName = (id) =>
-  districts.find((d) => d.id === id)?.district_name || id;
-
 const authorizedList = apiData?.authorized || [];
 const litigations = apiData?.litigations || [];
 const auth = authorizedList[0] || {};
+const hasSelfAffidavit =
+  litigations[0]?.self_declared_affidavit ? true : false;
+
 const hasLitigationFinal =
-  litigations.length > 0 ? "Yes" : "No";
+  hasSelfAffidavit ? "No" : "Yes";
 
 const projects = org.last_five_year_projects || [];
 const otherStates = org.other_state_rera_details || [];
@@ -346,9 +326,9 @@ const otherStates = org.other_state_rera_details || [];
 
             <td>{d.mobile_number}</td>
 
-            <td>{getStateName(d.state_ut)}</td>
-<td>{getDistrictName(d.district)}</td>
+            <td>{d.state_ut}</td>
 
+            <td>{d.district}</td>
 
             <td>{d.address_line1}</td>
 
@@ -482,7 +462,6 @@ const otherStates = org.other_state_rera_details || [];
 
 
       {/* ================= LITIGATIONS ================= */}
-
 <section className="mpreview-section">
 
   <h3 className="mpreview-heading">Litigations</h3>

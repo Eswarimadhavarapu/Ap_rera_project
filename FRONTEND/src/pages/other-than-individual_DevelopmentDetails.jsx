@@ -9,11 +9,11 @@ const OtherThanIndividualDevelopmentDetails = () => {
     const location = useLocation();
 
 const panNumber =
-  location.state?.panNumber || sessionStorage.getItem("panNumber")||"PAVAN0987S";
+  location.state?.panNumber || sessionStorage.getItem("panNumber");
 
 const applicationNumber =
   location.state?.applicationNumber ||
-  sessionStorage.getItem("applicationNumber")||"0987654321";
+  sessionStorage.getItem("applicationNumber");
 
   console.log("PAN Number:", panNumber);
 console.log("Application Number:", applicationNumber);

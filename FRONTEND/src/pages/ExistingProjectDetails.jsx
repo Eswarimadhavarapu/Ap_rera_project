@@ -347,7 +347,7 @@ const ExistingProjectDetails = () => {
 
       await apiPost("/api/project-registration", payload);
 
-      navigate("/Development-Details", {
+      navigate("/existing-development-details", {
         state: { panNumber, applicationNumber },
       });
 

@@ -365,3 +365,33 @@ def get_project_basic_details_by_pan_controller():
         "success": True,
         "data": data
     }), 200
+
+
+# # ----------------------------------------------------
+# # existing otherthen and induvidual 
+# # -----------------------------------------------
+
+# @project_registration_bp.route("/project-registration/get-existing", methods=["POST"])
+# def get_existing_project():
+
+#     try:
+#         data = request.get_json()
+
+#         application_number = data.get("applicationNumber")
+#         pan_number = data.get("panNumber")
+#         promoter_type = data.get("promoterType")
+
+#         result = get_existing_project_registration(
+#             application_number,
+#             pan_number,
+#             promoter_type
+#         )
+
+#         if not result:
+#             return jsonify({"message": "No existing data"}), 404
+
+#         return jsonify(result), 200
+
+#     except Exception as e:
+#         print("EXISTING FETCH ERROR:", str(e))
+#         return jsonify({"error": "Server error"}), 500

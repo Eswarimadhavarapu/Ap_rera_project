@@ -511,3 +511,41 @@ def fetch_project_registration(application_number, pan_number):
         return {}
 
     return dict(result)
+
+#     # -------------------------------------------------------
+# # existing otherthan and induvidua
+# # -------------------------------------------
+#     from sqlalchemy import text
+# from app import db   # or your correct db import
+
+
+# def get_existing_project_registration(application_number, pan_number, promoter_type):
+
+#     try:
+
+#         if promoter_type == "individual":
+#             table_name = "project_registration"
+#         else:
+#             table_name = "othertheninduvidual_project_registration"
+
+#         query = text(f"""
+#             SELECT *
+#             FROM {table_name}
+#             WHERE application_number = :application_number
+#             AND pan_number = :pan_number
+#             LIMIT 1
+#         """)
+
+#         result = db.session.execute(query, {
+#             "application_number": application_number,
+#             "pan_number": pan_number
+#         }).mappings().first()
+
+#         if result:
+#             return dict(result)
+
+#         return None
+
+#     except Exception as e:
+#         print("MODEL FETCH ERROR:", str(e))
+#         return None

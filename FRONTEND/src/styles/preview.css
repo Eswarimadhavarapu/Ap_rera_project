@@ -566,3 +566,355 @@
     break-after: avoid !important;
   }       
 }
+@media print {
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* 🔴 Hide everything */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* ✅ Show only preview content */
+  .agentpreview-print-area,
+  .agentpreview-print-area * {
+    visibility: visible !important;
+  }
+
+  /* =========================
+   FULL PAGE PRINT FIX (FINAL)
+========================= */
+@media print {
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  html, body {
+    width: 100%;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* 🔥 MOST IMPORTANT: REMOVE CONTAINER LIMITS */
+  .agentpreview-main-container,
+  .agentpreview-page-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* REMOVE ANY FIXED HEIGHT / SCROLL */
+  * {
+    overflow: visible !important;
+  }
+
+  /* Hide buttons & UI elements */
+  .agentpreview-action-buttons,
+  .agentpreview-breadcrumb-bar,
+  .agentpreview-stepper,
+  button {
+    display: none !important;
+  }
+
+  /* Tables print properly across pages */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    padding: 6px !important;
+    font-size: 12px !important;
+    white-space: normal !important;
+  }
+
+  /* Prevent sections from cutting */
+  .agentpreview-preview-grid,
+  .agentpreview-doc-table,
+  .agentpreview-section-gap,
+  .agentpreview-declaration-center,
+  .print-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+  /* ❌ Hide UI elements */
+  .agentpreview-action-buttons,
+  .agentpreview-form-footer-row,
+  .applicantdetails-stepper,
+  .agentpreview-breadcrumb-bar {
+    display: none !important;
+  }
+
+  /* ✅ Table safety */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    font-size: 11px !important;
+    padding: 6px !important;
+    white-space: normal !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ✅ Prevent section cut */
+  .agentpreview-preview-grid,
+  .agentpreview-doc-table,
+  .agentpreview-section-gap,
+  .agentpreview-declaration-center {
+    page-break-inside: avoid !important;
+  }
+  /* =========================
+   FORCE CLEAN PAGE BREAK
+   BEFORE LITIGATIONS
+========================= */
+
+  /* Always start litigations on a new page */
+  .litigation-section {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* 🔥 CRITICAL: keep heading + table together */
+  .print-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-section h3 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }       
+}/* =========================
+   REMOVE BLANK FIRST PRINT PAGE (FINAL FIX)
+========================= */
+@media print {
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  /* Reset full document */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    background: #ffffff !important;
+  }
+
+  /* 🔥 CRITICAL: Force print content to start at TOP */
+  body {
+    position: static !important;
+  }
+
+  /* Remove centering margins that create blank first page */
+  .agentpreview-page-wrapper {
+    width: 100% !important;
+    margin: 0 !important;   /* VERY IMPORTANT */
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .agentpreview-main-container {
+    width: 100% !important;
+    margin: 0 !important;   /* THIS REMOVES EMPTY FIRST PAGE */
+    padding: 10mm !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove any hidden visibility logic (causes blank page) */
+  body * {
+    visibility: visible !important;
+  }
+
+  /* Hide only buttons and UI */
+  .agentpreview-action-buttons,
+  .agentpreview-breadcrumb-bar,
+  .agentpreview-stepper,
+  button {
+    display: none !important;
+  }
+
+  /* Prevent page jump before content */
+  .litigation-section,
+  .print-section,
+  .agentpreview-section-gap {
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  /* Table print optimization */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    font-size: 12px !important;
+    padding: 6px !important;
+  }
+
+  /* Remove any overflow causing layout shift */
+  * {
+    overflow: visible !important;
+  }
+}
+
+/* =========================
+   FINAL PRINT FIX (HIDE OTP + RED WARNING ONLY)
+========================= */
+@media print {
+
+  /* 1. KEEP declaration paragraph */
+  .agentpreview-declaration-text {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* 2. HIDE OTP verification box (email + inputs + buttons) */
+  .agentpreview-otp-center-box {
+    display: none !important;
+  }
+
+  /* 3. 🔥 FORCE HIDE ANY RED WARNING TEXT INSIDE DECLARATION */
+  .agentpreview-declaration-center * {
+    color: inherit !important;
+  }
+
+  .agentpreview-declaration-center span[style*="red"],
+  .agentpreview-declaration-center p[style*="red"],
+  .agentpreview-declaration-center div[style*="red"],
+  .agentpreview-declaration-center .text-danger,
+  .agentpreview-declaration-center .error,
+  .agentpreview-declaration-center .warning {
+    display: none !important;
+  }
+
+  /* 4. Extra strong rule (in case warning has no class) */
+  .agentpreview-declaration-center :not(.agentpreview-declaration-text):not(.agentpreview-declaration-text *) {
+    display: none !important;
+  }
+
+  /* 5. Hide footer / portal bottom (icons, visitors, APOnline) */
+  footer,
+  .footer,
+  .site-footer,
+  .main-footer,
+  .aponline,
+  .bottom-bar,
+  .copyright {
+    display: none !important;
+  }
+
+  /* 6. Hide social icons */
+  img[src*="facebook"],
+  img[src*="twitter"],
+  img[src*="youtube"],
+  .social,
+  .social-icons {
+    display: none !important;
+  }
+
+  /* 7. Hide green divider line */
+  hr {
+    display: none !important;
+  }
+}
+@media print {
+
+  /* Force table header to print on every page */
+  thead {
+    display: table-header-group !important;
+  }
+
+  /* Ensure header row is visible */
+  .agentpreview-doc-table thead th,
+  .agentpreview-doc-table th {
+    background-color: #2f4f4f !important;  /* your green header */
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure borders show properly */
+  .agentpreview-doc-table,
+  .agentpreview-doc-table th,
+  .agentpreview-doc-table td {
+    border: 1px solid #000 !important;
+  }
+
+  /* Prevent header from disappearing */
+  .agentpreview-doc-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  /* Keep table intact across pages */
+  .agentpreview-doc-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+/* =========================
+   PRINT: FIX DOUBLE VIEW ISSUE
+========================= */
+@media print {
+
+  /* Show button as plain text (no duplicate) */
+  .agentpreview-doc-table button {
+    display: inline !important;
+    background: none !important;
+    border: none !important;
+    color: #000 !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    box-shadow: none !important;
+  }
+
+  /* 🔥 IMPORTANT: prevent duplicate text */
+  .agentpreview-doc-table button::after {
+    content: none !important;
+  }
+}

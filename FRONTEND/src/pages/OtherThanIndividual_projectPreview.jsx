@@ -84,10 +84,10 @@ const OtherThanIndividual_ProjectPreview = () => {
     const [externalDevWork, setExternalDevWork] = useState({});
 
   const panNumber =
-    location.state?.panNumber || sessionStorage.getItem("panNumber")||"PQRSX5678K";
+    location.state?.panNumber || sessionStorage.getItem("panNumber");
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber")||"100126623468";  
+    sessionStorage.getItem("applicationNumber");  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -103,7 +103,7 @@ const OtherThanIndividual_ProjectPreview = () => {
   const fetchPreviewData = async () => {
   try {
     const res = await fetch(
-      "http://localhost:8080/api/othertheninduvidual/project/preview",
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/othertheninduvidual/project/preview",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,7 +148,7 @@ setAllData(resData.data);
 
   const fetchDevelopmentDetails = async () => {
     try {
-      const url = `http://localhost:8080/api/development-details?application_number=${applicationNumber}&pan_number=${panNumber}`;
+      const url = `https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details?application_number=${applicationNumber}&pan_number=${panNumber}`;
 
       console.log("🔵 Calling URL:", url);
 
@@ -1592,7 +1592,7 @@ console.log("📄 Document pages:", documentPages.length);
                 <td className="center">
                   {uploaded?.file_path ? (
                     <a
-                      href={`http://localhost:8080${uploaded.file_path}`}
+                      href={`https://0jv8810n-8080.inc1.devtunnels.ms${uploaded.file_path}`}
                       target="_blank"
                       rel="noreferrer"
                     >
