@@ -1,0 +1,107 @@
+/* Page Container */
+.quarterly-container {
+  padding: 30px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* Title */
+.quarterly-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a237e;
+  margin-bottom: 10px;
+}
+
+/* Application Number */
+.application-number {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Card */
+.quarterly-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 18px;
+}
+
+/* Labels */
+.form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/* Inputs */
+.form-control {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #1a237e;
+  outline: none;
+  box-shadow: 0 0 4px rgba(26, 35, 126, 0.2);
+}
+
+/* Buttons Container */
+.button-group {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+/* Draft Button */
+.btn-draft {
+  background-color: #757575;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-draft:hover {
+  background-color: #616161;
+}
+
+/* Submit Button */
+.btn-submit {
+  background-color: #1a237e;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: #0d144f;
+}
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quarterly-card {
+    padding: 15px;
+  }
+}

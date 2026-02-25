@@ -5,6 +5,7 @@ import ProjectWizard from "../components/ProjectWizard";
 import "../styles/ProjectPreview.css";
 import "../styles/aprera-print-override.css";
 import axios from "axios";
+import ExistingProjectWizard from "../components/ExistingProjectWizard";
 
 
 // ✅ HELPERS (ADD HERE)
@@ -452,7 +453,7 @@ console.log("📄 Document pages:", documentPages.length);
           <span>Registration / Project Registration / Preview</span>
         </div>
 
-        <ProjectWizard currentStep={6} />
+        <ExistingProjectWizard currentStep={6} />
 
         <div className="preview-actions">
           <button onClick={handleDownloadPDF} className="btn btn-download">

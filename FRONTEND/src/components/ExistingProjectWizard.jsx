@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import "../styles/projectWizard.css";
+import "../styles/projectWizard2.css";
 import { EXISTINGWIZARD_STEPS } from "./ExistingwizardConfig";
 
 export default function ExistingProjectWizard({ currentStep }) {

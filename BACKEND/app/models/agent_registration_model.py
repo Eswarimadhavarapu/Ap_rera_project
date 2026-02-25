@@ -307,18 +307,14 @@ class AgentModel:
 
                 LEFT JOIN occupation_master_t o
                     ON a.occupation_id = o.occupation_id
-
-                LEFT JOIN state_master_t sm
-                    ON a.state_id = sm.id
-
-                LEFT JOIN districts_t dm
-                    ON a.district = dm.id
-
-                LEFT JOIN mandals_t mm
-                    ON a.mandal = mm.id
-
-                LEFT JOIN villages_t vm
-                    ON a.village = vm.id
+                LEFT JOIN state_master_t sm 
+                    ON a.state_id::integer = sm.id
+                LEFT JOIN districts_t dm 
+                    ON a.district::integer = dm.id
+                LEFT JOIN mandals_t mm 
+                    ON a.mandal::integer = mm.id
+                LEFT JOIN villages_t vm 
+                    ON a.village::integer = vm.id
 
                 WHERE a.id = :agent_id
             """)

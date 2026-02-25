@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
+import AgentStepper from "../components/AgentStepper";
 
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
@@ -338,11 +339,49 @@ const handleAddTrustee = () => {
 } = trusteeForm;
 
 
+const d = trusteeForm;
 
-  if (!designation || !name || !email || !mobile || !address1) {
-    alert("Please fill mandatory fields");
+// ===== TYPE BASED VALIDATION =====
+
+if (trusteeType === "Indian") {
+
+  if (
+    !d.designation?.trim() ||
+    !d.name?.trim() ||
+    !d.email?.trim() ||
+    !d.mobile?.trim() ||
+    !trusteeStateId ||
+    !trusteeDistrictId ||
+    !d.address1?.trim() ||
+    !d.pincode?.trim() ||
+    !d.pan?.trim() ||
+    !d.aadhaar?.trim() ||
+    !d.panDoc ||
+    !d.aadhaarDoc ||
+    !d.photo
+  ) {
+    alert("Please fill all mandatory Trustee fields including documents");
     return;
   }
+
+}
+
+else if (trusteeType === "Foreigner") {
+
+  if (
+    !d.designation?.trim() ||
+    !d.name?.trim() ||
+    !d.email?.trim() ||
+    !d.mobile?.trim() ||
+    !d.address1?.trim() ||
+    !d.photo ||
+    !d.addressProof
+  ) {
+    alert("Please fill all mandatory Foreigner Trustee fields");
+    return;
+  }
+
+}
   // Email validation
 if (!isValidEmail(email)) {
   alert("Enter valid Trustee Email");
@@ -434,10 +473,26 @@ const handleAddPartner = () => {
     address1,
   } = partnerForm;
 
-  if (!designation || !name || !email || !mobile || !address1) {
-    alert("Please fill all Partner details");
-    return;
-  }
+  const d = partnerForm;
+
+if (
+  !d.designation?.trim() ||
+  !d.name?.trim() ||
+  !d.email?.trim() ||
+  !d.mobile?.trim() ||
+  !partnerStateId ||
+  !partnerDistrictId ||
+  !d.address1?.trim() ||
+  !d.pincode?.trim() ||
+  !d.pan?.trim() ||
+  !d.aadhaar?.trim() ||
+  !d.panDoc ||
+  !d.aadhaarDoc ||
+  !d.photo
+) {
+  alert("Please fill all mandatory Partner fields including documents");
+  return; // ❌ STOP — DO NOT ADD
+}
 
   const newPartner = {
     ...partnerForm,
@@ -448,10 +503,6 @@ const handleAddPartner = () => {
 
   setPartnerForm(initialPartnerForm);
 };
-
-
-
-
 
 const [directorForm, setDirectorForm] = useState({
   name: "",
@@ -1025,9 +1076,9 @@ console.log("===== FORM DATA END =====");
 
 navigate("/AgentUploadDocumentotherthan", {
   state: {
-    application_id: data.application_id,
-    organisation_id: data.organisation_id,
-    pan_card_number: data.PAN_card_number,    
+    application_id: data.application_no,   // 🔥 FIX
+    organisation_id: data.agent_id,        // 🔥 FIX
+    pan_card_number: data.pan,             // 🔥 FIX
     status: data.status,
     hasProjects,
     hasOtherRera,
@@ -1091,9 +1142,20 @@ const validateMandatoryFields = () => {
   if (!files.panDoc) return "Upload PAN Card";
 
   /* ========= 5️⃣ CONTACT ========= */
-  if (!form.email) return "Please enter Email Id";
-  if (!form.mobile) return "Please enter Mobile Number";
+if (!form.email?.trim()) {
+  return "Please enter Email Id";
+}
 
+if (!/^[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(form.email.trim())) {
+  return "Email must start with a letter and be in valid format (example: test@gmail.com)";
+}
+if (!form.mobile?.trim()) {
+  return "Please enter Mobile Number";
+}
+
+if (!/^[6-9]\d{9}$/.test(form.mobile.trim())) {
+  return "Mobile number must be 10 digits and start with 6-9";
+}
   /* ========= 6️⃣ GST ========= */
   if (form.gst && !files.gstDoc)
     return "Upload GST Number Document";
@@ -1114,27 +1176,19 @@ const validateMandatoryFields = () => {
   if (!districtData?.id) return "Please select District";
   if (!mandalData?.id) return "Please select Mandal";
   if (!villageData?.id) return "Please select Village";
-  if (!form.pincode) return "Please enter PIN Code";
+  // ===== PIN CODE =====
+if (!form.pincode?.trim()) {
+  return "Please enter PIN Code";
+}
+
+if (!/^5[0-9]{5}$/.test(form.pincode.trim())) {
+  return "PIN Code must start with 5 and contain exactly 6 digits";
+}
   if (!files.addressProof) return "Upload Address Proof";
-/* =====================================================
-   7️⃣ DIRECTOR DETAILS VALIDATION
-   Only for Company / Joint Venture / Government
-   ===================================================== */
 
 /* =====================================================
    7️⃣ DIRECTOR DETAILS VALIDATION
    Only for Company / JV / Government
-   ===================================================== */
-
-
-
-/* =====================================================
-   7️⃣ DIRECTOR DETAILS VALIDATION
-   Only for Company / JV / Government
-   ===================================================== */
-
-/* =====================================================
-   7️⃣ DIRECTOR DETAILS VALIDATION
    ===================================================== */
 
 if (
@@ -1155,20 +1209,48 @@ if (
       const d = directorForm;
 
       if (!d.designation) return "Please select Director Designation";
-      if (!d.name) return "Please enter Director Name";
-      if (!d.email) return "Please enter Director Email Id";
-      if (!d.mobile) return "Please enter Director Mobile Number";
+      // ===== NAME =====
+if (!d.name?.trim())
+  return "Please enter Director Name";
+
+if (!/^[A-Za-z\s]+$/.test(d.name))
+  return "Director Name should contain only alphabets";
+
+// ===== EMAIL =====
+if (!d.email?.trim())
+  return "Please enter Director Email Id";
+
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))
+  return "Please enter valid Director Email Id (example: test@gmail.com)";
+
+// ===== MOBILE =====
+if (!d.mobile?.trim())
+  return "Please enter Director Mobile Number";
+
+if (!/^[6-9]\d{9}$/.test(d.mobile))
+  return "Director Mobile must be 10 digits and start with 6-9";
 
       if (!directorStateId) return "Please select Director State";
       if (!directorDistrictId) return "Please select Director District";
 
       if (!d.address1) return "Please enter Director Address Line 1";
-      if (!d.pincode) return "Please enter Director PIN Code";
+      if (!d.pincode?.trim())
+  return "Please enter Director PIN Code";
+
+if (!/^5[0-9]{5}$/.test(d.pincode.trim()))
+  return "Director PIN Code must start with 5 and contain exactly 6 digits";
 
       if (!d.pan) return "Please enter Director PAN Number";
+
+if (d.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(d.pan))
+  return "Invalid PAN format (Example: ABCDE1234F)";
       if (!d.panDoc) return "Upload Director PAN Card";
 
-      if (!d.aadhaar) return "Please enter Director Aadhaar Number";
+     if (!d.aadhaar?.trim())
+  return "Please enter Director Aadhaar Number";
+
+if (!/^[0-9]{12}$/.test(d.aadhaar.trim()))
+  return "Director Aadhaar must be exactly 12 digits";
       if (!d.aadhaarDoc) return "Upload Director Aadhaar";
       if (!d.photo) return "Upload Director Photograph";
       if (
@@ -1185,10 +1267,29 @@ if (
       const d = foreignerDirector;
 
       if (!d.designation) return "Please select Director Designation";
-      if (!d.name) return "Please enter Director Name";
-      if (!d.email) return "Please enter Director Email Id";
-      if (!d.mobile) return "Please enter Director Mobile Number";
-      if (!d.address1) return "Please enter Director Address Line 1";
+      // ===== NAME =====
+if (!d.name) return "Please enter Director Name";
+
+if (d.name && !/^[A-Za-z\s]+$/.test(d.name))
+  return "Director Name should contain only alphabets";
+
+// ===== EMAIL =====
+if (!d.email) return "Please enter Director Email Id";
+
+if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))
+  return "Please enter valid Director Email Id (example: test@gmail.com)";
+
+// ===== MOBILE =====
+if (!d.mobile) return "Please enter Director Mobile Number";
+
+if (d.mobile && !/^[6-9]\d{9}$/.test(d.mobile))
+  return "Director Mobile must be 10 digits and start with 6-9";
+
+// ===== ADDRESS LINE 1 =====
+if (!d.address1) return "Please enter Director Address Line 1";
+
+if (d.address1 && d.address1.trim().length < 5)
+  return "Director Address must be at least 5 characters long";
       if (!d.photo) return "Upload Director Photograph";
       if (!d.addressProof) return "Upload Director Address Proof";
         if (
@@ -1219,7 +1320,7 @@ if (
     }
 
     if (!d.photo) return "Director photo missing";
-    if (!d.addressProof) return "Director address proof missing";
+   
   }
 }
 
@@ -1227,18 +1328,34 @@ if (
    8️⃣ AUTHORIZED SIGNATORY VALIDATION
    ===================================================== */
 
+// ===== SIGNATORY NAME =====
 if (!form.signName) {
   return "Please enter Authorized Signatory Name";
 }
 
+if (!/^[A-Za-z\s]{2,50}$/.test(form.signName.trim())) {
+  return "Authorized Signatory Name should contain only alphabets (2-50 characters)";
+}
+
+
+// ===== SIGNATORY MOBILE =====
 if (!form.signMobile) {
   return "Please enter Authorized Signatory Mobile Number";
 }
 
-if (!form.signEmail) {
+if (!/^[6-9]\d{9}$/.test(form.signMobile)) {
+  return "Authorized Signatory Mobile must be 10 digits and start with 6-9";
+}
+
+
+// ===== SIGNATORY EMAIL =====             
+if (!form.signEmail) {                      
   return "Please enter Authorized Signatory Email Id";
 }
 
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.signEmail.trim())) {
+  return "Please enter valid Authorized Signatory Email Id (example: test@gmail.com)";
+}
 if (!files.authPhoto) {
   return "Upload Authorized Signatory Photograph";
 }
@@ -1246,10 +1363,6 @@ if (!files.authPhoto) {
 if (!files.boardResolution) {
   return "Upload Board Resolution for Authorized Signatory";
 }
-
-/* =====================================================
-   9️⃣ PROJECTS IN LAST 5 YEARS VALIDATION
-   ===================================================== */
 
 /* =====================================================
    PROJECTS IN LAST 5 YEARS VALIDATION
@@ -1907,48 +2020,13 @@ const handlePDFFile = (e, setter, field) => {
       </div>
 <div className="yagentdetails-page-content">
       <h2 className="yagentdetails-page-title">Real Estate Agent Registration</h2>
+      <AgentStepper currentStep={0} />
       {errorMsg && (
   <div className="yagentdetails-error-banner">
     <span>{errorMsg}</span>
     <button onClick={() => setErrorMsg("")}>×</button>
   </div>
    )} 
-
-   <div className="yagentdetails-stepper">
-  <div className="yagentdetails-stepper-line"></div>
-
-  <div
-    className={`yagentdetails-step ${currentStep >= 1 ? "active" : ""}`}
-    onClick={() => currentStep > 1 && navigate("/AgentDetailsOther")}
-    style={{ cursor: currentStep > 1 ? "pointer" : "default" }}
-  >
-    <div className="yagentdetails-circle">1</div>
-    <p>Agent Detail</p>
-  </div>
-
-  <div className={`yagentdetails-step ${currentStep >= 2 ? "active" : ""}`}>
-    <div className="yagentdetails-circle">2</div>
-    <p>Upload Documents</p>
-  </div>
-
-  <div className={`yagentdetails-step ${currentStep >= 3 ? "active" : ""}`}>
-    <div className="yagentdetails-circle">3</div>
-    <p>Preview</p>
-  </div>
-
-  <div className={`yagentdetails-step ${currentStep >= 4 ? "active" : ""}`}>
-    <div className="yagentdetails-circle">4</div>
-    <p>Payment</p>
-  </div>
-
-  <div className={`yagentdetails-step ${currentStep >= 5 ? "active" : ""}`}>
-    <div className="yagentdetails-circle">5</div>
-    <p>Acknowledgement</p>
-  </div>
-</div>
-
-
-
 
      {/* Agent Type */}
 <section className="yagentdetails-agent-type-section">
@@ -2898,24 +2976,31 @@ onChange={() => {
     din,
   } = directorForm;
 
-  // ===== Mandatory Check =====
-if (
-  !designation ||
-  !name ||
-  !email ||
-  !mobile ||
-  !address1 ||
-  !pincode ||
-  !pan ||
-  !aadhaar ||
-  (form.orgType !==
-    "Government Department/Local Bodies/Government Bodies" &&
-    !din)
-) {
+const d = directorForm;
 
-    alert("Please fill all mandatory Director fields");
-    return;
-  }
+if (
+  !d.designation?.trim() ||
+  !d.name?.trim() ||
+  !d.email?.trim() ||
+  !d.mobile?.trim() ||
+  !directorStateId ||
+  !directorDistrictId ||
+  !d.address1?.trim() ||
+  !d.pincode?.trim() ||
+  !d.pan?.trim() ||
+  !d.aadhaar?.trim() ||
+  !d.panDoc ||          // ✅ PAN file check
+  !d.aadhaarDoc ||      // ✅ Aadhaar file check
+  !d.photo ||           // ✅ Photo check
+  (
+    form.orgType !==
+    "Government Department/Local Bodies/Government Bodies" &&
+    !d.din?.trim()
+  )
+) {
+  alert("Please fill all mandatory Director fields including documents");
+  return; // ❌ STOP HERE
+}
 
  
 

@@ -1,14 +1,14 @@
 from app.models.database import db
 from datetime import datetime
+
+
 class AgentOtherThanIndividualEntity(db.Model):
     __tablename__ = "agent_entity_details_t"
 
     id = db.Column(db.Integer, primary_key=True)
     organisation_id = db.Column(
-    db.Integer,
-    db.ForeignKey("agent_organisation_details_t.organisation_id"),
-    nullable=False
-)
+        db.Integer, db.ForeignKey("agentregistration_details_t.id"), nullable=False
+    )
 
     designation = db.Column(db.String(100))
     name = db.Column(db.String(150), nullable=False)
@@ -28,11 +28,10 @@ class AgentOtherThanIndividualEntity(db.Model):
     photograph = db.Column(db.String(255))
     address_proof = db.Column(db.String(255))
 
-    entity_type = db.Column(db.String(255))   # PARTNER / DIRECTOR / TRUSTEE
+    entity_type = db.Column(db.String(255))  # PARTNER / DIRECTOR / TRUSTEE
     din_number = db.Column(db.String(255))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 
     def to_dict(self):
         return {
@@ -54,5 +53,9 @@ class AgentOtherThanIndividualEntity(db.Model):
             "address_proof": self.address_proof,
             "entity_type": self.entity_type,
             "din_number": self.din_number,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S") if self.created_at else None
+            "created_at": (
+                self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                if self.created_at
+                else None
+            ),
         }

@@ -29,11 +29,14 @@ const AgentDetail = () => {
     }
 
     // PAN validation
-    if (pan.length !== 10) {
-      setPopupMessage("Please enter a valid 10-digit PAN Number");
-      setShowPopup(true);
-      return;
-    }
+   // PAN format validation
+const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+if (!panRegex.test(pan)) {
+  setPopupMessage("Please enter valid PAN (Format: ABCDE1234F)");
+  setShowPopup(true);
+  return;
+}
 
     try {
       // ✅ CALL PAN CHECK API
@@ -126,21 +129,25 @@ if (agentType === "Individual") {
     type="text"
     value={pan}
     maxLength={10}
-    onChange={(e) => {
-      const value = e.target.value.toUpperCase();
-      setPan(value);
+   onChange={(e) => {
+  const value = e.target.value
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, ""); // prevents special characters
 
-      if (value.length === 10) {
-        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-        if (!panRegex.test(value)) {
-          setPanError("PAN format should be ABCDE1234F");
-        } else {
-          setPanError("");
-        }
-      } else {
-        setPanError("");
-      }
-    }}
+  setPan(value);
+
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+  if (value.length === 10) {
+    if (!panRegex.test(value)) {
+      setPanError("PAN format must be ABCDE1234F");
+    } else {
+      setPanError("");
+    }
+  } else {
+    setPanError("");
+  }
+}}
     placeholder="ABCDE1234F"
   />
 

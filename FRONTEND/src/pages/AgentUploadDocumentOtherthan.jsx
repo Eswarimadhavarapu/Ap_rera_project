@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/AgentUploadDocumentOtherthan.css";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import AgentStepper from "../components/AgentStepper";
 
 
 
@@ -59,14 +60,14 @@ const handleSubmit = async () => {
     const formData = new FormData();
 
     // ✅ SEND BACKEND REQUIRED IDS
-    formData.append("application_id", application_id);
-    formData.append("organisation_id", organisation_id);
+   formData.append("application_id", application_id);
+    formData.append("id", organisation_id);
     formData.append("pan_card_number", pan_card_number);
 
     // ✅ SEND FILES
-    formData.append("itr_year1_doc", files.year1);
-    formData.append("itr_year2_doc", files.year2);
-    formData.append("itr_year3_doc", files.year3);
+    formData.append("itr_year1", files.year1);
+    formData.append("itr_year2", files.year2);
+    formData.append("itr_year3", files.year3);
 
     const res = await fetch(
       "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual/itr",
@@ -127,32 +128,7 @@ const handleSubmit = async () => {
         {/* Page Title */}
         <h2 className="zagentud-heading">Real Estate Agent Registration</h2>
 
-        {/* Stepper */}
-        <div className="zagentud-steps-box">
-          <div className="zagentud-steps">
-            {[
-              "Agent Detail",
-              "Upload Documents",
-              "Preview",
-              "Payment",
-              "Acknowledgement",
-            ].map((step, index) => (
-              <div
-                key={step}
-                className={`zagentud-step ${
-                  index === 1
-                    ? "agentud-step-active"
-                    : index < 1
-                    ? "agentud-step-completed"
-                    : ""
-                }`}
-              >
-                <div className="zagentud-step-circle">{index + 1}</div>
-                <div className="zagentud-step-label">{step}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <AgentStepper currentStep={1} />
 
         {/* Upload Documents */}
         <h3 className="zagentud-section-heading">Upload Documents</h3>

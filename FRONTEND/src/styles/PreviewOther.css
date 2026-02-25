@@ -291,11 +291,16 @@
 .mpreview-required {
   color: red;
 }
-/* Stepper Container */
 .mpreview-stepper {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   margin: 20px 0 40px;
+  padding: 30px 25px 20px;
+
+  border: 1px solid #d9d9d9;     /* 👈 box border */
+  background: #f5f5f5;           /* 👈 light grey background */
   position: relative;
 }
 
@@ -308,20 +313,21 @@
   font-weight: 500;
 }
 
-/* Circle */
 .mpreview-step .circle {
   width: 35px;
   height: 35px;
   border-radius: 50%;
   border: 2px solid #ccc;
-  margin: auto;
+  margin: 0 auto 8px;   /* 👈 important */
   line-height: 32px;
   background: #fff;
+  position: relative;
+  z-index: 1;
 }
 
-/* Completed Steps */
-.mpreview-step.completed {
-  color: #4caf50;
+.mpreview-step {
+  color: #000;   /* 👈 Always black */
+  font-weight: normal;
 }
 
 .mpreview-step.completed .circle {
@@ -330,10 +336,10 @@
   border-color: #4caf50;
 }
 
-/* Active Step (Preview) */
+/* Active step text bold but black */
 .mpreview-step.active {
-  color: #4caf50;
-  font-weight: bold;
+  font-weight: normal;
+  color: #000;
 }
 
 .mpreview-step.active .circle {
@@ -341,16 +347,14 @@
   color: white;
   border-color: #4caf50;
 }
-
-/* Line Between Steps */
 .mpreview-stepper::before {
   content: "";
   position: absolute;
-  top: 18px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #ddd;
+  top: 47px;          /* 👈 adjust line position */
+  left: 60px;
+  right: 60px;
+  height: 1px;
+  background: #cfcfcf;
   z-index: 0;
 }
 /* Enable horizontal scroll */

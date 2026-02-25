@@ -103,16 +103,18 @@ a{
 }
 
 /* active step */
-.yagentdetails-step.active .agentdetails-circle {
-  background: #4caf50;
+/* ACTIVE STEP CIRCLE */
+.yagentdetails-step.active .yagentdetails-circle {
+  background: #4caf50;   /* green */
   border-color: #4caf50;
   color: #ffffff;
 }
 
-/* label */
-.agentdetails-step p {
+
+
+.yagentdetails-step p {
   margin-top: 8px;
-  font-size: 17px;
+  font-size: 14px;
   color: #000;
   white-space: nowrap;
 }

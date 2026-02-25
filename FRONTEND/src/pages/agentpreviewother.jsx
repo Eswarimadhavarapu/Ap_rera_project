@@ -2,6 +2,7 @@ import "../styles/previewOther.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AgentStepper from "../components/AgentStepper";
 
 
 const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
@@ -30,9 +31,24 @@ const [apiData, setApiData] = useState(null);
 
 const org = apiData?.organisation || {};
 
+
+let projects = [];
+
+if (Array.isArray(org.last_five_year_projects)) {
+  projects = org.last_five_year_projects;
+} else if (typeof org.last_five_year_projects === "string") {
+  try {
+    projects = JSON.parse(org.last_five_year_projects);
+  } catch (e) {
+    projects = [];
+  }
+}
+
+
+
 const hasProjects =
   navState.hasProjects ||
-  (org?.last_five_year_projects?.length > 0 ? "Yes" : "No");
+  (projects.length > 0 ? "Yes" : "No");
 
 const hasOtherRera =
   navState.hasOtherRera ||
@@ -65,10 +81,10 @@ const hasOtherRera =
         const res = await axios.get(
           `${BASE_URL}/api/agent/other-than-individual/details`,
           {
-            params: {
-              organisation_id,
-              pan_card_number,
-            },
+           params: {
+  organisation_id: organisation_id,
+ // pan_card_number: pan_card_number,
+},
           }
         );
 
@@ -107,7 +123,7 @@ const hasSelfAffidavit =
 const hasLitigationFinal =
   hasSelfAffidavit ? "No" : "Yes";
 
-const projects = org.last_five_year_projects || [];
+
 const otherStates = org.other_state_rera_details || [];
 
 
@@ -134,35 +150,7 @@ const otherStates = org.other_state_rera_details || [];
         Real Estate Agent Registration
       </h2>
 
-
-      {/* ================= STEPPER ================= */}
-   <div className="mpreview-stepper">
-
-  {[
-    "Agent Detail",
-    "Upload Documents",
-    "Preview",
-    "Payment",
-    "Acknowledgement",
-  ].map((step, i) => {
-
-    const isCompleted = i < 2;   // Step 1 & 2 done
-    const isActive = i === 2;    // Step 3 = Preview
-
-    return (
-      <div
-        key={i}
-        className={`mpreview-step 
-          ${isCompleted ? "completed" : ""} 
-          ${isActive ? "active" : ""}`}
-      >
-        <div className="circle">{i + 1}</div>
-        <span>{step}</span>
-      </div>
-    );
-  })}
-
-</div>
+<AgentStepper currentStep={2} />
 
 
 

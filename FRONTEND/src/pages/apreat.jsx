@@ -3,23 +3,22 @@ import "../styles/apreat.css";
 
 export default function Apreat() {
   return (
-    <div className="apreat-page-wrapper">
-      <div className="apreat-content-box">
+    <div className="apreatt-page-wrapper">
+      <div className="apreatt-content-box">
 
         {/* Breadcrumb */}
-        <div className="apreat-breadcrumb">
+        <div className="apreatt-breadcrumb">
           You are here : APREAT Contact Us
         </div>
 
-        {/* 🔽 INNER CONTENT */}
-        <div className="apreat-inner-content">
+        <div className="apreatt-inner-content">
 
           {/* CHAIRPERSON */}
-          <div className="apreat-section-title">CHAIRPERSON</div>
-          <div className="apreat-underline"></div>
+          <div className="apreatt-section-title">CHAIRPERSON</div>
+          <div className="apreatt-underline"></div>
 
-          <table className="apreat-table">
-            <thead className="apreat-thead">
+          <table className="apreatt-table">
+            <thead>
               <tr>
                 <th>S.No.</th>
                 <th>Designation</th>
@@ -29,19 +28,19 @@ export default function Apreat() {
                 <th>Photo</th>
               </tr>
             </thead>
-            <tbody className="apreat-tbody">
+            <tbody>
               <tr>
                 <td>1</td>
                 <td>CHAIRPERSON</td>
-                <td className="apreat-name">
+                <td className="apreatt-name">
                   HON'BLE JUSTICE SRI M. GANGARAO
                 </td>
-                <td>-</td>
+                <td>7901097368</td>
                 <td>-</td>
                 <td>
                   <img
-                    className="apreat-photo"
-                    src="../../public/assets/images/JUSTICEMGangarao.jpg"
+                    className="apreatt-photo"
+                    src="/assets/images/JUSTICEMGangarao.jpg"
                     alt="Chairperson"
                   />
                 </td>
@@ -50,10 +49,10 @@ export default function Apreat() {
           </table>
 
           {/* MEMBERS */}
-          <div className="apreat-section-title">MEMBERS</div>
-          <div className="apreat-underline"></div>
+          <div className="apreatt-section-title">MEMBERS</div>
+          <div className="apreatt-underline"></div>
 
-          <table className="apreat-table">
+          <table className="apreatt-table">
             <thead>
               <tr>
                 <th>S.No.</th>
@@ -68,16 +67,16 @@ export default function Apreat() {
               <tr>
                 <td>1</td>
                 <td>JUDICIAL MEMBER</td>
-                <td className="apreat-name">
+                <td className="apreatt-name">
                   SRI RAMACHANDRA REDDY MANDALAPU
                 </td>
-                <td>-</td>
+                <td>9914756999</td>
                 <td>-</td>
                 <td>
                   <img
-                    className="apreat-photo"
-                    src="../../public/assets/images/Ramachandrareddy sir.jpeg"
-                    alt="Ramachandra Reddy Sir"
+                    className="apreatt-photo"
+                    src="/assets/images/Ramachandrareddy sir.jpeg"
+                    alt="Ramachandra Reddy"
                   />
                 </td>
               </tr>
@@ -85,10 +84,10 @@ export default function Apreat() {
           </table>
 
           {/* REGISTRAR */}
-          <div className="apreat-section-title">REGISTRAR</div>
-          <div className="apreat-underline"></div>
+          <div className="apreatt-section-title">REGISTRAR</div>
+          <div className="apreatt-underline"></div>
 
-          <table className="apreat-table">
+          <table className="apreatt-table">
             <thead>
               <tr>
                 <th>S.No.</th>
@@ -103,10 +102,18 @@ export default function Apreat() {
               <tr>
                 <td>1</td>
                 <td>REGISTRAR</td>
-                <td className="apreat-name">SRI GUDURI RAMA KRISHNA</td>
+                <td className="apreatt-name">
+                  SRI GUDURI RAMA KRISHNA
+                </td>
                 <td>-</td>
-                <td>-</td>
-                <td>-</td>
+                <td>registrar.apreat@gmail.com</td>
+                <td>
+                  <img
+                    className="apreatt-photo"
+                    src="/assets/images/guduri.jpeg"
+                    alt="Guduri Rama Krishna"
+                  />
+                </td>
               </tr>
             </tbody>
           </table>

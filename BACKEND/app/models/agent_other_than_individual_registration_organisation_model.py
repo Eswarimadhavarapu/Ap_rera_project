@@ -1,91 +1,109 @@
 from app.models.database import db
 from datetime import datetime
+import json
+
 
 class AgentOtherThanIndividualOrganisation(db.Model):
-    __tablename__ = "agent_organisation_details_t"  
-    organisation_id = db.Column(db.Integer, primary_key=True)
-    application_id = db.Column(db.String(50), unique=True, nullable=False)   
-    organisation_type = db.Column(db.String(50))        
-    organisation_name = db.Column(db.String(200))
-    registration_identifier = db.Column(db.String(100))
-    registration_date = db.Column(db.Date)
-    registration_cert_doc = db.Column(db.String(255))  
-    pan_card_number = db.Column(db.String(10))
-    pan_card_doc = db.Column(db.String(255))
-    gst_number = db.Column(db.String(15))
-    gst_doc = db.Column(db.String(255))
-    legal_document = db.Column(db.String(255))   
-    email_id = db.Column(db.String(150))
-    mobile_number = db.Column(db.String(15))
-    landline_number = db.Column(db.String(20))
-    address_line1 = db.Column(db.String(200))
-    address_line2 = db.Column(db.String(200))
-    state = db.Column(db.String(100))
-    district = db.Column(db.String(100))
-    mandal = db.Column(db.String(100))
-    village = db.Column(db.String(100))
-    pincode = db.Column(db.String(10))
-    address_proof_doc = db.Column(db.String(255))
-    entity_details_id = db.Column(
-        db.Integer,
-        db.ForeignKey("agent_entity_details_t.id"),
-        nullable=False
-    )
+    __tablename__ = "agentregistration_details_t"
 
-    authorized_details_id = db.Column(
-        db.Integer,
-        db.ForeignKey("agent_authorized_details_t.id")
-    )
+    id = db.Column(db.BigInteger, primary_key=True)
 
-    litigation_details_id = db.Column(
-        db.Integer,
-        db.ForeignKey("agent_litigations_details_t.id")
-    )
+    agent_name = db.Column(db.String, nullable=False)
+    father_name = db.Column(db.String, nullable=True)
+    occupation_id = db.Column(db.Integer, nullable=True)
 
-    
-    last_five_year_projects = db.Column(db.JSON)
-    other_state_rera_details = db.Column(db.JSON)
-    itr_year1_doc = db.Column(db.String(255))
-    itr_year2_doc = db.Column(db.String(255))
-    itr_year3_doc = db.Column(db.String(255))
+    email = db.Column(db.String, nullable=False)
+    aadhaar = db.Column(db.String, nullable=True)
+    pan = db.Column(db.String, nullable=False)
 
-   
-    status = db.Column(db.String(30), default="DRAFT")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    mobile = db.Column(db.String, nullable=False)
+    landline = db.Column(db.String, nullable=True)
 
+    license_number = db.Column(db.String, nullable=True)
+    license_date = db.Column(db.Date, nullable=True)
 
-       
+    address1 = db.Column(db.String, nullable=False)
+    address2 = db.Column(db.String, nullable=True)
+
+    state_id = db.Column(db.String, nullable=False)
+    district = db.Column(db.String, nullable=False)
+    mandal = db.Column(db.String, nullable=False)
+    village = db.Column(db.String, nullable=False)
+
+    pincode = db.Column(db.String, nullable=False)
+
+    photograph = db.Column(db.JSON, nullable=False)
+    pan_proof = db.Column(db.JSON, nullable=False)
+    address_proof = db.Column(db.JSON, nullable=False)
+
+    itr_year1 = db.Column(db.JSON, nullable=True)
+    itr_year2 = db.Column(db.JSON, nullable=True)
+    itr_year3 = db.Column(db.JSON, nullable=True)
+
+    declaration = db.Column(db.Boolean, nullable=True)
+
+    occupation_name = db.Column(db.String, nullable=True)
+    application_no = db.Column(db.String, nullable=True)
+    agent_type = db.Column(db.String, nullable=True)
+
+    any_civil_criminal_cases = db.Column(db.String, nullable=True)
+    registration_other_states = db.Column(db.String, nullable=True)
+    last_five_years_projects_details = db.Column(db.JSON)
+
+    self_declared_affidavit = db.Column(db.JSON, nullable=True)
+
+    organisation_type = db.Column(db.String, nullable=True)
+    registration_identifier = db.Column(db.String, nullable=True)
+    registration_date = db.Column(db.String, nullable=True)
+
+    gst_number = db.Column(db.String, nullable=True)
+    gst_doc = db.Column(db.String, nullable=True)
+
+    registration_cert_doc = db.Column(db.String, nullable=True)
+    legal_document = db.Column(db.String, nullable=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
+
+    last_five_years_projects_details = db.Column(db.JSON, nullable=True)
+
     def to_dict(self):
         return {
-            "organisation_id": self.organisation_id,
-            "application_id": self.application_id,
+            "organisation_id": self.id,  # mapped
+            "application_id": self.application_no,  # mapped
             "organisation_type": self.organisation_type,
-            "organisation_name": self.organisation_name,
+            "organisation_name": self.agent_name,  # mapped (if needed)
             "registration_identifier": self.registration_identifier,
-            "registration_date": self.registration_date.strftime("%Y-%m-%d") if self.registration_date else None,
+            "registration_date": self.registration_date,
             "registration_cert_doc": self.registration_cert_doc,
-            "pan_card_number": self.pan_card_number,
-            "pan_card_doc": self.pan_card_doc,
+            "pan_card_number": self.pan,  # mapped
+            "pan_card_doc": self.pan_proof.get("file") if self.pan_proof else None, # mapped (if storing here)
             "gst_number": self.gst_number,
             "gst_doc": self.gst_doc,
             "legal_document": self.legal_document,
-            "email_id": self.email_id,
-            "mobile_number": self.mobile_number,
-            "landline_number": self.landline_number,
-            "address_line1": self.address_line1,
-            "address_line2": self.address_line2,
-            "state": self.state,
+            "email_id": self.email,  # mapped
+            "mobile_number": self.mobile,  # mapped
+            "landline_number": self.landline,  # mapped
+            "address_line1": self.address1,  # mapped
+            "address_line2": self.address2,  # mapped
+            "state": self.state_id,  # mapped
             "district": self.district,
             "mandal": self.mandal,
             "village": self.village,
             "pincode": self.pincode,
-            "address_proof_doc": self.address_proof_doc,
-            "last_five_year_projects": self.last_five_year_projects,
-            "other_state_rera_details": self.other_state_rera_details,
-            "status": self.status,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S") if self.created_at else None,
-            "itr_year1_doc": self.itr_year1_doc,
-            "itr_year2_doc": self.itr_year2_doc,
-            "itr_year3_doc": self.itr_year3_doc
-
+            "address_proof_doc": self.address_proof.get("file") if self.address_proof else None,
+           "last_five_year_projects": self.last_five_years_projects_details or [],
+            "other_state_rera_details": (
+                json.loads(self.registration_other_states)
+                if self.registration_other_states
+                else []
+            ),
+            "status": "success",
+            "created_at": (
+                self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                if self.created_at
+                else None
+            ),
+            "itr_year1_doc": self.itr_year1,  # mapped
+            "itr_year2_doc": self.itr_year2,  # mapped
+            "itr_year3_doc": self.itr_year3,  # mapped
         }

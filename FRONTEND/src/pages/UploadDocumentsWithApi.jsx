@@ -919,6 +919,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import '../styles/UploadDocumentsWithApi.css';
 import ProjectWizard from "../components/ProjectWizard";
+import ExistingProjectWizard from '../components/ExistingProjectWizard';
 
 const UploadDocumentsWithApi = () => {
   const navigate = useNavigate();
@@ -1534,7 +1535,7 @@ if (!dataLoaded) {
 
       <h2 className="page-title">Project Registration</h2>
 
-      <ProjectWizard currentStep={5} />
+      <ExistingProjectWizard currentStep={5} />
 
       <form onSubmit={handleSubmit} className="upload-form">
         <div className="form-section">

@@ -109,6 +109,9 @@ import OtherThanIndividualProjectDetails from "./pages/OtherThanIndividualprojec
 import OtherThanIndividualDevelopmentDetails from "./pages/other-than-individual_DevelopmentDetails";
 import OtherThanIndividualAssociateDetails from "./pages/other-than-individual_AssociateDetails";
 import OtherThanIndividualUploadDocument from "./pages/other-than-individual_UploadDocument";
+import QuarterlyUpdate from "./pages/QuarterlyUpdate";
+import QuarterlyUpdateExisting from "./pages/QuarterlyUpdateExisting";
+import QuarterlyExistingtable from "./pages/QuarterlyExistingtable";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -229,6 +232,9 @@ function App() {
           <Route path="/other-than-individual-development-details" element={<OtherThanIndividualDevelopmentDetails />} />
           <Route path="/other-than-individual-associate-details" element={<OtherThanIndividualAssociateDetails />} />
           <Route path="/other-than-individual-upload-documents" element={<OtherThanIndividualUploadDocument />} />
+          <Route path="/quarterlyupdateexisting" element={<QuarterlyUpdateExisting />} />
+          <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
+          <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
         </Routes>
       </Layout>
     </BrowserRouter>

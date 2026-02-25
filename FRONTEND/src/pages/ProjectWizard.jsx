@@ -1804,7 +1804,7 @@
 import React, { useState } from "react";
 import "../styles/projectWizard.css";
 import { apiPost } from "../api/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ================= VALIDATION REGEX =================
 const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
@@ -2418,13 +2418,14 @@ if (formData.pinCode && !PIN_REGEX.test(formData.pinCode)) {
 
           <ol className="projwizard-instruction-list">
             <li>Many details are required for the registration of project which involves information regarding promoter, Promoter 2, plan approvals, Time schedule, Location details of project, Bank account of the project, Associate details etc</li>
-            <li>For step by step understanding of filing online application, kindly refer <a href="#" className="projwizard-link">Guidelines for Registration</a> page.</li>
+            <li>For step by step understanding of filing online application, kindly refer <Link to="/guidelinesRegistration" className="projwizard-link">Guidelines for Registration</Link> page.</li>
             <li>Select "New" as application type, if you are a new applicant.</li>
             <li>Select "Existing" as application type, if application was incomplete / Shortfall / Withdraw / Change Request</li>
             <li>The entire form is divided to various parts with "Save and Continue" facilities for each part</li>
             <li><strong style={{ color: 'red' }}>List of Address Proof:</strong> Aadhaar/Ration Card/Bank Book/Driving License/Voter Id/Gas/Phone Bill/Passport (Any one)</li>
-            <li><a href="#" className="projwizard-link">Click Here</a> for the list of supporting documents, their respective file formats that are needed to be attached with the Project Registration Application Form</li>
-            <li><a href="#" className="projwizard-link">Fee Calculator</a></li>
+            <li><a href="../../../public/assets/pdfs/Checklist-Project.pdf"target="_blank" 
+  rel="noopener noreferrer" className="projwizard-link">Click Here</a> for the list of supporting documents, their respective file formats that are needed to be attached with the Project Registration Application Form</li>
+            <li><Link to="/feecalculater" className="projwizard-link">Fee Calculator</Link></li>
           </ol>
 
           <div className="projwizard-application-type-section">

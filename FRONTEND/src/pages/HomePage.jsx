@@ -71,19 +71,25 @@ import {
    ✅ NAVBAR COMPONENT
 =========================== */
 function Navbar() {
+  const navigate = useNavigate()
   return (
     <header className="homenavbar-new-navbar">   
 
       <div className="homenavbar-new-notice-board">
          <div className="homenavbar-new-notice-line">
+          <a 
+  href="../../../public/assets/pdfs/Circular-P-18.pdf" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="homenavbar-new-notice-line"
+>
           <span className="homenavbar-new-notice-text">
-
            <span className="homenavbar-new-badge">NEW</span>
             One Time Opportunity with 50% Concession on Late Fee for Un-registered
             Projects.
-            <span className="homenavbar-new-badge">NEW</span>
-            
+            <span className="homenavbar-new-badge">NEW</span> 
           </span>
+          </a>
         </div>
 
         <div className="homenavbar-new-notice-line">
@@ -116,7 +122,7 @@ function Navbar() {
         </div>
 
         <div className="homenavbar-new-notice-line">
-          <span className="homenavbar-new-notice-text" onClick={() => navigate("/promotregistration")}>
+          <span className="homenavbar-new-notice-text" onClick={() => navigate("/promotregistration")} style={{ cursor: "pointer" }}>
             <span className="homenavbar-new-badge">NEW</span>
             All the promoters are instructed to register themselves in the AP
             RERA web portal for creation of the Promoter's database.

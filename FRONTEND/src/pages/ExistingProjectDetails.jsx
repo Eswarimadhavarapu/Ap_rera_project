@@ -12,6 +12,7 @@ import LegalDeclaration from "../components/ExistingLegalDeclaration";
 import ProjectConstructionStatus from "../components/ExistingProjectConstructionStatus";
 
 import { apiPost } from "../api/api";
+import ExistingProjectWizard from "../components/ExistingProjectWizard";
 
 const ExistingProjectDetails = () => {
 
@@ -367,7 +368,7 @@ const ExistingProjectDetails = () => {
 
     <div className="project-details-container">
 
-      <ProjectWizard currentStep={2} />
+      <ExistingProjectWizard currentStep={2} />
 
       <form onSubmit={handleSubmit} className="project-form">
 

@@ -1,6 +1,7 @@
 import "../styles/Agentpayment.css";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import AgentStepper from "../components/AgentStepper";
 
 const AgentPaymentpage = () => {
 
@@ -59,6 +60,7 @@ const AgentPaymentpage = () => {
         <h2 className="agent-payments-page-title">
           Payment Page
         </h2>
+        <AgentStepper currentStep={3} />
 
         <div className="agent-payments-payment-center-box">
 

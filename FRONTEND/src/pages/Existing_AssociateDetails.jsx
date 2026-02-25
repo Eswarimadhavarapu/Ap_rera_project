@@ -277,6 +277,7 @@ import ProjectEngineers from "../components/Existing_ProjectEngineers";
 
 import { apiGet, apiPost } from "../api/api";
 import "../styles/AssociateDetails.css";
+import ExistingProjectWizard from "../components/ExistingProjectWizard.jsx";
 
 const ExistingAssociateDetails = () => {
   const navigate = useNavigate();
@@ -448,6 +449,8 @@ const ExistingAssociateDetails = () => {
       <div className="breadcrumb">
         Home / Project Registration / Associate Details
       </div>
+       {/* ✅ ADD STEPPER HERE */}
+    <ExistingProjectWizard currentStep={4} />
 
       <h2 className="page-title">Associate Details</h2>
 
