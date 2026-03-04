@@ -1,252 +1,338 @@
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import QuarterlyStepper from "../components/QuarterlyStepper";
 import "../styles/QuarterlyUpdate.css";
+import { useNavigate } from "react-router-dom";
 
 const QuarterlyUpdate = () => {
-  const { applicationNumber } = useParams();
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    quarter: "",
-    construction_status: "",
-    units_sold: "",
-    amount_collected: "",
-    amount_utilized: "",
-    approvals_received: "",
+  const [occupancy, setOccupancy] = useState("YES");
+  const [documents, setDocuments] = useState({});
+  const [additionalDoc, setAdditionalDoc] = useState({
+    description: "",
+    file: null,
   });
+  const [additionalList, setAdditionalList] = useState([]);
+  const [quarterId, setQuarterId] = useState("");
 
-  const [documents, setDocuments] = useState({
-    site_photo: null,
-    ca_certificate: null,
-    engineer_certificate: null,
-  });
-
-  const [previewImage, setPreviewImage] = useState(null);
-  const [errors, setErrors] = useState({});
-
-  // Handle Text Change
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  // Handle File Upload
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    const file = files[0];
-
-    if (!file) return;
-
-    const allowedTypes = [
-      "application/pdf",
-      "image/jpeg",
-      "image/png",
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert("Only PDF, JPG, PNG allowed");
-      return;
-    }
-
-    // 5MB limit
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File size must be under 5MB");
-      return;
-    }
-
+  const handleFileChange = (e, name) => {
     setDocuments({
       ...documents,
-      [name]: file,
+      [name]: e.target.files[0],
     });
+  };
 
-    // Image preview for site photo
-    if (name === "site_photo" && file.type.startsWith("image/")) {
-      setPreviewImage(URL.createObjectURL(file));
+  const handleAddAdditional = () => {
+    if (additionalDoc.description && additionalDoc.file) {
+      setAdditionalList([...additionalList, additionalDoc]);
+      setAdditionalDoc({ description: "", file: null });
+    } else {
+      alert("Please enter description and upload file");
     }
   };
 
-  // Validation
-  const validateForm = () => {
-    let newErrors = {};
+const navigate = useNavigate(); // make sure this is at top
 
-    if (!formData.quarter)
-      newErrors.quarter = "Quarter is required";
+const handleSave = async () => {
+  try {
+    const formData = new FormData();
 
-    if (!formData.construction_status)
-      newErrors.construction_status =
-        "Construction status required";
+    const panNumber = sessionStorage.getItem("panNumber");
 
-    if (!documents.site_photo)
-      newErrors.site_photo = "Site photo required";
+    if (!panNumber) {
+      alert("Session expired. Please login again.");
+      return;
+    }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    formData.append("panNumber", panNumber);
+    formData.append("occupancy", occupancy);
 
-  // Submit
-  const handleSubmit = (type) => {
-    if (!validateForm()) return;
+    Object.keys(documents).forEach((key) => {
+      if (documents[key]) {
+        formData.append(key, documents[key]);
+      }
+    });
 
-    const finalData = {
-      ...formData,
-      application_number: applicationNumber,
-      status: type,
-      documents,
-    };
+    additionalList.forEach((doc, index) => {
+      formData.append(`additional_${index}`, doc.file);
+    });
 
-    console.log("Frontend Data:", finalData);
-
-    alert(
-      type === "SUBMITTED"
-        ? "Submitted Successfully (Frontend Only)"
-        : "Draft Saved (Frontend Only)"
+    const response = await fetch(
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/quarterly-update",
+      {
+        method: "POST",
+        body: formData,
+      }
     );
 
-    navigate("/project-dashboard");
+    const data = await response.json();
+
+    if (response.ok) {
+      const confirmNavigate = window.confirm("Details Saved Successfully");
+
+      if (confirmNavigate) {
+        navigate("/project-blockvilla-details");  // 🔁 change to your required page
+      }
+
+    } else {
+      alert(data.error);
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong");
+  }
+};
+useEffect(() => {
+  const fetchQuarter = async () => {
+    try {
+      const panNumber = sessionStorage.getItem("panNumber");
+
+      const response = await fetch(
+        `https://0jv8810n-8080.inc1.devtunnels.ms/api/current-quarter?panNumber=${panNumber}`
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setQuarterId(data.quarter_id);
+      } else {
+        alert(data.error);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchQuarter();
+}, []);
+
+  const handleFinalSubmit = () => {
+    alert("Final Submitted Successfully");
   };
 
   return (
-    <div className="quarterly-container">
-      <h3 className="quarterly-title">Quarterly Update</h3>
+    <div className="quartdocup-page-bg">
+      <div className="quartdocup-outer-frame">
 
-      <p className="application-number">
-        Application No: <strong>{applicationNumber}</strong>
-      </p>
-
-      <div className="quarterly-card">
-
-        {/* Quarter */}
-        <div className="form-group">
-          <label className="form-label">Quarter *</label>
-          <select
-            className="form-control"
-            name="quarter"
-            onChange={handleChange}
-          >
-            <option value="">Select Quarter</option>
-            <option value="Q1">Q1 (Apr - Jun)</option>
-            <option value="Q2">Q2 (Jul - Sep)</option>
-            <option value="Q3">Q3 (Oct - Dec)</option>
-            <option value="Q4">Q4 (Jan - Mar)</option>
-          </select>
-          {errors.quarter && (
-            <small className="error-text">
-              {errors.quarter}
-            </small>
-          )}
+        {/* ================= BREADCRUMB ================= */}
+        <div className="quartdocup-breadcrumb">
+          You are here :
+          <span> Project Registration </span> /
+          <span> Existing Project </span> /
+          Quarterly Updates
         </div>
 
-        {/* Construction Status */}
-        <div className="form-group">
-          <label className="form-label">
-            Construction Status *
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            name="construction_status"
-            onChange={handleChange}
-          />
-          {errors.construction_status && (
-            <small className="error-text">
-              {errors.construction_status}
-            </small>
-          )}
-        </div>
+        {/* ================= MAIN CARD ================= */}
+        <div className="quartdocup-main-card">
 
-        {/* Site Photo */}
-        <div className="form-group">
-          <label className="form-label">
-            Upload Site Photo *
-          </label>
-          <input
-            type="file"
-            className="form-control"
-            name="site_photo"
-            onChange={handleFileChange}
-          />
-          {documents.site_photo && (
-            <small>
-              Selected: {documents.site_photo.name}
-            </small>
-          )}
-          {errors.site_photo && (
-            <small className="error-text">
-              {errors.site_photo}
-            </small>
-          )}
-
-          {/* Image Preview */}
-          {previewImage && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={previewImage}
-                alt="Preview"
-                style={{
-                  width: "150px",
-                  borderRadius: "6px",
-                }}
-              />
+          {/* HEADER */}
+          <div className="quartdocup-header">
+            <div>
+              <h3 className="quartdocup-title">Quarterly Updates</h3>
+              <div className="quartdocup-title-line"></div>
             </div>
-          )}
-        </div>
 
-        {/* CA Certificate */}
-        <div className="form-group">
-          <label className="form-label">
-            Upload CA Certificate (PDF/Image)
-          </label>
+            <button className="quartdocup-back-btn">
+              Back to Dashboard
+            </button>
+          </div>
+
+          {/* STEPPER */}
+          <QuarterlyStepper currentStep={1} />
+
+          {/* QUARTER ID */}
+          <div className="quartdocup-quarter-id">
+            <strong>Quarter ID</strong>
+            <span>{quarterId}</span>
+          </div>
+
+          {/* ================= FINANCIAL DOCUMENTS ================= */}
+          <h5 className="quartdocup-section-title">
+            Financial Documents
+          </h5>
+
+          <div className="quartdocup-section-underline"></div>
+
+          <p className="quartdocup-warning">
+            If Form-5 is not available please submit the Declaration.
+          </p>
+
+         <div className="quartdocup-occupancy-section">
+
+  <div className="quartdocup-occupancy-row">
+    <label className="quartdocup-label">
+      Do you have Occupancy Certificate:
+      <span className="quartdocup-required-star">*</span>
+    </label>
+
+    <div className="quartdocup-radio-group">
+      <label>
+        <input
+          type="radio"
+          value="YES"
+          checked={occupancy === "YES"}
+          onChange={(e) => setOccupancy(e.target.value)}
+        /> YES
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          value="NO"
+          checked={occupancy === "NO"}
+          onChange={(e) => setOccupancy(e.target.value)}
+        /> NO
+      </label>
+    </div>
+  </div>
+
+  {occupancy === "YES" && (
+    <div className="quartdocup-upload-row">
+      <label className="quartdocup-label">
+        Upload Occupancy Certificate:
+        <span className="quartdocup-required-star">*</span>
+      </label>
+
+      <input
+        type="file"
+        className="quartdocup-file-input"
+      />
+    </div>
+  )}
+
+</div>
+          <table className="quartdocup-table">
+  <thead>
+    <tr>
+      <th>Document Type</th>
+      <th>Upload (Max size 2 MB for each document)</th>
+      <th>Uploaded Document</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {[
+    "Form F1",
+    "Form F2",
+    "Form F3",
+    "Form F4",
+    "Form F5",
+    "Brochure of Current Project",
+    "Orders of competent authority Mortgagee Area/Final Layout Area",
+  ].map((doc, index) => {
+
+    const isRequired =
+      doc === "Form F1" ||
+      doc === "Form F2" ||
+      doc === "Form F3" ||
+      doc === "Brochure of Current Project";
+
+    return (
+      <tr key={index}>
+        <td>
+          {index + 1}. {doc}
+          {isRequired && (
+            <span className="quartdocup-required-star">*</span>
+          )}
+        </td>
+
+        <td>
           <input
             type="file"
-            className="form-control"
-            name="ca_certificate"
-            onChange={handleFileChange}
+            className="quartdocup-file-input"
+            onChange={(e) => handleFileChange(e, doc)}
           />
-          {documents.ca_certificate && (
-            <small>
-              Selected: {documents.ca_certificate.name}
-            </small>
-          )}
+        </td>
+
+        <td className="quartdocup-uploaded-cell">
+          {documents[doc]?.name || ""}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+</table>
+
+          {/* ================= ADDITIONAL DOCUMENTS ================= */}
+          {/* ================= ADDITIONAL DOCUMENTS ================= */}
+
+<div className="quartdocup-additional-section">
+
+  <h5 className="quartdocup-section-title">
+    Additional Documents
+  </h5>
+
+  <div className="quartdocup-section-underline"></div>
+
+  <div className="quartdocup-additional-row">
+
+    {/* Document Description */}
+    <div className="quartdocup-field">
+      <label>
+        Document Description
+        <span className="quartdocup-required-star">*</span>
+      </label>
+
+      <input
+        type="text"
+        className="quartdocup-input"
+        placeholder="Document Description"
+        value={additionalDoc.description}
+        onChange={(e) =>
+          setAdditionalDoc({
+            ...additionalDoc,
+            description: e.target.value,
+          })
+        }
+      />
+    </div>
+
+    {/* Upload */}
+    <div className="quartdocup-field">
+      <label>
+        Upload Document
+        <span className="quartdocup-required-star">*</span>
+      </label>
+
+      <input
+        type="file"
+        className="quartdocup-input"
+        onChange={(e) =>
+          setAdditionalDoc({
+            ...additionalDoc,
+            file: e.target.files[0],
+          })
+        }
+      />
+    </div>
+
+    {/* Add Button */}
+    <div className="quartdocup-add-btn-wrapper">
+      <button
+        className="quartdocup-primary-btn"
+        onClick={handleAddAdditional}
+      >
+        Add
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+          {/* BUTTONS */}
+          <div className="d-flex justify-content-end mt-4">
+            <button className="btn btn-secondary me-3" onClick={handleSave}>
+              Save
+            </button>
+            <button className="btn btn-primary" onClick={handleFinalSubmit}>
+              Final Submit
+            </button>
+          </div>
+          </div>
         </div>
-
-        {/* Engineer Certificate */}
-        <div className="form-group">
-          <label className="form-label">
-            Upload Engineer Certificate (PDF/Image)
-          </label>
-          <input
-            type="file"
-            className="form-control"
-            name="engineer_certificate"
-            onChange={handleFileChange}
-          />
-          {documents.engineer_certificate && (
-            <small>
-              Selected: {documents.engineer_certificate.name}
-            </small>
-          )}
-        </div>
-
-        {/* Buttons */}
-        <div className="button-group">
-          <button
-            className="btn-draft"
-            onClick={() => handleSubmit("DRAFT")}
-          >
-            Save Draft
-          </button>
-
-          <button
-            className="btn-submit"
-            onClick={() => handleSubmit("SUBMITTED")}
-          >
-            Final Submit
-          </button>
-        </div>
-
-      </div>
+     
     </div>
   );
 };

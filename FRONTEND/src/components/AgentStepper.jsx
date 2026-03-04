@@ -28,10 +28,9 @@ const AgentStepper = ({ currentStep }) => {
             className={`common-step 
               ${isCompleted ? "completed" : ""} 
               ${isActive ? "active" : ""}`}
-            onClick={() => {
-  // Allow only current and completed steps
-  if (i <= currentStep) {
-    navigate(step.path, { state: location.state });
+           onClick={() => {
+  if (i < currentStep) {
+    navigate(steps[i].path);
   }
 }}
             style={{

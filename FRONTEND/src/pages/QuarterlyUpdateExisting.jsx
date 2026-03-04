@@ -83,9 +83,10 @@ const QuarterlyUpdateExisting = () => {
       }
 
       sessionStorage.setItem("quarterlyLoginResponse", JSON.stringify(data));
+      sessionStorage.setItem("panNumber", pan);
 
       // 🔹 Changed only navigation route name
-      navigate("/quarterlyexistingtable", {
+      navigate("/quarterlyupdate", {
         state: {
           panNumber: pan
         },

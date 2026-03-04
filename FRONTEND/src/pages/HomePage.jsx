@@ -366,7 +366,7 @@ function Services() {
 ];
 
   const promoterServices = [
-    { title: "Apply for Quarterly Update", icon: FaSyncAlt },
+    { title: "Apply for Quarterly Update", icon: FaSyncAlt,path:"/quarterlyupdateexisting" },
     { title: "Apply for Project Extension", icon: FaArrowRight, path: "/otplogin" },
     { title: "Apply for Change Request", icon: FaEdit },
     { title: "Closure", icon: FaLock },

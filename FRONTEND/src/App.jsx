@@ -112,6 +112,8 @@ import OtherThanIndividualUploadDocument from "./pages/other-than-individual_Upl
 import QuarterlyUpdate from "./pages/QuarterlyUpdate";
 import QuarterlyUpdateExisting from "./pages/QuarterlyUpdateExisting";
 import QuarterlyExistingtable from "./pages/QuarterlyExistingtable";
+import { AgentFormProvider } from "./pages/AgentFormContext";
+import ProjectBlockVillaDetails from "./pages/ProjectBlockVillaDetails";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -124,6 +126,7 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
+     <AgentFormProvider>
     {/* ✅ Popup should be OUTSIDE Routes */}
       {showPopup && <AnnouncementPopup onClose={() => setShowPopup(false)} />}
       <Layout>
@@ -235,8 +238,10 @@ function App() {
           <Route path="/quarterlyupdateexisting" element={<QuarterlyUpdateExisting />} />
           <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
           <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
+          <Route path="/project-blockvilla-details" element={<ProjectBlockVillaDetails />} />
+          
         </Routes>
-      </Layout>
+      </Layout></AgentFormProvider>
     </BrowserRouter>
   );
 }

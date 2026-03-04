@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 import AgentStepper from "../components/AgentStepper";
-
+import { useAgentForm } from "./AgentFormContext";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,11 +48,14 @@ function isValidDIN(num) {
 }
 
 // ===== JPG IMAGE VALIDATION =====
-function isJPGImage(file) {
+function isImageFile(file) {
   return (
     file &&
-    (file.type === "image/jpeg" ||
-     file.type === "image/jpg")
+    (
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg" ||
+      file.type === "image/png"
+    )
   );
 }
 // ===== PDF VALIDATION =====
@@ -184,27 +187,28 @@ trustRegDate: "",
     signMobile: "",
     signEmail: "",
   });
-  useEffect(() => {
-  if (!passedPan) return;
+//   useEffect(() => {
+//   if (!passedPan) return;
 
-  const savedForm = localStorage.getItem(`agentForm_${passedPan}`);
+//   const savedForm = localStorage.getItem(`agentForm_${passedPan}`);
 
-  if (savedForm) {
-    setForm(JSON.parse(savedForm));
-  } else {
-    setForm((prev) => ({ ...prev, pan: passedPan }));
-  }
-}, [passedPan]);
-useEffect(() => {
-  if (!form.pan) return;
+//   if (savedForm) {
+//     setForm(JSON.parse(savedForm));
+//   } else {
+//     setForm((prev) => ({ ...prev, pan: passedPan }));
+//   }
+// }, [passedPan]);
+// useEffect(() => {
+//   if (!form.pan) return;
 
-  localStorage.setItem(
-    `agentForm_${form.pan}`,
-    JSON.stringify(form)
-  );
-}, [form]);
+//   localStorage.setItem(
+//     `agentForm_${form.pan}`,
+//     JSON.stringify(form)
+//   );
+// }, [form]);
 
   // ===== Projects (Past 5 Years) =====
+  const { formData, setFormData } = useAgentForm();
 const [hasProjects, setHasProjects] = useState("");
 const [projectName, setProjectName] = useState("");
 const [projects, setProjects] = useState([]);
@@ -350,8 +354,8 @@ if (trusteeType === "Indian") {
     !d.name?.trim() ||
     !d.email?.trim() ||
     !d.mobile?.trim() ||
-    !trusteeStateId ||
-    !trusteeDistrictId ||
+    !d.state?.trim() ||        // ✅ changed here
+    !d.district?.trim() ||     // ✅ changed here
     !d.address1?.trim() ||
     !d.pincode?.trim() ||
     !d.pan?.trim() ||
@@ -405,8 +409,6 @@ if (trusteeType === "Indian" && !isValidAadhaar(trusteeForm.aadhaar)) {
   alert("Invalid Trustee Aadhaar");
   return;
 }
-
-
   const newTrustee = {
     id: Date.now(),
 
@@ -1639,8 +1641,8 @@ const allPhotos = [
 ];
 
 for (let photo of allPhotos) {
-  if (photo && !isJPGImage(photo)) {
-    alert("All photos must be JPG format");
+  if (photo && !isImageFile(photo)) {
+    alert("All photos must be JPG, JPEG or PNG format");
     return;
   }
 }
@@ -1803,17 +1805,150 @@ const validateFiles = () => {
 
 const handleAddPartnerFromTrustee = () => {
 
-  const {
-    name,
-    email,
-    mobile,
-    address1,
-  } = trusteeForm;
+const d = trusteeForm;
 
-  if (!name || !email || !mobile || !address1) {
-    alert("Please fill all Partner details");
+// ===== TYPE BASED VALIDATION =====
+
+if (trusteeType === "Indian") {
+
+  if (!d.designation?.trim()) {
+    alert("Please enter Designation");
     return;
   }
+
+  if (!d.name?.trim()) {
+    alert("Please enter Name");
+    return;
+  }
+
+  if (!d.email?.trim()) {
+    alert("Please enter Email");
+    return;
+  }
+
+  if (!isValidEmail(d.email)) {
+    alert("Enter valid Partner Email");
+    return;
+  }
+
+  if (!d.mobile?.trim()) {
+    alert("Please enter Mobile Number");
+    return;
+  }
+
+  if (!isValidMobile(d.mobile)) {
+    alert("Partner mobile must start with 6-9 and be 10 digits");
+    return;
+  }
+
+  if (!d.state) {
+    alert("Please select State");
+    return;
+  }
+
+  if (!d.district) {
+    alert("Please select District");
+    return;
+  }
+
+  if (!d.address1?.trim()) {
+    alert("Please enter Address Line 1");
+    return;
+  }
+
+ if (!d.pincode?.trim()) {
+  alert("Please enter Pincode");
+  return;
+}
+
+if (!/^5[0-9]{5}$/.test(d.pincode.trim())) {
+  alert("Pincode must start with 5 and contain exactly 6 digits");
+  return;
+}
+
+  if (!d.pan?.trim()) {
+    alert("Please enter PAN Number");
+    return;
+  }
+
+  if (!isValidPAN(d.pan)) {
+    alert("Invalid PAN format (ABCDE1234F)");
+    return;
+  }
+
+  if (!d.panDoc) {
+    alert("Please upload PAN Document");
+    return;
+  }
+
+  if (!d.aadhaar?.trim()) {
+    alert("Please enter Aadhaar Number");
+    return;
+  }
+
+  if (!isValidAadhaar(d.aadhaar)) {
+    alert("Invalid Aadhaar (12 digits required)");
+    return;
+  }
+
+  if (!d.aadhaarDoc) {
+    alert("Please upload Aadhaar Document");
+    return;
+  }
+
+  if (!d.photo) {
+    alert("Please upload Photograph");
+    return;
+  }
+
+}
+
+else if (trusteeType === "Foreigner") {
+
+  if (!d.designation?.trim()) {
+    alert("Please enter Designation");
+    return;
+  }
+
+  if (!d.name?.trim()) {
+    alert("Please enter Name");
+    return;
+  }
+
+  if (!d.email?.trim()) {
+    alert("Please enter Email");
+    return;
+  }
+
+  if (!isValidEmail(d.email)) {
+    alert("Enter valid Partner Email");
+    return;
+  }
+
+  if (!d.mobile?.trim()) {
+    alert("Please enter Mobile Number");
+    return;
+  }
+if (!isValidMobile(d.mobile)) {
+  alert("Mobile must start with 6-9 and be 10 digits");
+  return;
+}
+  if (!d.address1?.trim()) {
+    alert("Please enter Address Line 1");
+    return;
+  }
+
+  if (!d.photo) {
+    alert("Please upload Photograph");
+    return;
+  }
+
+  if (!d.addressProof) {
+    alert("Please upload Address Proof");
+    return;
+  }
+
+}
 
   const newPartner = {
     id: Date.now(),
@@ -1891,13 +2026,15 @@ const handleAddForeignerDirector = () => {
   !mobile ||
   !email ||
   !address1 ||
+  !photo ||              // ✅ ADD THIS
+  !addressProof ||       // ✅ ADD THIS
   (
     form.orgType !==
       "Government Department/Local Bodies/Government Bodies" &&
     !din
   )
 ) {
-  alert("Please fill all mandatory Foreigner Director fields");
+  alert("Please fill all mandatory Foreigner Director fields including uploads");
   return;
 }
 
@@ -1907,6 +2044,11 @@ const handleAddForeignerDirector = () => {
     alert("Mobile must start with 6-9 and be 10 digits");
     return;
   }
+  // ✅ Email validation
+if (!isValidEmail(email)) {
+  alert("Please enter valid Email ID (example: test@gmail.com)");
+  return;
+}
 
 
  // DIN only if not Government
@@ -1972,15 +2114,14 @@ if (
 };
 
 // ===== COMMON JPG PHOTO HANDLER =====
-const handleJPGPhoto = (e, setter, field) => {
+const handleImageFile = (e, setter, field) => {
   const file = e.target.files[0];
 
   if (!file) return;
 
-  if (!isJPGImage(file)) {
-    alert("Only JPG / JPEG images are allowed");
-
-    e.target.value = ""; // reset input
+  if (!isImageFile(file)) {
+    alert("Only JPG, JPEG or PNG images are allowed");
+    e.target.value = "";
     return;
   }
 
@@ -2237,14 +2378,12 @@ const handlePDFFile = (e, setter, field) => {
       </label>
 
       <input
-        type="file"
-        onChange={(e) =>
-          setFiles({
-            ...files,
-            trustDeed: e.target.files[0],
-          })
-        }
-      />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "trustDeed")
+  }
+/>
     </div>
   </>
 )}
@@ -2411,14 +2550,12 @@ const handlePDFFile = (e, setter, field) => {
     </label>
 
     <input
-      type="file"
-      onChange={(e) =>
-        setFiles({
-          ...files,
-          memorandumDoc: e.target.files[0],
-        })
-      }
-    />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "memorandumDoc")
+  }
+/>
   </div>
 )}
 {/* ===== PARTNERSHIP / LLP ===== */}
@@ -2444,14 +2581,12 @@ const handlePDFFile = (e, setter, field) => {
     </label>
 
     <input
-      type="file"
-      onChange={(e) =>
-        setFiles({
-          ...files,
-          partnershipDeed: e.target.files[0],
-        })
-      }
-    />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "partnershipDeed")
+  }
+/>
   </div>
   
       
@@ -2485,14 +2620,12 @@ const handlePDFFile = (e, setter, field) => {
       </label>
 
       <input
-        type="file"
-        onChange={(e) =>
-          setFiles({
-            ...files,
-            partnershipDeed: e.target.files[0],
-          })
-        }
-      />
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setFiles, "partnershipDeed")
+  }
+/>
     </div>
   </>
 )}
@@ -2923,9 +3056,9 @@ onChange={() => {
       <label>Photograph <span className="yagentdetails-required">*</span></label>
      <input
   type="file"
-  accept="image/jpeg"
+  accept="image/jpeg,image/jpg,image/png"
   onChange={(e) =>
-    handleJPGPhoto(e, setDirectorForm, "photo")
+    handleImageFile(e, setDirectorForm, "photo")
   }
 />
 
@@ -2935,9 +3068,10 @@ onChange={() => {
       <label>Address Proof <span className="yagentdetails-required"></span></label>
       <input
   type="file"
-  onChange={(e) =>
-    setDirectorForm({ ...directorForm, addressProof: e.target.files[0] })
-  }
+  accept="application/pdf"
+onChange={(e) =>
+  handlePDFFile(e, setDirectorForm, "addressProof")
+}
 />
     </div>
 
@@ -3003,11 +3137,45 @@ if (
 }
 
  
+if (!mobile?.trim()) {
+  alert("Please enter Mobile Number");
+  return;
+}
 
-  if (!isValidEmail(email)) {
-    alert("Enter valid Email ID");
-    return;
-  }
+if (!isValidMobile(mobile)) {
+  alert("Mobile must start with 6-9 and be 10 digits");
+  return;
+}
+
+ // 1️⃣ Check empty
+if (!email?.trim()) {
+  alert("Please enter Email ID");
+  return;
+}
+
+// 2️⃣ Then check format
+if (!isValidEmail(email)) {
+  alert("Please enter valid Email ID (example: test@gmail.com)");
+  return;
+}
+  if (!pincode?.trim()) {
+  alert("Please enter Pincode");
+  return;
+}
+
+if (!isValidPincode(pincode)) {
+  alert("Pincode must start with 5 and contain exactly 6 digits");
+  return;
+}
+if (!pan?.trim()) {
+  alert("Please enter PAN Number");
+  return;
+}
+
+if (!isValidPAN(pan)) {
+  alert("Invalid PAN format (ABCDE1234F)");
+  return;
+}
 
   if (!isValidAadhaar(aadhaar)) {
     alert("Aadhaar must be 12 digits");
@@ -3169,9 +3337,9 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
         <label>Upload Photograph <span className="yagentdetails-required">*</span></label>
         <input
   type="file"
-  accept="image/jpeg"
+  accept="image/jpeg,image/jpg,image/png"
   onChange={(e) =>
-    handleJPGPhoto(e, setForeignerDirector, "photo")
+    handleImageFile(e, setForeignerDirector, "photo")
   }
 />
 
@@ -3188,16 +3356,10 @@ district: directorDistricts.find(d => d.id == directorDistrictId)?.name || "",
         <label>Upload Address Proof <span className="yagentdetails-required">*</span></label>
         <input
   type="file"
-  onChange={(e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    setForeignerDirector({
-      ...foreignerDirector,
-      addressProof: file,
-    });
-  }}
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setForeignerDirector, "addressProof")
+  }
 />
 
 {/* Show file name */}
@@ -3689,9 +3851,10 @@ setTrusteeForm({
 </label>
     <input
       type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, panDoc: e.target.files[0] })
-      }
+      accept="application/pdf"
+onChange={(e) =>
+  handlePDFFile(e, setTrusteeForm, "panDoc")
+}
     />
   </div>
 
@@ -3717,11 +3880,12 @@ setTrusteeForm({
   Upload Aadhaar Card <span className="required">*</span>
 </label>
     <input
-      type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, aadhaarDoc: e.target.files[0] })
-      }
-    />
+    type="file"
+    accept="application/pdf"
+    onChange={(e) =>
+      handlePDFFile(e, setTrusteeForm, "aadhaarDoc")  // ✅ CORRECT
+    }
+  />
   </div>
 
   <div>
@@ -3730,9 +3894,9 @@ setTrusteeForm({
 </label>
     <input
   type="file"
-  accept="image/jpeg"
+  accept="image/jpeg,image/jpg,image/png"
   onChange={(e) =>
-    handleJPGPhoto(e, setTrusteeForm, "photo")
+    handleImageFile(e, setTrusteeForm, "photo")
   }
 />
 
@@ -3742,9 +3906,10 @@ setTrusteeForm({
     <label>Address Proof </label>
     <input
       type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, addressProof: e.target.files[0] })
-      }
+      accept="application/pdf"
+onChange={(e) =>
+  handlePDFFile(e, setTrusteeForm, "addressProof")
+}
     />
   </div>
 </div>
@@ -3866,9 +4031,9 @@ setTrusteeForm({
   Upload Photograph <span className="required">*</span>
 </label>      <input
   type="file"
-  accept="image/jpeg"
+  accept="image/jpeg,image/jpg,image/png"
   onChange={(e) =>
-    handleJPGPhoto(e, setTrusteeForm, "photo")
+   handleImageFile(e, setTrusteeForm, "photo")
   }
 />
 
@@ -3877,12 +4042,14 @@ setTrusteeForm({
   <div>
 <label>
   Upload Address Proof <span className="required">*</span>
-</label>      <input
-      type="file"
-      onChange={(e) =>
-        setTrusteeForm({ ...trusteeForm, addressProof: e.target.files[0] })
-      }
-    />
+</label> 
+<input
+  type="file"
+  accept="application/pdf"
+  onChange={(e) =>
+    handlePDFFile(e, setTrusteeForm, "addressProof")
+  }
+/>
   </div>
 
 </div>
@@ -4194,9 +4361,9 @@ setTrusteeForm({
             <label>Photo <span className="yagentdetails-required">*</span></label>
            <input
   type="file"
-  accept="image/jpeg"
+  accept="image/jpeg,image/jpg,image/png"
   onChange={(e) =>
-    handleJPGPhoto(e, setFiles, "authPhoto")
+    handleImageFile(e, setFiles, "authPhoto")
   }
 />
 

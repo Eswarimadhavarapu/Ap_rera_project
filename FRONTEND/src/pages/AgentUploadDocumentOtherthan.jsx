@@ -28,8 +28,18 @@ const {
 
   /* ✅ FIXED FUNCTION NAME */
   const handleFileChange = (e) => {
-    setFiles({ ...files, [e.target.name]: e.target.files[0] });
-  };
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  if (file.type !== "application/pdf") {
+    setShowError("Only PDF documents are allowed");
+    e.target.value = "";
+    return;
+  }
+
+  setFiles({ ...files, [e.target.name]: file });
+};
 
 const handleSubmit = async () => {
   setShowError("");
@@ -50,11 +60,9 @@ const handleSubmit = async () => {
   }
 
   if (!agreed) {
-    setShowError("Please Check Self Declaration");
-    return;
-  }
-
- 
+  alert("Please check the Self Declaration");
+  return;
+}
 
   try {
     const formData = new FormData();
@@ -179,6 +187,7 @@ const handleSubmit = async () => {
                 <input
                   type="file"
                   name="year1"
+                  accept="application/pdf"
                   onChange={handleFileChange}
                 />
               </td>
@@ -200,6 +209,7 @@ const handleSubmit = async () => {
                 <input
                   type="file"
                   name="year2"
+                  accept="application/pdf"
                   onChange={handleFileChange}
                 />
               </td>
@@ -221,6 +231,7 @@ onClick={() => downloadFile(files.year2)}
                 <input
                   type="file"
                   name="year3"
+                  accept="application/pdf"
                   onChange={handleFileChange}
                 />
               </td>

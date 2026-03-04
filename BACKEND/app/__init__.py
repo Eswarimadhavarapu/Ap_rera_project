@@ -116,6 +116,9 @@ def create_app():
     from app.controllers.promoter_other_t_indv_controller import promoter_other_t_indv_bp
     from app.controllers.org_member_other_t_indv_controller import org_member_other_t_indv_bp
 
+    from app.controllers.quarterly_controller import quarterly_bp
+    app.register_blueprint(quarterly_bp, url_prefix="/api")
+
     app.register_blueprint(promoter_other_t_indv_bp)
     app.register_blueprint(org_member_other_t_indv_bp)
     app.register_blueprint(rera_other_t_indv_bp)
