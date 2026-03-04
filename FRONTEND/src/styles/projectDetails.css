@@ -1,4 +1,55 @@
 /* =====================================================
+   SUCCESS / ALERT MESSAGES (FETCH + UPDATE)
+===================================================== */
+
+.alert {
+  width: 100%;
+  padding: 14px 18px;
+  margin: 10px 0 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  animation: fadeSlideDown 0.3s ease;
+}
+
+/* GREEN SUCCESS BANNER (LIKE GOVERNMENT PORTAL) */
+.alert-success {
+  background-color: #e8f5e9;
+  border-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+/* OPTIONAL ERROR STYLE (future ready) */
+.alert-error {
+  background-color: #fdecea;
+  border-color: #f5c6cb;
+  color: #c62828;
+}
+
+/* SMALL LEFT ICON EFFECT */
+.alert-success::before {
+  content: "✔";
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* SMOOTH ENTRY ANIMATION */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+/* =====================================================
    RESET & BASE
 ===================================================== */
 * {
@@ -415,4 +466,52 @@ a:hover {
     width: 100%;
     text-align: center;
   }
+}
+
+
+/* =====================================================
+   OTHER THAN INDIVIDUAL AUTHORIZED SIGNATORY SECTION
+===================================================== */
+
+/* AUTHORIZED SIGNATORY HEADING INSIDE BOX */
+.other-signatory-section .subheading {
+  font-size: 22px;
+  font-weight: 600;
+  color: #00838f;     /* GREEN COLOR */
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.other-signatory-section .subheading::after {
+  content: "";
+  display: block;
+  width: 160px;
+  height: 3px;
+  background: #1e88e5;
+  margin-top: 6px;
+}
+
+
+.other-signatory-section {
+  background: #ffffff !important;
+  border: 1px solid #dcdcdc;
+  padding: 14px 12px;
+  margin-top: 12px;
+  border-radius: 6px;
+}
+
+.other-signatory-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.other-signatory-title::after {
+  content: "";
+  display: block;
+  width: 180px;
+  height: 3px;
+  background: #1e88e5;
+  margin-top: 6px;
 }

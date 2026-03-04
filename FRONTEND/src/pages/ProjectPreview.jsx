@@ -5,7 +5,6 @@ import ProjectWizard from "../components/ProjectWizard";
 import "../styles/ProjectPreview.css";
 import "../styles/aprera-print-override.css";
 import axios from "axios";
-import ExistingProjectWizard from "../components/ExistingProjectWizard";
 
 
 // ✅ HELPERS (ADD HERE)
@@ -85,10 +84,10 @@ const ProjectPreview = () => {
     const [externalDevWork, setExternalDevWork] = useState({});
 
   const panNumber =
-    location.state?.panNumber || sessionStorage.getItem("panNumber");
+    location.state?.panNumber || sessionStorage.getItem("panNumber")||"LOVEP9898N";
   const applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber");  
+    sessionStorage.getItem("applicationNumber")||"100126657319";  
 
   useEffect(() => {
   if (!applicationNumber || !panNumber) {
@@ -192,25 +191,34 @@ setDevDetails(response?.data || null);
 ];
 
   const project = allData?.project_details || {};
+  console.log("🔥 PROJECT DETAILS 👉", project);
 
   // 🔥 FIX: Normalize development_details (DB → UI)
 const rawDevDetails = devDetails?.development_details;
 
-
 let normalizedDevDetails = {};
 try {
-  if (typeof rawDevDetails === "string") {
-    normalizedDevDetails = JSON.parse(rawDevDetails);
-  } else {
-    normalizedDevDetails = rawDevDetails || {};
-  }
-} catch {
+  normalizedDevDetails =
+    typeof rawDevDetails === "string"
+      ? JSON.parse(rawDevDetails)
+      : rawDevDetails || {};
+} catch (e) {
+  console.log("❌ JSON parse failed:", e);
   normalizedDevDetails = {};
 }
 
+console.log("🔥 DEV DETAILS FROM DB 👉", normalizedDevDetails);
+
 // ✅ CORRECT KEY FROM DB
-const apartmentsFlats = normalizedDevDetails?.Apartments_Flats || {};
-const apartmentRows = apartmentsFlats?.rows || [];
+const apartmentsFlats =
+  normalizedDevDetails?.Apartments_Flats ||
+  normalizedDevDetails?.apartments_flats ||
+  normalizedDevDetails?.apartments ||
+  {};
+const apartmentRows =
+  apartmentsFlats?.rows ||
+  normalizedDevDetails?.rows ||
+  [];
 
 
 console.log("✅ normalizedDevDetails:", normalizedDevDetails);
@@ -281,9 +289,21 @@ const fixedProject = {
   village: project["Village"] || "N/A",
   pincode: project["Pincode"] || "N/A",
   // ADD THESE:
-  planApprovingAuthority: project["Plan Approving Authority"] || "N/A",
-  apcdraName: project["APCRDA Name"] || "N/A",
-  addressProof: project["Address Proof"] || "N/A",
+ planApprovingAuthority:
+  project["Plan Approving Authority"] ||
+  project["Plan approving authority"] ||
+  project.planApprovingAuthority ||
+  "N/A",
+
+apcdraName:
+  project["APCRDA Name"] ||
+  project.apcrdaName ||
+  "N/A",
+
+addressProof:
+  project["Address Proof"] ||
+  project.addressProof ||
+  "N/A",
   
   // Local Address
   localAddress1: project["Local Address Line1"] || "N/A",
@@ -453,7 +473,7 @@ console.log("📄 Document pages:", documentPages.length);
           <span>Registration / Project Registration / Preview</span>
         </div>
 
-        <ExistingProjectWizard currentStep={6} />
+        <ProjectWizard currentStep={6} />
 
         <div className="preview-actions">
           <button onClick={handleDownloadPDF} className="btn btn-download">
@@ -965,19 +985,18 @@ console.log("📄 Document pages:", documentPages.length);
           <h3 className="subsection-title">Plan Approving Authority</h3>
           <table className="data-table">
             <tbody>
-              <tr>
-                <td className="label-cell">Plan Approving Authority</td>
-                <td className="value-cell">
-                  {project.approvingAuthority || "N/A"}
-                </td>
-                <td className="label-cell">APCRDA Name</td>
-                <td className="value-cell">
-                  {project.apcrdaName || "N/A"}
-                </td>
-                <tr>
+<tr>
+  <td className="label-cell">Plan Approving Authority</td>
+  <td className="value-cell">{fixedProject.planApprovingAuthority || "N/A"}</td>
+  <td className="label-cell">APCRDA Name</td>
+  <td className="value-cell">{fixedProject.apcrdaName || "N/A"}</td>
+</tr>
+
+<tr>
   <td className="label-cell">Survey No.</td>
   <td className="value-cell">{fixedProject.surveyNo}</td>
 </tr>
+
 <tr>
   <td className="label-cell">Address Proof</td>
   <td className="value-cell">
@@ -985,30 +1004,16 @@ console.log("📄 Document pages:", documentPages.length);
       <a href={fixedProject.addressProof} target="_blank" rel="noreferrer">
         Test word.pdf
       </a>
-    ) : "Test word.pdf"}
+    ) : "N/A"}
   </td>
 </tr>
-              </tr>
-            </tbody>
+</tbody>
           </table>
         </section>
 
         {/* Development Details - COMPLETE EXAMPLE */}
 <section className="section page-break">
   <h2 className="section-title">Development Details</h2>
-  
-  {/* Building Type Summary */}
-  <table className="data-table">
-    <tbody>
-      <tr>
-        <td className="label-cell">Building Type</td>
-        <td className="value-cell">
-  {buildingTypeText}
-</td>
-
-      </tr>
-    </tbody>
-  </table>
 
   {/* Excel Data Display */}
   <div style={{ marginTop: '30px' }}>
@@ -1051,19 +1056,22 @@ console.log("📄 Document pages:", documentPages.length);
       </tr>
 
       {rows.map((row, idx) => (
-        <tr key={`${block}-${idx}`}>
-          <td>{idx + 1}</td>
-          <td>{row.name_of_the_block}</td>
-          <td>{row.floor_number}</td>
-          <td>{row.flat_number}</td>
-          <td>{row.type_of_flat_1bhk_2bhk_3bhk_others}</td>
-          <td>{row.carpet_area_of_each_unit_sqm}</td>
-          <td>{row.area_of_exclusive_balcony_verandah_sqm}</td>
-          <td>{row.share_of__common_areas_sqm}</td>
-          <td>{row.parking_area__if_any_sqm}</td>
-          <td>{row.total_area_of_each_flat_unit_sqm}</td>
-        </tr>
-      ))}
+        
+  <tr key={`${block}-${idx}`}>
+    <td>{idx + 1}</td>
+
+    {/* 🔥 TRY MULTIPLE POSSIBLE KEYS */}
+    <td>{row["Name of the Block"] || "—"}</td>
+<td>{row["Floor Number"] || "—"}</td>
+<td>{row["Flat Number"] || "—"}</td>
+<td>{row["Type of flat (1BHK/2BHK/3BHK/Others)"] || "—"}</td>
+<td>{row["Carpet Area of each unit (Sq.m)"] || "—"}</td>
+<td>{row["Area of exclusive balcony/verandah (Sq.m)"] || "—"}</td>
+<td>{row["Share of Common Areas (Sq.m)"] || "—"}</td>
+<td>{row["Parking Area if any (Sq.m)"] || "—"}</td>
+<td>{row["Total area of each Flat/unit (Sq.m)"] || "—"}</td>
+  </tr>
+))}
     </React.Fragment>
   ))}
 </tbody>

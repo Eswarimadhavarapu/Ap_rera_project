@@ -7,7 +7,7 @@ import json
 
 from app.models.project_upload_documents import ProjectRegistrationDocument
 from app.models.othertheninduvidual_project_registration_model import \
-    get_othertheninduvidual_project_registration
+    fetch_othertheninduvidual_project_registration
 
 from app.models.development_details import DevelopmentDetailsModel
 from app.models.application_associate import ApplicationAssociate
@@ -261,7 +261,7 @@ def build_project_preview_data(raw):
             "project_upload_documents": [],
         }
 
-    registration = get_othertheninduvidual_project_registration(
+    registration = fetch_othertheninduvidual_project_registration(
     application_id,
     pan_number)
 

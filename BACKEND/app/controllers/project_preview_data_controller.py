@@ -292,16 +292,18 @@ def build_project_preview_data(raw):
             ag = AgentModel.query.get(a.associate_id)
             if ag:
                 associate_details["agents"].append({
-                    "name": ag.agent_name,
-                    "address": ag.agent_address,
-                    "mobile": ag.mobile_number,
-                    "registration_number": ag.rera_registration_no,
-                })
+    "id": ag.id,   # 🔥 ADD THIS LINE
+    "name": ag.agent_name,
+    "address": ag.agent_address,
+    "mobile": ag.mobile_number,
+    "registration_number": ag.rera_registration_no,
+})
 
         elif atype == "architect":
             arch = Architect.query.get(a.associate_id)
             if arch:
                 associate_details["architects"].append({
+                    "id": arch.id,   # 🔥 ADD THIS
                     "name": arch.architect_name,
                     "email": arch.email_id,
                     "address": arch.address_line1,
@@ -335,6 +337,7 @@ def build_project_preview_data(raw):
             acc = Accountant.query.get(a.associate_id)
             if acc:
                 associate_details["accountants"].append({
+                    "id": acc.id,   # 🔥 ADD THIS
                     "name": acc.accountant_name,
                     "email": acc.email_id,
                     "address": acc.address_line1,
@@ -351,6 +354,7 @@ def build_project_preview_data(raw):
             pe = ProjectEngineer.query.get(a.associate_id)
             if pe:
                 associate_details["project_engineers"].append({
+                    "id": pe.id,   # 🔥 ADD THIS
                     "engineer_name": pe.engineer_name,
                     "email_id": pe.email_id,
                     "address_line1": pe.address_line1,
@@ -366,6 +370,7 @@ def build_project_preview_data(raw):
             con = Contractor.query.get(a.associate_id)
             if con:
                 associate_details["contractors"].append({
+                    "id": con.id,   # 🔥 ADD THIS
                     "nature_of_work": con.nature_of_work,
                     "contractor_name": con.contractor_name,
                     "email_id": con.email_id,
@@ -413,10 +418,19 @@ def build_project_preview_data(raw):
 
         "Pincode": registration.get("project_pincode", "N/A"),
         # ADD THESE NEW FIELDS:
-        "Plan Approving Authority": registration.get("plan_approving_authority") if registration else "N/A",
-        "APCRDA Name": registration.get("apcrda_name") if registration else "N/A",
-        "Survey No": registration.get("survey_no") if registration else "N/A",
-        "Address Proof": registration.get("address_proof_doc") if registration else "N/A",
+        # ===============================
+# PLAN APPROVING AUTHORITY FIELDS
+# ===============================
+
+"Plan Approving Authority": registration.get("plan_approving_authority", "N/A") if registration else "N/A",
+
+# Column not available in DB
+"APCRDA Name": "N/A",
+
+"Survey No": registration.get("survey_no", "N/A") if registration else "N/A",
+
+# 🔥 Correct DB column name
+"Address Proof": registration.get("address_proof_path", "N/A") if registration else "N/A",
         
         # Local Address Fields
         "Local Address Line1": registration.get("local_address1", "N/A"),
@@ -565,6 +579,7 @@ def build_project_preview_data(raw):
             for k, v in external_work.items()
             if int(v) > 0
         ],
+        
     }
 
     # -----------------------------

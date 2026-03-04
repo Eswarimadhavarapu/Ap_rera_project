@@ -1,1863 +1,762 @@
-// import React, { useState, useEffect, useRef } from 'react';
-// import { useNavigate, useParams } from "react-router-dom";
-// import '../styles/UploadDocumentsWithApi.css';
-// import ProjectWizard from "../components/ProjectWizard";
-
-// const UploadDocumentsWithApi = () => {
-//   const navigate = useNavigate();
-//   const { id } = useParams();
-// const APPLICATION_NUMBER = id;
-
-// const API_BASE = "http://localhost:8080";
-// const API_URL = `${API_BASE}/api/project/details/${APPLICATION_NUMBER}`;
-
-// const [dataLoaded, setDataLoaded] = useState(false);
-
-//   const [documents, setDocuments] = useState([
-//     {
-//       id: 1,
-//       type: "Copies of the registered ownership documents / Copies of the Pattadhaar pass books issued by the Revenue department along with the link documents and authorization letter given by the Land Owner",
-//       note: "* (refer Form P20 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 2,
-//       type: "Copies of the combined field sketches showing the Survey Number boundaries, Subdivision boundaries, and Layout boundaries duly marking the Geo-Coordinates at every corner of the site.",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 3,
-//       type: "Detailed site plan showing the measurements as on ground including diagonals along with Geo-Coordinates (Latitude and Longitude) at end points of the project site along with incorporation of same on Satellite Imagery.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 4,
-//       type: "Copy of the registered development agreement between the Owner of the land and the Promoter / Authorisation letter given by the Land owner to undertake the construction of the building by the promoter.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 5,
-//       type: "Land Title search Report from an Advocate (include Advocate Enrolment Number) having experience of atleast ten years in land related matters.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 6,
-//       type: "Latest (by 30 days) Encumbrance certificate (for entire period of document) issued by the Registration and Stamps department.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 7,
-//       type: "Copy of the plan and proceedings issued by the competent Authority for approval of plans(TDR Bonds,if any).",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 8,
-//       type: "Approved plan / list of amenities proposed in the site",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 9,
-//       type: "NOC's issued by Authority (where applicable-viz., Airport Authority, Fire Department, Environmental Clearance, etc.)",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 10,
-//       type: "Detailed technical specifications of the construction if the buildings and facilities proposed in the project including brand details, specifications of infrastructure and details of fixtures and fittings",
-//       note: "* (refer Form P18 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 11,
-//       type: "Topo Plan drawn to a scale with nearby land marks of the site.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 12,
-//       type: "Licenses/Enrolment form of Civil Contractors, or turnkey contractor, or EPC Contractors of ther project (if any)",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 13,
-//       type: "Licenses/Enrolment form of Structural Engineer of the project (if there is any overhead tank or major structure proposed in the layout)",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 14,
-//       type: "Licenses/Enrolment form of Architect or firm or company",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 15,
-//       type: "Licenses/Enrolment form of Engineer or firm or company (If any)",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 16,
-//       type: "Licenses/Enrolment form of Chartered Accountant or firm or company",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 17,
-//       type: "Detailed estimate of the expenditure for construction of the building",
-//       note: "* (refer Form P16 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 18,
-//       type: "Statement of source of funds for construction of building",
-//       note: "* (refer Form P9 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 19,
-//       type: "Details of financial agreement made with any bank or other financial institution recognised by the Reserve Bank of India and of legal safeguards taken, if any, for the construction of building, or transfer of building by sale, gift or mortgage or otherwise (wherever applicable)",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 20,
-//       type: "Copy of documents showing details of mortgage or any other legal encumbrance created on land in favour of any bank or financial institution recognised by the RBI (Where applicable)",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 21,
-//       type: "Proforma of the Allotment Letter proposed to be signed with the Allottee",
-//       note: "* (refer Form P14 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 22,
-//       type: "Proforma of the Agreement for Sale proposed to be signed with the Allottee",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 23,
-//       type: "Proforma of the Conveyance Deed proposed to be signed with the Allottee",
-//       note: "* (refer Form P15 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 24,
-//       type: "Structural Stability Certificate duly issued by Certified Structural Consultant",
-//       note: "* (refer Form P19 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 25,
-//       type: "Copy of Insurance of title of the land",
-//       note: "",
-//       isRequired: false,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 26,
-//       type: "FORM - B, Declaration, supported by an affidavit (on Rs.20 non judicial stamp paper), which shall be signed by the promoter or any person authorized by the promoter under Rule 3-B(2) (a) to  0f AP Real Estate Rules-2017",
-//       note: "* (refer Form P11 in forms download)",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     },
-//     {
-//       id: 27,
-//       type: "Details of the area mortgaged to the Competent Authority for approval of Plans/ Mortagage Deed.",
-//       note: "*",
-//       isRequired: true,
-//       file: null,
-//       uploadedFile: null,
-//       progress: 0,
-//       showDelete: false,
-//       fileName: "No file chosen",
-//       showProgressBar: false,
-//       showLink: false
-//     }
-//   ]);
-
-//   const [consultantDetails, setConsultantDetails] = useState({
-//     submittedBy: "Consultancy",
-//     consultancyName: "",
-//     personName: "",
-//     mobileNumber: "",
-//     emailId: "",
-//     address: ""
-//   });
-
-//   const [declaration, setDeclaration] = useState({
-//     name: "",
-//     checked: false,
-//     note1: false,
-//     note2: false
-//   });
-
-//   const fileInputRefs = useRef({});
-// useEffect(() => {
-//   if (!APPLICATION_NUMBER) return;
-
-//   const fetchProjectDetails = async () => {
-//     try {
-//       const res = await fetch(API_URL);
-//       const data = await res.json();
-
-//       console.log("API RESPONSE >>>", data);
-
-//       // ---------- DOCUMENTS ----------
-//       const apiDocuments = data.documents || {};
-//       setDocuments(prev =>
-//         prev.map(doc => {
-//           const filePath = apiDocuments[doc.id];
-//           if (filePath) {
-//             return {
-//               ...doc,
-//               uploadedFile: filePath.split("/").pop(),
-//               showLink: true,
-//               showDelete: !doc.isRequired,
-//               progress: 100,
-//               showProgressBar: false,
-//               fileUrl: `${API_BASE}${filePath}`
-//             };
-//           }
-//           return doc;
-//         })
-//       );
-
-//       // ---------- CONSULTANT ----------
-//       if (data?.consultant_declaration) {
-//         const c = data.consultant_declaration;
-
-//         setConsultantDetails({
-//           submittedBy: "Consultancy",
-//           consultancyName: c.consultancy_name || "",
-//           personName: c.consultant_name || "",
-//           mobileNumber: c.mobile_number || "",
-//           emailId: c.email_id || "",
-//           address: c.address || ""
-//         });
-
-//         setDeclaration({
-//           name: c.declaration_name || "",
-//           checked: c.declaration_accept === "Y",
-//           note1: c.note1_accept === "Y",
-//           note2: c.note2_accept === "Y"
-//         });
-//       }
-
-//       // ✅ ALWAYS MARK LOADED (VERY IMPORTANT)
-//       setDataLoaded(true);
-
-//     } catch (err) {
-//       console.error("API ERROR", err);
-//       setDataLoaded(true); // still unblock UI
-//     }
-//   };
-
-//   fetchProjectDetails();
-// }, [APPLICATION_NUMBER]);
-
-
-
-//   const handleFileChange = (id, event) => {
-//     const file = event.target.files[0];
-//     if (!file) return;
-
-//     setDocuments(prev => prev.map(doc =>
-//       doc.id === id ? {
-//         ...doc,
-//         file,
-//         fileName: file.name,
-//         uploadedFile: null,
-//         progress: 0,
-//         showDelete: false,
-//         showProgressBar: true,
-//         showLink: false,
-//         fileUrl: null
-//       } : doc
-//     ));
-
-//     simulateUpload(id, file.name);
-//   };
-
-//   const simulateUpload = (id, fileName) => {
-//     let progress = 0;
-//     const interval = setInterval(() => {
-//       progress += 10;
-//       setDocuments(prev => prev.map(doc =>
-//         doc.id === id ? { ...doc, progress, showProgressBar: true } : doc
-//       ));
-
-//       if (progress >= 100) {
-//         clearInterval(interval);
-//         setTimeout(() => {
-//           setDocuments(prev => prev.map(doc =>
-//             doc.id === id ? {
-//               ...doc,
-//               uploadedFile: fileName,
-//               showProgressBar: false,
-//               showLink: true,
-//               showDelete: !doc.isRequired,
-//               fileName: "No file chosen"
-//             } : doc
-//           ));
-
-//           if (fileInputRefs.current[id]) {
-//             fileInputRefs.current[id].value = '';
-//           }
-//         }, 300);
-//       }
-//     }, 100);
-//   };
-//   const handleDelete = (id) => {
-//     setDocuments(prev => prev.map(doc =>
-//       doc.id === id ? {
-//         ...doc,
-//         file: null,
-//         uploadedFile: null,
-//         progress: 0,
-//         showDelete: false,
-//         showProgressBar: false,
-//         showLink: false,
-//         fileName: "No file chosen",
-//         fileUrl: null
-//       } : doc
-//     ));
-
-//     if (fileInputRefs.current[id]) {
-//       fileInputRefs.current[id].value = '';
-//     }
-//   };
-
-//   const handleDownload = (fileName, fileUrl) => {
-//     console.log(`Downloading ${fileName}`);
-    
-//     if (fileUrl) {
-//       // If we have a real URL from API, use it
-//       const link = document.createElement('a');
-//       link.href = fileUrl;
-//       link.download = fileName;
-//       link.target = '_blank'; // Open in new tab for external URLs
-//       document.body.appendChild(link);
-//       link.click();
-//       document.body.removeChild(link);
-//     } else {
-//       // Fallback to dummy download
-//       const link = document.createElement('a');
-//       link.href = '#';
-//       link.download = fileName;
-//       link.click();
-//     }
-//   };
-
-//   const handleConsultantChange = (field, value) => {
-//     setConsultantDetails(prev => ({ ...prev, [field]: value }));
-//   };
-
-//   const handleDeclarationChange = (field) => {
-//     setDeclaration(prev => ({ ...prev, [field]: !prev[field] }));
-//   };
-
-//   const completeStep = (stepNo) => {
-//     let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-//     if (!completed.includes(stepNo)) {
-//       completed.push(stepNo);
-//       localStorage.setItem("completedSteps", JSON.stringify(completed));
-//     }
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-
-//     const missing = documents.some(d => d.isRequired && !d.uploadedFile);
-//     if (missing) {
-//       alert("Please upload all mandatory documents");
-//       return;
-//     }
-
-//     if (!declaration.checked || !declaration.note1 || !declaration.note2) {
-//       alert("Please accept all declaration notes");
-//       return;
-//     }
-
-//     completeStep(5);
-//     navigate(`/project/${APPLICATION_NUMBER}/preview`);
-//   };
-// if (!dataLoaded) {
-//   return <div style={{ padding: 20 }}>Loading project details...</div>;
-// }
-
-//   return (
-//     <div className="upload-documents-container">
-//       <div className="header-navigation">
-//         <div className="breadcrumb">
-//           You are here: <a href="#" >Home</a> / <a href="#">Registration</a> / <a href="#">Project Registration</a>
-//         </div>
-//       </div>
-
-//       <h2 className="page-title">Project Registration</h2>
-
-//       <ProjectWizard currentStep={5} />
-
-//       <form onSubmit={handleSubmit} className="upload-form">
-//         <div className="form-section">
-//           <h3 className="subheading">Upload Documents</h3>
-
-//           <div className="documents-table-container">
-//             <table className="documents-table">
-//               <thead>
-//                 <tr className="table-header">
-//                   <td style={{ color: 'white' ,backgroundColor:'#0b0b0b' , textAlign:'left'}}>
-//                     <b>Document Type</b>
-//                   </td>
-//                   <td style={{ color: 'white' ,backgroundColor:'#0b0b0b' }}>
-//                     <b>Upload (Max size 70 MB for each document)</b>
-//                   </td>
-//                   <td style={{ color: 'white',backgroundColor:'#0b0b0b' }}>
-//                     <b>Uploaded Document</b>
-//                   </td>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {documents.map((doc) => (
-//                   <tr key={doc.id} className="document-row">
-//                     <td className="document-type">
-//                       {doc.type}
-//                       {doc.note && <font color="red">{doc.note}</font>}
-//                     </td>
-//                     <td className="upload-column">
-//                       <div className="file-upload-wrapper">
-//                         <input
-//                           ref={el => fileInputRefs.current[doc.id] = el}
-//                           type="file"
-//                           className="file-input"
-//                           onChange={(e) => handleFileChange(doc.id, e)}
-//                           id={`file-input-${doc.id}`}
-//                         />
-//                         <label htmlFor={`file-input-${doc.id}`} className="file-input-label">
-//                           Choose File
-//                         </label>
-//                         <span className="file-name-display">{doc.fileName}</span>
-//                       </div>
-//                     </td>
-//                     <td className="uploaded-column">
-//                       {doc.showProgressBar && (
-//                         <div className="progress-bar">
-//                           <div className="progress-fill" style={{ width: `${doc.progress}%` }}>
-//                             {doc.progress}%
-//                           </div>
-//                         </div>
-//                       )}
-
-//                       {doc.showLink && doc.uploadedFile && (
-//                         <>
-//                           <a
-//                             href="#"
-//                             className="lnk-link"
-//                             onClick={(e) => {
-//                               e.preventDefault();
-//                               handleDownload(doc.uploadedFile, doc.fileUrl);
-//                             }}
-//                             style={{ display: 'inline-block', marginRight: '10px' }}
-//                           >
-//                             {doc.uploadedFile}
-//                           </a>
-//                           {doc.showDelete && (
-//                             <a
-//                               href="#"
-//                               className="delete-link"
-//                               onClick={(e) => {
-//                                 e.preventDefault();
-//                                 handleDelete(doc.id);
-//                               }}
-//                             >
-//                               <img src="../images/delete.png" title="Delete" alt="Delete" />
-//                             </a>
-//                           )}
-//                         </>
-//                       )}
-
-//                       {!doc.showLink && !doc.showProgressBar && (
-//                         <span style={{ color: '#666', fontStyle: 'italic' }}>
-//                           No file uploaded
-//                         </span>
-//                       )}
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           </div>
-//           {/* Submitted By */}
-//           <div id="dvisconsultant" className="submitted-by-section">
-
-//           <div className="submitted-by-label">
-//             This Project Registration application is submitted by
-//             <span className="required">*</span>
-//           </div>
-
-//           <div className="submitted-by-options">
-
-//             <label className="radio-item">
-//               <input
-//                 type="radio"
-//                 name="rblIsConsultant"
-//                 checked={consultantDetails.submittedBy === "Consultancy"}
-//                 onChange={() => handleConsultantChange('submittedBy', 'Consultancy')}
-//               />
-//               Consultancy
-//             </label>
-
-//           </div>
-
-//         </div>
-
-//                   {/* Consultancy Details */}
-//         <div id="dvConsultntDtls" className="consultancy-details-section">
-//           <div className="section-header">
-//             <h3 className="subheading">Consultancy Details</h3>
-//           </div>
-
-//           <div className="consultancy-form">
-
-//             {/* ===== FIRST ROW ===== */}
-//             <div className="row innerdivrow">
-
-//               <div className="col-sm-4">
-//                 <div className="form-group">
-//                   <label className="label">
-//                     Name of Consultancy/Agency/Association/Individual<font color="red">*</font>
-//                   </label>
-//                   <input
-//   type="text"
-//   className="form-control inputbox"
-//   value={consultantDetails.consultancyName}
-//   onChange={(e) =>
-//     handleConsultantChange("consultancyName", e.target.value)
-//   }
-//   placeholder="Name of Consultancy/Agency/Association"
-// />
-
-//                 </div>
-//               </div>
-
-//               <div className="col-sm-4">
-//                 <div className="form-group">
-//                   <label className="label">
-//                     Name<font color="red">*</font>
-//                   </label>
-//                   <input
-//   type="text"
-//   className="form-control inputbox"
-//   value={consultantDetails.personName}
-//   onChange={(e) =>
-//     handleConsultantChange("personName", e.target.value)
-//   }
-//   placeholder="Consultant Name"
-// />
-
-//                 </div>
-//               </div>
-
-//               <div className="col-sm-4">
-//                 <div className="form-group">
-//                   <label className="label">
-//                     Mobile Number<font color="red">*</font>
-//                   </label>
-//                   <input
-//   type="text"
-//   className="form-control inputbox"
-//   value={consultantDetails.mobileNumber}
-//   onChange={(e) =>
-//     handleConsultantChange("mobileNumber", e.target.value)
-//   }
-//   placeholder="Mobile Number"
-// />
-
-//                 </div>
-//               </div>
-
-//             </div>
-
-//             {/* ===== SECOND ROW ===== */}
-//             <div className="row innerdivrow">
-
-//               <div className="col-sm-4">
-//                 <div className="form-group">
-//                   <label className="label">
-//                     Email Id<font color="red">*</font>
-//                   </label>
-//                   <input
-//   type="email"
-//   className="form-control inputbox"
-//   value={consultantDetails.emailId}
-//   onChange={(e) =>
-//     handleConsultantChange("emailId", e.target.value)
-//   }
-//   placeholder="Email"
-// />
-
-//                 </div>
-//               </div>
-
-//               <div className="col-sm-8">
-//                 <div className="form-group">
-//                   <label className="label">
-//                     Full Address for communication<font color="red">*</font>
-//                   </label>
-//                   <textarea
-//   rows="2"
-//   className="form-control inputbox"
-//   value={consultantDetails.address}
-//   onChange={(e) =>
-//     handleConsultantChange("address", e.target.value)
-//   }
-//   placeholder="Full Address for communication"
-// />
-
-//                 </div>
-//               </div>
-
-//             </div>
-
-//           </div>
-//         </div>
-
-//           <div className="note-section">
-//             <label className="note-label">
-//               Note: If encountered any issue during upload of documents, please contact APRERA IT Support Team.
-//             </label>
-//           </div>
-
-//             {/* Declaration */}
-//           <div className="declaration-section">
-
-//             <div className="section-header">
-//               <h3 className="subheading">Declaration</h3>
-//             </div>
-
-//             <div className="declaration-content">
-
-//               <div className="declaration-inline">
-
-//                <input 
-//   type="checkbox" 
-//   className="declaration-checkbox"
-//   checked={declaration.checked}
-//   onChange={() => handleDeclarationChange('checked')}
-// />
-
-
-//                 <span className="declaration-prefix">I/We</span>
-
-//                 <input 
-//   type="text" 
-//   className="declaration-name-input"
-//   value={declaration.name}
-//   onChange={(e) =>
-//     setDeclaration(prev => ({ ...prev, name: e.target.value }))
-//   }
-// />
-
-
-//                 <span className="declaration-text">
-//                   solemnly affirm and declare that the particulars given above are correct to my/our knowledge and belief.
-//                 </span>
-
-//               </div>
-
-//             </div>
-
-//           </div>
-
-//                     {/* Additional Notes */}
-//           <div id="Div2" className="additional-notes-section">
-
-//             <div className="section-header">
-//               <h3 className="subheading">Note</h3>
-//             </div>
-
-//             <div className="notes-content">
-
-//               <div className="note-item">
-//                 <input
-//                   type="checkbox"
-//                   id="chkNote1"
-//                   checked={declaration.note1}
-//                   onChange={() => handleDeclarationChange('note1')}
-//                   className="note-checkbox"
-//                 />
-
-//                 <label htmlFor="chkNote1" className="note-text1">
-//                   1. The applicability of the Penalty/additional fee may be imposed, if any, provision of the act is violated, as determined by the Authority, as the case may be.
-//                 </label>
-//               </div>
-
-//               <div className="note-item">
-//                 <input
-//                   type="checkbox"
-//                   id="chkNote2"
-//                   checked={declaration.note2}
-//                   onChange={() => handleDeclarationChange('note2')}
-//                   className="note-checkbox"
-//                 />
-
-//                 <label htmlFor="chkNote2" className="note-text1">
-//                   2. As per section 4 of the RERA Act, 2016, you are hereby directed to address the shortfalls within 15 days as addressed by the Authority, failing which the application may be rejected as per Section 4 of the Act.
-//                 </label>
-//               </div>
-
-//             </div>
-//           </div>
-
-
-//           <div className="form-actions">
-//             <button type="submit" className="save-button">
-//               Save
-//             </button>
-//           </div>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default UploadDocumentsWithApi;
-
-
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import '../styles/UploadDocumentsWithApi.css';
+import "../styles/ProjectUploadDocument.css";
 import ProjectWizard from "../components/ProjectWizard";
-import ExistingProjectWizard from '../components/ExistingProjectWizard';
+import React, { useState, useEffect } from "react";
+import { apiPost, apiPut } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
-const UploadDocumentsWithApi = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-const APPLICATION_NUMBER = id;
+const uploaddocDocuments = [
+   {
+    id: 1,
+    text: "Copies of the registered ownership documents / Pattadhar pass books issued by Revenue department along with link documents and authorization letter given by the Land Owner",
+    text1: "(refer Form P20 in form download).",
+  },
+  {
+    id: 2,
+    text: "Copies of the combined field sketches showing the Survey Number boundaries, Subdivision boundaries, and Layout boundaries duly marking the Geo-Coordinates at every corner of the site.",
+  },
+  {
+    id: 3,
+    text: "Detailed site plan showing the measurements as on ground including diagonals along with Geo-Coordinates (Latitude and Longitude) at end points of the project site along with incorporation on Satellite Imagery.",
+  },
+  {
+    id: 4,
+    text: "Copy of the registered development agreement between the Owner of the land and the Promoter / Authorization letter given by the Land owner  to undertake the construction of the building by the promoter.",
+  },
+    {
+    id: 5,
+    text: "Land Title search Report from an Advocate (include Advocate Enrolment Number) having experience of atleast ten years in land related matters.",
+  },
+  {
+    id: 6,
+    text: "Latest (by 30 days) Encumbrance certificate (for entire period of document) issued by the Registration and Stamps department.",
+  },
+  {
+    id: 7,
+    text: "Copy of the plan and proceedings issued by the competent Authority for approval of plans (TDR Bonds, if any).",
+  },
+  {
+    id: 8,
+    text: "Approved plan / list of amenities proposed in the site.",
+  },
+  {
+    id: 9,
+    text: "NOC’s issued by Authority (where applicable viz., Airport Authority, Fire Department, Environmental Clearance, etc.).",
+  },
+  {
+    id: 10,
+    text: "Detailed technical specifications of the construction if the buildings and facilities proposed in the project including brand details, specifications of infrastructure and details of fixtures and fittings",
+    text1:"(refer Form P18 in forms download)."
+  },
+  {
+    id: 11,
+    text: "Topo Plan drawn to a scale with nearby land marks of the site.",
+  },
+  {
+    id: 12,
+    text: "Licenses/Enrolment form of Civil Contractors, or turnkey contractor, or EPC Contractors of the project (if any).",
+  },
+  {
+  
+    id: 13,
+    text: "Licenses/Enrolment form of Structural Engineer of the project (if there is any overhead tank or major structure proposed in the layout).",
+  },
+  {
+    id: 14,
+    text: "Licenses/Enrolment form of Architect or firm or company.",
+  },
+  {
+    id: 15,
+    text: "Licenses/Enrolment form of Engineer or firm or company (if any).",
+  },
+  {
+    id: 16,
+    text: "Licenses/Enrolment form of Chartered Accountant or firm or company.",
+  },
+  {
+    id: 17,
+    text: "Detailed estimate of the expenditure for construction of the building",
+    text1:"(refer Form P16 in forms download).",
+  },
+  {
+    id: 18,
+    text: "Statement of source of funds for construction of building",
+    text1:"(refer Form P9 in forms download)."
+  },
+  {
+    id: 19,
+    text: "Details of financial agreement made with any bank or other financial institution recognised by the Reserve Bank of India and of legal safeguards taken, if any, for the construction of building, or transfer of building by sale, gift or mortgage or otherwise (wherever applicable).",
+  },
+  {
+    id: 20,
+    text: "Copy of documents showing details of mortgage or any other legal encumbrance created on land in favour of any bank or financial institution recognised by the RBI (where applicable).",
+  },
+  {
+    id: 21,
+    text: "Proforma of the Allotment Letter proposed to be signed with the Allottee",
+    text1:"(refer Form P14 in forms download)."
+  },
+    {
+    id: 22,
+    text: "Proforma of the Agreement for Sale proposed to be signed with the Allottee",
+    text1:"(refer Form P15 in forms download)."
+  },
+  {
+    id: 23,
+    text: "Proforma of the Conveyance Deed proposed to be signed with the Allottee",
+  },
+  {
+    id: 24,
+    text: "Structural Stability Certificate duly issued by Certified Structural Consultant",
+    text1:"(refer Form P19 in forms download)."
+  },
+  {
+    id: 25,
+    text: "Copy of Insurance of title of the land.",
+  },
+  {
+    id: 26,
+    text: "FORM - B, Declaration, supported by an affidavit (on Rs.20 non judicial stamp paper), which shall be signed by the promoter or any person authorized by the promoter under Rule 3-B(2)(a) to of AP Real Estate Rules-2017",
+    text1:"(refer Form P11 in forms download)."
+  },
+  {
+    id: 27,
+    text: "Details of the area mortgaged to the Competent Authority for approval of Plans / Mortgage Deed.",
+  }
+];
 
-const location = useLocation();
+export default function UploadDocumentsWithApi() {
+    const navigate = useNavigate();
+    const [uploadedFiles, setUploadedFiles] = useState({});
+    const [showPopup, setShowPopup] = useState(false);
+    const [consultancyName, setConsultancyName] = useState("");
+    const [consultantName, setConsultantName] = useState("");
+    const [mobile, setMobile] = useState("");
+    const [email, setEmail] = useState("");
+    const [declarationChecked, setDeclarationChecked] = useState(false);
+    const [note1Checked, setNote1Checked] = useState(false);
+    const [note2Checked, setNote2Checked] = useState(false);
+    const [address, setAddress] = useState("");
+    const [popupMessage, setPopupMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-const promoterType =
-  location.state?.promoterType ||
-  sessionStorage.getItem("promoterType") ||
-  "Individual";
+    const applicationNumber = sessionStorage.getItem("applicationNumber") || "100126116502";
+    const panNumber = sessionStorage.getItem("panNumber") || "ODZPS3189G";
+    const promoterType = sessionStorage.getItem("promoterType");   // ✅ ADD THIS
 
-const panNumber =
-  location.state?.panNumber ||
-  sessionStorage.getItem("panNumber");
+    // Helper function to extract filename from URL
+    const extractFileNameFromUrl = (url) => {
+        if (!url) return null;
+        
+        try {
+            // Try to decode the URL first
+            const decodedUrl = decodeURIComponent(url);
+            
+            // Get the last part after the last slash
+            const urlParts = decodedUrl.split('/');
+            let fileName = urlParts[urlParts.length - 1];
+            
+            // Remove query parameters if any
+            fileName = fileName.split('?')[0];
+            
+            // Remove any leading/trailing spaces
+            fileName = fileName.trim();
+            
+            // If fileName is empty or just a slash, return null
+            if (!fileName || fileName === '' || fileName === '/') {
+                return null;
+            }
+            
+            return fileName;
+        } catch (error) {
+            console.error("Error extracting filename:", error);
+            return null;
+        }
+    };
 
-const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms";
-const API_URL = `${API_BASE}/api/project/details/${APPLICATION_NUMBER}`;
+    // Helper function to get document type text for better filename display
+    const getDocumentTypeText = (docId) => {
+        const doc = uploaddocDocuments.find(d => d.id === docId);
+        if (doc) {
+            // Extract first few words from document text for a meaningful name
+            const words = doc.text.split(' ').slice(0, 5).join(' ');
+            return words.length > 40 ? words.substring(0, 40) + '...' : words;
+        }
+        return `Document ${docId}`;
+    };
 
-const [dataLoaded, setDataLoaded] = useState(false);
+    const isValidMobile = (mobile) => {
+        const mobileRegex = /^[6-9]\d{9}$/;
+        return mobileRegex.test(mobile);
+    };
 
-  const [documents, setDocuments] = useState([
-    {
-      id: 1,
-      type: "Copies of the registered ownership documents / Copies of the Pattadhaar pass books issued by the Revenue department along with the link documents and authorization letter given by the Land Owner",
-      note: " (refer Form P20 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 2,
-      type: "Copies of the combined field sketches showing the Survey Number boundaries, Subdivision boundaries, and Layout boundaries duly marking the Geo-Coordinates at every corner of the site.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 3,
-      type: "Detailed site plan showing the measurements as on ground including diagonals along with Geo-Coordinates (Latitude and Longitude) at end points of the project site along with incorporation of same on Satellite Imagery.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 4,
-      type: "Copy of the registered development agreement between the Owner of the land and the Promoter / Authorisation letter given by the Land owner to undertake the construction of the building by the promoter.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 5,
-      type: "Land Title search Report from an Advocate (include Advocate Enrolment Number) having experience of atleast ten years in land related matters.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 6,
-      type: "Latest (by 30 days) Encumbrance certificate (for entire period of document) issued by the Registration and Stamps department.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 7,
-      type: "Copy of the plan and proceedings issued by the competent Authority for approval of plans(TDR Bonds,if any).",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 8,
-      type: "Approved plan / list of amenities proposed in the site",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 9,
-      type: "NOC's issued by Authority (where applicable-viz., Airport Authority, Fire Department, Environmental Clearance, etc.)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 10,
-      type: "Detailed technical specifications of the construction if the buildings and facilities proposed in the project including brand details, specifications of infrastructure and details of fixtures and fittings",
-      note: "(refer Form P18 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 11,
-      type: "Topo Plan drawn to a scale with nearby land marks of the site.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 12,
-      type: "Licenses/Enrolment form of Civil Contractors, or turnkey contractor, or EPC Contractors of ther project (if any)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 13,
-      type: "Licenses/Enrolment form of Structural Engineer of the project (if there is any overhead tank or major structure proposed in the layout)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 14,
-      type: "Licenses/Enrolment form of Architect or firm or company",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 15,
-      type: "Licenses/Enrolment form of Engineer or firm or company (If any)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 16,
-      type: "Licenses/Enrolment form of Chartered Accountant or firm or company",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 17,
-      type: "Detailed estimate of the expenditure for construction of the building",
-      note: "(refer Form P16 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 18,
-      type: "Statement of source of funds for construction of building",
-      note: "(refer Form P9 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 19,
-      type: "Details of financial agreement made with any bank or other financial institution recognised by the Reserve Bank of India and of legal safeguards taken, if any, for the construction of building, or transfer of building by sale, gift or mortgage or otherwise (wherever applicable)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 20,
-      type: "Copy of documents showing details of mortgage or any other legal encumbrance created on land in favour of any bank or financial institution recognised by the RBI (Where applicable)",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 21,
-      type: "Proforma of the Allotment Letter proposed to be signed with the Allottee",
-      note: "(refer Form P14 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 22,
-      type: "Proforma of the Agreement for Sale proposed to be signed with the Allottee",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 23,
-      type: "Proforma of the Conveyance Deed proposed to be signed with the Allottee",
-      note: " (refer Form P15 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 24,
-      type: "Structural Stability Certificate duly issued by Certified Structural Consultant",
-      note: " (refer Form P19 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 25,
-      type: "Copy of Insurance of title of the land",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 26,
-      type: "FORM - B, Declaration, supported by an affidavit (on Rs.20 non judicial stamp paper), which shall be signed by the promoter or any person authorized by the promoter under Rule 3-B(2) (a) to  0f AP Real Estate Rules-2017",
-      note: " (refer Form P11 in forms download)",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    },
-    {
-      id: 27,
-      type: "Details of the area mortgaged to the Competent Authority for approval of Plans/ Mortagage Deed.",
-      note: "",
-      isRequired: false,
-      file: null,
-      uploadedFile: null,
-      progress: 0,
-      showDelete: false,
-      fileName: "No file chosen",
-      showProgressBar: false,
-      showLink: false
-    }
-  ]);
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
-  const [consultantDetails, setConsultantDetails] = useState({
-    submittedBy: "Consultancy",
-    consultancyName: "",
-    personName: "",
-    mobileNumber: "",
-    emailId: "",
-    address: ""
-  });
+    const handleFileChange = (docId, file) => {
+        if (!file) return;
 
-  const [declaration, setDeclaration] = useState({
-    name: "",
-    checked: false,
-    note1: false,
-    note2: false
-  });
+        // Create object URL for the file
+        const fileUrl = URL.createObjectURL(file);
+        
+        setUploadedFiles((prev) => ({
+            ...prev,
+            [docId]: {
+                file,
+                url: fileUrl,
+                fileName: file.name,
+                fileSize: file.size,
+                fileType: file.type,
+            },
+        }));
+    };
 
-  const fileInputRefs = useRef({});
-useEffect(() => {
-  if (!APPLICATION_NUMBER) return;
+    // Clean up object URLs when component unmounts
+    useEffect(() => {
+        return () => {
+            Object.values(uploadedFiles).forEach(fileObj => {
+                if (fileObj?.url && fileObj.url.startsWith('blob:')) {
+                    URL.revokeObjectURL(fileObj.url);
+                }
+            });
+        };
+    }, []);
 
-  const fetchProjectDetails = async () => {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
+    // ========== FETCH EXISTING DATA ==========
+    const fetchExistingData = async () => {
+        setIsLoading(true);
+        try {
+            console.log("Fetching data for:", { applicationNumber, panNumber });
+            
+            const res = await apiPost("/api/project/documents-consultant/get", {
+                application_number: applicationNumber,
+                pan_number: panNumber,
+            });
 
-      console.log("API RESPONSE >>>", data);
+            console.log("API Response:", res);
 
-      // ---------- DOCUMENTS ----------
-      const apiDocuments = data.documents || {};
-      setDocuments(prev =>
-        prev.map(doc => {
-          const filePath = apiDocuments[doc.id];
-          if (filePath) {
-            return {
-              ...doc,
-              uploadedFile: filePath.split("/").pop(),
-              showLink: true,
-              showDelete: !doc.isRequired,
-              progress: 100,
-              showProgressBar: false,
-              fileUrl: `${API_BASE}${filePath}`
-            };
-          }
-          return doc;
-        })
-      );
+            if (res.status === "success") {
+                // Set consultant data
+                if (res.consultant && Object.keys(res.consultant).length > 0) {
+                    console.log("Setting consultant data:", res.consultant);
+                    setConsultancyName(res.consultant.consultancy_name || "");
+                    setConsultantName(res.consultant.consultant_name || "");
+                    setMobile(res.consultant.mobile_number || "");
+                    setEmail(res.consultant.email_id || "");
+                    setAddress(res.consultant.address || "");
+                    setDeclarationChecked(res.consultant.declaration_accept === "Y");
+                    setNote1Checked(res.consultant.note1_accept === "Y");
+                    setNote2Checked(res.consultant.note2_accept === "Y");
+                }
 
-      // ---------- CONSULTANT ----------
-      if (data?.consultant_declaration) {
-        const c = data.consultant_declaration;
+                // Set documents data - ENHANCED VERSION
+                if (res.documents && Object.keys(res.documents).length > 0) {
+                    console.log("Setting documents data:", res.documents);
+                    const formattedDocs = {};
+                    
+                    Object.entries(res.documents).forEach(([docId, fileUrl]) => {
+                        // Try to extract filename from URL
+                        let fileName = extractFileNameFromUrl(fileUrl);
+                        
+                        // If filename extraction failed, create a meaningful name from document type
+                        if (!fileName) {
+                            fileName = getDocumentTypeText(parseInt(docId));
+                        }
+                        
+                        formattedDocs[docId] = {
+                            file: null,
+                            url: fileUrl,
+                            fileName: fileName,
+                            documentType: getDocumentTypeText(parseInt(docId)),
+                        };
+                    });
+                    
+                    setUploadedFiles(formattedDocs);
+                }
+            }
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setPopupMessage("Error fetching existing data: " + err.message);
+            setShowPopup(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        setConsultantDetails({
-          submittedBy: "Consultancy",
-          consultancyName: c.consultancy_name || "",
-          personName: c.consultant_name || "",
-          mobileNumber: c.mobile_number || "",
-          emailId: c.email_id || "",
-          address: c.address || ""
+    useEffect(() => {
+        if (applicationNumber && panNumber) {
+            fetchExistingData();
+        }
+    }, []);
+
+    // ========== UPLOAD/UPDATE DOCUMENTS ==========
+    const uploadProjectDocuments = async () => {
+        const formData = new FormData();
+
+        formData.append("application_number", applicationNumber);
+        formData.append("pan_number", panNumber);
+
+        // Add new files
+        Object.entries(uploadedFiles).forEach(([docId, fileObj]) => {
+            if (fileObj?.file) {
+                formData.append(`doc_${docId}`, fileObj.file);
+            }
         });
 
-        setDeclaration({
-          name: c.declaration_name || "",
-          checked: c.declaration_accept === "Y",
-          note1: c.note1_accept === "Y",
-          note2: c.note2_accept === "Y"
+        // Add existing documents as JSON
+        const existingDocs = {};
+        Object.entries(uploadedFiles).forEach(([docId, fileObj]) => {
+            if (!fileObj?.file && fileObj?.url) {
+                existingDocs[docId] = fileObj.url;
+            }
         });
-      }
 
-      // ✅ ALWAYS MARK LOADED (VERY IMPORTANT)
-      setDataLoaded(true);
+        formData.append("existing_documents", JSON.stringify(existingDocs));
 
-    } catch (err) {
-      console.error("API ERROR", err);
-      setDataLoaded(true); // still unblock UI
-    }
-  };
+        return apiPost("/api/project/documents/upload", formData);
+    };
 
-  fetchProjectDetails();
-}, [APPLICATION_NUMBER]);
+    // ========== SAVE/UPDATE CONSULTANT ==========
+    const saveConsultantDeclaration = async () => {
+        const payload = {
+            application_number: applicationNumber,
+            pan_number: panNumber,
+            consultancy_name: consultancyName,
+            consultant_name: consultantName,
+            mobile_number: mobile,
+            email_id: email,
+            address: address,
+            declaration_name: consultantName,
+            declaration_accept: declarationChecked ? "Y" : "N",
+            note1_accept: note1Checked ? "Y" : "N",
+            note2_accept: note2Checked ? "Y" : "N",
+        };
 
+        console.log("Saving consultant with payload:", payload);
+        
+        const res = await apiPost("/api/project/consultant-declaration/save", payload);
+        return res;
+    };
 
+    // ========== UPDATE CONSULTANT ==========
+    const updateConsultantDeclaration = async () => {
+        const payload = {
+            application_number: applicationNumber,
+            pan_number: panNumber,
+            consultancy_name: consultancyName,
+            consultant_name: consultantName,
+            mobile_number: mobile,
+            email_id: email,
+            address: address,
+            declaration_name: consultantName,
+            declaration_accept: declarationChecked ? "Y" : "N",
+            note1_accept: note1Checked ? "Y" : "N",
+            note2_accept: note2Checked ? "Y" : "N",
+        };
 
-  const handleFileChange = (id, event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+        console.log("Updating consultant with payload:", payload);
+        
+        return apiPut("/api/project/consultant-declaration/update", payload);
+    };
 
-    setDocuments(prev => prev.map(doc =>
-      doc.id === id ? {
-        ...doc,
-        file,
-        fileName: file.name,
-        uploadedFile: null,
-        progress: 0,
-        showDelete: false,
-        showProgressBar: true,
-        showLink: false,
-        fileUrl: null
-      } : doc
-    ));
+    // ========== HANDLE SAVE ==========
+    const handleSave = async () => {
+        // Validation
+        const hasAnyDocument = Object.values(uploadedFiles).some(
+            (doc) => doc?.file || doc?.url
+        );
 
-    simulateUpload(id, file.name);
-  };
+        if (!hasAnyDocument) {
+            setPopupMessage("Please upload at least one document");
+            setShowPopup(true);
+            return;
+        }
 
-  const simulateUpload = (id, fileName) => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      setDocuments(prev => prev.map(doc =>
-        doc.id === id ? { ...doc, progress, showProgressBar: true } : doc
-      ));
+        if (!consultancyName.trim()) {
+            setPopupMessage("Please Enter Name of Consultancy/Agency/Association/Individual");
+            setShowPopup(true);
+            return;
+        }
 
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setDocuments(prev => prev.map(doc =>
-            doc.id === id ? {
-              ...doc,
-              uploadedFile: fileName,
-              showProgressBar: false,
-              showLink: true,
-              showDelete: !doc.isRequired,
-              fileName: "No file chosen"
-            } : doc
-          ));
+        if (!consultantName.trim()) {
+            setPopupMessage("Please Enter Name");
+            setShowPopup(true);
+            return;
+        }
 
-          if (fileInputRefs.current[id]) {
-            fileInputRefs.current[id].value = '';
-          }
-        }, 300);
-      }
-    }, 100);
-  };
-  const handleDelete = (id) => {
-    setDocuments(prev => prev.map(doc =>
-      doc.id === id ? {
-        ...doc,
-        file: null,
-        uploadedFile: null,
-        progress: 0,
-        showDelete: false,
-        showProgressBar: false,
-        showLink: false,
-        fileName: "No file chosen",
-        fileUrl: null
-      } : doc
-    ));
+        if (!mobile.trim()) {
+            setPopupMessage("Please Enter Mobile Number");
+            setShowPopup(true);
+            return;
+        }
 
-    if (fileInputRefs.current[id]) {
-      fileInputRefs.current[id].value = '';
-    }
-  };
+        if (!isValidMobile(mobile)) {
+            setPopupMessage("Please Enter Valid Mobile Number");
+            setShowPopup(true);
+            return;
+        }
 
-  const handleDownload = (fileName, fileUrl) => {
-    console.log(`Downloading ${fileName}`);
-    
-    if (fileUrl) {
-      // If we have a real URL from API, use it
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = fileName;
-      link.target = '_blank'; // Open in new tab for external URLs
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      // Fallback to dummy download
-      const link = document.createElement('a');
-      link.href = '#';
-      link.download = fileName;
-      link.click();
-    }
-  };
+        if (!email.trim()) {
+            setPopupMessage("Please Enter Email Id");
+            setShowPopup(true);
+            return;
+        }
 
-  const handleConsultantChange = (field, value) => {
-    setConsultantDetails(prev => ({ ...prev, [field]: value }));
-  };
+        if (!isValidEmail(email)) {
+            setPopupMessage("Please Enter Valid Email Id");
+            setShowPopup(true);
+            return;
+        }
 
-  const handleDeclarationChange = (field) => {
-    setDeclaration(prev => ({ ...prev, [field]: !prev[field] }));
-  };
+        if (!address.trim()) {
+            setPopupMessage("Please Enter Address");
+            setShowPopup(true);
+            return;
+        }
 
-  const completeStep = (stepNo) => {
-    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-    if (!completed.includes(stepNo)) {
-      completed.push(stepNo);
-      localStorage.setItem("completedSteps", JSON.stringify(completed));
-    }
-  };
+        if (!declarationChecked) {
+            setPopupMessage("Please Check Self Declaration");
+            setShowPopup(true);
+            return;
+        }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+        if (!note1Checked) {
+            setPopupMessage("Please Check Note 1");
+            setShowPopup(true);
+            return;
+        }
 
-    const missing = documents.some(d => d.isRequired && !d.uploadedFile);
-    if (missing) {
-      alert("Please upload all mandatory documents");
-      return;
-    }
+        if (!note2Checked) {
+            setPopupMessage("Please Check Note 2");
+            setShowPopup(true);
+            return;
+        }
 
-    if (!declaration.checked || !declaration.note1 || !declaration.note2) {
-      alert("Please accept all declaration notes");
-      return;
-    }
+        setIsLoading(true);
+        try {
+            // First check if consultant record exists
+            const checkRes = await apiPost("/api/project/documents-consultant/get", {
+                application_number: applicationNumber,
+                pan_number: panNumber,
+            });
 
-    completeStep(5);
+            let consultantSaved = false;
+            
+            if (checkRes.consultant && Object.keys(checkRes.consultant).length > 0) {
+                // Update existing consultant
+                await updateConsultantDeclaration();
+                consultantSaved = true;
+                console.log("Consultant updated successfully");
+            } else {
+                // Save new consultant
+                await saveConsultantDeclaration();
+                consultantSaved = true;
+                console.log("Consultant saved successfully");
+            }
+
+            // Upload/Update documents
+            if (consultantSaved) {
+                const docRes = await uploadProjectDocuments();
+                console.log("Documents uploaded successfully:", docRes);
+            }
+
+            setPopupMessage("Project documents saved successfully");
+            setShowPopup(true);
+
+            // Store values for refresh safety
+            sessionStorage.setItem("applicationNumber", applicationNumber);
+            sessionStorage.setItem("panNumber", panNumber);
+
+            // Navigate to Preview
+          setTimeout(() => {
+
     if (promoterType === "other") {
 
-  navigate(`/othertheninduvidual-preview`, {
-    state: {
-      panNumber,
-      applicationNumber: APPLICATION_NUMBER
+        navigate("/othertheninduvidual-preview", {
+            state: {
+                panNumber,
+                applicationNumber
+            }
+        });
+
+    } else {
+
+        // DO NOT TOUCH Individual flow
+        navigate("/preview", {
+            state: {
+                panNumber,
+                applicationNumber
+            }
+        });
+
     }
-  });
 
-} else {
+}, 500);
 
-  // DO NOT TOUCH Individual flow
-  navigate(`/preview`, {
-    state: {
-      panNumber,
-      applicationNumber: APPLICATION_NUMBER
-    }
-  });
+        } catch (err) {
+            console.error("Save error:", err);
+            setPopupMessage(err.message || "Something went wrong");
+            setShowPopup(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-}
-  };
-if (!dataLoaded) {
-  return <div style={{ padding: 20 }}>Loading project details...</div>;
-}
+    return (
+        <div className="uploaddoc-container">
+            {/* Breadcrumb */}
+            <div className="uploaddoc-breadcrumb">
+                You are here :{" "}
+                <span className="uploaddoc-breadcrumb-home">Home</span> / Registration /
+                Project Registration
+            </div>
 
-  return (
-    <div className="upload-documents-container">
-      <div className="header-navigation">
-        <div className="breadcrumb">
-          You are here: <a href="#" >Home</a> / <a href="#">Registration</a> / <a href="#">Project Registration</a>
-        </div>
-      </div>
+            {/* Title */}
+            <h2 className="uploaddoc-title">Project Registration</h2>
+            <ProjectWizard currentStep={5} />
+            <div className="uploaddoc-title-line" />
 
-      <h2 className="page-title">Project Registration</h2>
+            {/* Table */}
+            <table className="uploaddoc-table">
+                <thead>
+                    <tr>
+                        <th className="uploaddoc-th">Document Type</th>
+                        <th className="uploaddoc-th">
+                            Upload (Max size 70 MB for each document)
+                        </th>
+                        <th className="uploaddoc-th">Uploaded Document</th>
+                    </tr>
+                </thead>
 
-      <ExistingProjectWizard currentStep={5} />
+                <tbody>
+                    {uploaddocDocuments.map((doc) => (
+                        <tr key={doc.id}>
+                            <td className="uploaddoc-td">
+                                {doc.text}
+                                {doc.text1 && (
+                                    <span className="uploaddoc-doc-note"> {doc.text1}</span>
+                                )}
+                            </td>
 
-      <form onSubmit={handleSubmit} className="upload-form">
-        <div className="form-section">
-          <h3 className="subheading">Upload Documents</h3>
+                            <td className="uploaddoc-td">
+                                <input
+                                    type="file"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            handleFileChange(doc.id, file);
+                                        }
+                                    }}
+                                    disabled={isLoading}
+                                />
+                            </td>
 
-          <div className="documents-table-container">
-            <table className="documents-table">
-              <thead>
-                <tr className="table-header">
-                  <td style={{ color: 'white' ,backgroundColor:'#0b0b0b' , textAlign:'left'}}>
-                    <b>Document Type</b>
-                  </td>
-                  <td style={{ color: 'white' ,backgroundColor:'#0b0b0b' }}>
-                    <b>Upload (Max size 70 MB for each document)</b>
-                  </td>
-                  <td style={{ color: 'white',backgroundColor:'#0b0b0b' }}>
-                    <b>Uploaded Document</b>
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                {documents.map((doc) => (
-                  <tr key={doc.id} className="document-row">
-                    <td className="document-type">
-                      {doc.type}
-                      {doc.note && <font color="red">{doc.note}</font>}
-                    </td>
-                    <td className="upload-column">
-                      <div className="file-upload-wrapper">
-                        <input
-                          ref={el => fileInputRefs.current[doc.id] = el}
-                          type="file"
-                          className="file-input"
-                          onChange={(e) => handleFileChange(doc.id, e)}
-                          id={`file-input-${doc.id}`}
-                        />
-                        <label htmlFor={`file-input-${doc.id}`} className="file-input-label">
-                          Choose File
-                        </label>
-                        <span className="file-name-display">{doc.fileName}</span>
-                      </div>
-                    </td>
-                    <td className="uploaded-column">
-                      {doc.showProgressBar && (
-                        <div className="progress-bar">
-                          <div className="progress-fill" style={{ width: `${doc.progress}%` }}>
-                            {doc.progress}%
-                          </div>
-                        </div>
-                      )}
-
-                      {doc.showLink && doc.uploadedFile && (
-                        <>
-                          <a
-                            href="#"
-                            className="lnk-link"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleDownload(doc.uploadedFile, doc.fileUrl);
-                            }}
-                            style={{ display: 'inline-block', marginRight: '10px' }}
-                          >
-                            {doc.uploadedFile}
-                          </a>
-                          {doc.showDelete && (
-                            <a
-                              href="#"
-                              className="delete-link"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleDelete(doc.id);
-                              }}
-                            >
-                              <img src="../images/delete.png" title="Delete" alt="Delete" />
-                            </a>
-                          )}
-                        </>
-                      )}
-
-                      {!doc.showLink && !doc.showProgressBar && (
-                        <span style={{ color: '#666', fontStyle: 'italic' }}>
-                          No file uploaded
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                            <td className="uploaddoc-td">
+                                {uploadedFiles[doc.id] && (
+                                    <a
+                                        href={uploadedFiles[doc.id].url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="uploaddoc-download-link"
+                                        onClick={(e) => {
+                                            if (!uploadedFiles[doc.id].file && uploadedFiles[doc.id].url) {
+                                                e.preventDefault();
+                                                window.open(uploadedFiles[doc.id].url, '_blank', 'noopener,noreferrer');
+                                            }
+                                        }}
+                                        title={uploadedFiles[doc.id].fileName || `Click to view document ${doc.id}`}
+                                    >
+                                        {uploadedFiles[doc.id].file 
+                                            ? uploadedFiles[doc.id].file.name 
+                                            : (uploadedFiles[doc.id].fileName || getDocumentTypeText(doc.id))}
+                                    </a>
+                                )}
+                                {!uploadedFiles[doc.id] && (
+                                    <span className="uploaddoc-no-file">No file uploaded</span>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
             </table>
-          </div>
-          {/* Submitted By */}
-          <div id="dvisconsultant" className="submitted-by-section">
 
-          <div className="submitted-by-label">
-            This Project Registration application is submitted by
-            <span className="required">*</span>
-          </div>
+            {/* Submitted By */}
+            <div className="uploaddoc-submitted-by">
+                <label className="uploaddoc-submitted-label">
+                    This Project Registration application is submitted by
+                    <span className="uploaddoc-required">*</span>
+                </label>
 
-          <div className="submitted-by-options">
-
-            <label className="radio-item">
-              <input
-                type="radio"
-                name="rblIsConsultant"
-                checked={consultantDetails.submittedBy === "Consultancy"}
-                onChange={() => handleConsultantChange('submittedBy', 'Consultancy')}
-              />
-              Consultancy
-            </label>
-
-          </div>
-
-        </div>
-
-                  {/* Consultancy Details */}
-        <div id="dvConsultntDtls" className="consultancy-details-section">
-          <div className="section-header">
-            <h3 className="subheading">Consultancy Details</h3>
-          </div>
-
-          <div className="consultancy-form">
-
-            {/* ===== FIRST ROW ===== */}
-            <div className="row innerdivrow">
-
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label className="label">
-                    Name of Consultancy/Agency/Association/Individual<font color="red">*</font>
-                  </label>
-                  <input
-  type="text"
-  className="form-control inputbox"
-  value={consultantDetails.consultancyName}
-  onChange={(e) =>
-    handleConsultantChange("consultancyName", e.target.value)
-  }
-  placeholder="Name of Consultancy/Agency/Association"
-/>
-
-                </div>
-              </div>
-
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label className="label">
-                    Name<font color="red">*</font>
-                  </label>
-                  <input
-  type="text"
-  className="form-control inputbox"
-  value={consultantDetails.personName}
-  onChange={(e) =>
-    handleConsultantChange("personName", e.target.value)
-  }
-  placeholder="Consultant Name"
-/>
-
-                </div>
-              </div>
-
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label className="label">
-                    Mobile Number<font color="red">*</font>
-                  </label>
-                  <input
-  type="text"
-  className="form-control inputbox"
-  value={consultantDetails.mobileNumber}
-  onChange={(e) =>
-    handleConsultantChange("mobileNumber", e.target.value)
-  }
-  placeholder="Mobile Number"
-/>
-
-                </div>
-              </div>
-
+                <label className="uploaddoc-radio">
+                    <input type="radio" checked readOnly />
+                    Consultancy
+                </label>
             </div>
 
-            {/* ===== SECOND ROW ===== */}
-            <div className="row innerdivrow">
+            {/* Consultancy Details */}
+            <h3 className="uploaddoc-section-title">Consultancy Details</h3>
+            <div className="uploaddoc-section-underline"></div>
 
-              <div className="col-sm-4">
-                <div className="form-group">
-                  <label className="label">
-                    Email Id<font color="red">*</font>
-                  </label>
-                  <input
-  type="email"
-  className="form-control inputbox"
-  value={consultantDetails.emailId}
-  onChange={(e) =>
-    handleConsultantChange("emailId", e.target.value)
-  }
-  placeholder="Email"
-/>
-
+            <div className="uploaddoc-form-grid">
+                <div>
+                    <label>
+                        Name of Consultancy/Agency/Association/Individual
+                        <span className="uploaddoc-required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Name of Consultancy/Agency/Association"
+                        value={consultancyName}
+                        onChange={(e) => setConsultancyName(e.target.value)}
+                        disabled={isLoading}
+                    />
                 </div>
-              </div>
 
-              <div className="col-sm-8">
-                <div className="form-group">
-                  <label className="label">
-                    Full Address for communication<font color="red">*</font>
-                  </label>
-                  <textarea
-  rows="2"
-  className="form-control inputbox"
-  value={consultantDetails.address}
-  onChange={(e) =>
-    handleConsultantChange("address", e.target.value)
-  }
-  placeholder="Full Address for communication"
-/>
-
+                <div>
+                    <label>
+                        Name<span className="uploaddoc-required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Consultant Name"
+                        value={consultantName}
+                        onChange={(e) => setConsultantName(e.target.value)}
+                        disabled={isLoading}
+                    />
                 </div>
-              </div>
 
+                <div>
+                    <label>
+                        Mobile Number<span className="uploaddoc-required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Mobile Number"
+                        value={mobile}
+                        maxLength={10}
+                        onChange={(e) =>
+                            setMobile(e.target.value.replace(/\D/g, ""))
+                        }
+                        disabled={isLoading}
+                    />
+                </div>
+
+                <div>
+                    <label>
+                        Email Id<span className="uploaddoc-required">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={isLoading}
+                    />
+                </div>
+
+                <div className="uploaddoc-full-width">
+                    <label>
+                        Full Address for communication
+                        <span className="uploaddoc-required">*</span>
+                    </label>
+                    <input
+                        placeholder="Full Address for communication"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        disabled={isLoading}
+                    />
+                </div>
             </div>
 
-          </div>
-        </div>
-
-          <div className="note-section">
-            <label className="note-label">
-              Note: If encountered any issue during upload of documents, please contact APRERA IT Support Team.
-            </label>
-          </div>
+            <p className="uploaddoc-note">
+                Note: If encountered any issue during upload of documents, please contact
+                APRERA IT Support Team.
+            </p>
 
             {/* Declaration */}
-          <div className="declaration-section">
+            <h3 className="uploaddoc-section-title">Declaration</h3>
+            <div className="uploaddoc-section-underline"></div>
 
-            <div className="section-header">
-              <h3 className="subheading">Declaration</h3>
-            </div>
-
-            <div className="declaration-content">
-
-              <div className="declaration-inline">
-
-               <input 
-  type="checkbox" 
-  className="declaration-checkbox"
-  checked={declaration.checked}
-  onChange={() => handleDeclarationChange('checked')}
-/>
-
-
-                <span className="declaration-prefix">I/We</span>
-
-                <input 
-  type="text" 
-  className="declaration-name-input"
-  value={declaration.name}
-  onChange={(e) =>
-    setDeclaration(prev => ({ ...prev, name: e.target.value }))
-  }
-/>
-
-
-                <span className="declaration-text">
-                  solemnly affirm and declare that the particulars given above are correct to my/our knowledge and belief.
+            <div className="uploaddoc-declaration">
+                <input
+                    type="checkbox"
+                    checked={declarationChecked}
+                    onChange={(e) => setDeclarationChecked(e.target.checked)}
+                    disabled={isLoading}
+                />
+                <span>
+                    I/We
+                    <input 
+                        type="text" 
+                        className="uploaddoc-inline-input" 
+                        value={consultantName}
+                        readOnly
+                    />
+                    solemnly affirm and declare that the particulars given above are correct
+                    to my/our knowledge and belief.
                 </span>
-
-              </div>
-
             </div>
 
-          </div>
+            {/* Note */}
+            <h3 className="uploaddoc-section-title">Note</h3>
+            <div className="uploaddoc-section-underline"></div>
 
-                    {/* Additional Notes */}
-          <div id="Div2" className="additional-notes-section">
+            <div className="uploaddoc-note-list">
+                <div>
+                    <input
+                        type="checkbox"
+                        checked={note1Checked}
+                        onChange={(e) => setNote1Checked(e.target.checked)}
+                        disabled={isLoading}
+                    />
+                    <span>
+                        1. The applicability of the Penalty/additional fee may be imposed, if
+                        any, provision of the act is violated, as determined by the Authority,
+                        as the case may be.
+                    </span>
+                </div>
 
-            <div className="section-header">
-              <h3 className="subheading">Note</h3>
+                <div>
+                    <input
+                        type="checkbox"
+                        checked={note2Checked}
+                        onChange={(e) => setNote2Checked(e.target.checked)}
+                        disabled={isLoading}
+                    />
+                    <span>
+                        2. As per section 4 of the RERA Act, 2016, you are hereby directed to
+                        address the shortfalls within 15 days as addressed by the Authority,
+                        failing which the application may be rejected as per Section 4 of the Act.
+                    </span>
+                </div>
             </div>
 
-            <div className="notes-content">
-
-              <div className="note-item">
-                <input
-                  type="checkbox"
-                  id="chkNote1"
-                  checked={declaration.note1}
-                  onChange={() => handleDeclarationChange('note1')}
-                  className="note-checkbox"
-                />
-
-                <label htmlFor="chkNote1" className="note-text1">
-                  1. The applicability of the Penalty/additional fee may be imposed, if any, provision of the act is violated, as determined by the Authority, as the case may be.
-                </label>
-              </div>
-
-              <div className="note-item">
-                <input
-                  type="checkbox"
-                  id="chkNote2"
-                  checked={declaration.note2}
-                  onChange={() => handleDeclarationChange('note2')}
-                  className="note-checkbox"
-                />
-
-                <label htmlFor="chkNote2" className="note-text1">
-                  2. As per section 4 of the RERA Act, 2016, you are hereby directed to address the shortfalls within 15 days as addressed by the Authority, failing which the application may be rejected as per Section 4 of the Act.
-                </label>
-              </div>
-
+            {/* Save Button */}
+            <div className="uploaddoc-save-wrapper">
+                <button
+                    className="uploaddoc-save-btn"
+                    onClick={handleSave}
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Saving..." : "Save"}
+                </button>
             </div>
-          </div>
 
-
-          <div className="form-actions">
-            <button type="submit" className="save-button">
-              Save
-            </button>
-          </div>
+            {showPopup && (
+                <>
+                    <div className="uploaddoc-overlay"></div>
+                    <div className="uploaddoc-popup">
+                        <button
+                            className="uploaddoc-popup-close"
+                            onClick={() => setShowPopup(false)}
+                        >
+                            ×
+                        </button>
+                        <p>{popupMessage}</p>
+                    </div>
+                </>
+            )}
         </div>
-      </form>
-    </div>
-  );  
-};
-
-export default UploadDocumentsWithApi;
+    );
+}

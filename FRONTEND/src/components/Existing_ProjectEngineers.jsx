@@ -308,29 +308,30 @@ if (!engineerId) {
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-  {engineers.map((e, index) => (
-    <tr key={`project-engineer-${e.id ?? "noid"}-${index}`}>
-      <td>{index + 1}</td>
+           <tbody>
+  {engineers.map((e, index) => {
+    const deleteId = e.id || e.associate_id;
 
-      {/* Supports preview + normal API */}
-      <td>{e.engineer_name || e.name || "-"}</td>
-      <td>{e.email_id || e.email || "-"}</td>
-      <td>{e.address_line1 || e.address || "-"}</td>
-      <td>{e.mobile_number || e.mobile || "-"}</td>
+    return (
+      <tr key={deleteId || index}>
+        <td>{index + 1}</td>
 
-      <td>
-        {e.id && (
+        <td>{e.engineer_name || e.name || "-"}</td>
+        <td>{e.email_id || e.email || "-"}</td>
+        <td>{e.address_line1 || e.address || "-"}</td>
+        <td>{e.mobile_number || e.mobile || "-"}</td>
+
+        <td>
           <button
             className="btn-delete"
-            onClick={() => handleDelete(e.id)}
+            onClick={() => handleDelete(deleteId)}
           >
             Delete
           </button>
-        )}
-      </td>
-    </tr>
-  ))}
+        </td>
+      </tr>
+    );
+  })}
 </tbody>
 
           </table>

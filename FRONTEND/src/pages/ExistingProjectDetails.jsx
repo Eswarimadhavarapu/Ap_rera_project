@@ -11,8 +11,10 @@ import ProjectMaterialFacts from "../components/ExistingProjectMaterialFacts";
 import LegalDeclaration from "../components/ExistingLegalDeclaration";
 import ProjectConstructionStatus from "../components/ExistingProjectConstructionStatus";
 
-import { apiPost } from "../api/api";
-import ExistingProjectWizard from "../components/ExistingProjectWizard";
+import OtherThanIndividualAuthorizedSignatory 
+  from "../components/OtherThanIndividualAuthorizedSignatory";
+
+import { apiPost, apiPut, apiGet } from "../api/api";
 
 const ExistingProjectDetails = () => {
 
@@ -21,11 +23,15 @@ const ExistingProjectDetails = () => {
 
   let panNumber =
     location.state?.panNumber ||
-    sessionStorage.getItem("panNumber");
+    sessionStorage.getItem("panNumber")||"SUNIL0000K";
 
   let applicationNumber =
     location.state?.applicationNumber ||
-    sessionStorage.getItem("applicationNumber");
+    sessionStorage.getItem("applicationNumber")||"100126273336";
+
+  let promoterType =
+   location.state?.promoterType ||
+   sessionStorage.getItem("promoterType")||"other";
 
 
   /* ===============================
@@ -33,6 +39,9 @@ const ExistingProjectDetails = () => {
   =============================== */
 
   const [isExistingProject, setIsExistingProject] = useState(false);
+
+  const [fetchSuccessMsg, setFetchSuccessMsg] = useState("");
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState("");
 
   const [formData, setFormData] = useState({
 
@@ -88,6 +97,21 @@ const ExistingProjectDetails = () => {
     localVillage: "0",
     localPincode: "",
 
+
+    // ✅ Add these new fields
+
+  authorizedSignatoryName: "",
+  authorizedSignatoryMobile: "",
+  authorizedSignatoryEmail: "",
+  isExistingDirector: "",
+
+  authorizedSignatoryPhoto: null,
+  authorizedSignatoryPhotoPath: "",
+
+  boardResolutionCopy: null,
+  boardResolutionCopyPath: "",
+
+
     developmentCompleted: "",
     developmentPending: "",
 
@@ -131,11 +155,14 @@ const ExistingProjectDetails = () => {
   =============================== */
 
   useEffect(() => {
-    sessionStorage.setItem("panNumber", panNumber);
-    sessionStorage.setItem("applicationNumber", applicationNumber);
-  }, [panNumber, applicationNumber]);
+  sessionStorage.setItem("panNumber", panNumber);
+  sessionStorage.setItem("applicationNumber", applicationNumber);
 
+  if (promoterType) {
+    sessionStorage.setItem("promoterType", promoterType);
+  }
 
+}, [panNumber, applicationNumber, promoterType]);
   /* ===============================
      LOAD EXISTING PROJECT
   =============================== */
@@ -146,14 +173,18 @@ const ExistingProjectDetails = () => {
 
       try {
 
-        const res = await apiPost("/api/get-project-by-application", {
-          panNumber,
-          applicationNumber,
-        });
+       const endpoint =
+  promoterType === "other"
+    ? `/api/othertheninduvidual-project-registration/details?applicationNumber=${applicationNumber}&panNumber=${panNumber}`
+    : `/api/project-registration/details?applicationNumber=${applicationNumber}&panNumber=${panNumber}`;
+
+const res = await apiGet(endpoint);
 
         console.log("FETCH RESPONSE:", res);
 
         if (res?.data && Object.keys(res.data).length > 0) {
+
+          setFetchSuccessMsg("Existing data loaded! You can update the information below and resubmit.");
 
           setIsExistingProject(true);
 
@@ -221,6 +252,16 @@ const ExistingProjectDetails = () => {
             localVillage: String(d.local_village || "0"),
             localPincode: d.local_pincode || "",
 
+
+           authorizedSignatoryName: d.authorized_signatory_name || "",
+           authorizedSignatoryMobile: d.authorized_signatory_mobile || "",
+           authorizedSignatoryEmail: d.authorized_signatory_email || "",
+           isExistingDirector: d.is_existing_director || "",
+
+          authorizedSignatoryPhotoPath: d.authorized_signatory_photo_path || "",
+          boardResolutionCopyPath: d.board_resolution_copy_path || "",
+
+
             developmentCompleted: d.development_completed || "",
             developmentPending: d.development_pending || "",
 
@@ -248,7 +289,7 @@ const ExistingProjectDetails = () => {
         } else {
 
           setIsExistingProject(false);
-
+          setFetchSuccessMsg("");
         }
 
       } catch (err) {
@@ -261,7 +302,7 @@ const ExistingProjectDetails = () => {
 
     loadProject();
 
-  }, [panNumber, applicationNumber]);
+  }, [panNumber, applicationNumber, promoterType]);
 
 
   /* ===============================
@@ -309,57 +350,173 @@ const ExistingProjectDetails = () => {
   /* ===============================
      SUBMIT
   =============================== */
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
 
-  const handleSubmit = async (e) => {
+//   if (!formData.legalDeclarationAccepted) {
+//     alert("Accept legal declaration");
+//     return;
+//   }
 
-    e.preventDefault();
+//   const payload = {
+//   ...formData,
+//   panNumber,
+//   applicationNumber,
+//   totalOpenArea,
+//   totalProjectCost,
+// };
 
-    if (!formData.legalDeclarationAccepted) {
-      alert("Accept legal declaration");
-      return;
-    }
+//   try {
+//     // ✅ ALWAYS CALL SAME API
+//     // ✅ If project exists → UPDATE
+// if (promoterType === "other") {
 
-    // 👉 EXISTING → JUST CONTINUE
-    if (isExistingProject) {
+//   if (isExistingProject) {
+//     await apiPut(
+//       "/api/othertheninduvidual-project-registration/update",
+//       payload
+//     );
+//   } else {
+//     await apiPost(
+//       "/api/othertheninduvidual-project-registration",
+//       payload
+//     );
+//   }
 
-      navigate("/existing-development-details", {
-        state: { panNumber, applicationNumber },
-      });
+// } else {
 
-      return;
-    }
+//   if (isExistingProject) {
+//     const formDataToSend = new FormData();
 
-    // 👉 NEW → SAVE
+// // append normal fields
+// Object.keys(formData).forEach((key) => {
+//   if (formData[key] !== null && formData[key] !== undefined) {
+//     formDataToSend.append(key, formData[key]);
+//   }
+// });
 
-    const payload = new FormData();
+// formDataToSend.append("panNumber", panNumber);
+// formDataToSend.append("applicationNumber", applicationNumber);
+// formDataToSend.append("totalOpenArea", totalOpenArea);
+// formDataToSend.append("totalProjectCost", totalProjectCost);
 
-    Object.entries(formData).forEach(([k, v]) => {
-      if (v !== null && v !== "") {
-        payload.append(k, v);
+// const response = await fetch(
+//   "https://bs20m5dw-8080.inc1.devtunnels.ms/api/project-registration/update",
+//   {
+//     method: "PUT",
+//     body: formDataToSend,
+//   }
+// );
+
+// if (!response.ok) {
+//   throw new Error("Update failed");
+// }
+//   } else {
+//     await apiPost("/api/project-registration", payload);
+//   }
+
+// }
+
+// setSaveSuccessMsg("Project details saved successfully");
+//     navigate("/existing-development-details", {
+//       state: { panNumber, applicationNumber },
+//     });
+
+//   } catch (err) {
+//     console.error("Submit Error:", err);
+//     alert(err.message || "Save failed");
+//   }
+// };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!formData.legalDeclarationAccepted) {
+    alert("Accept legal declaration");
+    return;
+  }
+
+  try {
+
+    const formDataToSend = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null && formData[key] !== undefined) {
+        formDataToSend.append(key, formData[key]);
       }
     });
 
-    payload.append("panNumber", panNumber);
-    payload.append("applicationNumber", applicationNumber);
-    payload.append("totalOpenArea", totalOpenArea);
-    payload.append("totalProjectCost", totalProjectCost);
+    formDataToSend.append("panNumber", panNumber);
+    formDataToSend.append("applicationNumber", applicationNumber);
+    formDataToSend.append("totalOpenArea", totalOpenArea);
+    formDataToSend.append("totalProjectCost", totalProjectCost);
 
-    try {
+    if (promoterType === "other") {
 
-      await apiPost("/api/project-registration", payload);
+      if (isExistingProject) {
 
-      navigate("/existing-development-details", {
-        state: { panNumber, applicationNumber },
-      });
+        const response = await fetch(
+          "https://0jv8810n-8080.inc1.devtunnels.ms/api/othertheninduvidual-project-registration/update",
+          {
+            method: "PUT",
+            body: formDataToSend,
+          }
+        );
 
-    } catch (err) {
+        if (!response.ok) {
+          throw new Error("Update failed");
+        }
 
-      alert(err.message || "Save failed");
+      } else {
+
+        await apiPost(
+          "/api/othertheninduvidual-project-registration",
+          Object.fromEntries(formDataToSend)
+        );
+
+      }
+
+    } else {
+
+      if (isExistingProject) {
+
+        const response = await fetch(
+          "https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration/update",
+          {
+            method: "PUT",
+            body: formDataToSend,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Update failed");
+        }
+
+      } else {
+
+        await apiPost("/api/project-registration", Object.fromEntries(formDataToSend));
+
+      }
 
     }
-  };
 
+    setSaveSuccessMsg("Project details saved successfully");
 
+    navigate("/existing-development-details", {
+  state: { 
+    panNumber, 
+    applicationNumber,
+    promoterType
+  },
+});
+
+  } catch (err) {
+
+    console.error("Submit Error:", err);
+    alert(err.message || "Save failed");
+
+  }
+};
   /* ===============================
      RENDER
   =============================== */
@@ -368,7 +525,21 @@ const ExistingProjectDetails = () => {
 
     <div className="project-details-container">
 
-      <ExistingProjectWizard currentStep={2} />
+      <ProjectWizard currentStep={2} />
+      
+       {fetchSuccessMsg && (
+  <div className="alert alert-success">
+    {fetchSuccessMsg}
+  </div>
+)}
+
+{saveSuccessMsg && (
+  <div className="alert alert-success">
+    {saveSuccessMsg}
+  </div>
+)}
+
+      
 
       <form onSubmit={handleSubmit} className="project-form">
 
@@ -387,6 +558,17 @@ const ExistingProjectDetails = () => {
           formData={formData}
           handleInputChange={handleInputChange}
         />
+        
+        {promoterType === "other" && (
+        <OtherThanIndividualAuthorizedSignatory
+        formData={formData}
+        handleInputChange={handleInputChange}
+        handleFileChange={handleFileChange}
+        />
+        )}
+
+
+
        {["0", "3", ""].includes(formData.projectStatus) && (
 
 

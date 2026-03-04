@@ -343,30 +343,31 @@ const ExistingArchitects = ({
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-  {architects.map((a, index) => (
-    <tr key={a.id || index}>
-      <td>{index + 1}</td>
+          <tbody>
+  {architects.map((a, index) => {
+    const deleteId = a.id || a.associate_id;
 
-      {/* Works for BOTH preview + normal API */}
-      <td>{a.architect_name || a.name}</td>
-      <td>{a.email_id || a.email || "-"}</td>
-      <td>{a.address_line1 || a.address}</td>
-      <td>{a.mobile_number || a.mobile}</td>
-      <td>{a.coa_registration_number || a.reg_number}</td>
+    return (
+      <tr key={deleteId || index}>
+        <td>{index + 1}</td>
 
-      <td>
-        {a.id && (
+        <td>{a.architect_name || a.name}</td>
+        <td>{a.email_id || a.email || "-"}</td>
+        <td>{a.address_line1 || a.address}</td>
+        <td>{a.mobile_number || a.mobile}</td>
+        <td>{a.coa_registration_number || a.reg_number}</td>
+
+        <td>
           <button
             className="btn-delete"
-            onClick={() => handleDelete(a.id)}
+            onClick={() => handleDelete(deleteId)}
           >
             Delete
           </button>
-        )}
-      </td>
-    </tr>
-  ))}
+        </td>
+      </tr>
+    );
+  })}
 </tbody>
 
           </table>

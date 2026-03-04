@@ -183,9 +183,9 @@ def insert_othertheninduvidual_project_registration(data):
 
 
 # =========================================================
-# 🔥 GET DATA (FOR PREVIEW)
+# 🔥 GET DATA othertheninduvidual preview  (FOR PREVIEW)
 # =========================================================
-def get_othertheninduvidual_project_registration(application_number, pan_number):
+def fetch_othertheninduvidual_project_registration(application_number, pan_number):
 
     query = text("""
         SELECT     -- ================= BASIC =================
@@ -325,3 +325,155 @@ def get_othertheninduvidual_project_registration(application_number, pan_number)
         return {}
 
     return dict(result)
+  
+  
+  
+# ---------------------------------------------------------
+# FETCH OTHER THAN INDIVIDUAL (BY PAN + APPLICATION NO)
+# ---------------------------------------------------------
+def get_othertheninduvidual_project_registration(application_number, pan_number):
+
+    query = text("""
+        SELECT *
+        FROM othertheninduvidual_project_registration
+        WHERE application_number = :application_number
+        AND pan_number = :pan_number
+        LIMIT 1
+    """)
+
+    result = db.session.execute(
+        query,
+        {
+            "application_number": application_number,
+            "pan_number": pan_number
+        }
+    ).mappings().first()
+
+    return dict(result) if result else None
+  
+  # =========================================================
+# ✅ SAFE DYNAMIC UPDATE (OTHER THAN INDIVIDUAL)
+# =========================================================
+def update_othertheninduvidual_project_registration(data):
+
+    from sqlalchemy import text
+    from app.models.database import db
+
+    application_number = data.get("application_number")
+    pan_number = data.get("pan_number")
+
+    if not application_number or not pan_number:
+        return 0
+
+    # 🔁 camelCase → snake_case mapping
+    field_mapping = {
+        "projectName": "project_name",
+        "projectDescription": "project_description",
+        "projectType": "project_type",
+        "projectStatus": "project_status",
+        "buildingPlanNo": "building_plan_no",
+        "buildingPermissionFrom": "building_permission_from",
+        "buildingPermissionUpto": "building_permission_upto",
+        "dateOfCommencement": "date_of_commencement",
+        "proposedCompletionDate": "proposed_completion_date",
+        "totalAreaOfLand": "total_area_of_land",
+        "buildingHeight": "building_height",
+        "totalPlinthArea": "total_plinth_area",
+        "totalBuiltUpArea": "total_built_up_area",
+        "garagesAvailableForSale": "garages_available_for_sale",
+        "totalGarageArea": "total_garage_area",
+        "openParkingSpaces": "open_parking_spaces",
+        "totalOpenParkingArea": "total_open_parking_area",
+        "coveredParkingSpaces": "covered_parking_spaces",
+        "totalCoveredParkingArea": "total_covered_parking_area",
+        "estimatedConstructionCost": "estimated_construction_cost",
+        "costOfLand": "cost_of_land",
+        "totalOpenArea": "total_open_area",
+        "totalProjectCost": "total_project_cost",
+        "projectAddress1": "project_address1",
+        "projectAddress2": "project_address2",
+        "projectDistrict": "project_district",
+        "projectMandal": "project_mandal",
+        "projectVillage": "project_village",
+        "projectPincode": "project_pincode",
+        "projectLatitude": "project_latitude",
+        "projectLongitude": "project_longitude",
+        "planApprovingAuthority": "plan_approving_authority",
+        "surveyNo": "survey_no",
+        "authorizedSignatoryName": "authorized_signatory_name",
+        "authorizedSignatoryMobile": "authorized_signatory_mobile",
+        "authorizedSignatoryEmail": "authorized_signatory_email",
+        "isExistingDirector": "is_existing_director"
+    }
+
+    converted_data = {}
+    for key, value in data.items():
+        converted_data[field_mapping.get(key, key)] = value
+
+    data = converted_data
+
+    # convert "" → None
+    for key in data:
+        if data[key] == "":
+            data[key] = None
+
+    protected_fields = {"id", "application_number", "pan_number"}
+
+    valid_columns = {
+    "project_name","project_description","project_type","project_status",
+    "building_plan_no","building_permission_from","building_permission_upto",
+    "date_of_commencement","proposed_completion_date",
+    "total_area_of_land","building_height","total_plinth_area","total_built_up_area",
+    "garages_available_for_sale","total_garage_area",
+    "open_parking_spaces","total_open_parking_area",
+    "covered_parking_spaces","total_covered_parking_area",
+    "estimated_construction_cost","cost_of_land",
+    "total_open_area","total_project_cost",
+    "project_address1","project_address2",
+    "project_district","project_mandal","project_village",
+    "project_pincode","project_latitude","project_longitude",
+    "plan_approving_authority","survey_no","address_proof_path",
+    "local_address1","local_address2","local_area","local_landmark",
+    "local_district","local_mandal","local_village",
+    "local_pincode","project_website_url",
+    "development_completed","development_pending",
+    "amount_collected","amount_spent","balance_amount","plan_modified",
+    "architect_certificate_path","engineer_certificate_path","ca_certificate_path",
+    "project_delayed","number_of_units","units_advance_taken",
+    "units_agreement_sale","units_sold","legal_declaration_accepted",
+    "authorized_signatory_name","authorized_signatory_mobile",
+    "authorized_signatory_email","is_existing_director",
+    "authorized_signatory_photo_path","board_resolution_copy_path"
+    "address_proof_path",
+    "architect_certificate_path",
+    "engineer_certificate_path",
+    "ca_certificate_path",
+    "authorized_signatory_photo_path",
+    "board_resolution_copy_path",
+}
+
+    update_data = {
+    key: value
+    for key, value in data.items()
+    if key in valid_columns
+}
+
+    if not update_data:
+        return 0
+
+    set_clause = ", ".join([f"{key} = :{key}" for key in update_data])
+
+    query = text(f"""
+        UPDATE othertheninduvidual_project_registration
+        SET {set_clause}
+        WHERE application_number = :application_number
+        AND pan_number = :pan_number
+    """)
+
+    update_data["application_number"] = application_number
+    update_data["pan_number"] = pan_number
+
+    result = db.session.execute(query, update_data)
+    db.session.commit()
+
+    return result.rowcount
