@@ -25,24 +25,24 @@ const announcements = [
       "APRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority).",
     pdf: QUStatus,
   },
-  {
-    title: "Circular No. P/10/2025, Dt.14-05-2025",
-    description:
-      "AP RERA - Change Request (CR) - Levy of Fee - Circular Issued - Reg.",
-    pdf: CircularCR,
-  },
-  {
-    title: "Circular No. P/9/2025 Dt.28-03-2025",
-    description:
-      "AP RERA - Pending QPRs - Imposition of Penalty for delayed submission and to provide uninterrupted link henceforth - Circular Issued - Reg.",
-    pdf: QPR,
-  },
-  {
-    title: "Circular No. P/8/2025 Dt.28-03-2025",
-    description:
-      "AP RERA - Directions for Maintenance and Operation of Real Estate Project Bank Accounts - Reg.",
-    pdf: Bank,
-  },
+  // {
+  //   title: "Circular No. P/10/2025, Dt.14-05-2025",
+  //   description:
+  //     "AP RERA - Change Request (CR) - Levy of Fee - Circular Issued - Reg.",
+  //   pdf: CircularCR,
+  // },
+  // {
+  //   title: "Circular No. P/9/2025 Dt.28-03-2025",
+  //   description:
+  //     "AP RERA - Pending QPRs - Imposition of Penalty for delayed submission and to provide uninterrupted link henceforth - Circular Issued - Reg.",
+  //   pdf: QPR,
+  // },
+  // {
+  //   title: "Circular No. P/8/2025 Dt.28-03-2025",
+  //   description:
+  //     "AP RERA - Directions for Maintenance and Operation of Real Estate Project Bank Accounts - Reg.",
+  //   pdf: Bank,
+  // },
 ];
 
 const AnnouncementPopup = () => {

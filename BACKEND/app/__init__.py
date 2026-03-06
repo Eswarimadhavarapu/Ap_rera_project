@@ -117,6 +117,7 @@ def create_app():
     from app.controllers.org_member_other_t_indv_controller import org_member_other_t_indv_bp
 
     from app.controllers.quarterly_controller import quarterly_bp
+    from app.controllers.project_quarterly_plot_controller import project_quarterly_plot_bp
     app.register_blueprint(quarterly_bp, url_prefix="/api")
 
     app.register_blueprint(promoter_other_t_indv_bp)
@@ -154,6 +155,7 @@ def create_app():
     url_prefix="/api")
   
     app.register_blueprint(othertheninduvidual_project_preview_bp, url_prefix="/api")
+    app.register_blueprint(project_quarterly_plot_bp)
   
 
     return app

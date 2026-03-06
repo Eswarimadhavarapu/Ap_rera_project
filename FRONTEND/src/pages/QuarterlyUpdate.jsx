@@ -67,13 +67,25 @@ const handleSave = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      const confirmNavigate = window.confirm("Details Saved Successfully");
 
-      if (confirmNavigate) {
-        navigate("/project-blockvilla-details");  // 🔁 change to your required page
-      }
+  // ✅ Store Step 1 as completed
+  const completed =
+    JSON.parse(localStorage.getItem("quarterlyCompletedSteps")) || [];
 
-    } else {
+  if (!completed.includes(1)) {
+    completed.push(1);
+    localStorage.setItem(
+      "quarterlyCompletedSteps",
+      JSON.stringify(completed)
+    );
+  }
+
+  const confirmNavigate = window.confirm("Details Saved Successfully");
+
+  if (confirmNavigate) {
+    navigate("/project-blockvilla-details");
+  }
+} else {
       alert(data.error);
     }
 

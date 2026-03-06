@@ -29,6 +29,7 @@ class AgentOtherThanIndividualLitigation(db.Model):
             "petitioner_name": self.petitioner_name,
             "respondent_name": self.respondent_name,
             "case_facts": self.case_facts,
+            "present_status": self.present_status,
             "interim_order": (
                 self.interim_order_certificate.get("file")
                 if isinstance(self.interim_order_certificate, dict)

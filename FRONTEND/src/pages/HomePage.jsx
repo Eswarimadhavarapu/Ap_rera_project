@@ -92,7 +92,7 @@ function Navbar() {
           </a>
         </div>
 
-        <div className="homenavbar-new-notice-line">
+        {/* <div className="homenavbar-new-notice-line">
           <span className="homenavbar-new-notice-text">
             <span className="homenavbar-new-badge">NEW</span>
             Quarterly Updates: All the promoters have to submit the Quarterly
@@ -100,7 +100,7 @@ function Navbar() {
             without fail.
             <span className="homenavbar-new-badge">NEW</span>
           </span>
-        </div>
+        </div> */}
 
         <div className="homenavbar-new-notice-line">
           <span className="homenavbar-new-notice-text">

@@ -1,16 +1,20 @@
 import "../styles/AgentDetails.css";
 import { useLocation } from "react-router-dom";
-
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 import AgentStepper from "../components/AgentStepper";
 import { useAgentForm } from "./AgentFormContext";
+const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const passedPan = location.state?.pan || "";
-
+   const applicationIdFromNav = location.state?.application_id;
+  const organisationIdFromNav = location.state?.organisation_id;
+  console.log("organisationIdFromNav:", organisationIdFromNav);
+  const isFromStepper = !!organisationIdFromNav;
 const getStep = () => {
   if (location.pathname.includes("AgentUploadDocumentotherthan")) return 2;
   if (location.pathname.includes("Preview")) return 3;
@@ -62,7 +66,10 @@ function isImageFile(file) {
 function isPDFFile(file) {
   return file && file.type === "application/pdf";
 }
-
+// ===== CHECK FILE OR EXISTING URL =====
+function hasFileOrUrl(file, url) {
+  return !!file || !!url;
+}
 // ===== ADDRESS VALIDATION =====
 
 // Allow letters, numbers, space, , . / - # ()
@@ -249,13 +256,25 @@ const [otherReraList, setOtherReraList] = useState([]);
 // ===== FILE STATES =====
 const [files, setFiles] = useState({
   regCert: null,
+  regCertUrl: null,        // ✅ ADD THIS
+
   panDoc: null,
+  panDocUrl: null,         // ✅ ADD THIS
+
   gstDoc: null,
+  gstDocUrl: null,         // ✅ ADD THIS
+legalDocUrl:null,
   addressProof: null,
+  addressProofUrl: null,   // ✅ ADD THIS
+   authPhotoUrl: null,
+boardResolutionUrl: null,
   authPhoto: null,
   boardResolution: null,
-  partnershipDeed: null, 
+  partnershipDeed: null,
   memorandumDoc: null,
+  selfAffidavitUrl: null,
+  boardResolutionUrl: null
+   
 });
 
 const [directors, setDirectors] = useState([]);
@@ -548,6 +567,9 @@ const [trusteeDistricts, setTrusteeDistricts] = useState([]);
 
 // ================= LOAD SAVED FORM =================
 useEffect(() => {
+  // 🔥 If coming from Stepper, DO NOT load draft
+ // if (organisationIdFromNav) return;
+
   const saved = localStorage.getItem("agentDetailsDraft");
 
   if (!saved) return;
@@ -556,13 +578,14 @@ useEffect(() => {
 
   setForm((prev) => ({
     ...data.form,
-    pan: passedPan || data.form?.pan || "", // ⭐ KEEP PASSED PAN SAFE
+    pan: passedPan || data.form?.pan || "",
   }));
 
   setFiles(data.files || {});
   setDirectors(data.directors || []);
   setTrustees(data.trustees || []);
   setPartners(data.partners || []);
+    setLitigations(data.litigations || []);
   // 🔥 RESTORE TRUSTEE FORMS
 setIndianTrusteeForm(data.indianTrusteeForm || {});
 setForeignerTrusteeForm(data.foreignerTrusteeForm || {});
@@ -615,6 +638,8 @@ setOtherReraDistrictId(data.otherReraDistrictId || "");
 
 // ================= AUTO SAVE FORM =================
 useEffect(() => {
+
+  if (isFromStepper) return;
   const data = {
     form,
     files,
@@ -806,17 +831,194 @@ useEffect(() => {
 }, [directorStateId]);
 
 // ===== LOAD OTHER RERA DISTRICTS =====
+// ===== LOAD OTHER RERA DISTRICTS =====
 useEffect(() => {
   if (!otherReraStateId) return;
-
   apiGet(`/api/districts/${otherReraStateId}`)
     .then((res) => {
       setOtherReraDistricts(res || []);
       setOtherReraDistrictId("");
     })
     .catch(console.error);
-
 }, [otherReraStateId]);
+
+
+// ✅ ADD THE NEW useEffect RIGHT HERE ↓
+// ===== FETCH EXISTING DATA WHEN RETURNING VIA STEPPER =====
+useEffect(() => {
+if (!organisationIdFromNav) return;
+
+  localStorage.removeItem("agentDetailsDraft");
+localStorage.removeItem("agentDetailsDraft");
+  const fetchExistingData = async () => {
+    try {
+     const res = await axios.get(
+  `${BASE_URL}/api/agent/other-than-individual/details`,
+  {
+    params: { organisation_id: organisationIdFromNav },
+  }
+);
+      console.log("API STATUS:", res.status);
+      const result = res.data;
+      console.log("API FULL RESPONSE:", result);
+      if (result.status !== "success") return;
+
+      const org = result.organisation || {};
+       setFiles(prev => ({
+        ...prev,
+        regCertUrl: org.registration_cert_doc || null,
+        panDocUrl: org.pan_card_doc?.file || null,
+        gstDocUrl: org.gst_doc || null,
+        addressProofUrl: org.address_proof_doc?.file || null,
+        legalDocUrl: org.legal_document || null,
+      }));
+      const entities = result.entities || [];
+      const authorized = result.authorized || [];
+      const litigationsList = result.litigations || [];
+      const selfAffidavitUrl = litigationsList[0]?.self_declared_affidavit || null;
+
+      const auth = authorized[0] || {};
+      setFiles(prev => ({
+  ...prev,
+  authPhotoUrl: auth.photo || null,
+  boardResolutionUrl: auth.board_resolution || null,
+    selfAffidavitUrl: selfAffidavitUrl || null,
+}));
+      setForm(prev => ({
+        ...prev,
+        orgType: org.organisation_type || "",
+        orgName: org.organisation_name || "",
+        cin: org.registration_identifier || "",
+        regNumber: org.registration_identifier || "",
+        trustNumber: org.registration_identifier || "",
+        regDate: org.registration_date || "",
+        trustRegDate: org.registration_date || "",
+        pan: org.pan_card_number || "",
+        email: org.email_id || "",
+        mobile: org.mobile_number || "",
+        landline: org.landline_number || "",
+        gst: org.gst_number || "",
+        address1: org.address_line1 || "",
+        address2: org.address_line2 || "",
+        pincode: org.pincode || "",
+        signName: auth.name || "",
+        signMobile: auth.mobile_number || "",
+        signEmail: auth.email_id || "",
+      }));
+
+      setFiles(prev => ({
+  ...prev,
+  regCertUrl: org.registration_cert_doc || null,
+  panDocUrl: org.pan_card_doc?.file || null,
+  gstDocUrl: org.gst_doc || null,
+  addressProofUrl: org.address_proof_doc?.file || null,
+  
+}));
+
+      setStateData({ id: "", name: org.state || "" });
+      setDistrictData({ id: "", name: org.district || "" });
+      setMandalData({ id: "", name: org.mandal || "" });
+      setVillageData({ id: "", name: org.village || "" });
+
+      if (entities.length > 0) {
+        const mappedEntities = entities.map((e, idx) => ({
+          id: idx + 1,
+          nationality: e.entity_type || "Indian",
+          designation: e.designation || "",
+          name: e.name || "",
+          din: e.din_number || "NA",
+          aadhaar: e.aadhaar_number || "NA",
+          email: e.email_id || "",
+          mobile: e.mobile_number || "",
+          state: e.state_ut || "",
+          district: e.district || "",
+          address1: e.address_line1 || "",
+          address2: e.address_line2 || "NA",
+          pincode: e.pincode || "NA",
+          pan: e.pan_card_number || "NA",
+          photo: null,
+          addressProof: null,
+          panDoc: null,
+          aadhaarDoc: null,
+          _photoUrl: e.photograph,
+          _addressProofUrl: e.address_proof,
+          _panDocUrl: e.pan_card_doc,
+          _aadhaarDocUrl: e.aadhaar_doc,
+        }));
+
+        const orgType = org.organisation_type || "";
+        if (orgType === "Trust/Society") {
+          setTrustees(mappedEntities);
+          setShowTrusteeSection(true);
+        } else if (orgType === "Partnership/LLP Firm") {
+          setPartners(mappedEntities);
+          setShowPartnerSection(true);
+        } else {
+          setDirectors(mappedEntities);
+          setShowDirectorSection(true);
+        }
+      }
+
+      let projectsRaw = [];
+      if (Array.isArray(org.last_five_year_projects)) {
+        projectsRaw = org.last_five_year_projects;
+      } else if (typeof org.last_five_year_projects === "string") {
+        try { projectsRaw = JSON.parse(org.last_five_year_projects); } catch {}
+      }
+
+      if (projectsRaw.length > 0) {
+        setHasProjects("Yes");
+        setProjects(projectsRaw.map((p, i) => ({
+          id: i + 1,
+          name: p.project_name || p.name || ""
+        })));
+      } else {
+        setHasProjects("No");
+      }
+
+      const hasSelfAffidavit = litigationsList[0]?.self_declared_affidavit;
+      if (hasSelfAffidavit) {
+        setHasLitigation("No");
+      } else if (litigationsList.length > 0) {
+        setHasLitigation("Yes");
+        setLitigations(litigationsList.map((l, i) => ({
+          id: i + 1,
+          caseNo: l.case_no || "",
+          namePlace: l.tribunal_name_place || "",
+          petitioner: l.petitioner_name || "",
+          respondent: l.respondent_name || "",
+          facts: l.case_facts || "",
+          status: l.present_status || "",
+          interimOrder: l.interim_order ? "Yes" : "No",
+          finalOrder: l.final_order_details ? "Yes" : "No",
+          interimCert: null,
+          finalCert: null,
+          _interimDocUrl: l.interim_order || null,
+          _finalDocUrl: l.final_order_details || null,
+        })));
+      }
+
+      const otherReraRaw = org.other_state_rera_details || [];
+      if (otherReraRaw.length > 0) {
+        setHasOtherRera("Yes");
+        setOtherReraList(otherReraRaw.map((r, i) => ({
+          id: i + 1,
+          regNumber: r.rera_no || "",
+          state: r.state || "",
+          district: r.district || "",
+        })));
+      } else {
+        setHasOtherRera("No");
+      }
+
+    } catch (err) {
+      console.error("Error fetching existing agent data:", err);
+    }
+  };
+
+  fetchExistingData();
+}, [organisationIdFromNav]);
+// ✅ END OF NEW useEffect ↑
 
 
   // ===============================
@@ -836,10 +1038,15 @@ const handleChange = (e) => {
   const submitAgentDetails = async () => {
   
     const formData = new FormData();
-    if (form.orgType === "Company") {
+  if ((form.orgType === "Company" || form.orgType === "Joint Venture") && files.memorandumDoc) {
   formData.append("memorandum_doc", files.memorandumDoc);
 }
-
+if ((form.orgType === "Partnership/LLP Firm" || form.orgType === "Government Department/Local Bodies/Government Bodies") && files.partnershipDeed) {
+  formData.append("partnership_deed", files.partnershipDeed);
+}
+if (form.orgType === "Trust/Society" && files.trustDeed) {
+  formData.append("trust_deed", files.trustDeed);
+}
 
   /* ================= ORGANISATION ================= */
   formData.append("organisation_type", form.orgType);
@@ -875,9 +1082,15 @@ formData.append("registration_date", regDate);
   formData.append("landline_number", form.landline);
   formData.append("gst_number", form.gst);
 
-  formData.append("registration_cert_doc", files.regCert);
-  formData.append("pan_card_doc", files.panDoc);
-  formData.append("gst_doc", files.gstDoc);
+ if (files.regCert) formData.append("registration_cert_doc", files.regCert);
+if (files.panDoc) formData.append("pan_card_doc", files.panDoc);
+if (files.gstDoc) formData.append("gst_doc", files.gstDoc);
+if (files.addressProof) formData.append("address_proof_doc", files.addressProof);
+if (files.memorandumDoc) formData.append("memorandum_doc", files.memorandumDoc);
+if (files.partnershipDeed) formData.append("partnership_deed", files.partnershipDeed);
+if (files.trustDeed) formData.append("trust_deed", files.trustDeed);
+if (files.authPhoto) formData.append("authorized_photo_0", files.authPhoto);
+if (files.boardResolution) formData.append("board_resolution_0", files.boardResolution);
 
   /* ================= ADDRESS ================= */
   formData.append("address_line1", form.address1);
@@ -887,7 +1100,7 @@ formData.append("district", districtData.name);
 formData.append("mandal", mandalData.name);
 formData.append("village", villageData.name);
   formData.append("pincode", form.pincode);
-  formData.append("address_proof_doc", files.addressProof);
+  //formData.append("address_proof_doc", files.addressProof);
 
  /* ================= AUTHORIZED ================= */
 
@@ -1113,35 +1326,35 @@ const validateMandatoryFields = () => {
   if (form.orgType === "Company" || form.orgType === "Joint Venture") {
     if (!form.cin) return "Please enter CIN Number";
     if (!form.regDate) return "Please select Date of Registration";
-    if (!files.regCert) return "Upload Registration Certificate";
+   if (!hasFileOrUrl(files.regCert, files.regCertUrl)) return "Upload Registration Certificate";
   }
 
   /* ===== TRUST / SOCIETY ===== */
   if (form.orgType === "Trust/Society") {
     if (!form.trustNumber) return "Please enter Trust Number";
     if (!form.trustRegDate) return "Please select Date of Trust Registration";
-    if (!files.trustDeed) return "Upload Trust Deed";
-    if (!files.regCert) return "Upload Registration Certificate";
+    if (!hasFileOrUrl(files.trustDeed, files.legalDocUrl)) return "Upload Trust Deed";
+if (!hasFileOrUrl(files.regCert, files.regCertUrl)) return "Upload Registration Certificate";
   }
 
   /* ===== PARTNERSHIP / LLP ===== */
   if (form.orgType === "Partnership/LLP Firm") {
     if (!form.regNumber) return "Please enter Registration Number";
     if (!form.regDate) return "Please select Date of Registration";
-    if (!files.partnershipDeed) return "Upload Partnership Deed";
-    if (!files.regCert) return "Upload Registration Certificate";
+  if (!hasFileOrUrl(files.partnershipDeed, files.legalDocUrl)) return "Upload Partnership Deed";
+if (!hasFileOrUrl(files.regCert, files.regCertUrl)) return "Upload Registration Certificate";
   }
 
   /* ===== GOVERNMENT ===== */
   if (form.orgType === "Government Department/Local Bodies/Government Bodies") {
     if (!form.regNumber) return "Please enter Registration Number";
     if (!form.regDate) return "Please select Date of Registration";
-    if (!files.regCert) return "Upload Registration Certificate";
+    if (!hasFileOrUrl(files.regCert, files.regCertUrl)) return "Upload Registration Certificate";
   }
 
   /* ========= 4️⃣ PAN SECTION ========= */
   if (!form.pan) return "Please enter PAN Card Number";
-  if (!files.panDoc) return "Upload PAN Card";
+ if (!hasFileOrUrl(files.panDoc, files.panDocUrl)) return "Upload PAN Card";
 
   /* ========= 5️⃣ CONTACT ========= */
 if (!form.email?.trim()) {
@@ -1159,13 +1372,13 @@ if (!/^[6-9]\d{9}$/.test(form.mobile.trim())) {
   return "Mobile number must be 10 digits and start with 6-9";
 }
   /* ========= 6️⃣ GST ========= */
-  if (form.gst && !files.gstDoc)
+ if (form.gst && !hasFileOrUrl(files.gstDoc, files.gstDocUrl))
     return "Upload GST Number Document";
 
   /* ========= 7️⃣ MEMORANDUM (ONLY COMPANY/JV) ========= */
   if (
     (form.orgType === "Company" || form.orgType === "Joint Venture") &&
-    !files.memorandumDoc
+    !hasFileOrUrl(files.memorandumDoc, files.legalDocUrl)
   ) {
     return "Upload Memorandum of Articles / Bye-laws";
   }
@@ -1174,10 +1387,10 @@ if (!/^[6-9]\d{9}$/.test(form.mobile.trim())) {
      ===================================================== */
 
   if (!form.address1) return "Please enter Address Line 1";
-  if (!stateData?.id) return "Please select State";
-  if (!districtData?.id) return "Please select District";
-  if (!mandalData?.id) return "Please select Mandal";
-  if (!villageData?.id) return "Please select Village";
+if (!stateData?.id && !stateData?.name) return "Please select State";
+if (!districtData?.id && !districtData?.name) return "Please select District";
+if (!mandalData?.id && !mandalData?.name) return "Please select Mandal";
+if (!villageData?.id && !villageData?.name) return "Please select Village";
   // ===== PIN CODE =====
 if (!form.pincode?.trim()) {
   return "Please enter PIN Code";
@@ -1186,7 +1399,7 @@ if (!form.pincode?.trim()) {
 if (!/^5[0-9]{5}$/.test(form.pincode.trim())) {
   return "PIN Code must start with 5 and contain exactly 6 digits";
 }
-  if (!files.addressProof) return "Upload Address Proof";
+  if (!hasFileOrUrl(files.addressProof, files.addressProofUrl)) return "Upload Address Proof";
 
 /* =====================================================
    7️⃣ DIRECTOR DETAILS VALIDATION
@@ -1305,6 +1518,7 @@ if (d.address1 && d.address1.trim().length < 5)
   }
 
   /* ===== 2. DIRECTOR ALREADY ADDED ===== */
+ // ✅ NEW — accept _photoUrl as fallback for stepper mode:
   else {
     const d = directors[0];
 
@@ -1321,7 +1535,7 @@ if (d.address1 && d.address1.trim().length < 5)
       return "Director DIN missing";
     }
 
-    if (!d.photo) return "Director photo missing";
+    if (!d.photo && !d._photoUrl) return "Director photo missing";
    
   }
 }
@@ -1358,11 +1572,10 @@ if (!form.signEmail) {
 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.signEmail.trim())) {
   return "Please enter valid Authorized Signatory Email Id (example: test@gmail.com)";
 }
-if (!files.authPhoto) {
+if (!hasFileOrUrl(files.authPhoto, files.authPhotoUrl)) {
   return "Upload Authorized Signatory Photograph";
 }
-
-if (!files.boardResolution) {
+if (!hasFileOrUrl(files.boardResolution, files.boardResolutionUrl)) {
   return "Upload Board Resolution for Authorized Signatory";
 }
 
@@ -1455,7 +1668,7 @@ if (hasLitigation === "Yes") {
    WHEN NO SELECTED
    ===================================================== */
 if (hasLitigation === "No") {
-  if (!affidavitFile) {
+  if (!affidavitFile && !files.selfAffidavitUrl) {
     return "Please upload Self Declared Affidavit";
   }
 }
@@ -1598,11 +1811,12 @@ if (!isValidAddress(form.address1)) {
   );
 }
 
+// ✅ NEW:
 if (
-  !stateData.id ||
-  !districtData.id ||
-  !mandalData.id ||
-  !villageData.id
+  (!stateData.id && !stateData.name) ||
+  (!districtData.id && !districtData.name) ||
+  (!mandalData.id && !mandalData.name) ||
+  (!villageData.id && !villageData.name)
 )
   return alert("Please select complete Address");
 
@@ -1622,15 +1836,10 @@ if (!isValidPincode(form.pincode)) {
   if (!form.signEmail)
     return alert("Please enter Authorized Email");
   /* ================= FILE VALIDATIONS ================= */
-
-  if (!files.regCert)
-    return alert("Please upload Registration Certificate");
-
-  if (!files.panDoc)
-    return alert("Please upload PAN Document");
-
-  if ((form.orgType === "Company" || form.orgType === "Joint Venture") && !files.memorandumDoc)
-    return alert("Please upload Memorandum Document");
+if (!hasFileOrUrl(files.regCert, files.regCertUrl)) return alert("Please upload Registration Certificate");
+if (!hasFileOrUrl(files.panDoc, files.panDocUrl)) return alert("Please upload PAN Document");
+if ((form.orgType === "Company" || form.orgType === "Joint Venture") && !hasFileOrUrl(files.memorandumDoc, files.legalDocUrl))
+  return alert("Please upload Memorandum Document");
 /* ===== AFFIDAVIT (WHEN NO CASES) ===== */
 
 // ===== FINAL PHOTO CHECK =====
@@ -2161,7 +2370,12 @@ const handlePDFFile = (e, setter, field) => {
       </div>
 <div className="yagentdetails-page-content">
       <h2 className="yagentdetails-page-title">Real Estate Agent Registration</h2>
-      <AgentStepper currentStep={0} />
+      <AgentStepper 
+  currentStep={0} 
+  applicationId={applicationIdFromNav}
+  organisationId={organisationIdFromNav}
+  panCardNumber={location.state?.pan_card_number || form.pan}
+/>
       {errorMsg && (
   <div className="yagentdetails-error-banner">
     <span>{errorMsg}</span>
@@ -2384,6 +2598,18 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "trustDeed")
   }
 />
+{files.gstDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded  Upload Trust Deed Proof
+    </a>
+  </div>
+)}
+
     </div>
   </>
 )}
@@ -2441,8 +2667,17 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "regCert")
   }
 />
-
-
+ {files.regCertUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.regCertUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Certificate
+    </a>
+  </div>
+)}
           </div>
 
           <div>
@@ -2473,7 +2708,17 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "panDoc")
   }
 />
-
+{files.panDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.panDocUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded PAN Card
+    </a>
+  </div>
+)}
 
           </div>
 
@@ -2539,7 +2784,17 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "gstDoc")
   }
 />
-
+{files.gstDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Gst Document Proof
+    </a>
+  </div>
+)}
 
           </div>
          {/* ===== MEMORANDUM (ONLY FOR COMPANY) ===== */}
@@ -2556,6 +2811,19 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "memorandumDoc")
   }
 />
+
+{files.gstDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Memorandum of Articles Proof
+    </a>
+  </div>
+)}
+
   </div>
 )}
 {/* ===== PARTNERSHIP / LLP ===== */}
@@ -2587,6 +2855,18 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "partnershipDeed")
   }
 />
+{files.legalDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Partnership Deed Proof
+    </a>
+  </div>
+)}
+
   </div>
   
       
@@ -2626,6 +2906,17 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "partnershipDeed")
   }
 />
+{files.legalDocUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Partnership Deed Proof
+    </a>
+  </div>
+)}
     </div>
   </>
 )}
@@ -2800,7 +3091,17 @@ const handlePDFFile = (e, setter, field) => {
     handlePDFFile(e, setFiles, "addressProof")
   }
 />
-
+{files.addressProofUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Address Proof
+    </a>
+  </div>
+)}
 
           </div>
           </div>
@@ -3527,10 +3828,21 @@ onChange={(e) =>
           <td>{d.pincode}</td>
           <td>{d.pan}</td>
 
-         <td>
+       <td>
   {d.photo ? (
+    // ✅ Case 1: New uploaded file (local)
     <a
       href={URL.createObjectURL(d.photo)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Photo
+    </a>
+  ) : d._photoUrl ? (
+    // ✅ Case 2: Existing file from API
+    <a
+      href={`${BASE_URL}/api/${d._photoUrl}`}
       target="_blank"
       rel="noopener noreferrer"
       className="yagentdetails-view-link"
@@ -3541,61 +3853,85 @@ onChange={(e) =>
     "NA"
   )}
 </td>
-
 <td>
-  <span
-    className={`yagentdetails-view-link ${
-      !d.addressProof ? "disabled-link" : ""
-    }`}
-    onClick={() => {
-      if (d.addressProof) {
-        window.open(URL.createObjectURL(d.addressProof), "_blank");
+  {d.addressProof ? (
+    // ✅ Case 1: New uploaded file
+    <span
+      className="yagentdetails-view-link"
+      onClick={() =>
+        window.open(URL.createObjectURL(d.addressProof), "_blank")
       }
-    }}
-  >
-    View Address
-  </span>
+    >
+      View Address
+    </span>
+  ) : d._addressProofUrl ? (
+    // ✅ Case 2: Existing file from API
+    <a
+      href={`${BASE_URL}/api/${d._addressProofUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Address
+    </a>
+  ) : (
+    <span className="disabled-link">NA</span>
+  )}
 </td>
 
 
-
 <td>
-  <span
-    className={`yagentdetails-view-link ${
-      !d.panDoc ? "disabled-link" : ""
-    }`}
-    onClick={() => {
-      if (d.panDoc) {
-        window.open(URL.createObjectURL(d.panDoc), "_blank");
+  {d.panDoc ? (
+    // ✅ Case 1: New uploaded file
+    <span
+      className="yagentdetails-view-link"
+      onClick={() =>
+        window.open(URL.createObjectURL(d.panDoc), "_blank")
       }
-    }}
-  >
-    View PAN Card
-  </span>
+    >
+      View PAN Card
+    </span>
+  ) : d._panDocUrl ? (
+    // ✅ Case 2: Existing file from API
+    <a
+      href={`${BASE_URL}/api/${d._panDocUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View PAN Card
+    </a>
+  ) : (
+    <span className="disabled-link">NA</span>
+  )}
 </td>
 
 
-
 <td>
-  <span
-    className={`yagentdetails-view-link ${
-      !d.aadhaarDoc ? "disabled-link" : ""
-    }`}
-    onClick={() => {
-      if (d.aadhaarDoc) {
-        window.open(URL.createObjectURL(d.aadhaarDoc), "_blank");
+  {d.aadhaarDoc ? (
+    // ✅ Case 1: Newly uploaded file
+    <span
+      className="yagentdetails-view-link"
+      onClick={() =>
+        window.open(URL.createObjectURL(d.aadhaarDoc), "_blank")
       }
-    }}
-  >
-    View Aadhaar Card
-  </span>
+    >
+      View Aadhaar Card
+    </span>
+  ) : d._aadhaarDocUrl ? (
+    // ✅ Case 2: Existing file from API
+    <a
+      href={`${BASE_URL}/api/${d._aadhaarDocUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Aadhaar Card
+    </a>
+  ) : (
+    <span className="disabled-link">NA</span>
+  )}
 </td>
-
-
-
-
-
-
 
           <td>
             <button
@@ -4123,38 +4459,76 @@ onChange={(e) =>
             <td>{t.pincode || "NA"}</td>
             <td>{t.pan || "NA"}</td>
 
-            <td>
-              {t.photo && (
-                <a href={URL.createObjectURL(t.photo)} target="_blank">
-                  View Photo
-                </a>
-              )}
-            </td>
+           <td>
+  {t.photo ? (
+    <a href={URL.createObjectURL(t.photo)} target="_blank" rel="noreferrer">
+      View Photo
+    </a>
+  ) : t._photoUrl ? (
+    <a
+      href={`${BASE_URL}/api/${t._photoUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Photo
+    </a>
+  ) : (
+    "NA"
+  )}
+</td>
 
-            <td>
-              {t.addressProof && (
-                <a href={URL.createObjectURL(t.addressProof)} target="_blank">
-                  View Address
-                </a>
-              )}
-            </td>
+           <td>
+  {t.addressProof ? (
+    <a href={URL.createObjectURL(t.addressProof)} target="_blank" rel="noreferrer">
+      View Address
+    </a>
+  ) : t._addressProofUrl ? (
+    <a
+      href={`${BASE_URL}/api/${t._addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Address
+    </a>
+  ) : (
+    "NA"
+  )}
+</td>
 
-            <td>
-              {t.panDoc && (
-                <a href={URL.createObjectURL(t.panDoc)} target="_blank">
-                  View PAN
-                </a>
-              )}
-            </td>
-
-            <td>
-              {t.aadhaarDoc && (
-                <a href={URL.createObjectURL(t.aadhaarDoc)} target="_blank">
-                  View Aadhaar
-                </a>
-              )}
-            </td>
-
+         <td>
+  {t.panDoc ? (
+    <a href={URL.createObjectURL(t.panDoc)} target="_blank" rel="noreferrer">
+      View PAN
+    </a>
+  ) : t._panDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${t._panDocUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View PAN
+    </a>
+  ) : (
+    "NA"
+  )}
+</td>
+           <td>
+  {t.aadhaarDoc ? (
+    <a href={URL.createObjectURL(t.aadhaarDoc)} target="_blank" rel="noreferrer">
+      View Aadhaar
+    </a>
+  ) : t._aadhaarDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${t._aadhaarDocUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Aadhaar
+    </a>
+  ) : (
+    "NA"
+  )}
+</td>
             <td>
               <button
                 className="yagentdetails-delete-btn"
@@ -4236,57 +4610,87 @@ onChange={(e) =>
             <td>{p.pan}</td>
 
             {/* Photo */}
-            <td>
-              {p.photo ? (
-                <a
-                  href={URL.createObjectURL(p.photo)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View
-                </a>
-              ) : "NA"}
-            </td>
+           <td>
+  {p.photo ? (
+    <a
+      href={URL.createObjectURL(p.photo)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : p._photoUrl ? (
+    <a
+      href={`${BASE_URL}/api/${p._photoUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : "NA"}
+</td>
 
             {/* Address Proof */}
-            <td>
-              {p.addressProof ? (
-                <a
-                  href={URL.createObjectURL(p.addressProof)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View
-                </a>
-              ) : "NA"}
-            </td>
+           <td>
+  {p.addressProof ? (
+    <a
+      href={URL.createObjectURL(p.addressProof)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : p._addressProofUrl ? (
+    <a
+      href={`${BASE_URL}/api/${p._addressProofUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : "NA"}
+</td>
 
             {/* PAN */}
-            <td>
-              {p.panDoc ? (
-                <a
-                  href={URL.createObjectURL(p.panDoc)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View
-                </a>
-              ) : "NA"}
-            </td>
-
+          <td>
+  {p.panDoc ? (
+    <a
+      href={URL.createObjectURL(p.panDoc)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : p._panDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${p._panDocUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : "NA"}
+</td>
             {/* Aadhaar */}
-            <td>
-              {p.aadhaarDoc ? (
-                <a
-                  href={URL.createObjectURL(p.aadhaarDoc)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View
-                </a>
-              ) : "NA"}
-            </td>
-
+           <td>
+  {p.aadhaarDoc ? (
+    <a
+      href={URL.createObjectURL(p.aadhaarDoc)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : p._aadhaarDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${p._aadhaarDocUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View
+    </a>
+  ) : "NA"}
+</td>
             {/* Delete */}
             <td>
               <button
@@ -4366,7 +4770,17 @@ onChange={(e) =>
     handleImageFile(e, setFiles, "authPhoto")
   }
 />
-
+{files.authPhotoUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.authPhotoUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Photo
+    </a>
+  </div>
+)}
 
 
           </div>
@@ -4380,7 +4794,17 @@ onChange={(e) =>
     handlePDFFile(e, setFiles, "boardResolution")
   }
 />
-
+{files.boardResolutionUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.boardResolutionUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Board Resolution
+    </a>
+  </div>
+)}
 
           </div>
         </div>
@@ -4703,7 +5127,7 @@ onChange={(e) =>
     handlePDFFile(e, setLitigationForm, "interimCert")
   }
 />
-
+ 
   </div>
 )}
 
@@ -4774,37 +5198,53 @@ onChange={(e) =>
       <td>{l.finalOrder}</td>
 
       {/* Interim Certificate */}
-      <td>
-        {l.interimCert ? (
-          <a
-            href={URL.createObjectURL(l.interimCert)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="yagentdetails-view-link"
-          >
-            View Certificate
-          </a>
-        ) : (
-          "-"
-        )}
-      </td>
-
+   <td>
+  {l.interimCert ? (
+    <a
+      href={URL.createObjectURL(l.interimCert)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Certificate
+    </a>
+  ) : l._interimDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${l._interimDocUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Certificate
+    </a>
+  ) : (
+    "-"
+  )}
+</td>
       {/* Dispose Certificate */}
-      <td>
-        {l.finalCert ? (
-          <a
-            href={URL.createObjectURL(l.finalCert)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="yagentdetails-view-link"
-          >
-            View Certificate
-          </a>
-        ) : (
-          "-"
-        )}
-      </td>
-
+   <td>
+  {l.finalCert ? (
+    <a
+      href={URL.createObjectURL(l.finalCert)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Certificate
+    </a>
+  ) : l._finalDocUrl ? (
+    <a
+      href={`${BASE_URL}/api/${l._finalDocUrl}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="yagentdetails-view-link"
+    >
+      View Certificate
+    </a>
+  ) : (
+    "-"
+  )}
+</td>
       <td>
         <button
   className="yagentdetails-delete-btn"
@@ -4907,6 +5347,17 @@ onChange={(e) =>
           }}
           onChange={(e) => setAffidavitFile(e.target.files[0])}
         />
+        {files.selfAffidavitUrl && (
+  <div style={{ marginTop: "6px" }}>
+    <a
+      href={`${BASE_URL}/api/${files.selfAffidavitUrl}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      View Uploaded Self Affidavit
+    </a>
+  </div>
+)}
       </div>
     </div>
   </div>
