@@ -118,6 +118,8 @@ def create_app():
 
     from app.controllers.quarterly_controller import quarterly_bp
     from app.controllers.project_quarterly_plot_controller import project_quarterly_plot_bp
+    from app.controllers.change_request_controller import change_request_bp
+    app.register_blueprint(change_request_bp, url_prefix="/api")
     app.register_blueprint(quarterly_bp, url_prefix="/api")
 
     app.register_blueprint(promoter_other_t_indv_bp)

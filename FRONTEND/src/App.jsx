@@ -114,6 +114,8 @@ import QuarterlyUpdateExisting from "./pages/QuarterlyUpdateExisting";
 import QuarterlyExistingtable from "./pages/QuarterlyExistingtable";
 import { AgentFormProvider } from "./pages/AgentFormContext";
 import ProjectBlockVillaDetails from "./pages/ProjectBlockVillaDetails";
+import ChangeRequestForm from "./pages/ChangeRequestForm";
+import ChangeRequestVerify from "./pages/ChangeRequestVerify";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -239,6 +241,8 @@ function App() {
           <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
           <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
           <Route path="/project-blockvilla-details" element={<ProjectBlockVillaDetails />} />
+          <Route path="/changerequest" element={<ChangeRequestForm/>} />
+          <Route path="/changerequestverify" element={<ChangeRequestVerify/>} />
           
         </Routes>
       </Layout></AgentFormProvider>
