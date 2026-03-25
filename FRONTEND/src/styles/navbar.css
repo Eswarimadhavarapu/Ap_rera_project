@@ -1,16 +1,45 @@
 /* ===== TOP HEADER ===== */
+/* .top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background: #ffffff;
+}
 
-.agent-nav-top-header {
+.homepage-logo h2 {
+  margin: 0;
+  color: #0b4da2;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.homepage-logo p {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+}
+
+.search-btn {
+  background: red;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+} */
+ .top-header {
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: left; /* center content */
   position: relative;
   padding: 12px 20px;
   background: #ffffff;
 }
 
 /* Center logo + text */
-.agent-nav-header-center {
+.header-center {
   display: flex;
   flex-direction: column;
   align-items: left-corner;
@@ -18,21 +47,21 @@
 }
 
 /* circular logo */
-.agent-nav-header-logo {
+.header-logo {
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 50%;        /* ✅ circular */
   object-fit: contain;
   background: #ffffff;
-  border: 2px solid #0b4ea2;
+  border: 2px solid #0b4ea2; /* subtle blue ring */
   padding: 0px;
+  text-align: center;
 }
 
-/* Title */
-.agent-nav-header-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.header-title {
+  display: flex;          /* ✅ puts logo & text side by side */
+  align-items: center;    /* vertical alignment */
+  gap: 12px;              /* space between logo and text */
   font-size: 16px;
   font-weight: 600;
   color: #0b4ea2;
@@ -40,11 +69,171 @@
   margin: 0;
 }
 
+/* Right side button */
+/* .search-btn {
+  position: absolute;
+  right: 20px;
+  background: red;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background: hsl(339, 47%, 73%);;
+} */
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0 30px;
+}
+
+.nav-list > li {
+  position: relative;
+  padding: 10px 8px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.nav-list > li:hover {
+  background: #083a78;
+}
+
+.highlight {
+  background: red;
+}
+
+/* ===== DROPDOWN ===== */
+.arrow {
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* HIDE dropdown by default */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  min-width: 230px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  padding: 0;
+  list-style: none;
+}
+
+/* Fix right side overflow (LOGIN dropdown) */
+.nav-list > li:last-child .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+/* Dropdown items */
+.dropdown-menu li {
+  color: #000;
+  padding: 10px 14px;
+  border-bottom: 1px dotted #ccc;
+  font-size: 14px;
+}
+
+.dropdown-menu li:hover {
+  background: #f2f2f2;
+}
+
+/* SHOW dropdown ONLY when hovering ABOUT US */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.contact-submenu {
+  position: relative;
+}
+
+/* Right arrow alignment */
+.contact-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Submenu box */
+.contact-submenu-box {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #fff;
+  list-style: none;
+  padding: 8px 0;
+  min-width: 180px;
+  display: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Show submenu on hover */
+.contact-submenu:hover .contact-submenu-box {
+  display: block;
+}
+
+/* Submenu item */
+.contact-submenu-box li {
+  padding: 10px 16px;
+}
+
+.contact-submenu-box li:hover {
+  background: #f2f2f2;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: #fff;
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+  background: #f0f0f0;
+}
+
+/* Sub Dropdown */
+.sub-dropdown {
+  position: relative;
+}
+
+.sub-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #fff;
+  list-style: none;
+  padding: 0;
+  min-width: 180px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.sub-dropdown:hover .sub-dropdown-menu {
+  display: block;
+}
+
+
 /* =====================================================
    RIGHT SIDE (SEARCH + LANGUAGE)
 ===================================================== */
-
-.agent-nav-top-header-right {
+.top-header-right {
   position: absolute;
   right: 40px;
   top: 50%;
@@ -54,8 +243,8 @@
   gap: 14px;
 }
 
-/* Search Button */
-.agent-nav-search-btn {
+/* Search Button (LEFT) */
+.search-btn {
   background: red;
   color: #fff;
   border: none;
@@ -70,47 +259,54 @@
   justify-content: center;
 }
 
-.agent-nav-search-btn:hover {
+.search-btn:hover {
   background: #c40000;
 }
 
 /* =====================================================
-   GOOGLE TRANSLATE
+   GOOGLE TRANSLATE (RIGHT, NO POWERED BY)
 ===================================================== */
 
-agent-nav-#google_translate_element {
+/* Wrapper */
+#google_translate_element {
   display: flex !important;
   align-items: center !important;
 }
 
-.agent-nav-goog-te-gadget {
+/* Widget */
+.goog-te-gadget {
   display: flex !important;
   align-items: center !important;
   height: 32px !important;
   line-height: 32px !important;
   margin: 0 !important;
   padding: 0 !important;
-  font-size: 0 !important;
+  font-size: 0 !important;     /* hides "Powered by" text */
 }
 
-.agent-nav-goog-te-gadget select {
+/* Restore font for dropdown only */
+.goog-te-gadget select {
   font-size: 13px !important;
 }
 
-.agent-nav-goog-te-combo {
+/* Dropdown */
+.goog-te-combo {
   height: 32px !important;
+  line-height: 32px !important;
   padding: 0 6px;
   border: 1px solid #9fb6c3;
   background: #ffffff;
   cursor: pointer;
 }
 
-.agent-nav-goog-logo-link,
-.agent-nav-goog-te-gadget span {
+/* Hide Google branding */
+.goog-logo-link,
+.goog-te-gadget span {
   display: none !important;
 }
 
-.agent-nav-goog-te-banner-frame.skiptranslate {
+/* Remove Google top banner */
+.goog-te-banner-frame.skiptranslate {
   display: none !important;
 }
 
@@ -121,324 +317,58 @@ body {
 /* =====================================================
    NAVBAR
 ===================================================== */
-
-.agent-nav-navbar {
-  background: linear-gradient(to right, #7b001c, #4b000f);
-  position: relative;
-  z-index: 1000;
+.navbar {
+  background: linear-gradient(
+    to right,
+    #7b001c,
+    #4b000f
+  );
 }
 
-/* horizontal scroll container */
-.agent-nav-navbar-scroll {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  position: relative;
-}
 
-/* scrollbar */
-.agent-nav-navbar-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.agent-nav-navbar-scroll::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
-
-.agent-nav-navbar-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* inner container */
-.agent-nav-navbar-inner {
-  display: inline-block;
-  min-width: max-content;
-}
-
-/* nav list */
-.agent-nav-nav-list {
+.nav-list {
   list-style: none;
   display: flex;
   margin: 0;
   padding: 0 30px;
 }
 
-/* nav items */
-.agent-nav-nav-list > li {
+.nav-list > li {
   position: relative;
   padding: 14px 16px;
   color: #ffffff;
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
+
+  display: flex;        /* ✅ ADD */
+  align-items: center;  /* ✅ ADD */
 }
 
-.agent-nav-nav-list > li:hover {
-  background: oklch(71.49% 0.12422 211.24);
+.nav-list > li:hover {
+  background:  oklch(71.49% 0.12422 211.24);
+}
+.homenavbar-new-badge-a{
+  color: red;
+  text-decoration: none;
+}
+.homenavbar-new-badge-a:hover{
+  text-decoration: none;
 }
 
-/* =====================================================
-   DROPDOWN MENU (SIDE BY SIDE)
-===================================================== */
+.arrow {
+  display: inline-block;
+  margin-left: 6px;
+  width: 0;
+  height: 0;
 
-.agent-nav-dropdown-menu {
-  display: none;
-  position: fixed;
-    left: 0;   /* important fix */
-  background: #fff;
-  min-width: 230px;
-  z-index: 999999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #ffffff;
 
-  /* Horizontal Layout */
-  flex-direction: row;
-  flex-wrap: nowrap;
-  
-  gap: 20px;
-  padding: 10px 20px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-
-  max-width: 95vw;
-
-  scroll-behavior: smooth;
-
-  /* Hide scrollbar */
-  scrollbar-width: none;     /* Firefox */
-  -ms-overflow-style: none;  /* IE & Edge */
+  vertical-align: middle;
 }
-
-/* Hide scrollbar for Chrome, Safari */
-.agent-nav-dropdown-menu::-webkit-scrollbar {
-  display: none;
-}
-
-/* show dropdown */
-.agent-nav-dropdown:hover .agent-nav-dropdown-menu {
-  display: flex;
-}
-
-/* ===== DROPDOWN SCROLLBAR (kept but hidden) ===== */
-
-.agent-nav-dropdown-menu::-webkit-scrollbar {
-  height: 6px;
-}
-
-.agent-nav-dropdown-menu::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.agent-nav-dropdown-menu::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
-  border-radius: 6px;
-}
-
-.agent-nav-dropdown-menu::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Firefox scrollbar */
-.agent-nav-dropdown-menu {
-  scrollbar-width: none;
-  scrollbar-color: #cfcfcf transparent;
-}
-/* =====================================================
-   SUB MENU
-===================================================== */
-
-.agent-nav-contact-submenu {
-  position: relative;
-}
-
-.agent-nav-contact-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.agent-nav-contact-submenu-box {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  background: #fff;
-  list-style: none;
-  padding: 8px 0;
-  min-width: 180px;
-  display: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.agent-nav-contact-submenu:hover .agent-nav-contact-submenu-box {
-  display: block;
-}
-
-.agent-nav-contact-submenu-box li {
-  padding: 10px 16px;
-}
-
-.agent-nav-contact-submenu-box li:hover {
-  background: #f2f2f2;
-}
-
-/* sub dropdown */
-
-.agent-nav-sub-dropdown {
-  position: relative;
-}
-
-.agent-nav-sub-dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  background: #fff;
-  list-style: none;
-  padding: 0;
-  min-width: 180px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.agent-nav-sub-dropdown:hover .agent-nav-sub-dropdown-menu {
-  display: block;
-}
-
-/* FIX DROPDOWN TEXT */
-
-.agent-nav-dropdown-menu li {
-  color: #000 !important;
-  background: #fff;
-  padding: 10px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  display: inline-block;   /* SIDE BY SIDE */
-}
-
-/* Hover effect */
-
-.agent-nav-dropdown-menu li:hover {
-  background: #f2f2f2;
-}
-/* Hide Google Translate branding */
-
-.goog-logo-link {
-  display: none !important;
-}
-
-.goog-te-gadget span {
-  display: none !important;
-}
-
-/* Remove top banner */
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
-
-/* Prevent page shift */
-body {
-  top: 0 !important;
-}
-/* Force hide powered by text */
-.goog-te-gadget > span {
-  display: none !important;
-}
-/* Hide Google Translate branding completely */
-.goog-logo-link,
-.goog-logo-link img,
-.goog-te-gadget span,
-.goog-te-gadget .goog-te-gadget-simple span,
-.goog-te-gadget-simple img {
-  display: none !important;
-}
-
-/* Hide 'Powered by Google' container */
-.goog-te-gadget {
-  font-size: 0 !important;
-}
-
-/* Remove Google top banner */
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
-
-/* Prevent page shifting */
-body {
-  top: 0 !important;
-}
-
-/* ===== REPORTS DROPDOWN ONLY ===== */
-
-.agent-nav-reports-dropdown {
-  position: relative;
-}
-
-/* dropdown container */
-.agent-nav-reports-dropdown .agent-nav-reports-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-
-  background: #ffffff;
-  min-width: 200px;
-  padding: 10px 20px;
-
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-
-  /* horizontal layout */
-  display: flex;
-  flex-direction: row;
-  gap: 25px;
-
-  list-style: none;
-}
-
-/* show dropdown */
-.agent-nav-reports-dropdown:hover .agent-nav-reports-menu {
-  display: flex;
-}
-
-/* items */
-.agent-nav-reports-menu li {
-  padding: 6px 10px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-/* hover */
-.agent-nav-reports-menu li:hover {
-  background: #f2f2f2;
-}
-
-
-/* ===== FORCE REPORTS DROPDOWN UNDER REPORTS ===== */
-/* ===== REPORTS DROPDOWN FIX ONLY ===== */
-
-.agent-nav-reports-dropdown .agent-nav-reports-menu {
-  position: absolute !important;   /* override fixed */
-  left: 0 !important;
-  top: 100% !important;
-
-  display: none !important;
-  flex-direction: row !important;
-
-  background: #fff;
-  padding: 10px 20px;
-  gap: 25px;
-
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-/* show dropdown */
-.agent-nav-reports-dropdown:hover .agent-nav-reports-menu {
-  display: flex !important;
-}
-
-/* items */
-.agent-nav-reports-menu li {
-  display: inline-block !important;
-  padding: 8px 12px;
-  white-space: nowrap;
+.dropdown-right .dropdown-menu {
+  right: 0;
+  left: auto;
 }

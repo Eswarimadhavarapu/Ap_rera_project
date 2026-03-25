@@ -6,77 +6,79 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
     id: "project_agent",
     label: "Project Agent",
     fields: [
-      { name: "agentName",          label: "Agent Name",           type: "text"     },
-      { name: "agentMobile",        label: "Agent Mobile",         type: "text"     },
-      { name: "agentEmail",         label: "Agent Email",          type: "email"    },
-      { name: "agentReraRegNo",     label: "Agent RERA Reg No",    type: "text"     },
+      { name: "agentName", label: "Agent Name", type: "text" },
+      { name: "agentMobile", label: "Agent Mobile", type: "text" },
+      { name: "agentEmail", label: "Agent Email", type: "email" },
+      { name: "agentReraRegNo", label: "Agent RERA Reg No", type: "text" },
     ],
   },
   {
     id: "architects",
     label: "Project Architects",
     fields: [
-      { name: "architectName",      label: "Architect Name",       type: "text"     },
-      { name: "architectMobile",    label: "Architect Mobile",     type: "text"     },
-      { name: "architectEmail",     label: "Architect Email",      type: "email"    },
-      { name: "architectLicense",   label: "Architect License No", type: "text"     },
-      { name: "architectAddress",   label: "Architect Address",    type: "textarea" },
+      { name: "architectName", label: "Architect Name", type: "text" },
+      { name: "architectMobile", label: "Architect Mobile", type: "text" },
+      { name: "architectEmail", label: "Architect Email", type: "email" },
+      { name: "architectLicense", label: "Architect License No", type: "text" },
+      { name: "architectAddress", label: "Architect Address", type: "textarea" },
     ],
   },
   {
     id: "structural_engineers",
     label: "Structural Engineers",
     fields: [
-      { name: "structEngineerName",    label: "Engineer Name",       type: "text"     },
-      { name: "structEngineerMobile",  label: "Engineer Mobile",     type: "text"     },
-      { name: "structEngineerEmail",   label: "Engineer Email",      type: "email"    },
-      { name: "structEngineerLicense", label: "Engineer License No", type: "text"     },
-      { name: "structEngineerAddress", label: "Engineer Address",    type: "textarea" },
+      { name: "structEngineerName", label: "Engineer Name", type: "text" },
+      { name: "structEngineerMobile", label: "Engineer Mobile", type: "text" },
+      { name: "structEngineerEmail", label: "Engineer Email", type: "email" },
+      { name: "structEngineerLicense", label: "Engineer License No", type: "text" },
+      { name: "structEngineerAddress", label: "Engineer Address", type: "textarea" },
     ],
   },
   {
     id: "contractors",
     label: "Project Contractors",
     fields: [
-      { name: "contractorName",     label: "Contractor Name",       type: "text"     },
-      { name: "contractorMobile",   label: "Contractor Mobile",     type: "text"     },
-      { name: "contractorEmail",    label: "Contractor Email",      type: "email"    },
-      { name: "contractorLicense",  label: "Contractor License No", type: "text"     },
-      { name: "contractorAddress",  label: "Contractor Address",    type: "textarea" },
+      { name: "contractorName", label: "Contractor Name", type: "text" },
+      { name: "contractorMobile", label: "Contractor Mobile", type: "text" },
+      { name: "contractorEmail", label: "Contractor Email", type: "email" },
+      { name: "contractorLicense", label: "Contractor License No", type: "text" },
+      { name: "contractorAddress", label: "Contractor Address", type: "textarea" },
     ],
   },
   {
     id: "chartered_accountant",
     label: "Chartered Accountant",
     fields: [
-      { name: "caName",       label: "CA Name",          type: "text"     },
-      { name: "caMobile",     label: "CA Mobile",        type: "text"     },
-      { name: "caEmail",      label: "CA Email",         type: "email"    },
-      { name: "caMembership", label: "CA Membership No", type: "text"     },
-      { name: "caAddress",    label: "CA Address",       type: "textarea" },
+      { name: "caName", label: "CA Name", type: "text" },
+      { name: "caMobile", label: "CA Mobile", type: "text" },
+      { name: "caEmail", label: "CA Email", type: "email" },
+      { name: "caMembership", label: "CA Membership No", type: "text" },
+      { name: "caAddress", label: "CA Address", type: "textarea" },
     ],
   },
   {
     id: "project_engineers",
     label: "Project Engineers",
     fields: [
-      { name: "projEngineerName",    label: "Engineer Name",       type: "text"     },
-      { name: "projEngineerMobile",  label: "Engineer Mobile",     type: "text"     },
-      { name: "projEngineerEmail",   label: "Engineer Email",      type: "email"    },
-      { name: "projEngineerLicense", label: "Engineer License No", type: "text"     },
-      { name: "projEngineerAddress", label: "Engineer Address",    type: "textarea" },
+      { name: "projEngineerName", label: "Engineer Name", type: "text" },
+      { name: "projEngineerMobile", label: "Engineer Mobile", type: "text" },
+      { name: "projEngineerEmail", label: "Engineer Email", type: "email" },
+      { name: "projEngineerLicense", label: "Engineer License No", type: "text" },
+      { name: "projEngineerAddress", label: "Engineer Address", type: "textarea" },
     ],
   },
 ];
 
-// ─── FIELD RENDERER ──────────────────────────────────────────────────────────
-function FormField({ field, value, onChange }) {
+// ─── FIELD RENDERER with Inline Error ───────────────────────────────────────
+function FormField({ field, value, onChange, error }) {
   const isFullWidth = field.type === "textarea";
+
   return (
     <div style={{ width: isFullWidth ? "100%" : "48%", marginBottom: "15px" }}>
       <label style={{ display: "block", fontWeight: "600", marginBottom: "6px" }}>
         {field.label}
       </label>
+      
       {field.type === "textarea" ? (
         <textarea
           name={field.name}
@@ -84,7 +86,13 @@ function FormField({ field, value, onChange }) {
           onChange={onChange}
           rows={3}
           placeholder={`Enter ${field.label.toLowerCase()}...`}
-          style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+          style={{ 
+            width: "100%", 
+            padding: "8px", 
+            border: error ? "1px solid #e74c3c" : "1px solid #ccc", 
+            borderRadius: "6px", 
+            boxSizing: "border-box" 
+          }}
         />
       ) : (
         <input
@@ -93,94 +101,133 @@ function FormField({ field, value, onChange }) {
           value={value || ""}
           onChange={onChange}
           placeholder={`Enter ${field.label.toLowerCase()}...`}
-          style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+          style={{ 
+            width: "100%", 
+            padding: "8px", 
+            border: error ? "1px solid #e74c3c" : "1px solid #ccc", 
+            borderRadius: "6px", 
+            boxSizing: "border-box" 
+          }}
         />
+      )}
+
+      {error && (
+        <div style={{ 
+          color: "#e74c3c", 
+          fontSize: "12px", 
+          marginTop: "4px", 
+          fontWeight: "500" 
+        }}>
+          {error}
+        </div>
       )}
     </div>
   );
 }
 
-// ─── INNER COMPONENT (receives tableData & setTableData from parent) ──────────
+// ─── INNER COMPONENT ────────────────────────────────────────────────────────
 function AssociateSectionInner({ subSection, onChange, tableData, setTableData }) {
-
-  const [mainMode,      setMainMode]      = useState("");
-  const [formValues,    setFormValues]    = useState({});
+  const [mainMode, setMainMode] = useState("");
+  const [formValues, setFormValues] = useState({});
+  const [errors, setErrors] = useState({});           // ← NEW: for inline errors
   const [selectedField, setSelectedField] = useState("");
-  const [description,   setDescription]  = useState("");
-  const [file,          setFile]          = useState(null);
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState(null);
 
   const selectedFieldLabel =
     subSection.fields.find((f) => f.name === selectedField)?.label || "";
 
+  // Validation Function
+  const validateField = (name, value) => {
+    let error = "";
+
+    // NAME VALIDATION
+    if (name.toLowerCase().includes("name")) {
+      const nameRegex = /^[A-Za-z\s]*$/;
+      if (value && !nameRegex.test(value)) {
+        error = "Only alphabets and spaces allowed";
+      }
+    }
+
+    // MOBILE VALIDATION
+    if (name.toLowerCase().includes("mobile")) {
+      const mobileRegex = /^[0-9]*$/;
+      if (value && !mobileRegex.test(value)) {
+        error = "Mobile number must contain only numbers";
+      } else if (value && value.length > 10) {
+        error = "Mobile number must be maximum 10 digits";
+      }
+    }
+
+    // EMAIL VALIDATION
+    if (name.toLowerCase().includes("email")) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (value && !emailRegex.test(value)) {
+        error = "Please enter a valid email address";
+      }
+    }
+
+    // LICENSE / MEMBERSHIP / REG NO VALIDATION
+    if (
+      name.toLowerCase().includes("license") ||
+      name.toLowerCase().includes("membership") ||
+      name.toLowerCase().includes("reg") ||
+      name.toLowerCase().includes("rera")
+    ) {
+      const alphaNumRegex = /^[A-Za-z0-9]*$/;
+      if (value && !alphaNumRegex.test(value)) {
+        error = "Only letters and numbers allowed";
+      }
+    }
+
+    return error;
+  };
+
   const handleChange = (e) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  // NAME VALIDATION (only letters and spaces)
-  if (name.toLowerCase().includes("name")) {
-    const nameRegex = /^[A-Za-z\s]*$/;
+    // Real-time validation
+    const fieldError = validateField(name, value);
 
-    if (!nameRegex.test(value)) {
-      alert("Only alphabets allowed in name field");
-      return;
-    }
-  }
+    setErrors((prev) => ({
+      ...prev,
+      [name]: fieldError,
+    }));
 
-  // MOBILE VALIDATION (only numbers and max 10 digits)
-  if (name.toLowerCase().includes("mobile")) {
-    const mobileRegex = /^[0-9]*$/;
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    if (!mobileRegex.test(value)) {
-      alert("Mobile number must contain only numbers");
-      return;
-    }
-
-    if (value.length > 10) {
-      alert("Mobile number must be 10 digits");
-      return;
-    }
-  }
-
-  // EMAIL VALIDATION
-  if (name.toLowerCase().includes("email")) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (value && !emailRegex.test(value)) {
-      alert("Enter valid email address");
-      return;
-    }
-  }
-
-  // LICENSE / MEMBERSHIP / REG NO VALIDATION
-  if (
-    name.toLowerCase().includes("license") ||
-    name.toLowerCase().includes("membership") ||
-    name.toLowerCase().includes("reg")
-  ) {
-    const alphaNumRegex = /^[A-Za-z0-9]*$/;
-
-    if (!alphaNumRegex.test(value)) {
-      alert("Only letters and numbers allowed");
-      return;
-    }
-  }
-
-  setFormValues((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
-
-  // notify parent so canGoStep3 enables
+  // notify parent
   const notifyParent = (rows) => {
     onChange({
       target: {
-        name:  `__associate_rows_${subSection.id}`,
+        name: `__associate_rows_${subSection.id}`,
         value: rows.length ? JSON.stringify(rows) : "",
       },
     });
   };
 
   const handleAdd = () => {
+    // Check for validation errors before adding
+    let hasError = false;
+    const newErrors = {};
+
+    Object.keys(formValues).forEach((key) => {
+      const error = validateField(key, formValues[key]);
+      if (error) {
+        newErrors[key] = error;
+        hasError = true;
+      }
+    });
+
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+
     let newEntry = {};
     let hasValue = false;
 
@@ -191,14 +238,14 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       }
     });
 
-    // For OLD mode, capture old_ prefixed values too
+    // For OLD mode
     if (mainMode === "old" && selectedField) {
       const oldKey = `old_${selectedField}`;
       if (formValues[oldKey]) {
         newEntry[oldKey] = formValues[oldKey];
         hasValue = true;
       }
-      newEntry.__mode     = "old";
+      newEntry.__mode = "old";
       newEntry.__selField = selectedField;
     } else {
       newEntry.__mode = "new";
@@ -211,7 +258,7 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
 
     if (file) {
       newEntry.fileName = file.name;
-      newEntry.fileURL  = URL.createObjectURL(file);
+      newEntry.fileURL = URL.createObjectURL(file);
       hasValue = true;
     }
 
@@ -221,12 +268,15 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
     }
 
     const updated = [...tableData, newEntry];
-    setTableData(updated);   // ← saved in PARENT, survives Back
+    setTableData(updated);
     notifyParent(updated);
 
+    // Reset form
     setFormValues({});
     setDescription("");
     setFile(null);
+    setErrors({});
+    setSelectedField("");
   };
 
   const handleDelete = (idx) => {
@@ -237,24 +287,41 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
 
   return (
     <div style={{ padding: "20px" }}>
-
       {/* NEW / OLD RADIO */}
       <div style={{ marginBottom: "20px", display: "flex", gap: "30px" }}>
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
           <input
-            type="radio" value="new" checked={mainMode === "new"}
-            onChange={(e) => { setMainMode(e.target.value); setSelectedField(""); setFormValues({}); setDescription(""); setFile(null); }}
+            type="radio"
+            value="new"
+            checked={mainMode === "new"}
+            onChange={(e) => {
+              setMainMode(e.target.value);
+              setSelectedField("");
+              setFormValues({});
+              setDescription("");
+              setFile(null);
+              setErrors({});
+            }}
             style={{ marginRight: "6px" }}
           />
           New
         </label>
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
           <input
-            type="radio" value="old" checked={mainMode === "old"}
-            onChange={(e) => { setMainMode(e.target.value); setSelectedField(""); setFormValues({}); setDescription(""); setFile(null); }}
+            type="radio"
+            value="old"
+            checked={mainMode === "old"}
+            onChange={(e) => {
+              setMainMode(e.target.value);
+              setSelectedField("");
+              setFormValues({});
+              setDescription("");
+              setFile(null);
+              setErrors({});
+            }}
             style={{ marginRight: "6px" }}
           />
-          Old
+         Existing
         </label>
       </div>
 
@@ -263,7 +330,13 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
         <>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
             {subSection.fields.map((field) => (
-              <FormField key={field.name} field={field} value={formValues[field.name]} onChange={handleChange} />
+              <FormField
+                key={field.name}
+                field={field}
+                value={formValues[field.name]}
+                onChange={handleChange}
+                error={errors[field.name]}
+              />
             ))}
           </div>
 
@@ -313,23 +386,50 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
           {selectedField && (
             <>
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
-                <div>
+                <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>OLD {selectedFieldLabel}</label>
                   <input
-                    type="text" name={`old_${selectedField}`}
+                    type="text"
+                    name={`old_${selectedField}`}
                     value={formValues[`old_${selectedField}`] || ""}
                     onChange={handleChange}
-                    style={{ display: "block", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", width: "100%", marginTop: "4px" }}
+                    style={{ 
+                      display: "block", 
+                      padding: "8px", 
+                      borderRadius: "6px", 
+                      border: errors[`old_${selectedField}`] ? "1px solid #e74c3c" : "1px solid #ccc", 
+                      width: "100%", 
+                      marginTop: "4px" 
+                    }}
                   />
+                  {errors[`old_${selectedField}`] && (
+                    <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
+                      {errors[`old_${selectedField}`]}
+                    </div>
+                  )}
                 </div>
-                <div>
+
+                <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>NEW {selectedFieldLabel}</label>
                   <input
-                    type="text" name={selectedField}
+                    type="text"
+                    name={selectedField}
                     value={formValues[selectedField] || ""}
                     onChange={handleChange}
-                    style={{ display: "block", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", width: "100%", marginTop: "4px" }}
+                    style={{ 
+                      display: "block", 
+                      padding: "8px", 
+                      borderRadius: "6px", 
+                      border: errors[selectedField] ? "1px solid #e74c3c" : "1px solid #ccc", 
+                      width: "100%", 
+                      marginTop: "4px" 
+                    }}
                   />
+                  {errors[selectedField] && (
+                    <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
+                      {errors[selectedField]}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -366,8 +466,6 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
         <table style={{ marginTop: "30px", width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
           <thead>
             <tr style={{ background: "#1e4d8f", color: "#fff" }}>
-
-              {/* OLD MODE — only: Field Changed | Old Value | New Value | Description | Document | Action */}
               {mainMode === "old" ? (
                 <>
                   <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Field Changed</th>
@@ -378,7 +476,6 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
                   <th style={{ padding: "10px", border: "1px solid #ccc", width: "60px" }}>Action</th>
                 </>
               ) : (
-                /* NEW MODE — all field columns + Description + Document + Action */
                 <>
                   {subSection.fields.map((field) => (
                     <th key={field.name} style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>
@@ -395,8 +492,6 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
           <tbody>
             {tableData.map((row, index) => (
               <tr key={index} style={{ background: index % 2 === 0 ? "#fff" : "#f8fafd" }}>
-
-                {/* OLD MODE rows */}
                 {row.__mode === "old" ? (
                   <>
                     <td style={{ padding: "8px", border: "1px solid #ccc", fontWeight: "600", color: "#0f3460" }}>
@@ -410,14 +505,14 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
                     </td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL
-                        ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
-                            style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a>
-                        : "-"}
+                      {row.fileURL ? (
+                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
+                          {row.fileName}
+                        </a>
+                      ) : "-"}
                     </td>
                   </>
                 ) : (
-                  /* NEW MODE rows */
                   <>
                     {subSection.fields.map((field) => (
                       <td key={field.name} style={{ padding: "8px", border: "1px solid #ccc" }}>
@@ -426,19 +521,21 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
                     ))}
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL
-                        ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
-                            style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a>
-                        : "-"}
+                      {row.fileURL ? (
+                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
+                          {row.fileName}
+                        </a>
+                      ) : "-"}
                     </td>
                   </>
                 )}
-
                 <td style={{ padding: "8px", border: "1px solid #ccc", textAlign: "center" }}>
                   <button
                     onClick={() => handleDelete(index)}
                     style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}
-                  >✕</button>
+                  >
+                    ✕
+                  </button>
                 </td>
               </tr>
             ))}
@@ -452,15 +549,14 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
 export default function AssociateDetailsForm({
   subSectionId,
-  onChange     = () => {},
-  tableStore   = {},
+  onChange = () => {},
+  tableStore = {},
   setTableStore = () => {},
 }) {
   const subSection = ASSOCIATE_DETAILS_SUBSECTIONS.find((s) => s.id === subSectionId);
   if (!subSection) return null;
 
-  // Each sub-section gets its own slice in parent tableStore
-  const tableData    = tableStore[subSectionId] || [];
+  const tableData = tableStore[subSectionId] || [];
   const setTableData = (rows) => setTableStore((prev) => ({ ...prev, [subSectionId]: rows }));
 
   return (

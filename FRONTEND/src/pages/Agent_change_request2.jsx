@@ -203,6 +203,20 @@ const normalizeApplicationDetails = (rawData) => {
   };
 };
 
+const determineApplicantType = (agentTypeValue) => {
+  const rawValue = (agentTypeValue || "").toString().trim().toLowerCase();
+  if (!rawValue) {
+    return "individual";
+  }
+  if (rawValue.includes("other")) {
+    return "other-than-individual";
+  }
+  if (rawValue.includes("individual")) {
+    return "individual";
+  }
+  return "individual";
+};
+
 function ChangeRequestForm() {
   const navigate = useNavigate();
 
@@ -351,28 +365,39 @@ useEffect(() => {
   if (storedPan) {
     setPanNumber(storedPan);
 
-    const loadAgentData = async () => {
-      try {
+      const loadAgentData = async () => {
+        try {
 
-        // get applications
-        const res = await apiPost(
-          "/api/change-request/get-applications",
-          { panNumber: storedPan }
-        );
-
-        if (Array.isArray(res?.applications)) {
-          setApplicationOptions(
-            res.applications.map(
-              (item) => item.application_no
-            )
+          // get applications
+          const res = await apiPost(
+            "/api/change-request/get-applications",
+            { panNumber: storedPan }
           );
+
+        const applications = Array.isArray(res?.applications)
+          ? res.applications
+              .map((item) => item.application_no)
+              .filter(Boolean)
+          : [];
+
+        setApplicationOptions(applications);
+        if (applications.length > 0) {
+          setFormData((prev) => {
+            if (prev.applicationNo) {
+              return prev;
+            }
+            return {
+              ...prev,
+              applicationNo: applications[0]
+            };
+          });
         }
 
-        // get agent details
-        const info = await apiPost(
-          "/api/change-request/get-agent-info",
-          { panNumber: storedPan }
-        );
+          // get agent details
+          const info = await apiPost(
+            "/api/change-request/get-agent-info",
+            { panNumber: storedPan }
+          );
 
         console.log("AGENT INFO =", info);
 
@@ -413,6 +438,32 @@ useEffect(() => {
 
     loadApplicationDetails();
   }, [formData.applicationNo]);
+
+  useEffect(() => {
+    const agentDetailsSource = applicationDetails?.agent_details;
+    const hasAgentType =
+      agentInfo &&
+      Object.prototype.hasOwnProperty.call(agentInfo, "agent_type");
+    const agentInfoFallback = hasAgentType ? agentInfo : null;
+    const source = agentDetailsSource || agentInfoFallback;
+
+    if (!source) {
+      return;
+    }
+
+    const applicantType = determineApplicantType(source.agent_type);
+
+    setFormData((prev) => {
+      if (prev.applicantType) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        applicantType
+      };
+    });
+  }, [applicationDetails, agentInfo]);
 
   const individualIssueTypeOptions = [
     { value: "agent-details-mistake", label: "Agent Details Mistake" },
@@ -1031,26 +1082,18 @@ useEffect(() => {
         </div>
 
         <form onSubmit={handleSubmit} className="change-request-form">
-          <label htmlFor="applicationNo">Select Application Number</label>
-          <select
-            id="applicationNo"
-            name="applicationNo"
-            value={formData.applicationNo}
-            onChange={handleChange}
-            required
-            disabled={applicationOptions.length === 0}
-          >
-            <option value="">
-              {applicationOptions.length === 0
-                ? "No Application Number Available"
-                : "Select Application Number"}
-            </option>
-            {applicationOptions.map((applicationNo) => (
-              <option key={applicationNo} value={applicationNo}>
-                {applicationNo}
-              </option>
-            ))}
-          </select>
+          <label>Application Number</label>
+          {applicationOptions.length === 0 ? (
+            <p className="field-change-empty-note">
+              No application number available for this PAN
+            </p>
+          ) : formData.applicationNo ? (
+            <p className="field-change-title">{formData.applicationNo}</p>
+          ) : (
+            <p className="field-change-empty-note">
+              Loading application number...
+            </p>
+          )}
           {formData.applicationNo && isLoadingApplicationDetails && (
             <p className="field-change-empty-note">Loading application details...</p>
           )}
