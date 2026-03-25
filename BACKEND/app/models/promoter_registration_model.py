@@ -1,5 +1,7 @@
 from app.models.database import db
 from datetime import datetime
+from sqlalchemy import text  # ✅ MOVE HERE
+
 
 class PromoterRegistration(db.Model):
     __tablename__ = "promoter_registration"
@@ -25,3 +27,26 @@ class PromoterRegistration(db.Model):
     type_of_promoter = db.Column(db.String(100))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # ✅ METHOD
+    @staticmethod
+    def is_promoter_exists(promoter_register_id):
+        try:
+            query = text(
+                """
+                SELECT 1
+                FROM promoter_registration
+                WHERE promoter_register_id = :id
+                LIMIT 1
+            """
+            )
+
+            result = db.session.execute(
+                query, {"id": str(promoter_register_id).strip()}
+            ).fetchone()
+
+            return True if result else False
+
+        except Exception as e:
+            print("ERROR:", e)
+            return False

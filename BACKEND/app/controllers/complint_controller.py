@@ -42,6 +42,8 @@ if not logger.handlers:
 def generate_complaint_id():
     now = datetime.now()
     return int(now.strftime("%d%m%y%H%M%S"))
+
+
 @complint_bp.route("/complint/create", methods=["POST"])
 def create_complint():
     try:
@@ -52,6 +54,7 @@ def create_complint():
         c = data.get("complainant", {})
         r = data.get("respondent", {})
         comp = data.get("complaint", {})
+        project = comp.get("project", {})
 
         # ---------- Complainant ----------
         complainant = ComplintComplainant(
@@ -98,10 +101,11 @@ def create_complint():
             relief_sought=comp.get("relief_sought"),
             complaint_regarding=comp.get("complaint_regarding"),
             application_type=comp.get("application_type"),
-            description=comp.get("description"),            # ALWAYS
-            complaint_facts=comp.get("complaint_facts"),    # OPTIONAL
-            complaint_documents={},                          # FIXED-KEY OBJECT
-            supporting_documents=[]                          # ARRAY
+            description=comp.get("description"),  # ALWAYS
+            complaint_facts=comp.get("complaint_facts"),  # OPTIONAL
+            project_details=project,
+            complaint_documents={},  # FIXED-KEY OBJECT
+            supporting_documents=[],  # ARRAY
         )
 
         db.session.add(complaint)
@@ -109,15 +113,13 @@ def create_complint():
 
         logger.info(f"Complaint created | ID={complaint.complaint_id}")
 
-        return jsonify({
-            "status": "success",
-            "complaint_id": complaint.complaint_id
-        })
+        return jsonify({"status": "success", "complaint_id": complaint.complaint_id})
 
     except Exception:
         db.session.rollback()
         logger.error(traceback.format_exc())
         return jsonify({"status": "error"}), 500
+
 
 # =====================================================
 # 2️⃣ UPLOAD SYSTEM COMPLAINT DOCUMENTS (FIXED KEYS)
@@ -130,10 +132,15 @@ def upload_complaint_documents():
         file = request.files.get("document")
 
         if not complaint_id or not doc_type or not file:
-            return jsonify({
-                "status": "error",
-                "message": "complaint_id, type, document required"
-            }), 400
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": "complaint_id, type, document required",
+                    }
+                ),
+                400,
+            )
 
         complaint = ComplintComplaint.query.get(complaint_id)
         if not complaint:
@@ -152,15 +159,13 @@ def upload_complaint_documents():
 
         logger.info(f"Complaint document uploaded | {doc_type} | ID={complaint_id}")
 
-        return jsonify({
-            "status": "success",
-            "complaint_documents": docs
-        })
+        return jsonify({"status": "success", "complaint_documents": docs})
 
     except Exception:
         db.session.rollback()
         logger.error(traceback.format_exc())
         return jsonify({"status": "error"}), 500
+
 
 # =====================================================
 # 3️⃣ UPLOAD SUPPORTING DOCUMENTS (ARRAY)
@@ -176,10 +181,12 @@ def upload_supporting_documents():
             return jsonify({"status": "error", "message": "complaint_id required"}), 400
 
         if len(descriptions) != len(files):
-            return jsonify({
-                "status": "error",
-                "message": "Description & file count mismatch"
-            }), 400
+            return (
+                jsonify(
+                    {"status": "error", "message": "Description & file count mismatch"}
+                ),
+                400,
+            )
 
         complaint = ComplintComplaint.query.get(complaint_id)
         if not complaint:
@@ -191,26 +198,20 @@ def upload_supporting_documents():
             filename = f"{uuid.uuid4()}_{file.filename}"
             file.save(os.path.join(UPLOAD_DIR, filename))
 
-            docs.append({
-                "description": desc,
-                "document": filename
-            })
+            docs.append({"description": desc, "document": filename})
 
         complaint.supporting_documents = docs
         db.session.commit()
 
         logger.info(f"Supporting documents uploaded | ID={complaint_id}")
 
-        return jsonify({
-            "status": "success",
-            "count": len(docs),
-            "documents": docs
-        })
+        return jsonify({"status": "success", "count": len(docs), "documents": docs})
 
     except Exception:
         db.session.rollback()
         logger.error(traceback.format_exc())
         return jsonify({"status": "error"}), 500
+
 
 # =====================================================
 # 4️⃣ GET SINGLE COMPLAINT (FULL DETAILS)
@@ -223,65 +224,70 @@ def get_complaint(complaint_id):
         complainant = ComplintComplainant.query.get(complaint.complainant_id)
         respondent = ComplintRespondent.query.get(complaint.respondent_id)
 
-        return jsonify({
-
-            # ================= COMPLAINT =================
-            "complaint": {
-                "complaint_id": complaint.complaint_id,
-                "subject": complaint.subject,
-                "relief_sought": complaint.relief_sought,
-                "application_type": complaint.application_type,
-                "complaint_regarding": complaint.complaint_regarding,
-                "description": complaint.description,
-                "complaint_facts": complaint.complaint_facts,
-                "complaint_documents": complaint.complaint_documents,
-                "supporting_documents": complaint.supporting_documents,
-                "created_at": complaint.created_at.strftime("%d-%m-%Y %H:%M:%S")
-                if complaint.created_at else None
-            },
-
-            # ================= COMPLAINANT =================
-            "complainant": {
-                "name": complainant.name,
-                "type": complainant.complainant_type,
-                "mobile": complainant.mobile_no,
-                "email": complainant.email,
-                "address": {
-                "line1": complainant.address_line1,
-                    "line2": complainant.address_line2,
-                    "state": complainant.state,
-                    "district": complainant.district,
-                    "pincode": complainant.pincode
-                }
-            },
-
-            # ================= RESPONDENT =================
-            "respondent": {
-                "name": respondent.name,
-                "type": respondent.respondent_type,
-                "project_name": respondent.project_name,
-                "mobile": respondent.phone,
-                "email": respondent.email,
-                # ⭐ ADD HERE
-                "is_rera_registered": respondent.is_rera_registered,
-                "registration_id": respondent.registration_id,
-                "address": {
-                    "line1": respondent.address_line1,
-                    "line2": respondent.address_line2,
-                    "state": respondent.state,
-                    "district": respondent.district,
-                    "pincode": respondent.pincode
-                }
+        return jsonify(
+            {
+                # ================= COMPLAINT =================
+                "complaint": {
+                    "complaint_id": complaint.complaint_id,
+                    "subject": complaint.subject,
+                    "relief_sought": complaint.relief_sought,
+                    "application_type": complaint.application_type,
+                    "complaint_regarding": complaint.complaint_regarding,
+                    "description": complaint.description,
+                    "complaint_facts": complaint.complaint_facts,
+                    "complaint_documents": complaint.complaint_documents,
+                    "supporting_documents": complaint.supporting_documents,
+                    "project_details": complaint.project_details,
+                    "created_at": (
+                        complaint.created_at.strftime("%d-%m-%Y %H:%M:%S")
+                        if complaint.created_at
+                        else None
+                    ),
+                },
+                # ================= COMPLAINANT =================
+                "complainant": {
+                    "name": complainant.name,
+                    "type": complainant.complainant_type,
+                    "mobile": complainant.mobile_no,
+                    "email": complainant.email,
+                    "address": {
+                        "line1": complainant.address_line1,
+                        "line2": complainant.address_line2,
+                        "state": complainant.state,
+                        "district": complainant.district,
+                        "pincode": complainant.pincode,
+                    },
+                },
+                # ================= RESPONDENT =================
+                "respondent": {
+                    "name": respondent.name,
+                    "type": respondent.respondent_type,
+                    "project_name": respondent.project_name,
+                    "mobile": respondent.phone,
+                    "email": respondent.email,
+                    # ⭐ ADD HERE
+                    "is_rera_registered": respondent.is_rera_registered,
+                    "registration_id": respondent.registration_id,
+                    "address": {
+                        "line1": respondent.address_line1,
+                        "line2": respondent.address_line2,
+                        "state": respondent.state,
+                        "district": respondent.district,
+                        "pincode": respondent.pincode,
+                    },
+                },
             }
-
-        })
+        )
 
     except Exception as e:
         logger.error(traceback.format_exc())
-        return jsonify({
-            "status": "error",
-            "message": "Unable to fetch complaint details"
-        }), 500
+        return (
+            jsonify(
+                {"status": "error", "message": "Unable to fetch complaint details"}
+            ),
+            500,
+        )
+
 
 # =====================================================
 # 5️⃣ LIST ALL COMPLAINTS
@@ -293,23 +299,24 @@ def list_complaints():
             ComplintComplaint.created_at.desc()
         ).all()
 
-        data = [{
-            "complaint_id": c.complaint_id,
-            "subject": c.subject,
-            "created_at": c.created_at
-        } for c in complaints]
+        data = [
+            {
+                "complaint_id": c.complaint_id,
+                "subject": c.subject,
+                "created_at": c.created_at,
+            }
+            for c in complaints
+        ]
 
-        return jsonify({
-            "status": "success",
-            "total": len(data),
-            "data": data
-        })
+        return jsonify({"status": "success", "total": len(data), "data": data})
 
     except Exception:
         logger.error(traceback.format_exc())
         return jsonify({"status": "error"}), 500
 
+
 from flask import send_from_directory
+
 
 @complint_bp.route("/complint/document/<filename>", methods=["GET"])
 def view_complaint_document(filename):

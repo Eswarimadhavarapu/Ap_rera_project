@@ -153,6 +153,9 @@ export default function ComplaintDetails({
     declarantName: "",
     docDesc: "",
     docFile: null,
+    projectRegistered: "",  
+ projectRegNumber: "",    
+  projectLpNumber: "", 
   });
 
   const [districtList, setDistrictList] = useState([]);
@@ -218,7 +221,15 @@ export default function ComplaintDetails({
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-
+    if (name === "projectRegistered") {
+  setForm((p) => ({
+    ...p,
+    projectRegistered: value,
+    projectRegNumber: value === "Yes" ? p.projectRegNumber : "",
+    projectLpNumber: value === "No" ? p.projectLpNumber : "",
+  }));
+  return;
+}
     // 🔥 CLEAR OPPOSITE FIELDS WHEN COMPLAINANT RERA CHANGES
     if (name === "complainantRERA") {
       setForm((p) => ({
@@ -700,8 +711,19 @@ export default function ComplaintDetails({
       newErrors.declarantName =
         "Please Enter Declarant Name and Accept Declaration";
     }
+    
+    if (!form.projectRegistered) {
+  newErrors.projectRegistered = "Please select project registration status";
+}
 
+if (form.projectRegistered === "Yes" && !form.projectRegNumber) {
+  newErrors.projectRegNumber = "Please enter Project Registration Number";
+}
 
+if (form.projectRegistered === "No" && !form.projectLpNumber) {
+  newErrors.projectLpNumber = "Please enter B.A / L.P Number";
+}
+   
     setErrors(newErrors);
     setActiveError(Object.values(newErrors)[0] || "");
 
@@ -766,7 +788,17 @@ export default function ComplaintDetails({
               delivered: rows[0].delivered,
               deviation: rows[0].deviation,
             } : null,
-
+           project: {
+      is_registered: form.projectRegistered === "Yes",
+      registration_number:
+        form.projectRegistered === "Yes"
+          ? form.projectRegNumber
+          : null,
+      lp_number:
+        form.projectRegistered === "No"
+          ? form.projectLpNumber
+          : null,
+    },
         },
       };
 
@@ -1825,6 +1857,65 @@ export default function ComplaintDetails({
           )}
         </>
       )}
+      <h4>Project Details</h4>
+
+<div className="cr-row-3">
+  
+  {/* Left Side → Radio */}
+  <div className="cr-field">
+    <label>Is project registered with AP RERA:</label>
+
+    <div className="cr-radio-line">
+      <label>
+        <input
+          type="radio"
+          name="projectRegistered"
+          value="Yes"
+          checked={form.projectRegistered === "Yes"}
+          onChange={handleChange}
+        />
+        Yes
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          name="projectRegistered"
+          value="No"
+          checked={form.projectRegistered === "No"}
+          onChange={handleChange}
+        />
+        No
+      </label>
+    </div>
+  </div>
+
+  {/* Right Side → Dynamic Field */}
+  {form.projectRegistered === "Yes" && (
+    <div className="cr-field">
+      <label>Project Registration Number <span>*</span></label>
+      <input
+        name="projectRegNumber"
+        placeholder="Enter Project Registration Number"
+        value={form.projectRegNumber}
+        onChange={handleChange}
+      />
+    </div>
+  )}
+
+  {form.projectRegistered === "No" && (
+    <div className="cr-field">
+      <label>B.A / L.P Number <span>*</span></label>
+      <input
+        name="projectLpNumber"
+        placeholder="Enter B.A / L.P Number"
+        value={form.projectLpNumber}
+        onChange={handleChange}
+      />
+    </div>
+  )}
+
+</div>
       <h4>Supporting Documents</h4>
       <div className="cr-row-3">
         <div>
@@ -1919,13 +2010,13 @@ export default function ComplaintDetails({
         />
         <span>
           I,&nbsp;
-          <input
-            type="text"
-            name="declarantName"
-            value={form.declarantName || ""}
-            readOnly
-            className="cr-inline-input"
-          />
+         <input
+  type="text"
+  name="declarantName"
+  value={form.declarantName || ""}
+  onChange={handleChange}
+  className="cr-inline-input"
+/>
           , the complainant do hereby verify that the contents of above are true to my
           personal knowledge and belief and that I have not suppressed any material
           fact(s).

@@ -1,0 +1,293 @@
+/* ===== Layout ===== */
+
+.admin-layout{
+display:flex;
+min-height:100vh;
+}
+
+/* ===== Sidebar ===== */
+
+.admin-sidebar{
+position:fixed;
+top:70px;
+left:0;
+width:250px;
+height:calc(100vh - 70px);
+background:#0f3556;
+color:white;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:20px;
+overflow-y:auto;
+transition:transform 0.3s ease;
+}
+
+/* Sidebar hidden */
+
+.admin-sidebar-closed{
+transform:translateX(-250px);
+}
+
+/* Sidebar visible */
+
+.admin-sidebar-open{
+transform:translateX(0);
+}
+
+/* Sidebar title */
+
+.admin-sidebar-title{
+font-size:24px;
+margin-bottom:20px;
+}
+
+/* Sidebar buttons */
+
+.admin-sidebar button{
+background:none;
+border:none;
+color:white;
+text-align:left;
+font-size:16px;
+cursor:pointer;
+padding:10px;
+border-radius:5px;
+}
+
+.admin-sidebar button:hover{
+background:#174a75;
+}
+
+/* ===== Main Content ===== */
+
+.admin-main{
+margin-left:250px;
+margin-top:70px;
+width:100%;
+min-height:calc(100vh - 70px);
+background:#f5f5f5;
+padding:20px;
+}
+
+/* When sidebar closed */
+
+.admin-main-full{
+margin-left:0;
+}
+
+/* ===== Top Header ===== */
+
+.admin-top-header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:70px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px 20px;
+background:#f2f2f2;
+border-bottom:1px solid #ddd;
+z-index:2000;
+}
+
+.admin-header-left{
+display:flex;
+align-items:center;
+gap:12px;
+}
+.admin-header-logo{
+width:52px;
+height:52px;
+border-radius:50%;          /* makes circle */
+object-fit:contain;
+background:#ffffff;
+border:2px solid #0b4ea2;   /* blue ring */
+padding:6px;
+}
+
+.admin-header-left h2{
+font-size:22px;
+font-weight:600;
+color: #0b4ea2;
+}
+
+.admin-header-right{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.admin-search-btn{
+background:red;
+color:white;
+border:none;
+padding:10px 20px;
+font-weight:bold;
+cursor:pointer;
+border-radius:4px;
+}
+
+/* Hamburger */
+
+.admin-hamburger{
+font-size:26px;
+background:none;
+border:none;
+color:black;
+cursor:pointer;
+margin-right:10px;
+}
+
+.admin-logo-text{
+font-size:24px;
+font-weight:600;
+}
+
+.admin-panel-title{
+font-size:24px;
+margin-left:20px;
+}
+
+/* ===== Dashboard ===== */
+
+.admin-dashboard-content{
+padding:20px 30px;
+background:#f5f5f5;
+min-height:calc(100vh - 70px); /* header height */
+margin-top:0;
+}
+
+.admin-dashboard-cards{
+display:flex;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.admin-card{
+background:white;
+padding:30px;
+border-radius:10px;
+width:200px;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,0.15);
+}
+
+.admin-card h3{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.admin-card p{
+font-size:16px;
+color:#444;
+}
+
+.admin-table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+background:white;
+}
+
+.admin-table th,
+.admin-table td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+.admin-table th{
+background:#0f3556;
+color:white;
+}
+
+.admin-view-btn{
+background:#0f3556;
+color:white;
+border:none;
+padding:6px 12px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.admin-view-btn:hover{
+background:#174a75;
+}
+
+.admin-profile-img{
+width:38px;
+height:38px;
+border-radius:50%;
+object-fit:cover;
+cursor:pointer;
+border:2px solid #0f3556;
+margin-left:10px;
+}
+
+/* Profile wrapper */
+.admin-profile-wrapper{
+position:relative;
+margin-left:10px;
+}
+
+/* Small profile icon */
+.admin-profile-img{
+width:40px;
+height:40px;
+border-radius:50%;
+cursor:pointer;
+border:2px solid #0f3556;
+}
+
+/* Profile popup card */
+.admin-profile-card{
+position:absolute;
+top:55px;
+right:0;
+width:260px;
+background:white;
+border-radius:10px;
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
+overflow:hidden;
+z-index:1000;
+}
+
+/* top section */
+.admin-profile-top{
+background:#d7e3f3;
+padding:20px;
+text-align:center;
+}
+
+.admin-profile-large{
+width:70px;
+height:70px;
+border-radius:50%;
+margin-bottom:10px;
+}
+
+.admin-profile-top h3{
+margin:5px 0;
+}
+
+.admin-profile-top p{
+font-size:14px;
+color:#555;
+}
+
+/* logout button */
+.admin-logout-btn{
+width:90%;
+margin:15px auto;
+display:block;
+padding:10px;
+background:#0f3556;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}

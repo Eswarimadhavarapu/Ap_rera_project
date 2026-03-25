@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/ProjectBlockVillaDetails.css";
 import { useNavigate } from "react-router-dom";
 import QuarterlyStepper from "../components/QuarterlyStepper";
+import { apiPost } from "../api/api";
 
 const steps = [
   "Documents",
@@ -35,7 +36,7 @@ const createVillaRows = () =>
     saved:false,
   }));
 
-const ResidentialBlock = ({ onUpload }) => (
+const ResidentialBlock = ({ onUpload, blockData, setBlockData }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
       <thead>
@@ -48,24 +49,79 @@ const ResidentialBlock = ({ onUpload }) => (
         </tr>
       </thead>
       <tbody>
-        {[1, 2, 3].map((num) => (
-          <tr key={num}>
-            <td>{num}</td>
-            <td>Block {num}</td>
+       {blockData.map((row, index) => (
+          <tr key={index} className={row.saved ? "saved-row" : ""}>
+
+            {/* Checkbox */}
             <td>
-              <select>
+              <input
+  type="checkbox"
+  checked={row.saved || row.checked}
+  className={
+    row.saved
+      ? "checkbox-green"
+      : row.checked
+      ? "checkbox-blue"
+      : ""
+  }
+  onChange={() => {
+    const updated = [...blockData];
+    updated[index].checked = !updated[index].checked;
+    setBlockData(updated);
+  }}
+/>
+            </td>
+
+            <td>{index + 1}</td>
+
+            {/* Block Name */}
+            <td>
+              <select
+                value={row.block}
+                onChange={(e) => {
+                  const updated = [...blockData];
+                  updated[index].block = e.target.value;
+                  setBlockData(updated);
+                }}
+              >
+                <option value="">Select Block</option>
+                <option value="Block A">Block A</option>
+                <option value="Block B">Block B</option>
+                <option value="Block C">Block C</option>
+              </select>
+            </td>
+
+            {/* Status */}
+            <td>
+              <select value={row.status}
+                onChange={(e) => {
+                  const updated = [...blockData];
+                  updated[index].status = e.target.value;
+                  setBlockData(updated);
+                }}
+              >
+                <option value="">Select</option>
+                
                 <option>Yet To Start</option>
                 <option>In Progress</option>
                 <option>Completed</option>
               </select>
             </td>
             <td>
-              <input type="text" />
+              <input
+                type="text"
+                value={row.remarks}
+                onChange={(e) => {
+                  const updated = [...blockData];
+                  updated[index].remarks = e.target.value;
+                  setBlockData(updated);
+                }}
+              />
             </td>
             <td>
               <button
                 className="projectblockvilla-view-btn"
-                onClick={() => onUpload(num)}
+                onClick={() => onUpload(index)}
               >
                 Upload/View
               </button>
@@ -77,7 +133,7 @@ const ResidentialBlock = ({ onUpload }) => (
   </div>
 );
 
-const ResidentialFloor = ({ onUpload }) => (
+const ResidentialFloor = ({ onUpload, floorData, setFloorData }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
       <thead>
@@ -91,25 +147,92 @@ const ResidentialFloor = ({ onUpload }) => (
         </tr>
       </thead>
       <tbody>
-        {[1, 2, 3].map((num) => (
-          <tr key={num}>
-            <td>{num}</td>
-            <td>Block A</td>
-            <td>{num}</td>
+        {floorData.map((row, index) => (
+          <tr key={index} className={row.saved ? "saved-row" : ""}>
+
             <td>
-              <select>
+              <input
+  type="checkbox"
+  checked={row.saved || row.checked}
+  className={
+    row.saved
+      ? "checkbox-green"
+      : row.checked
+      ? "checkbox-blue"
+      : ""
+  }
+  onChange={() => {
+    const updated = [...floorData];
+    updated[index].checked = !updated[index].checked;
+    setFloorData(updated);
+  }}
+/>
+            </td>
+
+            <td>{index + 1}</td>
+
+            <td>
+  <select
+    value={row.block}
+    onChange={(e) => {
+      const updated = [...floorData];
+      updated[index].block = e.target.value;
+      setFloorData(updated);
+    }}
+  >
+    <option value="">Select Block</option>
+    <option value="Block A">Block A</option>
+    <option value="Block B">Block B</option>
+    <option value="Block C">Block C</option>
+  </select>
+</td>
+
+<td>
+  <select
+    value={row.floor}
+    onChange={(e) => {
+      const updated = [...floorData];
+      updated[index].floor = e.target.value;
+      setFloorData(updated);
+    }}
+  >
+    <option value="">Select Floor</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+</td>
+            <td>
+              <select
+                value={row.status}
+                onChange={(e) => {
+                  const updated = [...floorData];
+                  updated[index].status = e.target.value;
+                  setFloorData(updated);
+                }}
+              >
+                <option value="">Select</option>
                 <option>Yet To Start</option>
                 <option>In Progress</option>
                 <option>Completed</option>
               </select>
             </td>
             <td>
-              <input type="text" />
+              <input
+                value={row.remarks}
+                onChange={(e) => {
+                  const updated = [...floorData];
+                  updated[index].remarks = e.target.value;
+                  setFloorData(updated);
+                }}
+              />
             </td>
             <td>
               <button
                 className="projectblockvilla-view-btn"
-                onClick={() => onUpload(num)}
+                onClick={() => onUpload(index)}
               >
                 Upload/View
               </button>
@@ -121,7 +244,7 @@ const ResidentialFloor = ({ onUpload }) => (
   </div>
 );
 
-const ResidentialFlat = ({ onUpload }) => (
+const ResidentialFlat = ({ onUpload, flatData, setFlatData }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
       <thead>
@@ -135,14 +258,73 @@ const ResidentialFlat = ({ onUpload }) => (
         </tr>
       </thead>
       <tbody>
-        {[1, 2, 3].map((num) => (
-          <tr key={num}>
-            <td>{num}</td>
-            <td>A</td>
-            <td>1</td>
-            <td>{100 + num}</td>
+       {flatData.map((row, index) => (
+          <tr key={index} className={row.saved ? "saved-row" : ""}>
+
             <td>
-              <select>
+              <input
+  type="checkbox"
+  checked={row.saved || row.checked}
+  className={
+    row.saved
+      ? "checkbox-green"
+      : row.checked
+      ? "checkbox-blue"
+      : ""
+  }
+  onChange={() => {
+    const updated = [...flatData];
+    updated[index].checked = !updated[index].checked;
+    setFlatData(updated);
+  }}
+/>
+            </td>
+
+            <td>{index + 1}</td>
+
+            <td>
+  <select
+    value={row.block}
+    onChange={(e) => {
+      const updated = [...flatData];
+      updated[index].block = e.target.value;
+      setFlatData(updated);
+    }}
+  >
+    <option value="">Select Block</option>
+    <option value="Block A">Block A</option>
+    <option value="Block B">Block B</option>
+    <option value="Block C">Block C</option>
+  </select>
+</td>
+
+<td>
+  <select
+    value={row.floor}
+    onChange={(e) => {
+      const updated = [...flatData];
+      updated[index].floor = e.target.value;
+      setFlatData(updated);
+    }}
+  >
+    <option value="">Select Floor</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+</td>
+            <td>{100 + index}</td>
+            <td>
+              <select
+                value={row.status}
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].status = e.target.value;
+                  setFlatData(updated);
+                }}
+              >
                 <option>Yet To Start</option>
                 <option>Completed</option>
               </select>
@@ -150,7 +332,7 @@ const ResidentialFlat = ({ onUpload }) => (
             <td>
               <button
                 className="projectblockvilla-view-btn"
-                onClick={() => onUpload(num)}
+                onClick={() => onUpload(index)}
               >
                 Upload/View
               </button>
@@ -207,38 +389,20 @@ const [blockData, setBlockData] = useState([
 );
   // 🔥 SAVE FUNCTIONS (Step Wise Save)
 const handleSaveBlock = () => {
-  let updated = [...blockData];
-  let savedCount = 0;
-
-  updated = updated.map((row) => {
-    if (row.checked) {
-      if (row.block && row.status && row.remarks) {
-        savedCount++;
-        return { ...row, saved: true }; // ✅ mark as saved
-      } else {
-        alert("Please fill all fields before saving selected row.");
-        return { ...row, saved: false, checked: false };
-      }
+  const updated = blockData.map((row) => {
+    if (row.block && row.status && row.remarks) {
+      return { ...row, saved: true };   // ✅ green tick
     }
     return row;
   });
 
   setBlockData(updated);
-
-  if (savedCount > 0) {
-    alert(`${savedCount} row(s) saved successfully!`);
-  }
 };
 
 const handleSaveFloor = () => {
   const updated = floorData.map((row) => {
-    if (row.checked) {
-      if (row.block && row.floor && row.status && row.remarks) {
-        return { ...row, saved: true };
-      } else {
-        alert("Please fill all fields before saving.");
-        return { ...row, saved: false };
-      }
+    if (row.block && row.floor && row.status && row.remarks) {
+      return { ...row, saved: true };   // green tick
     }
     return row;
   });
@@ -248,19 +412,8 @@ const handleSaveFloor = () => {
 
 const handleSaveFlat = () => {
   const updated = flatData.map((row) => {
-    if (row.isChecked || row.checked) {
-      if (
-        row.block &&
-        row.floor &&
-        row.status &&
-        row.saleStatus &&
-        row.remarks
-      ) {
-        return { ...row, saved: true };
-      } else {
-        alert("Please fill all fields before saving.");
-        return { ...row, saved: false };
-      }
+  if (row.block && row.floor && row.status) {
+      return { ...row, saved: true };
     }
     return row;
   });
@@ -343,11 +496,8 @@ const handleSave = async () => {
       formData.append(`photos_${index}`, photo);
     });
   });
-
-await fetch("http://localhost:8080/api/project/quarterly/plot/save", {
-  method: "POST",
-  body: formData,
-});
+  try {
+await apiPost("/api/project/quarterly/plot/save", formData);
 
   // checkbox green
 const updated = {};
@@ -365,6 +515,10 @@ tableData.forEach((row, index) => {
 });
 
 setSavedRows(updated);
+ } catch (err) {
+    console.error(err);
+    alert("Error saving quarterly data");
+  }
 };
 
 const handleUpload = (rowIndex) => {
@@ -730,29 +884,35 @@ className={
 )}
 {projectType === "Residential" && activeStep === 1 && (
   <ResidentialBlock
-    onUpload={(row) => {
-      setActiveRow(row);
-      setShowModal(true);
-    }}
-  />
+   blockData={blockData}
+  setBlockData={setBlockData}
+  onUpload={(row) => {
+    setActiveRow(row);
+    setShowModal(true);
+  }}
+/>
 )}
 
 {projectType === "Residential" && activeStep === 2 && (
   <ResidentialFloor
-    onUpload={(row) => {
-      setActiveRow(row);
-      setShowModal(true);
-    }}
-  />
+   floorData={floorData}
+  setFloorData={setFloorData}
+  onUpload={(row) => {
+    setActiveRow(row);
+    setShowModal(true);
+  }}
+/>
 )}
 
 {projectType === "Residential" && activeStep === 3 && (
   <ResidentialFlat
-    onUpload={(row) => {
-      setActiveRow(row);
-      setShowModal(true);
-    }}
-  />
+    flatData={flatData}
+  setFlatData={setFlatData}
+  onUpload={(row) => {
+    setActiveRow(row);
+    setShowModal(true);
+  }}
+/>
 )}
 {showModal && (
   <div className="upload-modal-overlay">
@@ -1052,10 +1212,10 @@ className={
       <>
         <button
           className="res-submit-btn"
-          onClick={() => alert("Block Data Submitted")}
-        >
-          Submit
-        </button>
+  onClick={handleSaveBlock}
+>
+  Submit
+</button>
 
         <button
           className="res-next-btn"
@@ -1071,7 +1231,7 @@ className={
       <>
         <button
           className="res-submit-btn"
-          onClick={() => alert("Floor Data Submitted")}
+         onClick={handleSaveFloor}
         >
           Submit
         </button>
@@ -1087,13 +1247,22 @@ className={
 
     {/* 🔹 FLAT STEP */}
     {activeStep === 3 && (
-      <button
-        className="res-submit-btn"
-        onClick={() => alert("Residential Submitted Successfully")}
-      >
-        Submit
-      </button>
-    )}
+      <>
+    <button
+      className="res-save-btn"
+      onClick={handleSaveFlat}
+    >
+      Save
+    </button>
+
+    <button
+      className="res-submit-btn"
+      onClick={() => alert("Residential Submitted Successfully")}
+    >
+      Submit
+    </button>
+  </>
+)}
 
   </div>
 )}
@@ -1421,15 +1590,22 @@ className={
             {/* 🔥 Checkbox Column */}
             <td style={{ textAlign: "center" }}>
               <input
-                type="checkbox"
-                checked={row.isChecked || false}
-                onChange={(e) => {
-                  const updated = [...flatData];
-                  updated[index].isChecked = e.target.checked;
-                  setFlatData(updated);
-                }}
-              />
-            </td>
+    type="checkbox"
+    checked={row.saved || row.checked}
+    className={
+      row.saved
+        ? "checkbox-green"
+        : row.checked
+        ? "checkbox-blue"
+        : ""
+    }
+    onChange={(e) => {
+      const updated = [...flatData];
+      updated[index].checked = e.target.checked;
+      setFlatData(updated);
+    }}
+  />
+</td>
 
             {/* 1. S.No */}
             <td>{index + 1}</td>

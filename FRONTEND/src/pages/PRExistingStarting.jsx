@@ -257,6 +257,7 @@
 // import { apiPost } from "../api/api";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { apiGet } from "../api/api";
 import "../styles/projectWizard.css";
 
 
@@ -362,11 +363,9 @@ const applicationNumber = location.state?.applicationNumber;
 
   const fetchExistingProject = async () => {
     try {
-      const res = await fetch(
-        `https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration/${applicationNumber}`
-      );
-
-      const data = await res.json();
+      const data = await apiGet(
+  `/api/project-registration/${applicationNumber}`
+);
        console.log("API DATA:", data); // ✅ HERE
 
       setFormData(prev => ({

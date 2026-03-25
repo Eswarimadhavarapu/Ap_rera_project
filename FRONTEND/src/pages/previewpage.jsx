@@ -294,6 +294,28 @@ export default function PreviewPage({ complaintData, setCurrentStep }) {
             </table>
           </>
         )}
+
+        <Title text="Project Details" />
+
+<Grid>
+  <Item
+    label="Is Project Registered with AP RERA"
+    value={complaint?.project_details?.is_registered ? "Yes" : "No"}
+  />
+
+  {complaint?.project_details?.is_registered ? (
+    <Item
+      label="Project Registration Number"
+      value={complaint?.project_details?.registration_number || "-"}
+    />
+  ) : (
+    <Item
+      label="B.A / L.P Number"
+      value={complaint?.project_details?.lp_number || "-"}
+    />
+  )}
+</Grid>
+
         {/* ================= DOCUMENTS ================= */}
         <Title text="Supporting Documents" />
         <table className="capreviewpage-table">

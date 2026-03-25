@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiPost } from "../api/api";
 import "../styles/otplogin.css";
-
-const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
 
 const ProjectRegistrationExisting = () => {
   const navigate = useNavigate();
@@ -32,17 +31,9 @@ const ProjectRegistrationExisting = () => {
       setErrorMsg("");
       setSuccessMsg("");
 
-      const res = await fetch(`${API_BASE}/login/send-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pan_number: pan }),
+      const data = await apiPost("/api/login/send-otp", {
+        pan_number: pan,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to send OTP");
-      }
 
       setOtpSent(true);
       setSuccessMsg("OTP sent successfully to registered email");
@@ -67,20 +58,10 @@ const ProjectRegistrationExisting = () => {
       setLoading(true);
       setErrorMsg("");
 
-      const res = await fetch(`${API_BASE}/login/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pan_number: pan,
-          otp: otp,
-        }),
+      const data = await apiPost("/api/login/verify-otp", {
+        pan_number: pan,
+        otp: otp,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "OTP verification failed");
-      }
 
       sessionStorage.setItem("loginResponse", JSON.stringify(data));
 

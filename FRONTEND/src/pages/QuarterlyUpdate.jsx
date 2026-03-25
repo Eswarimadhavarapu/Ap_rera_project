@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import QuarterlyStepper from "../components/QuarterlyStepper";
 import "../styles/QuarterlyUpdate.css";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../api/api";
 
 const QuarterlyUpdate = () => {
   const [occupancy, setOccupancy] = useState("YES");
@@ -57,12 +58,12 @@ const handleSave = async () => {
     });
 
     const response = await fetch(
-      "https://0jv8810n-8080.inc1.devtunnels.ms/api/quarterly-update",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+  `${BASE_URL}/api/quarterly-update`,
+  {
+    method: "POST",
+    body: formData,
+  }
+);
 
     const data = await response.json();
 
@@ -100,7 +101,7 @@ useEffect(() => {
       const panNumber = sessionStorage.getItem("panNumber");
 
       const response = await fetch(
-        `https://0jv8810n-8080.inc1.devtunnels.ms/api/current-quarter?panNumber=${panNumber}`
+        `${BASE_URL}/api/current-quarter?panNumber=${panNumber}`
       );
 
       const data = await response.json();
@@ -338,9 +339,9 @@ useEffect(() => {
             <button className="btn btn-secondary me-3" onClick={handleSave}>
               Save
             </button>
-            <button className="btn btn-primary" onClick={handleFinalSubmit}>
+            {/* <button className="btn btn-primary" onClick={handleFinalSubmit}>
               Final Submit
-            </button>
+            </button> */}
           </div>
           </div>
         </div>

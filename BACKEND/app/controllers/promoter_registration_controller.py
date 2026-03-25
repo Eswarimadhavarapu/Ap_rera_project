@@ -153,3 +153,16 @@ def get_promoter(promoter_id):
 
     logger.info(f"Outgoing GET data: {data}")
     return jsonify(data), 200
+
+
+@promoter_registration_bp.route(
+    "/check-promoter/<promoter_register_id>", methods=["GET"]
+)
+def check_promoter(promoter_register_id):
+    try:
+        exists = PromoterRegistration.is_promoter_exists(promoter_register_id)
+
+        return jsonify({"exists": exists}), 200
+
+    except Exception as e:
+        return jsonify({"exists": False, "error": str(e)}), 500

@@ -700,3 +700,40 @@ AP RERA
         except Exception as e:
             db.session.rollback()
             return {"success": False, "message": str(e)}
+        
+@staticmethod
+def approve_agent_renewal(agent_id):
+    try:
+
+        query = text("""
+            UPDATE agentregistration_details_t
+            SET license_date = NOW() + INTERVAL '5 years'
+            WHERE id = :agent_id
+            RETURNING agent_name, application_no, license_date
+        """)
+
+        row = db.session.execute(query, {
+            "agent_id": agent_id
+        }).fetchone()
+
+        db.session.commit()
+
+        if not row:
+            return {
+                "success": False,
+                "message": "Agent not found"
+            }
+
+        return {
+            "success": True,
+            "agent_name": row.agent_name,
+            "application_no": row.application_no,
+            "expiry_date": row.license_date
+        }
+
+    except Exception as e:
+        db.session.rollback()
+        return {
+            "success": False,
+            "message": str(e)
+        }

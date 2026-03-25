@@ -108,3 +108,79 @@ class ProjectWizardModel:
     @staticmethod
     def fetch_by_application_no(application_no):
         return ProjectRegistration.query.filter_by(application_no=application_no).first()
+
+    # ------------------ Closure --------------------
+    # @staticmethod
+    # def fetch_closure_projects(pan_number):
+    #     from sqlalchemy import text
+    #     query = text("""
+    #         SELECT
+    #             preg.application_no,
+    #             preg.name AS promoter_name,
+    #             pr.project_name
+    #         FROM project_registrations preg
+    #         JOIN project_registration pr
+    #         ON preg.application_no = pr.application_number
+    #         WHERE preg.pan_number = :pan_number
+    #         ORDER BY preg.application_no DESC
+    #     """)
+
+    #     result = db.session.execute(query, {"pan_number": pan_number}).mappings().all()
+
+    #     return [dict(row) for row in result]
+    # @staticmethod
+    # def fetch_closure_projects(pan_number):
+    #     from sqlalchemy import text
+    #     query = text("""
+    #         SELECT
+    #             preg.application_no,
+    #             preg.name AS promoter_name,
+    #             pr.project_name
+    #         FROM project_registrations preg
+    #         JOIN project_registration pr
+    #         ON preg.application_no = pr.application_number
+    #         WHERE preg.pan_number = :pan_number
+
+    #         UNION
+
+    #         SELECT
+    #             ppi.application_no,
+    #             ppi.promoter_name,
+    #             ppo.project_name
+    #         FROM promoter_profile_other_t_indv ppi
+    #         JOIN past_projects_other_t_indv ppo
+    #         ON ppi.application_no = ppo.application_no
+    #         WHERE ppi.pan_number = :pan_number
+
+    #         ORDER BY application_no DESC
+    #     """)
+    #     result = db.session.execute(query, {"pan_number": pan_number}).mappings().all()
+    #     return [dict(row) for row in result]
+    # @staticmethod
+    # def fetch_closure_projects(pan_number):
+    #     from sqlalchemy import text
+    #     query = text("""
+    #         SELECT
+    #             preg.application_no,
+    #             preg.name AS promoter_name,
+    #             pr.project_name
+    #         FROM project_registrations preg
+    #         JOIN project_registration pr
+    #         ON preg.application_no = pr.application_number
+    #         WHERE preg.pan_number = :pan_number
+
+    #         UNION
+
+    #         SELECT
+    #             ppi.application_no,
+    #             ppi.organization_name AS promoter_name,
+    #             ppo.project_name
+    #         FROM promoter_profile_other_t_indv ppi
+    #         JOIN past_projects_other_t_indv ppo
+    #         ON ppi.application_no = ppo.application_no
+    #         WHERE ppi.pan_number = :pan_number
+
+    #         ORDER BY application_no DESC
+    #     """)
+    #     result = db.session.execute(query, {"pan_number": pan_number}).mappings().all()
+    #     return [dict(row) for row in result]

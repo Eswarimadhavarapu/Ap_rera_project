@@ -116,6 +116,41 @@ import { AgentFormProvider } from "./pages/AgentFormContext";
 import ProjectBlockVillaDetails from "./pages/ProjectBlockVillaDetails";
 import ChangeRequestForm from "./pages/ChangeRequestForm";
 import ChangeRequestVerify from "./pages/ChangeRequestVerify";
+import ProjectClosure from "./pages/ProjectClosure";
+import ClosureProcess from "./pages/ClosureProcess";
+import PromoterLogin from "./pages/PromoterLogin";
+import PromoterData from "./pages/PromoterData";
+import ClosureTable from "./pages/ClosureTable";
+
+import AgentRenewal from "./pages/AgentRenewal";
+import RenewalUploadDocuments from "./pages/RenewalUploadDocuments";
+import RenewalQueries from "./pages/RenewalQueries";
+import RenewalPreview from "./pages/RenewalPreview";
+import RenewalPayment from "./pages/RenewalPayment";
+import RenewalStatus from "./pages/RenewalStatus";
+import RenewalReceipt from "./pages/RenewalReceipt";
+import "./styles/renewal.css";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminRequests from "./pages/admin/AdminRequests";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminAgents from "./pages/admin/AdminAgents";
+import AdminComplaints from "./pages/admin/AdminComplaints";
+import AdminRenewal from "./pages/admin/adminRenewal.jsx";
+import AdminRenewalList from "./pages/admin/AdminRenewalList";
+import AdminRenewalDetail from "./pages/admin/AdminRenewalDetail";
+import AdminLogin from "./pages/admin/AdminLogin";
+import ApplyForRenewalOTP from "./pages/ApplyForRenewalOTP";
+import RenewalNewCertificate from "./pages/RenewalNewCertificate.jsx";
+import AgentChangeRequest1 from "./pages/agent_change_request_1";
+
+import Agentchangerequest from "./pages/Agent_change_request2";
+import AgentChangeRequestPayment from "./pages/AgentChangeRequestPayment";
+import PromoterOtpLogin from "./pages/PromoterOtpLogin.jsx";
+import Changerequest from "./pages/Changerequest.jsx";
+import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
+import AdminChangeRequestList   from "./pages/admin/AdminChangeRequestList";
+import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail";
+
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -128,124 +163,166 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
-     <AgentFormProvider>
-    {/* ✅ Popup should be OUTSIDE Routes */}
-      {showPopup && <AnnouncementPopup onClose={() => setShowPopup(false)} />}
-      <Layout>
-        <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
-          <Route path="about" element={<About />} />
-          {/* <Route path="apreat" element={<Aprea />} /> */}
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="registration" element={<Registration />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="registered" element={<Registered />} />
-          <Route path="judgements" element={<Judgements />} />
-          <Route path="knowledge-hub" element={<KnowledgeHub />} />
-          <Route path="login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/apreat" element={<Apreat />} />
-          <Route path="/recruitment" element={<Recruitment />} />
-          <Route path="/rti" element={<Rti/>} />
-          <Route path="/promotregistration" element={<Promotregistration />} />
-           <Route path="/guidelinesRegistration" element={<GuidelinesRegistration />} />
-           <Route path="/feecalculater" element={<FeeCalculator />} />
-           <Route path="/cidcandaprerajoint" element={<CidcandAPRERAJointNotifications/>} />
-           <Route path="/usermanual"element={<Usermanual />} />
-          <Route path="/videoTutorial"element={<VideoTutorial />} />
-          <Route path="/mobileapp" element={<MobileApp />} />
-          <Route path="/project-registration" element={<ProjectWizard/>} />
-          <Route path="/guidelines" element={<Guidelines />} />
-          <Route path="/project-registration-wizard" element={<ProjectWizard />} />
-          <Route path="/race" element={<Race />}/>
-          <Route path="/JudgementHub" element={<JudgementHub />}/>
-          <Route path="/PressRelease" element={<PressRelease />}/>
-           <Route path="/Testimonials" element={<Testimonials />}/>
-           <Route path="/GradingOfAgents" element={<GradingOfAgents />}/>
-           <Route path="/ChronologyOfEvents" element={<ChronologyOfEvents />}/>
-           <Route path="/AdvertisementGuidelines" element={<AdvertisementGuidelines />}/>
+      <AgentFormProvider>
+        {/* ✅ Popup should be OUTSIDE Routes */}
+        {showPopup && <AnnouncementPopup onClose={() => setShowPopup(false)} />}
+        <Layout>
+          <Routes>
+            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="about" element={<About />} />
+            {/* <Route path="apreat" element={<Aprea />} /> */}
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="registration" element={<Registration />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="registered" element={<Registered />} />
+            <Route path="judgements" element={<Judgements />} />
+            <Route path="knowledge-hub" element={<KnowledgeHub />} />
+            <Route path="login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/apreat" element={<Apreat />} />
+            <Route path="/recruitment" element={<Recruitment />} />
+            <Route path="/rti" element={<Rti />} />
+            <Route path="/promotregistration" element={<Promotregistration />} />
+            <Route path="/guidelinesRegistration" element={<GuidelinesRegistration />} />
+            <Route path="/feecalculater" element={<FeeCalculator />} />
+            <Route path="/cidcandaprerajoint" element={<CidcandAPRERAJointNotifications />} />
+            <Route path="/usermanual" element={<Usermanual />} />
+            <Route path="/videoTutorial" element={<VideoTutorial />} />
+            <Route path="/mobileapp" element={<MobileApp />} />
+            <Route path="/project-registration" element={<ProjectWizard />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/project-registration-wizard" element={<ProjectWizard />} />
+            <Route path="/race" element={<Race />} />
+            <Route path="/JudgementHub" element={<JudgementHub />} />
+            <Route path="/PressRelease" element={<PressRelease />} />
+            <Route path="/Testimonials" element={<Testimonials />} />
+            <Route path="/GradingOfAgents" element={<GradingOfAgents />} />
+            <Route path="/ChronologyOfEvents" element={<ChronologyOfEvents />} />
+            <Route path="/AdvertisementGuidelines" element={<AdvertisementGuidelines />} />
             <Route path="/our-leadership" element={<OurLeadership />} />
             <Route path="/contact-us/aprera" element={<ContactUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/hyperlinking-policy" element={<HyperlinkingPolicy />} />
-          <Route path="/copyrightPolicy" element={< CopyrightPolicy />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/accessibility" element={<Accessibility />} />
-          <Route path="/termsConditions" element={< TermsConditions />} />
-          <Route path="/rateWebsite" element={<RateWebsite />} />
-          <Route path="/agent-registration" element={<AgentRegistration />} />
-           <Route path="/Guidelines" element={<Guidelines />} />
-           <Route path="/agent-detail-new" element={<AgentDetailNew />} />
-           <Route path="/agent-detail-existing" element={<AgentDetailExisting />} />
-           <Route path="/applicant-details" element={<ApplicantDetails />} />
-           <Route path="/aprera" element={<Aprera />} />
-          <Route path="/organogram" element={<Organogram />} />
-          <Route path="/ourservices" element={<OurServices />} />
-          <Route path="/statistics" element={<Statistics />} />
-          <Route path="/goinotifications" element={<GOINotifications />}/>
-          <Route path="/goapnotifications" element={<GoapNotifications />}/>
-          <Route path="/authoritynotifications" element={<AuthorityNotifications />}/>
-          <Route path="/agents" element={<Agents />} />
-          <Route path="/registered/projects" element={<Project />} />
-          <Route path="/complaint-orders" element={<ComplaintOrders />} />
-          <Route path="evolutionofrera" element={<EvolutionOfRera />} />
-          <Route path="taskvstime" element={<TaskVsTime />} />
-          <Route path="vendordatabase" element={<VendorDataBase />} />
-          <Route path="gradingofpromotors" element={<GradingOfPromoters />} />
-          <Route path="ACF" element={<Acf/>} />
-          <Route path="AudioVisualGallery" element={<AudioVisualGallery />} />
-          <Route path="/complaintregistration" element={<ComplaintRegistration />} />
-          <Route path="/formsdownload"element={<FormsDownload/>} />
-          <Route path="/promoter-profile" element={<Promoter_Profile />} />
-          <Route path="/project-Details" element={<ProjectDetails />} />
-          <Route path="/Development-Details" element={<DevelopmentDetails />} />
-         <Route
-            path="project-upload-documents"
-            element={<ProjectUploadDocuments1 />}
-          />
-          <Route path="preview" element={<ProjectPreview />} />
-           <Route path="/Associate-Details" element={<AssociateDetails />} />
-          <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
+            <Route path="/hyperlinking-policy" element={<HyperlinkingPolicy />} />
+            <Route path="/copyrightPolicy" element={< CopyrightPolicy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/termsConditions" element={< TermsConditions />} />
+            <Route path="/rateWebsite" element={<RateWebsite />} />
+            <Route path="/agent-registration" element={<AgentRegistration />} />
+            <Route path="/Guidelines" element={<Guidelines />} />
+            <Route path="/agent-detail-new" element={<AgentDetailNew />} />
+            <Route path="/agent-detail-existing" element={<AgentDetailExisting />} />
+            <Route path="/applicant-details" element={<ApplicantDetails />} />
+            <Route path="/aprera" element={<Aprera />} />
+            <Route path="/organogram" element={<Organogram />} />
+            <Route path="/ourservices" element={<OurServices />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/goinotifications" element={<GOINotifications />} />
+            <Route path="/goapnotifications" element={<GoapNotifications />} />
+            <Route path="/authoritynotifications" element={<AuthorityNotifications />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/registered/projects" element={<Project />} />
+            <Route path="/complaint-orders" element={<ComplaintOrders />} />
+            <Route path="evolutionofrera" element={<EvolutionOfRera />} />
+            <Route path="taskvstime" element={<TaskVsTime />} />
+            <Route path="vendordatabase" element={<VendorDataBase />} />
+            <Route path="gradingofpromotors" element={<GradingOfPromoters />} />
+            <Route path="ACF" element={<Acf />} />
+            <Route path="AudioVisualGallery" element={<AudioVisualGallery />} />
+            <Route path="/complaintregistration" element={<ComplaintRegistration />} />
+            <Route path="/formsdownload" element={<FormsDownload />} />
+            <Route path="/promoter-profile" element={<Promoter_Profile />} />
+            <Route path="/project-Details" element={<ProjectDetails />} />
+            <Route path="/Development-Details" element={<DevelopmentDetails />} />
+            <Route
+              path="project-upload-documents"
+              element={<ProjectUploadDocuments1 />}
+            />
+            <Route path="preview" element={<ProjectPreview />} />
+            <Route path="/Associate-Details" element={<AssociateDetails />} />
+            <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />
             <Route path="/" element={<HomePage />} />
-        <Route path="/bim" element={<BuildingInformationModelling />} />
-        <Route path="/vr" element={<VRInnovation />} />
-        <Route path="/rtc" element={<RealTimeContextCapture />} />
-        <Route path="/projectapplicationdetails" element={<ProjectApplicationDetails/>} />
-             <Route path="/extensionprocess" element={<ExtensionProcess/>} />
-            <Route path="/extensionpaymentpage" element={<ExtensionPaymentPage/>} />
+            <Route path="/bim" element={<BuildingInformationModelling />} />
+            <Route path="/vr" element={<VRInnovation />} />
+            <Route path="/rtc" element={<RealTimeContextCapture />} />
+            <Route path="/projectapplicationdetails" element={<ProjectApplicationDetails />} />
+            <Route path="/extensionprocess" element={<ExtensionProcess />} />
+            <Route path="/extensionpaymentpage" element={<ExtensionPaymentPage />} />
             <Route path="/certificate" element={<Certificate />} />
             <Route path="/otplogin" element={<OTPLogin />} />
             <Route path="/InformProject" element={<InformProject />} />
             <Route path="/agent-dashboard" element={<AgentDashboard />} />
-            <Route path="/paymentpage" element={<PaymentPage/>} />
-            <Route path="/projectregistrationexisting" element={<ProjectRegistrationExisting/>} />
-            <Route path="/prexisting" element={<PRExistingStarting/>} />
-             <Route path="/prexistingtable" element={<PRExistingtable/>} />
-             <Route path="/existing-development-details" element={<ExistingDevelopmentDetails/>} />
-             <Route path="/AgentDetails" element={<AgentDetailsOther/>}/>
-          <Route path="/AgentUploadDocumentotherthan" element={<AgentUploadDocumentOtherthan />} />
-          <Route path="/preview-other" element={<PreviewOther/>} />
-          <Route path="/agent-paymentpage" element={<AgentPaymentpage/>} />
-           <Route path="/existing-associate-details" element={<ExistingAssociateDetails/>} />
-           <Route path="/otherthanindividualdd" element={<OtherthanIndividualDD/>} />
-          <Route path="/existing-development-details-upload-docs/:id" element={<UploadDocumentsWithApi />}/>
-          <Route path="/existing-project-details" element={<ExistingProjectDetails />}/>
-          <Route path="/other-than-individual-project-details" element={<OtherThanIndividualProjectDetails />}/>
-          <Route path="/othertheninduvidual-preview" element={<OtherThanIndividual_ProjectPreview />}/>
-          <Route path="/other-than-individual-development-details" element={<OtherThanIndividualDevelopmentDetails />} />
-          <Route path="/other-than-individual-associate-details" element={<OtherThanIndividualAssociateDetails />} />
-          <Route path="/other-than-individual-upload-documents" element={<OtherThanIndividualUploadDocument />} />
-          <Route path="/quarterlyupdateexisting" element={<QuarterlyUpdateExisting />} />
-          <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
-          <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
-          <Route path="/project-blockvilla-details" element={<ProjectBlockVillaDetails />} />
-          <Route path="/changerequest" element={<ChangeRequestForm/>} />
-          <Route path="/changerequestverify" element={<ChangeRequestVerify/>} />
-          
-        </Routes>
-      </Layout></AgentFormProvider>
+            <Route path="/paymentpage" element={<PaymentPage />} />
+            <Route path="/projectregistrationexisting" element={<ProjectRegistrationExisting />} />
+            <Route path="/prexisting" element={<PRExistingStarting />} />
+            <Route path="/prexistingtable" element={<PRExistingtable />} />
+            <Route path="/existing-development-details" element={<ExistingDevelopmentDetails />} />
+            <Route path="/AgentDetails" element={<AgentDetailsOther />} />
+            <Route path="/AgentUploadDocumentotherthan" element={<AgentUploadDocumentOtherthan />} />
+            <Route path="/preview-other" element={<PreviewOther />} />
+            <Route path="/agent-paymentpage" element={<AgentPaymentpage />} />
+            <Route path="/existing-associate-details" element={<ExistingAssociateDetails />} />
+            <Route path="/otherthanindividualdd" element={<OtherthanIndividualDD />} />
+            <Route path="/existing-development-details-upload-docs/:id" element={<UploadDocumentsWithApi />} />
+            <Route path="/existing-project-details" element={<ExistingProjectDetails />} />
+            <Route path="/other-than-individual-project-details" element={<OtherThanIndividualProjectDetails />} />
+            <Route path="/othertheninduvidual-preview" element={<OtherThanIndividual_ProjectPreview />} />
+            <Route path="/other-than-individual-development-details" element={<OtherThanIndividualDevelopmentDetails />} />
+            <Route path="/other-than-individual-associate-details" element={<OtherThanIndividualAssociateDetails />} />
+            <Route path="/other-than-individual-upload-documents" element={<OtherThanIndividualUploadDocument />} />
+            <Route path="/quarterlyupdateexisting" element={<QuarterlyUpdateExisting />} />
+            <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
+            <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
+            <Route path="/project-blockvilla-details" element={<ProjectBlockVillaDetails />} />
+            <Route path="/changerequest" element={<ChangeRequestForm />} />
+            <Route path="/changerequestverify" element={<ChangeRequestVerify />} />
+            <Route path="/project-closure" element={<ProjectClosure />} />
+            <Route path="/closureprocess" element={<ClosureProcess />} />
+            <Route path="/promoter" element={<PromoterLogin />} />
+            <Route path="/promoterData" element={<PromoterData />} />
+            <Route path="/closure" element={<ClosureTable />} />
+
+            <Route path="/" element={<HomePage />} />
+            <Route path="/agent-renewal" element={<AgentRenewal />} />
+
+            <Route path="/renewal/upload/:renewalId" element={<RenewalUploadDocuments />} />
+            <Route path="/renewal/queries/:renewalId" element={<RenewalQueries />} />
+            <Route path="/renewal/preview/:renewalId" element={<RenewalPreview />} />
+            <Route path="/renewal/payment/:renewalId" element={<RenewalPayment />} />
+
+            <Route path="/renewal/status" element={<RenewalStatus />} />
+
+            <Route path="/renewal/receipt/:renewalId" element={<RenewalReceipt />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/requests" element={<AdminRequests />} />
+            <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/agents" element={<AdminAgents />} />
+            <Route path="/admin/complaints" element={<AdminComplaints />} />
+            <Route path="/admin/renewal" element={<AdminRenewal />} />
+            <Route path="/admin/renewals/:status" element={<AdminRenewalList />} />
+            <Route path="/admin/renewal/:id" element={<AdminRenewalDetail />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/apply-for-renewal-otp" element={<ApplyForRenewalOTP />} />
+            <Route path="/renewal/certificate/:renewalId" element={<RenewalNewCertificate />} />
+            <Route path="/promoter-otp-login" element={<PromoterOtpLogin />} />  
+            <Route path="/admin/change-requests"    element={<AdminChangeRequestList />} />
+            <Route path="/admin/change-request/:id" element={<AdminChangeRequestDetail />} />
+            
+            <Route
+  path="/agent_change_request_1"
+  element={<AgentChangeRequest1 />}
+/>
+<Route path="/Agentchangerequest2" element={<Agentchangerequest/>} />
+<Route
+  path="/agent-change-request-payment"
+  element={<AgentChangeRequestPayment />}
+/>
+<Route path="/ChangeRequestProcess" element={<ChangeRequestProcess/>} />
+<Route path="/Changerequest1" element={<Changerequest />} />
+          </Routes>
+        </Layout></AgentFormProvider>
     </BrowserRouter>
   );
 }

@@ -57,48 +57,50 @@ const ChangeRequestVerify = () => {
   // =========================
   // VERIFY OTP
   // =========================
-  const handleVerifyOtp = async () => {
-    if (!otp || otp.length !== 6) {
-      setErrorMsg("Please enter a valid 6-digit OTP");
-      return;
+const handleVerifyOtp = async () => {
+  if (!otp || otp.length !== 6) {
+    setErrorMsg("Please enter a valid 6-digit OTP");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setErrorMsg("");
+
+    const res = await fetch(`${API_BASE}/login/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        pan_number: pan,
+        otp: otp,
+      }),
+    });
+
+    console.log("Response Status:", res.status);   // shows HTTP status
+
+    const data = await res.json();
+
+    console.log("Full API Response:", data);  // shows response body
+
+    if (!res.ok) {
+      throw new Error(data.message || "OTP verification failed");
     }
 
-    try {
-      setLoading(true);
-      setErrorMsg("");
+    // Store response
+    sessionStorage.setItem("loginResponse", JSON.stringify(data));
+    sessionStorage.setItem("loginData", JSON.stringify(data));
 
-      const res = await fetch(`${API_BASE}/login/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pan_number: pan,
-          otp: otp,
-        }),
-      });
+    navigate("/ChangeRequestProcess", {
+      state: { loginData: data },
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "OTP verification failed");
-      }
-
-      console.log("Login API Response:", data);
-
-      // Store response
-      sessionStorage.setItem("loginResponse", JSON.stringify(data));
-      sessionStorage.setItem("loginData", JSON.stringify(data));
-
-      // Navigate to Apply Change Request page
-      navigate("/changerequest", {
-        state: { loginData: data },
-      });
-
-    } catch (err) {
-      setErrorMsg(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error("Error:", err);
+    setErrorMsg(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // =========================
   // RESEND OTP

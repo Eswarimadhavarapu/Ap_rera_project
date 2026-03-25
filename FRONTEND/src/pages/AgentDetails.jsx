@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 import AgentStepper from "../components/AgentStepper";
 import { useAgentForm } from "./AgentFormContext";
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+const BASE_URL = "https://0jv8810n-5173.inc1.devtunnels.ms";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -736,7 +736,21 @@ useEffect(() => {
     .then((res) => setStates(res || []))
     .catch((err) => console.error("States API error", err));
 }, []);
+// ===== SET STATE ID WHEN RETURNING FROM STEPPER =====
+useEffect(() => {
+  if (!states.length || !stateData.name) return;
 
+  const stateObj = states.find(
+    (s) => s.state_name === stateData.name
+  );
+
+  if (stateObj) {
+    setStateData({
+      id: stateObj.id,
+      name: stateObj.state_name,
+    });
+  }
+}, [states]);
 
   // ===============================
   // LOAD DISTRICTS
@@ -747,16 +761,34 @@ useEffect(() => {
   apiGet(`/api/districts/${stateData.id}`)
     .then((res) => {
       setDistricts(res || []);
-      setMandals([]);
-      setVillages([]);
-      setDistrictData({ id: "", name: "" });
-      setMandalData({ id: "", name: "" });
-      setVillageData({ id: "", name: "" });
+
+      // ❌ DO NOT RESET WHEN COMING FROM STEPPER
+      if (!isFromStepper) {
+        setMandals([]);
+        setVillages([]);
+        setDistrictData({ id: "", name: "" });
+        setMandalData({ id: "", name: "" });
+        setVillageData({ id: "", name: "" });
+      }
     })
     .catch(console.error);
 }, [stateData.id]);
 
+// ===== SET DISTRICT ID WHEN RETURNING FROM STEPPER =====
+useEffect(() => {
+  if (!districts.length || !districtData.name) return;
 
+  const districtObj = districts.find(
+    (d) => d.name === districtData.name
+  );
+
+  if (districtObj) {
+    setDistrictData({
+      id: districtObj.id,
+      name: districtObj.name,
+    });
+  }
+}, [districts]);
 // ===== LOAD TRUSTEE DISTRICTS =====
 useEffect(() => {
   if (!trusteeStateId) return;
@@ -778,16 +810,33 @@ useEffect(() => {
 
   apiGet(`/api/mandals/${districtData.id}`)
     .then((res) => {
-      setMandals(res || []);
-      setVillages([]);
-      setMandalData({ id: "", name: "" });
-      setVillageData({ id: "", name: "" });
+     setMandals(res || []);
+
+if (!isFromStepper) {
+  setVillages([]);
+  setMandalData({ id: "", name: "" });
+  setVillageData({ id: "", name: "" });
+}
     })
     .catch(console.error);
 }, [districtData.id]);
 
 
+// ===== SET MANDAL ID WHEN RETURNING FROM STEPPER =====
+useEffect(() => {
+  if (!mandals.length || !mandalData.name) return;
 
+  const mandalObj = mandals.find(
+    (m) => m.name === mandalData.name
+  );
+
+  if (mandalObj) {
+    setMandalData({
+      id: mandalObj.id,
+      name: mandalObj.name,
+    });
+  }
+}, [mandals]);
   // ===============================
   // LOAD VILLAGES
   // ===============================
@@ -798,7 +847,21 @@ useEffect(() => {
     .then((res) => setVillages(res || []))
     .catch(console.error);
 }, [mandalData.id]);
+// ===== SET VILLAGE ID WHEN RETURNING FROM STEPPER =====
+useEffect(() => {
+  if (!villages.length || !villageData.name) return;
 
+  const villageObj = villages.find(
+    (v) => v.name === villageData.name
+  );
+
+  if (villageObj) {
+    setVillageData({
+      id: villageObj.id,
+      name: villageObj.name,
+    });
+  }
+}, [villages]);
 
 // ===== DIRECTOR DETAILS =====
 const [showDirectorSection, setShowDirectorSection] = useState(false);
@@ -1271,7 +1334,7 @@ console.log("===== FORM DATA END =====");
 
   try {
     const res = await fetch(
-      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
+      "https://0jv8810n-5173.inc1.devtunnels.ms/api/agent/other-than-individual",
       {
         method: "POST",
         body: formData,
@@ -5551,4 +5614,4 @@ onChange={(e) =>
   );
 };
 
-export default AgentDetailsOther;
+export default AgentDetailsOther; 

@@ -66,6 +66,29 @@ class AgentOtherThanIndividualOrganisation(db.Model):
 
     last_five_years_projects_details = db.Column(db.JSON, nullable=True)
 
+    @staticmethod
+    def is_application_exists(application_no):
+        try:
+            from sqlalchemy import text
+
+            query = text(
+                """
+                SELECT 1
+                FROM agentregistration_details_t
+                WHERE application_no = :application_no
+                LIMIT 1
+            """
+            )
+
+            result = db.session.execute(
+                query, {"application_no": application_no}
+            ).fetchone()
+
+            return True if result else False
+
+        except Exception:
+            return False
+
     def to_dict(self):
         return {
             "organisation_id": self.id,  # mapped
@@ -76,7 +99,9 @@ class AgentOtherThanIndividualOrganisation(db.Model):
             "registration_date": self.registration_date,
             "registration_cert_doc": self.registration_cert_doc,
             "pan_card_number": self.pan,  # mapped
-            "pan_card_doc": self.pan_proof.get("file") if self.pan_proof else None, # mapped (if storing here)
+            "pan_card_doc": (
+                self.pan_proof.get("file") if self.pan_proof else None
+            ),  # mapped (if storing here)
             "gst_number": self.gst_number,
             "gst_doc": self.gst_doc,
             "legal_document": self.legal_document,
@@ -90,8 +115,10 @@ class AgentOtherThanIndividualOrganisation(db.Model):
             "mandal": self.mandal,
             "village": self.village,
             "pincode": self.pincode,
-            "address_proof_doc": self.address_proof.get("file") if self.address_proof else None,
-           "last_five_year_projects": self.last_five_years_projects_details or [],
+            "address_proof_doc": (
+                self.address_proof.get("file") if self.address_proof else None
+            ),
+            "last_five_year_projects": self.last_five_years_projects_details or [],
             "other_state_rera_details": (
                 json.loads(self.registration_other_states)
                 if self.registration_other_states

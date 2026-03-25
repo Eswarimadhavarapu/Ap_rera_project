@@ -9,256 +9,331 @@ import GoogleTranslate from "./GoogleTranslate";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const handleDropdownPosition = (e) => {
+    const dropdown = e.currentTarget.querySelector(".agent-nav-dropdown-menu");
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const dropdownWidth = dropdown.offsetWidth;
+    const viewportWidth = window.innerWidth;
+
+    let leftPosition = rect.left;
+
+    // If dropdown goes outside right screen edge, shift it left
+    if (rect.left + dropdownWidth > viewportWidth) {
+      leftPosition = viewportWidth - dropdownWidth - 10;
+    }
+
+    dropdown.style.top = rect.bottom - 5 + "px";
+    dropdown.style.left = leftPosition + "px";
+  };
 
   return (
     <>
       {/* Top Header */}
-      <div className="top-header">
-        <div className="header-center">
-          
-          
-          <p className="header-title"><img src={Logo} alt="APRERA Logo" className="header-logo"/>ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</p>
+      <div className="agent-nav-top-header">
+        <div className="agent-nav-header-center">
+          <p className="agent-nav-header-title">
+            <img src={Logo} alt="APRERA Logo" className="agent-nav-header-logo" />
+            ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY
+          </p>
         </div>
 
-        <div className="top-header-right">
+        <div className="agent-nav-top-header-right">
           <GoogleTranslate />
-          <button className="search-btn">SEARCH RERA PROJECTS</button>
+          <button className="agent-nav-search-btn">SEARCH RERA PROJECTS</button>
         </div>
-      
-        {/* <button className="search-btn">SEARCH RERA PROJECTS</button> */}
       </div>
 
       {/* Main Navbar */}
-      <nav className="navbar">
-        <ul className="nav-list">
-          <li onClick={() => navigate("/")}>
+      <nav className="agent-nav-navbar">
+        <div className="agent-nav-navbar-scroll">
+          <div className="agent-nav-navbar-inner">
+            <ul className="agent-nav-nav-list">
+
+              <li onClick={() => navigate("/admin-login")}>
+                ADMIN LOGIN
+              </li>
+
+              <li onClick={() => navigate("/")}>
                 HOME
               </li>
 
-          {/* ABOUT US DROPDOWN */}
-          <li className="dropdown">ABOUT US <span className="arrow">▾</span>
+              {/* ABOUT US */}
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                ABOUT US <span className="agent-nav-arrow">▾</span>
+                <ul className="agent-nav-dropdown-menu">
+                  <li onClick={() => navigate("/organogram")}>
+                    Organisation Structure
+                  </li>
 
-            <ul className="dropdown-menu">
-              {/* <li onClick={() => navigate("/aprera")}>
-                What is APRERA
-              </li> */}
-              
-              <li onClick={() => navigate("/organogram")}>
-                Organisation Structure
-              </li>
-              
-              <li onClick={() => navigate("/ourservices")}>
-                Our Services
-              </li>
-              <li onClick={() => navigate("/recruitment")}>Recruitment</li>
-              
-              <li onClick={() => navigate("/rti")}>RTI</li>
-             
-                           <li onClick={() => navigate("/our-leadership")}>
-                Our Leadership
-              </li>
-             <li className="contact-submenu">
-                <span className="contact-title">
-                  Contact Us <span className="right-arrow">▶</span>
-                </span>
+                  <li onClick={() => navigate("/ourservices")}>
+                    Our Services
+                  </li>
 
-                <ul className="contact-submenu-box">
-                  <li onClick={() => navigate("/contact-us/aprera")}>
-                    APRERA
+                  <li onClick={() => navigate("/recruitment")}>
+                    Recruitment
+                  </li>
+
+                  <li onClick={() => navigate("/rti")}>
+                    RTI
+                  </li>
+
+                  <li onClick={() => navigate("/our-leadership")}>
+                    Our Leadership
+                  </li>
+
+                  <li className="agent-nav-contact-submenu">
+                    <span className="agent-nav-contact-title">
+                      Contact Us <span className="agent-nav-right-arrow">▶</span>
+                    </span>
+
+                    <ul className="agent-nav-contact-submenu-box">
+                      <li onClick={() => navigate("/contact-us/aprera")}>
+                        APRERA
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>
-            </ul>
-          </li>
 
-          {/* <li>APREAT</li> */}
-          
-          <li className="dropdown">NOTIFICATIONS <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-             <li onClick={() => navigate("/goinotifications")}>
-               GOI Notifications
-              </li>
-              <li onClick={() => navigate("/goapnotifications")}>
-               GOAP Notifications
-              </li>
-             <li onClick={() => navigate("/authoritynotifications")}>
-              Authority Notificatoins
-              </li>
-            <li onClick={() => navigate("/cidcandaprerajoint")}>
-  CIDC and APRERA Joint Notifications
-</li>
+              {/* NOTIFICATIONS */}
+              <li className="agent-nav-dropdown">
+                NOTIFICATIONS <span className="arrow">▾</span>
 
-<li>
-                <a
-    href={CAUSELISTPdf}
-    target="_blank" 
-    rel="noopener noreferrer"
-    style={{ textDecoration: "none", color: "inherit" }}
-  >
-    Complaints: Cause List Motion Hearing Before Adjudicating Officer
-  </a>
-</li>
-              <li>
-  <a
-    href={OfficeorderPdf}
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{ textDecoration: "none", color: "inherit" }}
-  >
-    Office Order
-  </a>
-</li>
-            </ul>
-          </li>
-{/* REGISTRATION */}
-          <li className="dropdown">
-            REGISTRATION <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-              <li onClick={() => navigate("/promotregistration")}>
-                Promoter Registration
-              </li>
-              <li onClick={() => navigate("/guidelinesRegistration")}>
-                Guidelines for Registration
-              </li>
-              {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
-                Project Registration <span className="arrow">▸</span>
-                <ul className="sub-dropdown-menu">
-        <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/otplogin");
-      }}>
-           Extension
-        </li>
-      </ul>
-              </li> */}
-              {/* PROJECT REGISTRATION */}
-              {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
-                Project Registration <span className="arrow">▸</span>
-                <ul className="sub-dropdown-menu">
-                  <li>Apply for quarterly update</li>
-                  <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/otplogin");
-      }}>Apply for project extension</li>
-                  <li>Apply for change request</li>
-                  <li>Closure</li>
-                  <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/InformProject");
-      }}>
-                    Inform un-registered project details
+                <ul className="agent-nav-dropdown-menu">
+
+                  <li onClick={() => navigate("/goinotifications")}>
+                    GOI Notifications
                   </li>
-                  <li>List of projects to be registered</li>
-                  <li>Rejected Projects</li>
-                  <li>Revoked Projects</li>
-                
+
+                  <li onClick={() => navigate("/goapnotifications")}>
+                    GOAP Notifications
+                  </li>
+
+                  <li onClick={() => navigate("/authoritynotifications")}>
+                    Authority Notifications
+                  </li>
+
+                  <li onClick={() => navigate("/cidcandaprerajoint")}>
+                    CIDC and APRERA Joint Notifications
+                  </li>
+
+                  <li>
+                    <a
+                      href={CAUSELISTPdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      Complaints: Cause List Motion Hearing Before Adjudicating Officer
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      href={OfficeorderPdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      Office Order
+                    </a>
+                  </li>
+
                 </ul>
               </li>
-               
-    <li className="sub-dropdown" onClick={() => navigate("/agent-registration")}>
-  Agent Registration <span className="arrow">▸</span>
 
-  <ul className="sub-dropdown-menu">
-    <li
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate("/feecalculater");
-      }}
-    >
-      Renewal
-    </li>
-    <li>Registration Lapsed Agents</li>
-    <li>Agents Applied for Renewal</li>
-  </ul>
-</li>
-<li className="sub-dropdown" onClick={() => navigate("/complaintRegistration")}>
-  Complaint Registration <span className="arrow">▸</span>
+              {/* REGISTRATION */}
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                REGISTRATION <span className="arrow">▾</span>
 
-  <ul className="sub-dropdown-menu">
-    <li>
-      Concelation
-    </li>
-    
-  </ul>
-</li> */}
-              <li onClick={() => navigate("/feecalculater")}>
-                Fee Calculator
-              </li>
-              <li onClick={() => navigate("/usermanual")}>
-                User Manuals
-              </li>
-              <li onClick={() => navigate("/formsdownload")}>
-                Forms Download
-              </li>
-              <li onClick={() => navigate("/videoTutorial")}>
-                Video Tutorials
-              </li>
-              <li onClick={() => navigate("/mobileapp")}>
-                Mobile App
-              </li>
-            </ul>
-          </li>
-          <li className="dropdown">REPORTS <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-            
-              <li>MIS reports</li>
-              <li>GIS reports</li>
-            </ul>
-          </li>
-          <li className="dropdown">REGISTERED <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-             <li onClick={() => navigate("/registered/projects")}>
-                Projects
-              </li>
-              <li onClick={() => navigate("/agents")}>
-                Agents </li>
-            </ul>
-          </li>
-          <li className="dropdown">JUDGEMENTS/ORDERS <span className="arrow">▾</span>
-          
-            <ul className="dropdown-menu">
-                <li
-             onClick={() =>
-            window.open(
-            window.location.origin + "/statistics",
-            "_blank"
-            )
-             }
-            >
-            Statistics
-          </li>
-               <li onClick={()=>navigate("/complaint-orders")}>Complaint Orders</li>
-            </ul>
-          </li>
-          <li className="dropdown">KNOWLEDGE HUB <span className="arrow">▾</span>
-            <ul className="dropdown-menu">
-       <li onClick={() => navigate("/evolutionofrera")}>
-              Evolution of RERA
-            </li>
-              <li onClick={() => navigate("/race")}>RACE</li>
-              <li onClick={() => navigate("/taskvstime")}>
-              Task Vs Time
-            </li>
-              <li onClick={() => navigate("/ChronologyOfEvents")}>Chronology of Events</li>
-              <li onClick={() => window.open(legalpdf, "_blank")}> APRERA Presentation</li>
-              <li onClick={() => navigate("/JudgementHub")}>Judgement</li>
-              <li onClick={() => navigate("/vendordatabase")}>
-              VendorDatabase
-            </li>
-              <li onClick={() => navigate("/AdvertisementGuidelines")}>Advertisement Guidelines</li>
-              <li onClick={() => navigate("/audiovisualgallery")}> AudioVisualGallery </li>
-              <li onClick={() => navigate("/PressRelease")}>Press Releases</li>
-              <li onClick={() => navigate("/gradingofpromotors")}> GradingOfPromotors </li>
-              <li onClick={() => navigate("/GradingOfAgents")}>Grading of Agents</li>
-              <li onClick={() => navigate("/acf")}> acf </li>
-              <li onClick={() => navigate("/Testimonials")}>Testimonials</li>
-              <li onClick={() => window.open(appealPdf, "_blank")}>Appeal to Buyer</li>
-            </ul>
-          </li>
+                <ul className="agent-nav-dropdown-menu">
 
-          <li>LOGIN</li>
-          <li onClick={() => navigate("/apreat")}>APREAT</li>
-        </ul>
+                  <li onClick={() => navigate("/promotregistration")}>
+                    Promoter Registration
+                  </li>
+
+                  <li onClick={() => navigate("/guidelinesRegistration")}>
+                    Guidelines for Registration
+                  </li>
+
+                  <li onClick={() => navigate("/feecalculater")}>
+                    Fee Calculator
+                  </li>
+
+                  <li onClick={() => navigate("/usermanual")}>
+                    User Manuals
+                  </li>
+
+                  <li onClick={() => navigate("/formsdownload")}>
+                    Forms Download
+                  </li>
+
+                  <li onClick={() => navigate("/videoTutorial")}>
+                    Video Tutorials
+                  </li>
+
+                  <li onClick={() => navigate("/mobileapp")}>
+                    Mobile App
+                  </li>
+
+                </ul>
+              </li>
+
+              {/* REPORTS */}
+              <li
+                className="agent-nav-dropdown agent-nav-reports-dropdown"
+                onMouseEnter={handleDropdownPosition}
+              >
+                REPORTS <span className="agent-nav-arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu" >
+                  <li onClick={() => navigate("/misReports")}>MIS reports</li>
+                  <li onClick={() => navigate("/GisReports")}>GIS reports</li>
+                </ul>
+              </li>
+
+              {/* REGISTERED */}
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                REGISTERED <span className="arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu">
+                  <li onClick={() => navigate("/registered/projects")}>
+                    Projects
+                  </li>
+
+                  <li onClick={() => navigate("/agents")}>
+                    Agents
+                  </li>
+                </ul>
+              </li>
+
+              {/* JUDGEMENTS */}
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                JUDGEMENTS/ORDERS <span className="arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu">
+                  <li
+                    onClick={() =>
+                      window.open(
+                        window.location.origin + "/statistics",
+                        "_blank"
+                      )
+                    }
+                  >
+                    Statistics
+                  </li>
+                </ul>
+              </li>
+
+              {/* KNOWLEDGE HUB */}
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                KNOWLEDGE HUB <span className="agent-nav-arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu">
+
+                  <li onClick={() => navigate("/evolutionofrera")}>
+                    Evolution of RERA
+                  </li>
+
+                  <li onClick={() => navigate("/race")}>
+                    RACE
+                  </li>
+
+                  <li onClick={() => navigate("/taskvstime")}>
+                    Task Vs Time
+                  </li>
+
+                  <li onClick={() => navigate("/ChronologyOfEvents")}>
+                    Chronology of Events
+                  </li>
+
+                  <li onClick={() => window.open(legalpdf, "_blank")}>
+                    APRERA Presentation
+                  </li>
+
+                  <li onClick={() => navigate("/JudgementHub")}>
+                    Judgement
+                  </li>
+
+                  <li onClick={() => navigate("/vendordatabase")}>
+                    VendorDatabase
+                  </li>
+
+                  <li onClick={() => navigate("/AdvertisementGuidelines")}>
+                    Advertisement Guidelines
+                  </li>
+
+                  <li onClick={() => navigate("/audiovisualgallery")}>
+                    AudioVisualGallery
+                  </li>
+
+                  <li onClick={() => navigate("/PressRelease")}>
+                    Press Releases
+                  </li>
+
+                  <li onClick={() => navigate("/gradingofpromotors")}>
+                    Grading Of Promotors
+                  </li>
+
+                  <li onClick={() => navigate("/GradingOfAgents")}>
+                    Grading of Agents
+                  </li>
+
+                  <li onClick={() => navigate("/acf")}>
+                    ACF
+                  </li>
+
+                  <li onClick={() => navigate("/Testimonials")}>
+                    Testimonials
+                  </li>
+
+                  <li onClick={() => window.open(appealPdf, "_blank")}>
+                    Appeal to Buyer
+                  </li>
+
+                </ul>
+              </li>
+
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                OTHER REQUIRED DEPARTMENT LINKS
+                <span className="arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu">
+                  <li>GST</li>
+                  <li>DPMS</li>
+                </ul>
+              </li>
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                PHOTO GALLERY
+                <ul className="agent-nav-dropdown-menu">
+                  <li onClick={() => navigate("/audiovisualgallery")}>
+                    Audio Visual Gallery
+                  </li>
+                </ul>
+              </li>
+              <li>NEWS AND UPDATES</li>
+              <li onClick={() => navigate("/promoter")}>PROMOTER LOGIN</li>
+
+              <li className="agent-nav-dropdown" onMouseEnter={handleDropdownPosition}>
+                COMPLAINT ORDERS
+                <span className="agent-nav-arrow">▾</span>
+
+                <ul className="agent-nav-dropdown-menu">
+                  <li>FORM M</li>
+                  <li>FORM N</li>
+                </ul>
+              </li>
+
+              <li>DEPARTMENT LOGIN</li>
+
+              <li onClick={() => navigate("/apreat")}>
+                APREAT
+              </li>
+
+            </ul>
+          </div>
+        </div>
       </nav>
     </>
   );

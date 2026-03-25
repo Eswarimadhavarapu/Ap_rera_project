@@ -257,3 +257,15 @@ def get_project_registration(application_no):
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# =========================
+# GET CLOSURE PROJECT LIST
+# =========================
+# @project_wizard_bp.route("/closure-projects/<pan_number>", methods=["GET"])
+# def get_closure_projects(pan_number):
+
+#     try:
+#         data = ProjectWizardModel.fetch_closure_projects(pan_number)
+#         return jsonify(data)
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500

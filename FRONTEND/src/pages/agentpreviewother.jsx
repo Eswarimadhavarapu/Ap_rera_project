@@ -5,7 +5,7 @@ import axios from "axios";
 import AgentStepper from "../components/AgentStepper";
 
 
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+const BASE_URL = "https://0jv8810n-5173.inc1.devtunnels.ms";
 const getFileUrl = (path) => {
   if (!path) return "#";
   return `${BASE_URL}/api/${path}`;
@@ -150,15 +150,21 @@ const otherStates = org.other_state_rera_details || [];
         Real Estate Agent Registration
       </h2>
 
-<AgentStepper currentStep={2} />
+<AgentStepper 
+  currentStep={2}
+  applicationId={ids.application_id}
+  organisationId={ids.organisation_id}
+  panCardNumber={ids.pan_card_number}
+/>
 
 
 
 
       {/* ================= AGENT TYPE ================= */}
       <div className="mpreview-agent-type">
-        <b>Agent Type : Other Than Individual</b>
-        
+        <b>Agent Type      :</b> Other Than Individual<br></br>
+        <b>Organisation Registration No :</b>{org.agent_registration_no || "NA"}
+               
       </div>
 
   
@@ -168,7 +174,7 @@ const otherStates = org.other_state_rera_details || [];
       {/* ================= ORGANISATION ================= */}
 
       <section className="mpreview-section">
-
+     
         <h3 className="mpreview-heading">Organisation Details</h3>
 
         <div className="mpreview-grid">
@@ -176,8 +182,18 @@ const otherStates = org.other_state_rera_details || [];
           <p><b>Organisation Type:</b> {org.organisation_type}</p>
           <p><b>Organisation Name:</b> {org.organisation_name}</p>
 
-          <p><b>Registration No:</b> {org.registration_identifier}</p>
-          <p><b>Date of Registration:</b> {org.registration_date}</p>
+          <p>
+            <b> {org.organisation_type === "Trust/Society"
+    ? "Trust Number   :"
+    : org.organisation_type === "Company"
+    ? "CIN no   :"
+    : org.organisation_type === "Joint Venture"
+    ? "CIN no  :" 
+    : "Registration No   :"}</b>{org.registration_identifier}</p>
+          <p>
+          <b> {org.organisation_type === "Trust/Society"
+    ? "Date of Trust Registration  :"
+    : "Date of Registration :"}</b> {org.registration_date}</p>
 
           <p>
             <b>Registration Certificate:</b>{" "}
@@ -210,7 +226,14 @@ const otherStates = org.other_state_rera_details || [];
           </p>
 
           <p>
-            <b>Memorandum of articles/Bye-laws:</b>{" "}
+            
+            <b> {org.organisation_type === "Trust/Society"
+    ? "Upload Trust Deed"
+    : org.organisation_type === "Partnership/LLP Firm"
+    ? "Upload Partnership Deed"
+    : org.organisation_type === "Government Department/Local Bodies/Government Bodies"
+    ? "Upload Partnership Deed" 
+    : "Memorandum of articles/Bye-laws :"}</b>{" "}
             <a href={getFileUrl(org.address_proof_doc)} target="_blank" rel="noreferrer">
               View
             </a>
@@ -261,7 +284,7 @@ const otherStates = org.other_state_rera_details || [];
   {org.organisation_type === "Trust/Society"
     ? "Trustee Details"
     : org.organisation_type === "Partnership/LLP Firm"
-    ? "Partner Details"
+    ? "Partner Details" 
     : "Director Details"}
 </h3>
 

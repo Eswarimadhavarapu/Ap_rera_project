@@ -455,18 +455,10 @@ const handleSubmit = async (e) => {
 
       if (isExistingProject) {
 
-        const response = await fetch(
-          "https://0jv8810n-8080.inc1.devtunnels.ms/api/othertheninduvidual-project-registration/update",
-          {
-            method: "PUT",
-            body: formDataToSend,
-          }
+         await apiPut(
+          "/api/othertheninduvidual-project-registration/update",
+          formDataToSend
         );
-
-        if (!response.ok) {
-          throw new Error("Update failed");
-        }
-
       } else {
 
         await apiPost(
@@ -480,22 +472,13 @@ const handleSubmit = async (e) => {
 
       if (isExistingProject) {
 
-        const response = await fetch(
-          "https://0jv8810n-8080.inc1.devtunnels.ms/api/project-registration/update",
-          {
-            method: "PUT",
-            body: formDataToSend,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Update failed");
-        }
-
+      await apiPut(
+        "/api/project-registration/update",
+        formDataToSend
+      );
+      
       } else {
-
         await apiPost("/api/project-registration", Object.fromEntries(formDataToSend));
-
       }
 
     }

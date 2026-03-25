@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ProjectWizard from "../components/ProjectWizard";
 import "../styles/ProjectPreview.css";
 import "../styles/aprera-print-override.css";
+import { apiGet, apiPost, BASE_URL } from "../api/api";
 import axios from "axios";
 
 
@@ -102,21 +103,13 @@ const ProjectPreview = () => {
 
   const fetchPreviewData = async () => {
     try {
-      const res = await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/project/preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          applicationNumber: applicationNumber,
-          panNumber: panNumber
-        })
-      });
+      const resData = await apiPost("/api/project/preview", {
+  applicationNumber,
+  panNumber
+});
 
-      if (!res.ok) {
-        throw new Error(`Preview API failed: ${res.status}`);
-      }
-
-      const resData = await res.json();
 setAllData(resData.data);
+
 
     } catch (err) {
       console.error(err);
@@ -144,17 +137,9 @@ setAllData(resData.data);
 
   const fetchDevelopmentDetails = async () => {
     try {
-      const url = `https://0jv8810n-8080.inc1.devtunnels.ms/api/development-details?application_number=${applicationNumber}&pan_number=${panNumber}`;
-
-      console.log("🔵 Calling URL:", url);
-
-      const res = await fetch(url); // 👈 EXACT URL CALL
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch development details");
-      }
-
-      const response = await res.json();
+     const response = await apiGet(
+  `/api/development-details?application_number=${applicationNumber}&pan_number=${panNumber}`
+);
 
       console.log("🟢 FULL API RESPONSE:", response);
       console.log(
@@ -1467,7 +1452,7 @@ console.log("📄 Document pages:", documentPages.length);
                 <td className="center">
                   {uploaded?.file_path ? (
                     <a
-                      href={`https://0jv8810n-8080.inc1.devtunnels.ms${uploaded.file_path}`}
+                     href={`${BASE_URL}${uploaded.file_path}`}
                       target="_blank"
                       rel="noreferrer"
                     >

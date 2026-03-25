@@ -1,0 +1,88 @@
+/* ===== FULL PAGE ===== */
+
+.admin-login-page{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#f4f6f9;
+padding-bottom:120px; /* space for footer */
+}
+
+
+/* ===== LOGIN BOX ===== */
+
+.admin-login-box{
+width:420px;
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+
+/* ===== TITLE ===== */
+
+.admin-login-title{
+text-align:center;
+font-size:28px;
+color:#0f3556;
+margin-bottom:30px;
+}
+
+
+/* ===== FORM GROUP ===== */
+
+.admin-form-group{
+margin-bottom:20px;
+display:flex;
+flex-direction:column;
+}
+
+
+/* ===== LABEL ===== */
+
+.admin-form-group label{
+font-size:14px;
+margin-bottom:6px;
+color:#333;
+font-weight:500;
+}
+
+
+/* ===== INPUT ===== */
+
+.admin-form-group input{
+padding:12px;
+border:1px solid #cbd5e0;
+border-radius:6px;
+font-size:14px;
+background:#e8edf5;
+outline:none;
+transition:all 0.2s ease;
+}
+
+.admin-form-group input:focus{
+border-color:#0f3556;
+background:white;
+}
+
+
+/* ===== LOGIN BUTTON ===== */
+
+.admin-login-btn{
+width:100%;
+padding:14px;
+background:#b10000;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.2s;
+}
+
+.admin-login-btn:hover{
+background:#8c0000;
+}

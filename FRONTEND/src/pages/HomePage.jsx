@@ -368,13 +368,13 @@ function Services() {
   const promoterServices = [
     { title: "Apply for Quarterly Update", icon: FaSyncAlt,path:"/quarterlyupdateexisting" },
     { title: "Apply for Project Extension", icon: FaArrowRight, path: "/otplogin" },
-    { title: "Apply for Change Request", icon: FaEdit },
-    { title: "Closure", icon: FaLock },
+    { title: "Apply for Change Request", icon: FaEdit, path: "/changerequestverify" },
+    { title: "Closure", icon: FaLock ,path:"/promoter-otp-login" },
   ];
 
   const agentServices = [
-    { title: "Apply for Renewal", icon: FaFileContract },
-    { title: "Apply for Change Request", icon: FaExchangeAlt },
+    { title: "Apply for Renewal", icon: FaFileContract, path: "/agent-renewal"},
+    { title: "Apply for Change Request", icon: FaExchangeAlt, path: "/agent_change_request_1" },
     { title: "Agents Apply for Renewal", icon: FaUserCheck },
   ];
 

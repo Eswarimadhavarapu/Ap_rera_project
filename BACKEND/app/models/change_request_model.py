@@ -11,5 +11,5 @@ class ChangeRequest(db.Model):
     description = Column(Text)
     document = Column(Text)
     status = Column(String(50), default="Pending")
-
+    reject_reason = Column(Text)
     created_at = Column(DateTime, default=db.func.current_timestamp())

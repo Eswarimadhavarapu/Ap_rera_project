@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { apiGet } from "../api/api";
 import "../styles/ExtensionProcess.css";
 
 const PRExistingtable = () => {
@@ -25,11 +26,9 @@ const panNumber =
 
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:8080/api/project/basic-details-by-pan?pan=${panNumber}`
-        );
-
-        const json = await res.json();
+        const json = await apiGet(
+  `/api/project/basic-details-by-pan?pan=${panNumber}`
+);
 
         if (json.success) {
           setRows(json.data);

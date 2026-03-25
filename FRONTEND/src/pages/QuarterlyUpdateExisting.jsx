@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/otplogin.css";
-
-const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
+import { BASE_URL } from "../api/api";
+const API_BASE = `${BASE_URL}/api`;
 
 const QuarterlyUpdateExisting = () => {
   const navigate = useNavigate();

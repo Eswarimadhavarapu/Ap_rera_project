@@ -33,6 +33,7 @@ class ComplintComplaint(db.Model):
 
     # USER supporting documents (free-form)
     supporting_documents = db.Column(db.JSON)
+    project_details = db.Column(db.JSON)
 
     created_at = db.Column(
         db.DateTime,
