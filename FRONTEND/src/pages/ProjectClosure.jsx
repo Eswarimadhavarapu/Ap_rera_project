@@ -208,11 +208,28 @@ export default function ProjectClosure() {
 
     const handleSubmit = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        const form = new FormData(e.target);
+    const applicationNumber = projectDetails.applicationNumber;
 
-        form.append("applicationNumber", projectDetails.applicationNumber);
+    const form = new FormData(e.target);
+
+    try {
+
+        // ✅ STEP 1: CHECK FROM DB
+        const checkRes = await fetch(
+            `https://0jv8810n-8080.inc1.devtunnels.ms/api/project_closure/check?applicationNumber=${applicationNumber}`
+        );
+
+        const checkData = await checkRes.json();
+
+        if (checkData.exists) {
+            alert("Closure already submitted for this application");
+            return;
+        }
+
+        // ✅ STEP 2: SUBMIT
+        form.append("applicationNumber", applicationNumber);
         form.append("projectName", projectDetails.projectName);
         form.append("promoterName", projectDetails.promoterName);
 
@@ -230,7 +247,11 @@ export default function ProjectClosure() {
             setSuccess(true);
         }
 
-    };
+    } catch (err) {
+        console.error("ERROR:", err);
+        alert("Error occurred");
+    }
+};
 
     if (success) {
         return (
@@ -277,6 +298,7 @@ export default function ProjectClosure() {
                 type="radio"
                 name="occupancyCertificateStatus"
                 value="Yes"
+                required
                 onChange={(e) => setHasOccupancy(e.target.value)}
             />
             YES

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/ChangeRequest.css";
 import { useLocation } from "react-router-dom";
-
+import { submitChangeRequest } from "../api/api";
 import ProjectDetailsForm,     { PROJECT_DETAILS_SUBSECTIONS     } from "../components/changeRequest/ProjectDetailsForm";
 import PromoterDetailsForm,    { PROMOTER_DETAILS_SUBSECTIONS    } from "../components/changeRequest/PromoterDetailsForm";
 import DevelopmentDetailsForm, { DEVELOPMENT_DETAILS_SUBSECTIONS } from "../components/changeRequest/DevelopmentDetailsForm";
@@ -10,7 +10,6 @@ import UploadDocumentsForm,    { UPLOAD_DOCUMENTS_SUBSECTIONS    } from "../comp
 import ReviewSubmit                                                from "../components/changeRequest/ReviewSubmit";
 import CRPaymentPage                                              from "../components/changeRequest/CRPaymentPage";
 
-const API_BASE = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
 
 const ALL_SUBSECTION_CONFIGS = [
   ...PROJECT_DETAILS_SUBSECTIONS,
@@ -46,6 +45,9 @@ function AccordionFormBody({ panel, formValues, onChange, docFiles, onDocFile, t
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function ChangeRequest() {
   const location  = useLocation();
+    console.log("FULL LOCATION DATA 👉", location);        // ✅ add this
+  console.log("STATE DATA 👉", location.state);          // ✅ add this
+
   const project   = location.state?.projectData || {};
   const panNumber = location.state?.panNumber   || "";
 
@@ -53,7 +55,7 @@ export default function ChangeRequest() {
     applicationNumber: project.application_number || "-",
     panNumber:         panNumber                  || "-",
     projectName:       project.project_name       || "-",
-    applicantName:     project.promoter_name      || "-",
+    applicantName:     project.name        || "-",
   };
 
   const [step,          setStep]          = useState(1);
@@ -219,10 +221,7 @@ export default function ChangeRequest() {
 
   const reviewRows = buildReviewRows();
 
-  // ════════════════════════════════════════════════════════════════════════
-  // ── BUILD FORMDATA AND SUBMIT TO API ─────────────────────────────────
-  // Called from CRPaymentPage when user clicks "Make Payment"
-  // ════════════════════════════════════════════════════════════════════════
+  
   const handlePaymentAndSubmit = async (gateway) => {
     const fd = new FormData();
 
@@ -406,22 +405,13 @@ export default function ChangeRequest() {
     });
 
     // ── 5. POST TO API ────────────────────────────────────────────────────
-    const res = await fetch(`${API_BASE}/change-request`, {
-      method: "POST",
-      body:   fd,
-      // DO NOT set Content-Type header — browser sets multipart boundary automatically
-    });
-
-    if (!res.ok) {
-      let errMsg = `Server error: ${res.status}`;
-      try {
-        const errData = await res.json();
-        errMsg = errData.error || errData.message || errMsg;
-      } catch (_) {}
-      throw new Error(errMsg);
-    }
-
-    return await res.json();
+ try {
+  const res = await submitChangeRequest(fd); 
+  return res;
+} catch (error) {
+  console.error("Change Request Error:", error);
+  throw error;
+}
   };
 
   // ────────────────────────────────────────────────────────────────────────
@@ -447,11 +437,11 @@ export default function ChangeRequest() {
           </div>
           <div className="cr-app-info-grid">
             {[
-              { label: "Application No", value: APP_INFO.applicationNumber },
-              { label: "PAN Number",     value: APP_INFO.panNumber         },
+              // { label: "Application No", value: APP_INFO.applicationNumber },
+            // { label: "PAN Number",     value: APP_INFO.panNumber         },
               { label: "Project Name",   value: APP_INFO.projectName       },
-              { label: "Applicant Name", value: APP_INFO.applicantName     },
-              { label: "Reference No",   value: refNo                      },
+              { label: "promoter Name", value: APP_INFO.applicantName     },
+             // { label: "Reference No",   value: refNo                      },
               { label: "Status", value: step === 5 ? "✔ Submitted" : "Draft", className: step === 5 ? "success" : "accent" },
             ].map((item) => (
               <div className="cr-app-info-item" key={item.label}>

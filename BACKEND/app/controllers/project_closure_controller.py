@@ -195,3 +195,36 @@ def submit_closure():
             "status": "error",
             "message": str(e)
         }), 500
+
+
+# ---------------------------------------------------------
+# CHECK IF ALREADY SUBMITTED
+# ---------------------------------------------------------
+@project_closure_bp.route("/check", methods=["GET"])
+def check_closure():
+
+    try:
+        application_no = request.args.get("applicationNumber")
+
+        if not application_no:
+            return jsonify({
+                "status": "error",
+                "message": "Application number required"
+            }), 400
+
+        # ✅ CHECK IN DB
+        exists = db.session.query(ProjectClosureNEW).filter_by(
+            application_number=application_no
+        ).first()
+
+        return jsonify({
+            "exists": True if exists else False
+        })
+
+    except Exception as e:
+        print("Check error:", e)
+
+        return jsonify({
+            "status": "error",
+            "message": "Server error"
+        }), 500

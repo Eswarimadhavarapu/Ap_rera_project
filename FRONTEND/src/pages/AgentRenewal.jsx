@@ -12,6 +12,11 @@ function AgentRenewal() {
 
   const fetchAgent = async () => {
 
+      if (applicationNo.length !== 13) {
+    alert("Registration Number must be exactly 13 digits");
+    return;
+  }
+
     try {
 
       const res = await getAgentDetails(applicationNo);
@@ -73,11 +78,20 @@ function AgentRenewal() {
 
       <div className="search-row">
 
-        <input
-          placeholder="Enter Registration Number"
-          value={applicationNo}
-          onChange={(e) => setApplicationNo(e.target.value)}
-        />
+<input
+  type="text"
+  placeholder="Enter Registration Number"
+  value={applicationNo}
+  maxLength={13}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    // Allow only digits
+    if (/^\d*$/.test(value)) {
+      setApplicationNo(value);
+    }
+  }}
+/>
 
         <button className="fetch-btn" onClick={fetchAgent}>
           Fetch Agent

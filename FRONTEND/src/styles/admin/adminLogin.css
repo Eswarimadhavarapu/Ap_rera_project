@@ -6,14 +6,14 @@ display:flex;
 align-items:center;
 justify-content:center;
 background:#f4f6f9;
-padding-bottom:120px; /* space for footer */
+padding: 80px;
 }
 
 
 /* ===== LOGIN BOX ===== */
 
 .admin-login-box{
-width:420px;
+width:400px;
 background:white;
 padding:40px;
 border-radius:10px;
@@ -53,6 +53,7 @@ font-weight:500;
 /* ===== INPUT ===== */
 
 .admin-form-group input{
+width: 100%;
 padding:12px;
 border:1px solid #cbd5e0;
 border-radius:6px;

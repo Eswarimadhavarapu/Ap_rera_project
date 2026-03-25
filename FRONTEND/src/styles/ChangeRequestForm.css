@@ -1,28 +1,28 @@
-.container {
+.cr-form-container {
   width: 500px;
   margin: auto;
   margin-top: 40px;
   font-family: Arial;
 }
 
-.form-box {
+.cr-form-form-box {
   display: flex;
   flex-direction: column;
 }
 
-.form-box label {
+.cr-form-form-box label {
   margin-top: 10px;
   font-weight: bold;
 }
 
-.form-box input,
-.form-box select,
-.form-box textarea {
+.cr-form-form-box input,
+.cr-form-form-box select,
+.cr-form-form-box textarea {
   padding: 8px;
   margin-top: 5px;
 }
 
-button {
+.cr-form-button {
   margin-top: 20px;
   padding: 10px;
   background: #0b4da2;
@@ -31,6 +31,6 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.cr-form-button:hover {
   background: #083a7a;
 }

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar";
-import AdminHeader from "../../components/admin/AdminHeader";
 import TopHeader from "../../components/admin/TopHeader";
 import "../../styles/admin/adminDashboard.css";
 

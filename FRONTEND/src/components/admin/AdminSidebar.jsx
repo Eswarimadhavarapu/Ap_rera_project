@@ -7,7 +7,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
   return (
     <div className={`admin-sidebar ${sidebarOpen ? "admin-sidebar-open" : "admin-sidebar-closed"}`}>
 
-      <h2 className="admin-sidebar-title">ADMIN Dashboard</h2>
+      <h2 className="admin-sidebar-title">ADMIN DASHBOARD</h2>
 
       <button onClick={() => navigate("/admin-dashboard")}>
         Dashboard
@@ -31,12 +31,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
 
     
       <button onClick={() => navigate("/admin/renewal")}>
-        renewal
+        Renewal
       </button>
 
-      <button onClick={() => navigate("/")}>
+      {/* <button onClick={() => navigate("/")}>
         Logout
-      </button>
+      </button> */}
 
     </div>
   );

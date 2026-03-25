@@ -117,3 +117,12 @@ export const checkPanExists = (panNumber) => {
   return apiGet(`/api/check-pan/${panNumber}`);
 };
 
+export const getProjectByPan = (panNumber) => {
+  return apiGet(`/api/project/basic-details-by-pan?pan=${panNumber}`);
+};
+
+// Submit Change Request (FormData)
+export const submitChangeRequest = (formData) => {
+  return apiPost("/api/change-request", formData);
+};
+

@@ -62,10 +62,10 @@ const projects = loginData?.projects || [];
 };
 
   return (
-    <div className="container">
+    <div className="cr-form-container">
       <h2>Apply for Change Request</h2>
 
-      <form onSubmit={handleSubmit} className="form-box">
+      <form onSubmit={handleSubmit} className="cr-form-form-box">
 
         <label>Application Number</label>
 
@@ -93,11 +93,30 @@ const projects = loginData?.projects || [];
           required
         >
           <option value="">Select Change Type</option>
-          <option value="Project Completion Date">Project Completion Date</option>
-          <option value="Project Address">Project Address</option>
-          <option value="Bank Details">Bank Details</option>
-          <option value="Promoter Details">Promoter Details</option>
+          <option value="Project Completion Date">Project Details</option>
+          <option value="Project Address">promoter Details</option>
+          <option value="Bank Details">Development Details</option>
+          <option value="Promoter Details">Associate Details</option>
+          <option value="Promoter Details">Upload Documents</option>
         </select>
+
+         <label>chaged details</label>
+        <select
+          name="changedDetails"
+          value={formData.changeType}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select which type of details</option>
+          <option value="Project Completion Date">Bank Account Details</option>
+          <option value="Project Address">promoter Details</option>
+          <option value="Bank Details">Other State/UT RERA Registration Details</option>
+          <option value="Promoter Details">Projects launched in the past 5 years</option>
+          <option value="Promoter Details">Litigations</option>
+          <option value="Promoter Details"> Promoter 2 Details</option>
+         
+        </select>
+
 
         <label>Description</label>
         <textarea
@@ -113,7 +132,7 @@ const projects = loginData?.projects || [];
           onChange={handleFileChange}
         />
 
-        <button type="submit">Submit Request</button>
+        <button className="cr-form-button" type="submit">Submit Request</button>
 
       </form>
     </div>

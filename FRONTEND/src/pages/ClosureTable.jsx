@@ -83,9 +83,9 @@ const ClosureTable = () => {
                             <th>Application No</th>
                             <th>Project Name</th>
                             <th>Promoter Name</th>
-                            <th>BA No</th>
+                            {/* <th>BA No</th>
                             <th>Validity From</th>
-                            <th>Validity To</th>
+                            <th>Validity To</th> */}
                         </tr>
                     </thead>
 
@@ -121,9 +121,9 @@ const ClosureTable = () => {
 
                                     <td>{row.project_name}</td>
                                     <td>{row.name}</td>
-                                    <td>{row.building_plan_no}</td>
+                                    {/* <td>{row.building_plan_no}</td>
                                     <td>{formatDate(row.building_permission_from)}</td>
-                                    <td>{formatDate(row.building_permission_upto)}</td>
+                                    <td>{formatDate(row.building_permission_upto)}</td> */}
 
                                 </tr>
 

@@ -81,7 +81,7 @@ const PromoterData = () => {
                     <div
                         className="corner-card"
                         onClick={() =>
-                            navigate("/change-request", {
+                            navigate("/ChangeRequestProcess", {
                                 state: { panNumber }
                             })
                         }
