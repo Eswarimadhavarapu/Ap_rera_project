@@ -150,6 +150,7 @@ import Changerequest from "./pages/Changerequest.jsx";
 import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
 import AdminChangeRequestList   from "./pages/admin/AdminChangeRequestList";
 import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail";
+import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
 
 
 function App() {
@@ -300,6 +301,7 @@ function App() {
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/agents" element={<AdminAgents />} />
             <Route path="/admin/complaints" element={<AdminComplaints />} />
+            <Route path="/admin/complaints" element={<AdminComplaintDetail />} />
             <Route path="/admin/renewal" element={<AdminRenewal />} />
             <Route path="/admin/renewals/:status" element={<AdminRenewalList />} />
             <Route path="/admin/renewal/:id" element={<AdminRenewalDetail />} />

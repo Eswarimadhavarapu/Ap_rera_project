@@ -270,7 +270,7 @@ const handleBranchChange = (e) => {
                 Application Number<span className="required">*</span>
               </label>
               <input
-                type="text"
+                type="text" 
                 name="applicationNo"
                 value={formData.applicationNo}
                 className="form-input disabled"

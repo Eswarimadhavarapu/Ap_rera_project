@@ -29,6 +29,7 @@ const isValidAadhaar = (v) => v.length === 12;
 
 const handleValidatedChange = (e, onChange) => {
   let { name, value } = e.target;
+  
 
   if (name === "emailId") {
   value = value
@@ -41,13 +42,17 @@ if (name === "websiteUrl") {
 }
 
   // TEXT ONLY
-  if (
-    name === "promoterName" ||
-    name === "fatherName" ||
-    name === "accountHolderName"
-  ) {
-    value = onlyText(value);
-  }
+ // TEXT ONLY
+if (
+  name === "promoterName" ||
+  name === "fatherName" ||
+  name === "accountHolderName" ||
+  name === "bankState" ||        // ✅ ADD THIS
+  name === "bankName" ||         // ✅ ADD THIS
+  name === "branchName"          // ✅ ADD THIS
+) {
+  value = onlyText(value);
+}
 
   // DIGITS ONLY
   if (

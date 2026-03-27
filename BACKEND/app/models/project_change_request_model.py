@@ -24,7 +24,8 @@ class ProjectChangeRequest(db.Model):
     payment_date = db.Column(db.DateTime)
 
     remarks = db.Column(db.Text)
-
+    regected_reson = db.Column(db.Text)
+    email = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime)
 
@@ -53,4 +54,6 @@ class ProjectChangeRequest(db.Model):
             "remarks": self.remarks,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "email": self.email,
+            "rejected_reason": self.regected_reson,
         }

@@ -8,20 +8,19 @@ from flask import Blueprint, request, jsonify, send_from_directory, current_app
 from app.models.database import db
 from app.models.project_change_request_model import ProjectChangeRequest
 from app.models.change_request_changes_model import ChangeRequestChange
-
+from app.utils.mail_service import send_rejection_email
 from sqlalchemy import func
+from app.utils.mail_service import send_change_request_approval_email
 
 change_request_bp = Blueprint("change_request_bp", __name__)
 
 
-# ✅ Helper function (IMPORTANT FIX)
 def get_upload_folder():
     upload_folder = os.path.join(current_app.root_path, "uploads", "change_requests")
     os.makedirs(upload_folder, exist_ok=True)
     return upload_folder
 
 
-# ✅ Logging
 LOG_FILE = os.path.join("app", "logs", "change_reqist.log")
 
 logger = logging.getLogger("change_request")
@@ -48,21 +47,19 @@ def generate_reference_no():
     return f"REF-{str(new_id).zfill(4)}"
 
 
-# ================================
-# CREATE CHANGE REQUEST
-# ================================
 @change_request_bp.route("/change-request", methods=["POST"])
 def create_change_request():
 
     try:
         data = request.form
-
+        print("EMAIL ", data.get("email"))
         new_request = ProjectChangeRequest(
             reference_no=generate_reference_no(),
             application_number=data.get("application_number"),
             pan_number=data.get("pan_number"),
             project_name=data.get("project_name"),
             applicant_name=data.get("applicant_name"),
+            email=data.get("email"),
             payment_gateway=data.get("payment_gateway"),
             payment_transaction_id=data.get("payment_transaction_id"),
             payment_status=data.get("payment_status"),
@@ -95,14 +92,12 @@ def create_change_request():
                 old_file.save(filepath)
                 old_path = os.path.join("uploads", "change_requests", filename)
 
-            # NEW FILE
             if new_file:
                 filename = str(uuid.uuid4()) + "_" + new_file.filename
                 filepath = os.path.join(upload_folder, filename)
                 new_file.save(filepath)
                 new_path = os.path.join("uploads", "change_requests", filename)
 
-            # PROOF FILE
             if proof_file:
                 filename = str(uuid.uuid4()) + "_" + proof_file.filename
                 filepath = os.path.join(upload_folder, filename)
@@ -146,9 +141,6 @@ def create_change_request():
         return jsonify({"error": str(e)}), 500
 
 
-# ================================
-# GET CHANGE REQUEST
-# ================================
 @change_request_bp.route("/change-request/<int:id>", methods=["GET"])
 def get_change_request(id):
 
@@ -190,12 +182,86 @@ def get_change_requests_by_status(status):
         return jsonify({"error": str(e)}), 500
 
 
-# ================================
-# VIEW DOCUMENT
-# ================================
 @change_request_bp.route("/change-request/document/<path:filename>", methods=["GET"])
 def view_change_request_document(filename):
 
     upload_folder = get_upload_folder()
 
     return send_from_directory(upload_folder, filename)
+
+
+from datetime import datetime
+
+
+@change_request_bp.route("/change-request/reject/<int:id>", methods=["PUT"])
+def reject_change_request(id):
+    try:
+        data = request.get_json()
+
+        remarks = data.get("remarks")
+        email = data.get("email")
+
+        change_req = ProjectChangeRequest.query.get(id)
+
+        if not change_req:
+            return {"error": "Request not found"}, 404
+
+        change_req.status = "REJECTED"
+        change_req.regected_reson = remarks or ""
+        change_req.email = email or change_req.email
+        change_req.updated_at = datetime.utcnow()
+
+        db.session.commit()
+
+        # ✅ safe email sending
+        if change_req.email:
+            send_rejection_email(change_req.email, change_req.reference_no, remarks)
+
+        return {"message": "Rejected + Stored + Mail Sent"}
+
+    except Exception as e:
+        db.session.rollback()
+        print("ERROR:", str(e))
+        return {"error": str(e)}, 500
+
+
+@change_request_bp.route("/change-request/approve/<int:id>", methods=["PUT"])
+def approve_change_request(id):
+    try:
+        data = request.get_json() or {}
+
+        change_req = ProjectChangeRequest.query.get(id)
+
+        if not change_req:
+            return {"error": "Request not found"}, 404
+
+        # ✅ UPDATE STATUS (IMPORTANT)
+        change_req.status = "APPROVED"
+        change_req.updated_at = datetime.utcnow()
+
+        # ✅ get email
+        email = data.get("email") or change_req.email
+
+        # ✅ get changes
+        changes = ChangeRequestChange.query.filter_by(request_id=id).all()
+
+        change_list = []
+        for c in changes:
+            change_list.append(
+                {"field": c.field_name, "old": c.old_value, "new": c.new_value}
+            )
+
+        # ✅ commit DB changes FIRST
+        db.session.commit()
+
+        # ✅ send email
+        if email:
+            send_change_request_approval_email(
+                email, change_req.reference_no, change_list
+            )
+
+        return {"message": "Approved + Status Updated + Mail Sent"}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"error": str(e)}, 500

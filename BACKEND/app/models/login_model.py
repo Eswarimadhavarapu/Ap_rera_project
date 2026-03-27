@@ -3,13 +3,24 @@ from app.models.database import db
 from sqlalchemy import text
 
 def get_emails_by_pan(pan_number):
+    pan = pan_number.strip().upper()
+
     query = text("""
-        SELECT DISTINCT email
-        FROM project_registrations
-        WHERE pan_number = :pan
+        SELECT DISTINCT email FROM project_registrations
+        WHERE UPPER(TRIM(pan_number)) = :pan
+
+        UNION
+
+        SELECT DISTINCT authorized_signatory_email
+        FROM promoter_profile_other_t_indv
+        WHERE UPPER(TRIM(pan_number)) = :pan
     """)
-    result = db.session.execute(query, {"pan": pan_number}).fetchall()
-    return [row[0] for row in result]
+
+    result = db.session.execute(query, {"pan": pan}).fetchall()
+
+    emails = [row[0] for row in result]
+
+    return emails
 
 def get_projects_by_pan(pan_number):
     query = text("""

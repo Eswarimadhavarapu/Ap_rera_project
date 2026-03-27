@@ -5,7 +5,7 @@ export const UPLOAD_DOCUMENTS_SUBSECTIONS = [
   {
     id: "documents",
     label: "Upload Documents",
-    isDocumentSection: false,   // handled by custom table, NOT docFiles
+    isDocumentSection: false,
     fields: [],
   },
   {
@@ -71,6 +71,14 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
   const [oldFile,     setOldFile]     = useState(null);
   const [newFile,     setNewFile]     = useState(null);
   const [description, setDescription] = useState("");
+  const [oldFileError, setOldFileError] = useState("");   // ← NEW
+  const [newFileError, setNewFileError] = useState("");   // ← NEW
+
+  // PDF Validation
+  const isValidPDF = (file) => {
+    if (!file) return false;
+    return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  };
 
   const notifyParent = (rows) => {
     onChange({
@@ -81,9 +89,43 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
     });
   };
 
+  const handleOldFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setOldFileError("");
+    if (selectedFile) {
+      if (isValidPDF(selectedFile)) {
+        setOldFile(selectedFile);
+      } else {
+        setOldFile(null);
+        setOldFileError("This file should be in PDF format only");
+        e.target.value = "";
+      }
+    }
+  };
+
+  const handleNewFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setNewFileError("");
+    if (selectedFile) {
+      if (isValidPDF(selectedFile)) {
+        setNewFile(selectedFile);
+      } else {
+        setNewFile(null);
+        setNewFileError("This file should be in PDF format only");
+        e.target.value = "";
+      }
+    }
+  };
+
   const handleAdd = () => {
     if (!docType) { alert("Please select a document type."); return; }
     if (!oldFile && !newFile) { alert("Please upload at least one file (Old or New)."); return; }
+
+    // Extra safety check
+    if ((oldFile && !isValidPDF(oldFile)) || (newFile && !isValidPDF(newFile))) {
+      alert("Only PDF files are allowed");
+      return;
+    }
 
     const newRow = {
       docType,
@@ -98,7 +140,12 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
     setTableData(updated);
     notifyParent(updated);
 
-    setDocType(""); setOldFile(null); setNewFile(null); setDescription("");
+    setDocType(""); 
+    setOldFile(null); 
+    setNewFile(null); 
+    setDescription("");
+    setOldFileError("");
+    setNewFileError("");
   };
 
   const handleDelete = (idx) => {
@@ -121,13 +168,24 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
 
       {/* Old + New Files */}
       <div style={S.grid2}>
-        <FW label="OLD Document">
-          <input style={S.input} type="file" onChange={(e) => setOldFile(e.target.files[0])} />
+        <FW label="EXISTING Document">
+          <input style={S.input} type="file" onChange={handleOldFileChange} />
           {oldFile && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {oldFile.name}</div>}
+          {oldFileError && (
+            <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px", fontWeight: "500" }}>
+              {oldFileError}
+            </div>
+          )}
         </FW>
+
         <FW label="NEW Document">
-          <input style={S.input} type="file" onChange={(e) => setNewFile(e.target.files[0])} />
+          <input style={S.input} type="file" onChange={handleNewFileChange} />
           {newFile && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {newFile.name}</div>}
+          {newFileError && (
+            <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px", fontWeight: "500" }}>
+              {newFileError}
+            </div>
+          )}
         </FW>
       </div>
 
@@ -188,6 +246,13 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
   const [newValue,      setNewValue]      = useState("");
   const [description,   setDescription]   = useState("");
   const [file,          setFile]          = useState(null);
+  const [fileError,     setFileError]     = useState("");     // ← NEW
+
+  // PDF Validation
+  const isValidPDF = (file) => {
+    if (!file) return false;
+    return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  };
 
   const notifyParent = (rows) => {
     onChange({
@@ -198,9 +263,28 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
     });
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFileError("");
+    if (selectedFile) {
+      if (isValidPDF(selectedFile)) {
+        setFile(selectedFile);
+      } else {
+        setFile(null);
+        setFileError("This file should be in PDF format only");
+        e.target.value = "";
+      }
+    }
+  };
+
   const handleAdd = () => {
     if (!selectedField) { alert("Please select a field."); return; }
     if (!newValue.trim()) { alert("Please enter the new value."); return; }
+
+    if (file && !isValidPDF(file)) {
+      setFileError("This file should be in PDF format only");
+      return;
+    }
 
     const newRow = {
       field:       selectedField,
@@ -215,8 +299,12 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
     setTableData(updated);
     notifyParent(updated);
 
-    setSelectedField(""); setOldValue(""); setNewValue("");
-    setDescription(""); setFile(null);
+    setSelectedField(""); 
+    setOldValue(""); 
+    setNewValue("");
+    setDescription(""); 
+    setFile(null);
+    setFileError("");
   };
 
   const handleDelete = (idx) => {
@@ -242,7 +330,7 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
         <>
           {/* Old + New */}
           <div style={S.grid2}>
-            <FW label={`Old ${selectedField}`}>
+            <FW label={`Existing ${selectedField}`}>
               <input style={S.input} type="text" value={oldValue}
                 onChange={(e) => setOldValue(e.target.value)}
                 placeholder={`Enter current ${selectedField}`} />
@@ -262,8 +350,18 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
                 placeholder="Enter reason for this change..." />
             </FW>
             <FW label="Upload Document">
-              <input style={S.input} type="file" onChange={(e) => setFile(e.target.files[0])} />
+              <input style={S.input} type="file" onChange={handleFileChange} />
               {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
+              {fileError && (
+                <div style={{ 
+                  color: "#e74c3c", 
+                  fontSize: "12px", 
+                  marginTop: "4px", 
+                  fontWeight: "500" 
+                }}>
+                  {fileError}
+                </div>
+              )}
             </FW>
           </div>
         </>

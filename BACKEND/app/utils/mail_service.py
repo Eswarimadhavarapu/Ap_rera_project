@@ -143,3 +143,46 @@ AP RERA
     server.login(smtp_user, smtp_password)
     server.sendmail(from_email, to_email, msg.as_string())
     server.quit()
+
+def send_change_request_approval_email(email, ref_no, changes):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    subject = f"Change Request Approved - {ref_no}"
+
+    change_text = ""
+    for i, c in enumerate(changes, 1):
+        change_text += f"""
+{i}. {c['field']}
+   Old: {c['old']}
+   New: {c['new']}
+"""
+
+    body = f"""
+Dear User,
+
+Your change request ({ref_no}) has been APPROVED.
+
+Changed Details:
+{change_text}
+
+Regards,
+AP RERA
+"""
+
+    msg = MIMEMultipart()
+    msg["From"] = from_email
+    msg["To"] = email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+    server.sendmail(from_email, email, msg.as_string())
+    server.quit()

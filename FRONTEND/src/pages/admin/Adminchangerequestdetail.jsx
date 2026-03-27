@@ -163,6 +163,7 @@ const AdminChangeRequestDetail = () => {
     setLoading(true);
     try {
       const res = await apiGet(`/api/change-request/${id}`);
+       console.log("🔥 FULL API RESPONSE 👉", res); 
       setData(res);
     } catch (err) {
       console.error(err);
@@ -175,40 +176,59 @@ const AdminChangeRequestDetail = () => {
     setToast({ type, msg });
     setTimeout(() => setToast(null), 3500);
   };
+const handleApprove = async () => {
+  setActionLoading(true);
 
-  const handleApprove = async (remarks) => {
-    setActionLoading(true);
-    try {
-      await apiPut(`/api/change-request/update/${id}`, {
-        status:  "APPROVED",
-        remarks: remarks || null,
-      });
-      setShowApprove(false);
-      showToast("success", "Change request approved successfully.");
-      loadDetail();
-    } catch (err) {
-      showToast("error", err.message || "Failed to approve. Please try again.");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  try {
+    const email = data?.request?.email;
 
-  const handleReject = async (reason) => {
-    setActionLoading(true);
-    try {
-      await apiPut(`/api/change-request/update/${id}`, {
-        status:  "REJECTED",
-        remarks: reason,
-      });
-      setShowReject(false);
-      showToast("error-soft", "Change request rejected.");
-      loadDetail();
-    } catch (err) {
-      showToast("error", err.message || "Failed to reject. Please try again.");
-    } finally {
+    console.log("📧 EMAIL 👉", email);
+
+    // ❌ if email missing → show error
+    if (!email) {
+      showToast("error", "Email not available for this request");
       setActionLoading(false);
+      return;
     }
-  };
+
+    console.log("📤 Calling APPROVE API...");
+
+    await apiPut(`/api/change-request/approve/${id}`, {
+      email: email
+    });
+
+    console.log("✅ Approved Successfully");
+
+    showToast("success", "Change request approved & mail sent");
+
+    loadDetail();
+
+  } catch (err) {
+    console.error("❌ Approve Error:", err);
+    showToast("error", err.message || "Failed to approve");
+  } finally {
+    setActionLoading(false);
+  }
+};
+
+const handleReject = async (reason) => {
+  setActionLoading(true);
+  try {
+    await apiPut(`/api/change-request/reject/${id}`, {
+      email: request.email,   // ✅ VERY IMPORTANT
+      remarks: reason
+    });
+
+    setShowReject(false);
+    showToast("error-soft", "Change request rejected.");
+    loadDetail();
+
+  } catch (err) {
+    showToast("error", err.message || "Failed to reject.");
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   const formatDate = (d) =>
     d ? new Date(d).toLocaleString("en-GB", {
@@ -317,6 +337,7 @@ const AdminChangeRequestDetail = () => {
                   color: request.payment_status === "SUCCESS" ? "#1a7a3c" : "#b07800",
                   bg:    request.payment_status === "SUCCESS" ? "#e6f6ec" : "#fff8e1",
                 },
+                { label: "email",      value: request.email},
               ].map((item) => (
                 <div className="acr-detail-item" key={item.label}>
                   <div className="acr-detail-label">{item.label}</div>
@@ -461,13 +482,13 @@ const AdminChangeRequestDetail = () => {
                   This action will notify the applicant and cannot be undone.
                 </p>
                 <div className="acr-action-btns">
-                  <button
-                    className="acr-approve-btn"
-                    onClick={() => setShowApprove(true)}
-                    disabled={actionLoading}
-                  >
-                    ✔ Approve Request
-                  </button>
+                 <button
+  className="acr-approve-btn"
+  onClick={handleApprove}
+  disabled={actionLoading}
+>
+  ✔ Approve Request
+</button>
                   <button
                     className="acr-reject-btn"
                     onClick={() => setShowReject(true)}
@@ -490,7 +511,7 @@ const AdminChangeRequestDetail = () => {
                 borderLeft: `4px solid ${statusStyle.color}`,
                 background: statusStyle.bg,
               }}>
-                {request.remarks || "No remarks provided."}
+                {request.rejected_reason || request.remarks || "No remarks provided."}
               </div>
               <div style={{ fontSize: 12, color: "#888", marginTop: 8 }}>
                 Updated: {formatDate(request.updated_at)}
@@ -503,12 +524,27 @@ const AdminChangeRequestDetail = () => {
 
       {/* ── MODALS ── */}
       {showApprove && (
-        <ApproveModal
-          onConfirm={handleApprove}
-          onCancel={() => setShowApprove(false)}
-          loading={actionLoading}
-        />
-      )}
+  <div className="acr-modal-overlay">
+    <div className="acr-modal" style={{ textAlign: "center", padding: "30px" }}>
+      
+      <div style={{ fontSize: "18px", fontWeight: "700", color: "#1a7a3c", marginBottom: "10px" }}>
+        ✅ Approved Successfully
+      </div>
+
+      <div style={{ fontSize: "13px", color: "#555", marginBottom: "20px" }}>
+        The request has been approved successfully.
+      </div>
+
+      <button
+        className="acr-approve-btn"
+        onClick={() => setShowApprove(false)}
+      >
+        OK
+      </button>
+
+    </div>
+  </div>
+)} 
       {showReject && (
         <RejectModal
           onConfirm={handleReject}

@@ -1,395 +1,432 @@
 // import React, { useState } from "react";
-// import { useLocation } from "react-router-dom";
-// import "../styles/ProjectClosure.css";
+    // import { useLocation } from "react-router-dom";
+    // import "../styles/ProjectClosure.css";
 
-// export default function ProjectClosure() {
+    // export default function ProjectClosure() {
 
-//   const location = useLocation();
+    //   const location = useLocation();
 
-//   const applicationNo = location.state?.applicationNo;
-//   const projectName = location.state?.projectName;
-//   const promoterName = location.state?.promoterName;
+    //   const applicationNo = location.state?.applicationNo;
+    //   const projectName = location.state?.projectName;
+    //   const promoterName = location.state?.promoterName;
 
-//   const [occupancy, setOccupancy] = useState("");
-//   const [showPopup, setShowPopup] = useState(false);
+    //   const [occupancy, setOccupancy] = useState("");
+    //   const [showPopup, setShowPopup] = useState(false);
 
-//   const handleSubmit = () => {
-//   setShowPopup(true);
-// };
+    //   const handleSubmit = () => {
+    //   setShowPopup(true);
+    // };
 
-//   return (
-//     <div className="project-closure-wrapper">
+    //   return (
+    //     <div className="project-closure-wrapper">
 
-//       <div className="project-closure-heading">
-//         Closure Details
-//         <div className="project-closure-line"></div>
-//       </div>
+    //       <div className="project-closure-heading">
+    //         Closure Details
+    //         <div className="project-closure-line"></div>
+    //       </div>
 
-//       <div className="project-closure-box">
+    //       <div className="project-closure-box">
 
-//         {/* Basic Details */}
+    //         {/* Basic Details */}
 
-//         <div className="project-closure-form-section">
+    //         <div className="project-closure-form-section">
 
-//           <div className="project-closure-form-row">
-//             <label>Application No</label>
-//             <input
-//               type="text"
-//               value={applicationNo || ""}
-//               readOnly
-//             />
-//           </div>
+    //           <div className="project-closure-form-row">
+    //             <label>Application No</label>
+    //             <input
+    //               type="text"
+    //               value={applicationNo || ""}
+    //               readOnly
+    //             />
+    //           </div>
 
-//           <div className="project-closure-form-row">
-//             <label>Project Name</label>
-//             <input
-//               type="text"
-//               value={projectName || ""}
-//               readOnly
-//             />
-//           </div>
+    //           <div className="project-closure-form-row">
+    //             <label>Project Name</label>
+    //             <input
+    //               type="text"
+    //               value={projectName || ""}
+    //               readOnly
+    //             />
+    //           </div>
 
-//           <div className="project-closure-form-row">
-//             <label>Promoter Name</label>
-//             <input
-//               type="text"
-//               value={promoterName || ""}
-//               readOnly
-//             />
-//           </div>
+    //           <div className="project-closure-form-row">
+    //             <label>Promoter Name</label>
+    //             <input
+    //               type="text"
+    //               value={promoterName || ""}
+    //               readOnly
+    //             />
+    //           </div>
 
-//         </div>
+    //         </div>
 
-//         {/* Supporting Documents */}
+    //         {/* Supporting Documents */}
 
-//         <h4 className="project-closure-support-title">Supporting Documents</h4>
+    //         <h4 className="project-closure-support-title">Supporting Documents</h4>
 
-//         {/* Occupancy Certificate */}
+    //         {/* Occupancy Certificate */}
 
-//         <div className="project-closure-occupancy-section">
+    //         <div className="project-closure-occupancy-section">
 
-//           <div className="project-closure-occupancy-row">
+    //           <div className="project-closure-occupancy-row">
 
-//             <label className="project-closure-occupancy-label">
-//               Do you have Occupancy Certificate:
-//               <span style={{ color: "red" }}>*</span>
-//             </label>
+    //             <label className="project-closure-occupancy-label">
+    //               Do you have Occupancy Certificate:
+    //               <span style={{ color: "red" }}>*</span>
+    //             </label>
 
-//             <div className="project-closure-radio-group">
+    //             <div className="project-closure-radio-group">
 
-//               <label>
-//                 <input
-//                   type="radio"
-//                   value="YES"
-//                   checked={occupancy === "YES"}
-//                   onChange={(e) => setOccupancy(e.target.value)}
-//                 />
-//                 YES
-//               </label>
+    //               <label>
+    //                 <input
+    //                   type="radio"
+    //                   value="YES"
+    //                   checked={occupancy === "YES"}
+    //                   onChange={(e) => setOccupancy(e.target.value)}
+    //                 />
+    //                 YES
+    //               </label>
 
-//               <label>
-//                 <input
-//                   type="radio"
-//                   value="NO"
-//                   checked={occupancy === "NO"}
-//                   onChange={(e) => setOccupancy(e.target.value)}
-//                 />
-//                 NO
-//               </label>
+    //               <label>
+    //                 <input
+    //                   type="radio"
+    //                   value="NO"
+    //                   checked={occupancy === "NO"}
+    //                   onChange={(e) => setOccupancy(e.target.value)}
+    //                 />
+    //                 NO
+    //               </label>
 
-//             </div>
+    //             </div>
 
-//           </div>
+    //           </div>
 
-//         </div>
+    //         </div>
 
-//         {/* Upload OC */}
+    //         {/* Upload OC */}
 
-//         {occupancy === "YES" && (
+    //         {occupancy === "YES" && (
 
-//   <div className="project-closure-upload-row">
+    //   <div className="project-closure-upload-row">
 
-//     <label className="project-closure-upload-label">
-//       Upload Occupancy Certificate:
-//       <span style={{color:"red"}}>*</span>
-//     </label>
+    //     <label className="project-closure-upload-label">
+    //       Upload Occupancy Certificate:
+    //       <span style={{color:"red"}}>*</span>
+    //     </label>
 
-//     <input
-//       type="file"
-//       className="project-closure-file-input"
-//     />
+    //     <input
+    //       type="file"
+    //       className="project-closure-file-input"
+    //     />
 
-//   </div>
+    //   </div>
 
-// )}
+    // )}
 
-// <div className="project-closure-doc-row">
-//   <label>2. All Sale Deed Copies</label>
-//   <input type="file" multiple />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>2. All Sale Deed Copies</label>
+    //   <input type="file" multiple />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>3. Association of Allottees Formation Proof</label>
-//   <input type="file" />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>3. Association of Allottees Formation Proof</label>
+    //   <input type="file" />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>4. Common Areas / Amenities Handover Proof</label>
-//   <input type="file" />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>4. Common Areas / Amenities Handover Proof</label>
+    //   <input type="file" />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>5. Structural Liability Affidavit (Form F6)</label>
-//   <input type="file" />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>5. Structural Liability Affidavit (Form F6)</label>
+    //   <input type="file" />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>6. Unsold Units Affidavit (Form F7)</label>
-//   <input type="file" />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>6. Unsold Units Affidavit (Form F7)</label>
+    //   <input type="file" />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>7. Consolidated Bank Statement of RERA Designated Bank Account</label>
-//   <input type="file" />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>7. Consolidated Bank Statement of RERA Designated Bank Account</label>
+    //   <input type="file" />
+    // </div>
 
-// <div className="project-closure-doc-row">
-//   <label>8. Latest Photographs of the Project</label>
-//   <input type="file" multiple />
-// </div>
+    // <div className="project-closure-doc-row">
+    //   <label>8. Latest Photographs of the Project</label>
+    //   <input type="file" multiple />
+    // </div>
 
-// <div className="project-closure-submit-row">
-//   <button
-//     className="project-closure-submit-btn"
-//     onClick={handleSubmit}
-//   >
-//     Submit Closure Request
-//   </button>
-// </div>
+    // <div className="project-closure-submit-row">
+    //   <button
+    //     className="project-closure-submit-btn"
+    //     onClick={handleSubmit}
+    //   >
+    //     Submit Closure Request
+    //   </button>
+    // </div>
 
-//       </div>
-//      {showPopup && (
-//   <div className="project-closure-popup-overlay">
-//     <div className="project-closure-popup-box">
-//       <h3>Success</h3>
-//       <p>Your Closure Request has been submitted successfully.</p>
+    //       </div>
+    //      {showPopup && (
+    //   <div className="project-closure-popup-overlay">
+    //     <div className="project-closure-popup-box">
+    //       <h3>Success</h3>
+    //       <p>Your Closure Request has been submitted successfully.</p>
 
-//       <button
-//         className="project-closure-popup-btn"
-//         onClick={() => setShowPopup(false)}
-//       >
-//         OK
-//       </button>
-//     </div>
-//   </div>
-// )} 
-//     </div>
-    
-//   );
-// }
+    //       <button
+    //         className="project-closure-popup-btn"
+    //         onClick={() => setShowPopup(false)}
+    //       >
+    //         OK
+    //       </button>
+    //     </div>
+    //   </div>
+    // )} 
+    //     </div>
+        
+    //   );
+    // }
 
 
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import "../styles/ProjectClosure.css";
+    import React, { useEffect, useState } from "react";
+    import { useLocation } from "react-router-dom";
+    import "../styles/ProjectClosure.css";
 
-export default function ProjectClosure() {
-    const location = useLocation();
+    export default function ProjectClosure() {
+        const location = useLocation();
 
-    const [projectDetails, setProjectDetails] = useState({
-        applicationNumber: location.state?.projectData?.application_number || localStorage.getItem("application_no"),
-        projectName: location.state?.projectData?.project_name || localStorage.getItem("project_name"),
-        promoterName: location.state?.projectData?.name || localStorage.getItem("promoter_name")
-    });
+        const [projectDetails, setProjectDetails] = useState({
+            applicationNumber: location.state?.projectData?.application_number || localStorage.getItem("application_no"),
+            projectName: location.state?.projectData?.project_name || localStorage.getItem("project_name"),
+            promoterName: location.state?.projectData?.name || localStorage.getItem("promoter_name")
+        });
 
-    const [success, setSuccess] = useState(false);
-    const [hasOccupancy, setHasOccupancy] = useState("");
-    const RequiredStar = () => <span style={{ color: "red" }}> *</span>;
-
-    const handleSubmit = async (e) => {
-
-    e.preventDefault();
-
-    const applicationNumber = projectDetails.applicationNumber;
-
-    const form = new FormData(e.target);
-
-    try {
-
-        // ✅ STEP 1: CHECK FROM DB
-        const checkRes = await fetch(
-            `https://0jv8810n-8080.inc1.devtunnels.ms/api/project_closure/check?applicationNumber=${applicationNumber}`
-        );
-
-        const checkData = await checkRes.json();
-
-        if (checkData.exists) {
-            alert("Closure already submitted for this application");
-            return;
-        }
-
-        // ✅ STEP 2: SUBMIT
-        form.append("applicationNumber", applicationNumber);
-        form.append("projectName", projectDetails.projectName);
-        form.append("promoterName", projectDetails.promoterName);
-
-        const response = await fetch(
-            "https://0jv8810n-8080.inc1.devtunnels.ms/api/project_closure/submit",
-            {
-                method: "POST",
-                body: form
-            }
-        );
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-            setSuccess(true);
-        }
-
-    } catch (err) {
-        console.error("ERROR:", err);
-        alert("Error occurred");
-    }
+        const [success, setSuccess] = useState(false);
+        const [hasOccupancy, setHasOccupancy] = useState("");
+        const RequiredStar = () => <span style={{ color: "red" }}> *</span>;
+        const handlePdfValidation = (e) => {
+  const file = e.target.files[0];
+  if (file && file.type !== "application/pdf") {
+    alert("Only PDF files are allowed");
+    e.target.value = "";
+  }
 };
 
-    if (success) {
-        return (
-            <div className="projectclosure-closure-container">
-                <h2 className="projectclosure-success">✔ Request Submitted Successfully</h2>
-            </div>
-        );
-    }
+const handleImageValidation = (e) => {
+  const files = Array.from(e.target.files);
+  const invalid = files.some(
+    (file) =>
+      !["image/png", "image/jpeg", "image/jpg"].includes(file.type)
+  );
 
-    return (
+  if (invalid) {
+    alert("Only image files are allowed");
+    e.target.value = "";
+  }
+};
 
-        <div className="projectclosure-closure-container">
+        const handleSubmit = async (e) => {
 
-            <h2 className="projectclosure-page-title">Closure Details</h2>
+            e.preventDefault();
 
-            <div className="projectclosure-closure-card">
+            const form = new FormData(e.target);
 
-                <div className="projectclosure-project-box">
+            form.append("applicationNumber", projectDetails.applicationNumber);
+            form.append("projectName", projectDetails.projectName);
+            form.append("promoterName", projectDetails.promoterName);
 
-                    <label>Application No</label>
-                    <input value={projectDetails.applicationNumber || ""} readOnly />
+            const response = await fetch(
+                "https://0jv8810n-8080.inc1.devtunnels.ms/api/project_closure/submit",
+                {
+                    method: "POST",
+                    body: form
+                }
+            );
 
-                    <label>Project Name</label>
-                    <input value={projectDetails.projectName || ""} readOnly />
+            const result = await response.json();
 
-                    <label>Promoter Name</label>
-                    <input value={projectDetails.promoterName || ""} readOnly />
+            if (result.status === "success") {
+                setSuccess(true);
+            }
 
+        };
+
+        if (success) {
+            return (
+                <div className="projectclosure-closure-container">
+                    <h2 className="projectclosure-success">✔ Request Submitted Successfully</h2>
                 </div>
+            );
+        }
 
-                <h3 className="projectclosure-section-title">Supporting Documents</h3>
+        return (
 
-                <form className="projectclosure-closure-form" onSubmit={handleSubmit}>
+            <div className="projectclosure-closure-container">
 
-                  <div className="projectclosure-occupancy-row">
-    <label>
-  1. Do you have Occupancy Certificate:
-  <RequiredStar />
-</label>
+                <h2 className="projectclosure-page-title">Closure Details</h2>
 
-    <div className="projectclosure-radio-group">
+                <div className="projectclosure-closure-card">
+
+                    <div className="projectclosure-project-box">
+
+                        <label>Application No</label>
+                        <input value={projectDetails.applicationNumber || ""} readOnly />
+
+                        <label>Project Name</label>
+                        <input value={projectDetails.projectName || ""} readOnly />
+
+                        <label>Promoter Name</label>
+                        <input value={projectDetails.promoterName || ""} readOnly />
+
+                    </div>
+
+                    <h3 className="projectclosure-section-title">Supporting Documents</h3>
+
+                    <form className="projectclosure-closure-form" onSubmit={handleSubmit}>
+
+                    <div className="projectclosure-occupancy-row">
         <label>
-            <input
-                type="radio"
-                name="occupancyCertificateStatus"
-                value="Yes"
-                required
-                onChange={(e) => setHasOccupancy(e.target.value)}
-            />
-            YES
-        </label>
-
-        <label>
-            <input
-                type="radio"
-                name="occupancyCertificateStatus"
-                value="No"
-                onChange={(e) => setHasOccupancy(e.target.value)}
-            />
-            NO
-        </label>
-    </div>
-</div>
-
-{/* SHOW FILE UPLOAD ONLY IF YES */}
-
-{hasOccupancy === "Yes" && (
-    <div className="projectclosure-form-row">
-        <label>Upload Occupancy Certificate: *</label>
-        <input
-            type="file"
-            name="occupancyCertificateDoc" accept=".pdf"
-            required
-        />
-    </div>
-)}
-
-                    <div className="projectclosure-form-row">
-    <label>
-        2. All the Sale Deed Copies shall be uploaded
-        <RequiredStar />
+    1. Do you have Occupancy Certificate:
+    <RequiredStar />
     </label>
-                        <input type="file" name="saleDeedCopiesDoc" accept=".pdf" required />
-                    </div>
 
-                    <div className="projectclosure-form-row">
+        <div className="projectclosure-radio-group">
+            <label>
+                <input
+                    type="radio"
+                    name="occupancyCertificateStatus"
+                    value="Yes"
+                    onChange={(e) => setHasOccupancy(e.target.value)}
+                />
+                YES
+            </label>
+
+            <label>
+                <input
+                    type="radio"
+                    name="occupancyCertificateStatus"
+                    value="No"
+                    onChange={(e) => setHasOccupancy(e.target.value)}
+                />
+                NO
+            </label>
+        </div>
+    </div>
+
+    {/* SHOW FILE UPLOAD ONLY IF YES */}
+
+    {hasOccupancy === "Yes" && (
+        <div className="projectclosure-form-row">
+            <label>Upload Occupancy Certificate: *</label>
+            <input
+  type="file"
+  name="occupancyCertificateDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+        </div>
+    )}
+
+                        <div className="projectclosure-form-row">
+        <label>
+            2. All the Sale Deed Copies shall be uploaded
+            <RequiredStar />
+        </label>
+                            <input
+  type="file"
+  name="saleDeedCopiesDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
+
+                        <div className="projectclosure-form-row">
+                            <label>
+    3. The Promoter has to form an Association of Allottee
+    <RequiredStar />
+    </label>
+                            <input
+  type="file"
+  name="associationOfAllotteesDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
+
+                        <div className="projectclosure-form-row">
                         <label>
-  3. The Promoter has to form an Association of Allottee
-  <RequiredStar />
-</label>
-                        <input type="file" name="associationOfAllotteesDoc" accept=".pdf" required />
-                    </div>
+    4. The Common Areas/Amenities as completed and the same shall be handed over
+    <RequiredStar />
+    </label>
+                            <input
+  type="file"
+  name="commonAreasHandoverDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
 
-                    <div className="projectclosure-form-row">
-                       <label>
-  4. The Common Areas/Amenities as completed and the same shall be handed over
-  <RequiredStar />
-</label>
-                        <input type="file" name="commonAreasHandoverDoc" accept=".pdf" required />
-                    </div>
+                        <div className="projectclosure-form-row">
+                            <label>5.An Affidavit regarding the Structural Liability Has to be submittedas per RERA format(F6) <RequiredStar /></label>
+                            <input
+  type="file"
+  name="structuralLiabilityDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
 
-                    <div className="projectclosure-form-row">
-                        <label>5.An Affidavit regarding the Structural Liability Has to be submittedas per RERA format(F6) <RequiredStar /></label>
-                        <input type="file" name="structuralLiabilityDoc" accept=".pdf" required />
-                    </div>
+                        <div className="projectclosure-form-row">
+                            <label>6. An Affidavit regarding the structural liability has to be submitted as per RERA format(F7) <RequiredStar /></label>
+                            <input
+  type="file"
+  name="unsoldUnitsDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
 
-                    <div className="projectclosure-form-row">
-                        <label>6. An Affidavit regarding the structural liability has to be submitted as per RERA format(F7) <RequiredStar /></label>
-                        <input type="file" name="unsoldUnitsDoc" accept=".pdf" required />
-                    </div>
+                        <div className="projectclosure-form-row">
+                            <label>7. Consolidated Bank Statement of RERA designated bank account <RequiredStar /></label>
+                            <input
+  type="file"
+  name="reraBankStatementDoc"
+  accept=".pdf"
+  required
+  onChange={handlePdfValidation}
+/>
+                        </div>
 
-                    <div className="projectclosure-form-row">
-                        <label>7. Consolidated Bank Statement of RERA designated bank account <RequiredStar /></label>
-                        <input type="file" name="reraBankStatementDoc" accept=".pdf" required />
-                    </div>
-
-                    <div className="projectclosure-form-row">
-                        <label>8. Latest Photographs of the project <RequiredStar /></label>
-                        <input
+                        <div className="projectclosure-form-row">
+                            <label>8. Latest Photographs of the project <RequiredStar /></label>
+                            <input
   type="file"
   name="projectPhotosDoc"
   accept="image/png, image/jpeg, image/jpg"
   multiple
   required
+  onChange={handleImageValidation}
 />
-                    </div>
+                        </div>
 
 
-                    <div className="projectclosure-button-row">
-                        <button type="reset" className="projectclosure-reset-btn">Reset</button>
-                        <button type="submit" className="projectclosure-submit-btn">Submit Application</button>
-                    </div>
+                        <div className="projectclosure-button-row">
+                            <button type="reset" className="projectclosure-reset-btn">Reset</button>
+                            <button type="submit" className="projectclosure-submit-btn">Submit Application</button>
+                        </div>
 
-                </form>
+                    </form>
+
+                </div>
 
             </div>
 
-        </div>
-
-    );
-}
+        );
+    }

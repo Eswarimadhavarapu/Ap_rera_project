@@ -12,6 +12,11 @@ function AgentRenewal() {
 
   const fetchAgent = async () => {
 
+    if (applicationNo.length == 0) {
+    alert("Please Enter Registration Number");
+    return;
+  }
+
       if (applicationNo.length !== 13) {
     alert("Registration Number must be exactly 13 digits");
     return;
@@ -25,7 +30,7 @@ function AgentRenewal() {
 
     } catch {
 
-      alert("Agent not found");
+      alert("No Records Found or Invaid Registration Number");
 
     }
 

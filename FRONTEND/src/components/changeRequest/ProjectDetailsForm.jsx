@@ -67,38 +67,58 @@ const FIELD_VALIDATIONS = {
   // Dropdown — no text validation needed
   "Project Type":                              { type: "select",   msg: "" },
 };
+// 🔥 Prevent invalid typing (characters/digits control)
+function filterInputValue(type, value) {
+  switch (type) {
+    case "text":
+      return value.replace(/[^a-zA-Z\s]/g, ""); // only letters
+    case "alphanumeric":
+      return value.replace(/[^a-zA-Z0-9\s\-\/]/g, "");
+    case "decimal":
+      return value.replace(/[^0-9.]/g, "");
+    default:
+      return value;
+  }
+}
 
 // Returns error message or "" if valid
 function validateFieldValue(fieldName, value) {
-  if (!value || value.trim() === "") return "";  // empty handled by Add button
+  if (!value || value.trim() === "") return "";
+
   const rule = FIELD_VALIDATIONS[fieldName];
   if (!rule) return "";
 
   switch (rule.type) {
     case "text":
-      if (/[0-9]/.test(value))
-        return rule.msg;
+      if (!/^[a-zA-Z\s]+$/.test(value))
+        return "Only letters are allowed.";
       break;
+
     case "alphanumeric":
-      if (/[^a-zA-Z0-9\s\-\/]/.test(value))
-        return rule.msg;
+      if (!/^[a-zA-Z0-9\s\-\/]+$/.test(value))
+        return "Only letters and numbers allowed.";
       break;
+
     case "decimal":
-      if (!/^\d+(\.\d{1,2})?$/.test(value.trim()) || parseFloat(value) <= 0)
-        return rule.msg;
+      if (!/^\d+(\.\d{1,2})?$/.test(value) || parseFloat(value) <= 0)
+        return "Only numeric values allowed (e.g. 1200.50)";
       break;
+
     case "date":
-      if (!value) return rule.msg;
+      if (!value)
+        return "Please select a valid date.";
       break;
+
     case "textarea":
-      if (rule.maxLen && value.length > rule.maxLen)
-        return `Description must be under ${rule.maxLen} characters. (${value.length}/${rule.maxLen})`;
+      if (value.length > 500)
+        return `Max 500 characters allowed (${value.length}/500)`;
       break;
+
     default:
       break;
   }
 
-  if (rule.maxLen && rule.type !== "textarea" && value.length > rule.maxLen)
+  if (rule.maxLen && value.length > rule.maxLen)
     return `Maximum ${rule.maxLen} characters allowed.`;
 
   return "";
@@ -261,7 +281,7 @@ export default function ProjectDetailsForm({
           {/* OLD + NEW */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
             <div>
-              <label style={labelStyle}>OLD {selectedField}</label>
+              <label style={labelStyle}>EXISTING {selectedField}</label>
               {isProjectTypeSelected ? (
                 <select style={selectStyle} value={oldValue} onChange={(e) => { setOldValue(e.target.value); setOldValueError(""); }}>
                   <option value="">-- Select --</option>
@@ -274,10 +294,14 @@ export default function ProjectDetailsForm({
               ) : (
                 <input style={{ ...inputStyle, borderColor: oldValueError ? "#c0200f" : "#ccd4e0" }}
                   value={oldValue}
-                  onChange={(e) => {
-                    setOldValue(e.target.value);
-                    setOldValueError(validateFieldValue(selectedField, e.target.value));
-                  }}
+                 onChange={(e) => {
+  const raw = e.target.value;
+  const type = FIELD_VALIDATIONS[selectedField]?.type;
+  const filtered = filterInputValue(type, raw);
+
+  setOldValue(filtered);
+  setOldValueError(validateFieldValue(selectedField, filtered));
+}}
                   placeholder={`Enter current ${selectedField}`} />
               )}
               {oldValueError && <div style={{ color: "#c0200f", fontSize: "11px", marginTop: "4px" }}>⚠ {oldValueError}</div>}
@@ -297,10 +321,14 @@ export default function ProjectDetailsForm({
               ) : (
                 <input style={{ ...inputStyle, borderColor: newValueError ? "#c0200f" : "#ccd4e0" }}
                   value={newValue}
-                  onChange={(e) => {
-                    setNewValue(e.target.value);
-                    setNewValueError(validateFieldValue(selectedField, e.target.value));
-                  }}
+                 onChange={(e) => {
+  const raw = e.target.value;
+  const type = FIELD_VALIDATIONS[selectedField]?.type;
+  const filtered = filterInputValue(type, raw);
+
+  setNewValue(filtered);
+  setNewValueError(validateFieldValue(selectedField, filtered));
+}}
                   placeholder={`Enter new ${selectedField}`} />
               )}
               {newValueError && <div style={{ color: "#c0200f", fontSize: "11px", marginTop: "4px" }}>⚠ {newValueError}</div>}
@@ -329,8 +357,26 @@ export default function ProjectDetailsForm({
             </div>
             <div>
               <label style={labelStyle}>Upload Document</label>
-              <input type="file" style={inputStyle}
-                onChange={(e) => setDocumentFile(e.target.files[0])} />
+             <input
+  type="file"
+  accept=".pdf,application/pdf"
+  style={inputStyle}
+  onChange={(e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      // Check file type
+      if (file.type !== "application/pdf") {
+        alert("Only PDF files are allowed.");
+        e.target.value = null; // reset input
+        setDocumentFile(null);
+        return;
+      }
+
+      setDocumentFile(file);
+    }
+  }}
+/>
               {documentFile && (
                 <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
                   📄 {documentFile.name}
@@ -363,8 +409,26 @@ export default function ProjectDetailsForm({
                 <label style={labelStyle}>
                   {newValue === "Layout for Plots" ? "Upload Plot Details (.xls)" : "Upload Villa Details (.xls)"}
                 </label>
-                <input type="file" accept=".xls,.xlsx" style={inputStyle}
-                  onChange={(e) => setUnitFile(e.target.files[0])} />
+              <input
+  type="file"
+  accept=".pdf,application/pdf"
+  style={inputStyle}
+  onChange={(e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      // Check file type
+      if (file.type !== "application/pdf") {
+        alert("Only PDF files are allowed.");
+        e.target.value = null; // reset input
+        setDocumentFile(null);
+        return;
+      }
+
+      setDocumentFile(file);
+    }
+  }}
+/>
                 {unitFile && (
                   <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
                     📄 {unitFile.name}
