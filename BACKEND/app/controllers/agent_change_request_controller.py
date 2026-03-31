@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 from werkzeug.utils import secure_filename
@@ -11,18 +12,142 @@ agent_change_request_bp = Blueprint("agent_change_request_bp", __name__)
 UPLOAD_FOLDER = "uploads/change_requests"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+INDIVIDUAL_REPLACEMENT_LABELS = {
+    "photograph",
+    "photo",
+    "pan card proof",
+    "pancardproof",
+    "panproof",
+    "address proof",
+    "addressproof",
+    "income tax returns acknowledgement year1",
+    "income tax returns acknowledgement year 1",
+    "income tax returns acknowlegement year1",
+    "income tax returns acknowlegement year 1",
+    "incometaxreturnsacknowledgementyear1",
+    "incometaxreturnsacknowlegementyear1",
+    "income tax returns acknowledgement year2",
+    "income tax returns acknowledgement year 2",
+    "income tax returns acknowlegement year2",
+    "income tax returns acknowlegement year 2",
+    "incometaxreturnsacknowledgementyear2",
+    "incometaxreturnsacknowlegementyear2",
+    "income tax returns acknowledgement year3",
+    "income tax returns acknowledgement year 3",
+    "income tax returns acknowlegement year3",
+    "income tax returns acknowlegement year 3",
+    "incometaxreturnsacknowledgementyear3",
+    "incometaxreturnsacknowlegementyear3"
+}
+
+ORGANIZATION_REPLACEMENT_LABELS = {
+    "authorized signatory photo",
+    "authorizedsignatoryphoto",
+    "photo",
+    "authorized signature",
+    "authorised signature",
+    "authorizedsignature",
+    "authorisedsignature",
+    "authorized signatory signature",
+    "authorised signatory signature",
+    "authorizedsignatorysignature",
+    "authorisedsignatorysignature",
+    "board resolution for authorized signatory",
+    "boardresolutionforauthorizedsignatory",
+    "upload registration certificate",
+    "upload registration card",
+    "uploadregistrationcertificate",
+    "uploadregistrationcard",
+    "upload pan card",
+    "uploadpancard",
+    "upload gst",
+    "upload gst certificate",
+    "uploadgst",
+    "uploadgstcertificate",
+    "address proof",
+    "addressproof",
+    "income tax returns acknowledgement year1",
+    "income tax returns acknowledgement year 1",
+    "income tax returns acknowlegement year1",
+    "income tax returns acknowlegement year 1",
+    "incometaxreturnsacknowledgementyear1",
+    "incometaxreturnsacknowlegementyear1",
+    "income tax returns acknowledgement year2",
+    "income tax returns acknowledgement year 2",
+    "income tax returns acknowlegement year2",
+    "income tax returns acknowlegement year 2",
+    "incometaxreturnsacknowledgementyear2",
+    "incometaxreturnsacknowlegementyear2",
+    "income tax returns acknowledgement year3",
+    "income tax returns acknowledgement year 3",
+    "income tax returns acknowlegement year3",
+    "income tax returns acknowlegement year 3",
+    "incometaxreturnsacknowledgementyear3",
+    "incometaxreturnsacknowlegementyear3"
+}
+
 
 def save_change_request_file(file, prefix=None):
     if not file or file.filename == "":
-        return None
+        return None, None
 
     safe_name = secure_filename(file.filename)
     if prefix:
         safe_name = f"{prefix}_{safe_name}"
 
+    file_bytes = file.read()
+    file.stream.seek(0)
+
     filepath = os.path.join(UPLOAD_FOLDER, safe_name)
     file.save(filepath)
-    return safe_name
+
+    return safe_name, file_bytes
+
+
+def normalize_label(value):
+    cleaned = "".join(
+        character.lower() if character.isalnum() else " "
+        for character in (value or "")
+    )
+    return " ".join(cleaned.split())
+
+
+def is_replacement_label(applicant_type, label):
+    normalized = normalize_label(label)
+    if not normalized:
+        return False
+    if applicant_type == "individual":
+        return normalized in INDIVIDUAL_REPLACEMENT_LABELS
+    return normalized in ORGANIZATION_REPLACEMENT_LABELS
+
+
+def build_document_record(file, saved_name, file_bytes, document_type):
+    record = {
+        "stored_name": saved_name,
+        "original_name": file.filename,
+        "document_type": document_type
+    }
+    if file_bytes:
+        record["data"] = base64.b64encode(file_bytes).decode("utf-8")
+    return record
+
+
+def pack_replacement_documents(replacement_documents):
+    if not replacement_documents:
+        return None, None
+
+    files = []
+    for label, doc in replacement_documents.items():
+        files.append({
+            "label": label,
+            "stored_name": doc.get("stored_name"),
+            "original_name": doc.get("original_name"),
+            "data": doc.get("data")
+        })
+
+    primary_file_name = files[0].get("stored_name") if files else None
+    payload_bytes = json.dumps({"files": files}).encode("utf-8")
+    return primary_file_name, payload_bytes
 
 
 # =========================
@@ -84,6 +209,132 @@ def get_application_details(application_no):
         }), 500
 
 
+# @agent_change_request_bp.route("/admin/change-requests", methods=["GET"])
+# def get_admin_change_requests():
+
+#     try:
+#         status = request.args.get("status")
+#         search = request.args.get("search")
+#         requests = AgentChangeRequest.get_admin_requests(status=status, search=search)
+#         return jsonify({"requests": requests}), 200
+#     except Exception as e:
+#         return jsonify({
+#             "error": "Internal server error",
+#             "details": str(e)
+#         }), 500
+
+
+
+@agent_change_request_bp.route("/admin/change-requests/full", methods=["GET"])
+def get_full_change_requests():
+    try:
+        requests = db.session.query(AgentChangeRequest) \
+            .order_by(AgentChangeRequest.created_at.desc()) \
+            .all()
+
+        results = []
+
+        for req in requests:
+            results.append({
+                "id": req.id,
+
+                # BASIC INFO
+                "applicationNo": req.application_no,
+                "panNumber": req.pan_number,
+                "applicantType": req.applicant_type,
+
+                # ISSUE INFO
+                "individualIssueType": req.individual_issue_type,
+                "individualIssue": req.individual_issue,
+                "individualDescription": req.individual_description,
+
+                "organizationIssueType": req.organization_issue_type,
+                "organizationIssue": req.organization_issue,
+                "organizationDescription": req.organization_description,
+
+                # CHANGE DOCUMENTS
+                "individualChangeDocument": req.individual_change_document,
+                "organizationChangeDocument": req.organization_change_document,
+
+                # REPLACEMENT INFO
+                "individualReplaceReason": req.individual_replace_reason,
+                "organizationReplaceReason": req.organization_replace_reason,
+
+                "individualReplacementFile": req.individual_replacement_file,
+                "organizationReplacementFile": req.organization_replacement_file,
+
+                # JSON FIELD CHANGES (OLD vs NEW DATA 🔥)
+                "individualFieldChanges": req.individual_field_changes,
+                "organizationFieldChanges": req.organization_field_changes,
+
+                # FIELD DOCUMENTS (VERY IMPORTANT 🔥)
+                "individualFieldDocuments": req.individual_field_documents,
+                "organizationFieldDocuments": req.organization_field_documents,
+
+                # STATUS
+                "status": req.status,
+
+                # DATE
+                "submittedAt": req.created_at.strftime("%Y-%m-%d") if req.created_at else None
+            })
+
+        return jsonify({"requests": results}), 200
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        return jsonify({
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
+
+
+@agent_change_request_bp.route(
+    "/admin/change-requests/<int:request_id>/approve",
+    methods=["PUT"]
+)
+def approve_change_request(request_id):
+    try:
+        result = AgentChangeRequest.approve_and_apply(request_id)
+        if result.get("success"):
+            return jsonify(result), 200
+
+        status_code = result.get("status_code", 400)
+        return jsonify({
+            "error": result.get("message", "Unable to approve request")
+        }), status_code
+    except Exception as exc:
+        return jsonify({
+            "error": "Internal server error",
+            "details": str(exc)
+        }), 500
+
+
+@agent_change_request_bp.route(
+    "/admin/change-requests/<int:request_id>/status",
+    methods=["PUT"]
+)
+def update_change_request_status(request_id):
+    try:
+        data = request.get_json(silent=True) or {}
+        status = (data.get("status") or "").strip()
+        if not status:
+            return jsonify({"error": "Status is required"}), 400
+
+        result = AgentChangeRequest.update_status(request_id, status)
+        if result.get("success"):
+            return jsonify(result), 200
+
+        status_code = result.get("status_code", 400)
+        return jsonify({
+            "error": result.get("message", "Unable to update status")
+        }), status_code
+    except Exception as exc:
+        return jsonify({
+            "error": "Internal server error",
+            "details": str(exc)
+        }), 500
+
+
 # =========================
 # SAVE CHANGE REQUEST
 # =========================
@@ -112,6 +363,8 @@ def save_change_request():
 
         individual_field_documents = {}
         organization_field_documents = {}
+        individual_replacement_documents = {}
+        organization_replacement_documents = {}
 
         # -------------------------
         # SAVE INDIVIDUAL FIELD DOCUMENTS
@@ -119,13 +372,22 @@ def save_change_request():
 
         for i, field in enumerate(individual_field_changes):
             file = request.files.get(f"individualFieldDocument_{i}")
-            saved_name = save_change_request_file(file, f"individualFieldDocument_{i}")
+            label = field.get("label", f"field_{i}")
+            is_replacement_file = bool(field.get("isReplacementFile")) or is_replacement_label(
+                "individual", label
+            )
+            document_type = "replacement" if is_replacement_file else "supporting"
+            saved_name, file_bytes = save_change_request_file(
+                file, f"individualFieldDocument_{i}"
+            )
 
             if saved_name:
-                individual_field_documents[field.get("label", f"field_{i}")] = {
-                    "stored_name": saved_name,
-                    "original_name": file.filename
-                }
+                document_record = build_document_record(
+                    file, saved_name, file_bytes, document_type
+                )
+                individual_field_documents[label] = document_record
+                if is_replacement_file:
+                    individual_replacement_documents[label] = document_record
 
         # -------------------------
         # SAVE ORGANIZATION FIELD DOCUMENTS
@@ -133,22 +395,31 @@ def save_change_request():
 
         for i, field in enumerate(organization_field_changes):
             file = request.files.get(f"organizationFieldDocument_{i}")
-            saved_name = save_change_request_file(file, f"organizationFieldDocument_{i}")
+            label = field.get("label", f"field_{i}")
+            is_replacement_file = bool(field.get("isReplacementFile")) or is_replacement_label(
+                "organization", label
+            )
+            document_type = "replacement" if is_replacement_file else "supporting"
+            saved_name, file_bytes = save_change_request_file(
+                file, f"organizationFieldDocument_{i}"
+            )
 
             if saved_name:
-                organization_field_documents[field.get("label", f"field_{i}")] = {
-                    "stored_name": saved_name,
-                    "original_name": file.filename
-                }
+                document_record = build_document_record(
+                    file, saved_name, file_bytes, document_type
+                )
+                organization_field_documents[label] = document_record
+                if is_replacement_file:
+                    organization_replacement_documents[label] = document_record
 
         # -------------------------
         # GENERAL UPLOADS
         # -------------------------
 
-        individual_document_name = save_change_request_file(
+        individual_document_name, individual_document_bytes = save_change_request_file(
             request.files.get("individualDocument")
         )
-        organization_document_name = save_change_request_file(
+        organization_document_name, organization_document_bytes = save_change_request_file(
             request.files.get("organizationDocument")
         )
 
@@ -156,14 +427,30 @@ def save_change_request():
         # REPLACEMENT FILES
         # -------------------------
 
-        individual_replace_name = save_change_request_file(
+        individual_replace_name, individual_replace_bytes = save_change_request_file(
             request.files.get("individualReplacementFile"),
             "individualReplacement"
         )
-        organization_replace_name = save_change_request_file(
+        organization_replace_name, organization_replace_bytes = save_change_request_file(
             request.files.get("organizationReplacementFile"),
             "organizationReplacement"
         )
+        (
+            replacement_name_from_individual_fields,
+            replacement_bytes_from_individual_fields
+        ) = pack_replacement_documents(individual_replacement_documents)
+        (
+            replacement_name_from_organization_fields,
+            replacement_bytes_from_organization_fields
+        ) = pack_replacement_documents(organization_replacement_documents)
+
+        if replacement_bytes_from_individual_fields:
+            individual_replace_name = replacement_name_from_individual_fields
+            individual_replace_bytes = replacement_bytes_from_individual_fields
+
+        if replacement_bytes_from_organization_fields:
+            organization_replace_name = replacement_name_from_organization_fields
+            organization_replace_bytes = replacement_bytes_from_organization_fields
 
         # -------------------------
         # SAVE TO DATABASE
@@ -179,17 +466,21 @@ def save_change_request():
             individual_issue=data.get("individualIssue"),
             individual_description=data.get("individualDescription"),
             individual_document=individual_document_name,
+            individual_document_data=individual_document_bytes,
             individual_change_document=data.get("individualChangeDocument"),
             individual_replace_reason=data.get("individualReplaceReason"),
             individual_replacement_file=individual_replace_name,
+            individual_replacement_file_data=individual_replace_bytes,
 
             organization_issue_type=data.get("organizationIssueType"),
             organization_issue=data.get("organizationIssue"),
             organization_description=data.get("organizationDescription"),
             organization_document=organization_document_name,
+            organization_document_data=organization_document_bytes,
             organization_change_document=data.get("organizationChangeDocument"),
             organization_replace_reason=data.get("organizationReplaceReason"),
             organization_replacement_file=organization_replace_name,
+            organization_replacement_file_data=organization_replace_bytes,
 
             # JSON DATA
             individual_field_changes=individual_field_changes,

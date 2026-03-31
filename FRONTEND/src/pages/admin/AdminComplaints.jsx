@@ -1,354 +1,550 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-/* AP RERA Brand Colors
-   Navy:  #1B3A6B
-   Gold:  #E8873A
-   Light navy bg: #EEF2F8
-*/
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import TopHeader from "../../components/admin/TopHeader";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-  :root {
-    --rera-navy: #1B3A6B;
-    --rera-gold: #E8873A;
-    --rera-navy-light: #EEF2F8;
-    --rera-gold-light: #FEF3E8;
-  }
-
-  .ac-root {
-    font-family: 'DM Sans', sans-serif;
+  .complaints-wrapper {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding: 28px;
+    background: #f4f6fb;
     min-height: 100vh;
-    background: #f0f2f5;
-    padding: 32px;
-    color: #1a1d23;
   }
 
-  .ac-header {
+  .complaints-page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── Stats Row ── */
+  .complaints-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1;
+    min-width: 100px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.18s;
+    user-select: none;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+  }
+
+  .stat-card.active-total   { border-color: #3b5bdb; background: #eef1ff; }
+  .stat-card.active-open    { border-color: #3b82f6; background: #eff6ff; }
+  .stat-card.active-pending { border-color: #f59e0b; background: #fffbeb; }
+  .stat-card.active-close   { border-color: #12b76a; background: #ecfdf5; }
+  .stat-card.active-reject  { border-color: #f04438; background: #fef2f2; }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    background: linear-gradient(135deg, var(--rera-navy) 0%, #254d8f 100%);
-    border-radius: 14px;
-    padding: 22px 28px;
-    box-shadow: 0 4px 18px rgba(27,58,107,0.18);
+    gap: 5px;
   }
 
-  .ac-title {
+  .stat-value {
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: -0.4px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 10px;
   }
 
-  .ac-title::before {
-    content: '';
+  .stat-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
     display: inline-block;
-    width: 5px;
-    height: 28px;
-    background: var(--rera-gold);
-    border-radius: 3px;
     flex-shrink: 0;
   }
 
-  .ac-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-    margin-top: 4px;
-    padding-left: 15px;
-  }
+  .stat-total   .stat-value { color: #3b5bdb; }
+  .stat-open    .stat-value { color: #3b82f6; }
+  .stat-pending .stat-value { color: #f59e0b; }
+  .stat-close   .stat-value { color: #12b76a; }
+  .stat-reject  .stat-value { color: #f04438; }
 
-  .ac-badge {
-    background: var(--rera-gold);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-family: 'DM Mono', monospace;
-    box-shadow: 0 2px 8px rgba(232,135,58,0.35);
-  }
+  .dot-total   { background: #3b5bdb; }
+  .dot-open    { background: #3b82f6; }
+  .dot-pending { background: #f59e0b; }
+  .dot-close   { background: #12b76a; }
+  .dot-reject  { background: #f04438; }
 
-  .ac-card {
-    background: #ffffff;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-
-  .ac-search-bar {
+  /* ── Toolbar ── */
+  .complaints-toolbar {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 16px 20px;
-    border-bottom: 1px solid #f3f4f6;
-    background: #fafafa;
+    margin-bottom: 12px;
   }
 
-  .ac-search-icon {
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-box svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #9ca3af;
-    flex-shrink: 0;
+    pointer-events: none;
   }
 
-  .ac-search-input {
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: #374151;
+  .search-box input {
     width: 100%;
+    padding: 9px 12px 9px 36px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #fff;
+    color: #111827;
+    outline: none;
+    transition: border 0.2s;
+    box-sizing: border-box;
   }
 
-  .ac-table-wrap {
+  .search-box input:focus {
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59,91,219,0.08);
+  }
+
+  .filter-select {
+    padding: 9px 12px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    outline: none;
+    width: 140px;
+    flex-shrink: 0;
+    transition: border 0.2s;
+  }
+
+  .filter-select:focus {
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59,91,219,0.08);
+  }
+
+  .results-count {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  /* ── Table ── */
+  .table-container {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
     overflow-x: auto;
   }
 
-  table.ac-table {
+  .complaints-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 920px;
   }
 
-  .ac-table thead tr {
-    background: var(--rera-navy-light);
-    border-bottom: 2px solid var(--rera-navy);
+  .complaints-table thead {
+    background: #f8f9ff;
+    border-bottom: 2px solid #e9ecf5;
   }
 
-  .ac-table th {
-    padding: 12px 20px;
+  .complaints-table th {
+    padding: 13px 14px;
+    text-align: left;
     font-size: 11px;
     font-weight: 700;
+    color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: 0.7px;
-    color: var(--rera-navy);
-    text-align: left;
+    letter-spacing: 0.6px;
     white-space: nowrap;
   }
 
-  .ac-table tbody tr {
+  .complaints-table tbody tr {
     border-bottom: 1px solid #f3f4f6;
-    cursor: pointer;
     transition: background 0.15s;
   }
 
-  .ac-table tbody tr:last-child {
+  .complaints-table tbody tr:hover {
+    background: #f8f9ff;
+  }
+
+  .complaints-table tbody tr:last-child {
     border-bottom: none;
   }
 
-  .ac-table tbody tr:hover {
-    background: var(--rera-navy-light);
-  }
-
-  .ac-table td {
-    padding: 14px 20px;
-    font-size: 14px;
+  .complaints-table td {
+    padding: 13px 14px;
+    font-size: 13.5px;
     color: #374151;
     vertical-align: middle;
   }
 
-  .ac-id-pill {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    background: var(--rera-navy-light);
-    color: var(--rera-navy);
-    padding: 3px 10px;
-    border-radius: 6px;
-    display: inline-block;
-    border: 1px solid rgba(27,58,107,0.12);
-  }
-
-  .ac-subject {
-    font-weight: 500;
-    color: #1a1d23;
-    max-width: 320px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .complaint-id {
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    color: #3b5bdb;
+    font-weight: 700;
     white-space: nowrap;
   }
 
-  .ac-date {
-    font-family: 'DM Mono', monospace;
+  .subject-text {
+    font-weight: 500;
+    color: #111827;
+  }
+
+  .form-type-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+
+  .form-type-m {
+    background: #eff2ff;
+    color: #3b5bdb;
+    border: 1px solid #c5cff7;
+  }
+
+  .form-type-n {
+    background: #fdf4ff;
+    color: #7c3aed;
+    border: 1px solid #ddd6fe;
+  }
+
+  .reg-no-text {
+    color: #374151;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .date-text {
+    color: #6b7280;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .reject-reason {
     font-size: 12px;
-    color: #9ca3af;
+    color: #f04438;
+    font-style: italic;
+    max-width: 150px;
+    word-break: break-word;
   }
 
-  .ac-arrow {
+  .no-data {
     color: #d1d5db;
-    transition: color 0.15s, transform 0.15s;
+    font-size: 13px;
   }
 
-  .ac-table tbody tr:hover .ac-arrow {
-    color: var(--rera-gold);
-    transform: translateX(3px);
+  /* ── Status Badge ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
   }
 
-  .ac-empty {
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-pending .badge-dot { background: #f59e0b; }
+
+  .badge-open { background: #dbeafe; color: #1e40af; }
+  .badge-open .badge-dot { background: #3b82f6; }
+
+  .badge-close { background: #d1fae5; color: #065f46; }
+  .badge-close .badge-dot { background: #12b76a; }
+
+  .badge-reject { background: #fee2e2; color: #991b1b; }
+  .badge-reject .badge-dot { background: #f04438; }
+
+  /* ── View Button ── */
+  .btn-view {
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    background: #eff2ff;
+    color: #3b5bdb;
+  }
+
+  .btn-view:hover {
+    background: #3b5bdb;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(59,91,219,0.3);
+  }
+
+  /* ── Empty ── */
+  .empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #9ca3af;
-  }
-
-  .ac-empty-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
-  }
-
-  .ac-empty p {
     font-size: 15px;
-    font-weight: 500;
-    color: #6b7280;
   }
 
-  .ac-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    gap: 8px;
-  }
-
-  .ac-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--rera-navy);
-    animation: ac-bounce 0.8s ease-in-out infinite;
-  }
-  .ac-dot:nth-child(2) { animation-delay: 0.15s; background: var(--rera-gold); }
-  .ac-dot:nth-child(3) { animation-delay: 0.3s; background: var(--rera-navy); }
-
-  @keyframes ac-bounce {
-    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; }
-  }
-
-  .ac-status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 6px;
-    background: #22c55e;
-  }
+  .empty-icon { font-size: 38px; margin-bottom: 10px; }
 `;
 
-const formatDate = (str) => {
-  if (!str) return "—";
-  const d = new Date(str);
-  if (isNaN(d)) return str;
-  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+// "close" from API → shown as "Closed" (not "Accepted")
+const STATUS_MAP = {
+  open:    { label: "Open",    cls: "badge-open"    },
+  pending: { label: "Pending", cls: "badge-pending" },
+  close:   { label: "Closed",  cls: "badge-close"   },
+  reject:  { label: "Rejected",cls: "badge-reject"  },
 };
+
+const STAT_CARDS = [
+  { key: "all",     label: "Total",    dotCls: "dot-total",   cardCls: "stat-total",   activeCls: "active-total"   },
+  { key: "open",    label: "Open",     dotCls: "dot-open",    cardCls: "stat-open",    activeCls: "active-open"    },
+  { key: "pending", label: "Pending",  dotCls: "dot-pending", cardCls: "stat-pending", activeCls: "active-pending" },
+  { key: "close",   label: "Closed",   dotCls: "dot-close",   cardCls: "stat-close",   activeCls: "active-close"   },
+  { key: "reject",  label: "Rejected", dotCls: "dot-reject",  cardCls: "stat-reject",  activeCls: "active-reject"  },
+];
 
 const AdminComplaints = () => {
   const [complaints, setComplaints] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [formFilter, setFormFilter] = useState("all");
+  const [activeCard, setActiveCard] = useState("all");
   const navigate = useNavigate();
 
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
   useEffect(() => {
-    fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/list")
+    fetch("https://7zgjxth4-5055.inc1.devtunnels.ms/api/complint/list")
       .then((res) => res.json())
-      .then((data) => {
-        setComplaints(data.data || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+      .then((data) => setComplaints(data.data || []))
+      .catch((err) => console.log(err));
   }, []);
 
-  const filtered = complaints.filter((c) =>
-    !search ||
-    c.complaint_id?.toString().includes(search) ||
-    c.subject?.toLowerCase().includes(search.toLowerCase())
-  );
+  const counts = {
+    all:     complaints.length,
+    open:    complaints.filter((c) => c.status === "open").length,
+    pending: complaints.filter((c) => c.status === "pending").length,
+    close:   complaints.filter((c) => c.status === "close").length,
+    reject:  complaints.filter((c) => c.status === "reject").length,
+  };
+
+  const handleStatClick = (key) => {
+    setActiveCard(key);
+    setStatusFilter(key);
+  };
+
+  const filtered = complaints.filter((c) => {
+    const q = search.toLowerCase();
+    const matchSearch =
+      String(c.complaint_id).includes(q) ||
+      (c.subject || "").toLowerCase().includes(q) ||
+      (c.complaint_register_no || "").toLowerCase().includes(q);
+    const matchStatus = statusFilter === "all" || c.status === statusFilter;
+    const matchForm   = formFilter === "all" || c.application_type === formFilter;
+    return matchSearch && matchStatus && matchForm;
+  });
 
   return (
     <>
       <style>{styles}</style>
-      <div className="ac-root">
-        <div className="ac-header">
-          <div>
-            <div className="ac-title">Complaints</div>
-            <div className="ac-subtitle">Manage and review all submitted complaints</div>
-          </div>
-          {!loading && (
-            <span className="ac-badge">{complaints.length} Total</span>
-          )}
-        </div>
+      <div className="admin-layout">
+        <AdminSidebar sidebarOpen={sidebarOpen} />
+        <div className={`admin-main ${sidebarOpen ? "" : "admin-main-full"}`}>
+          <TopHeader toggleSidebar={toggleSidebar} />
+          <div className="admin-dashboard-content complaints-wrapper">
 
-        <div className="ac-card">
-          <div className="ac-search-bar">
-            <svg className="ac-search-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              className="ac-search-input"
-              placeholder="Search by ID or subject…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+            <h2 className="complaints-page-title">Admin Complaints</h2>
 
-          {loading ? (
-            <div className="ac-loading">
-              <div className="ac-dot" /><div className="ac-dot" /><div className="ac-dot" />
+            {/* ── Clickable Stat Cards ── */}
+            <div className="complaints-stats">
+              {STAT_CARDS.map(({ key, label, dotCls, cardCls, activeCls }) => (
+                <div
+                  key={key}
+                  className={`stat-card ${cardCls} ${activeCard === key ? activeCls : ""}`}
+                  onClick={() => handleStatClick(key)}
+                  title={`Show ${label}`}
+                >
+                  <span className="stat-label">
+                    <span className={`stat-dot ${dotCls}`} />
+                    {label}
+                  </span>
+                  <span className="stat-value">{counts[key]}</span>
+                </div>
+              ))}
             </div>
-          ) : filtered.length === 0 ? (
-            <div className="ac-empty">
-              <div className="ac-empty-icon">📭</div>
-              <p>{search ? "No complaints match your search" : "No complaints found"}</p>
+
+            {/* ── Toolbar ── */}
+            <div className="complaints-toolbar">
+              <div className="search-box">
+                <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search ID, subject, register no..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+
+              <select
+                className="filter-select"
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setActiveCard(e.target.value);
+                }}
+              >
+                <option value="all">All Status</option>
+                <option value="open">Open</option>
+                <option value="pending">Pending</option>
+                <option value="close">Closed</option>
+                <option value="reject">Rejected</option>
+              </select>
+
+              <select
+                className="filter-select"
+                value={formFilter}
+                onChange={(e) => setFormFilter(e.target.value)}
+              >
+                <option value="all">All Forms</option>
+                <option value="FORM_M">FORM_M</option>
+                <option value="FORM_N">FORM_N</option>
+              </select>
             </div>
-          ) : (
-            <div className="ac-table-wrap">
-              <table className="ac-table">
+
+            <div className="results-count">
+              Showing <strong>{filtered.length}</strong> of <strong>{complaints.length}</strong> complaints
+            </div>
+
+            {/* ── Table ── */}
+            <div className="table-container">
+              <table className="complaints-table">
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>Complaint ID</th>
                     <th>Subject</th>
-                    <th>Date Filed</th>
+                    <th>Form Type</th>
+                    <th>Register No.</th>
+                    <th>Date</th>
                     <th>Status</th>
-                    <th></th>
+                    <th>Reject Reason</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.complaint_id}
-                      onClick={() => navigate(`/admin/complaint/${item.complaint_id}`)}
-                    >
-                      <td>
-                        <span className="ac-id-pill">#{item.complaint_id}</span>
-                      </td>
-                      <td>
-                        <div className="ac-subject">{item.subject || "—"}</div>
-                      </td>
-                      <td>
-                        <span className="ac-date">{formatDate(item.created_at)}</span>
-                      </td>
-                      <td>
-                        <span className="ac-status-dot" />
-                        <span style={{ fontSize: "13px", color: "#374151" }}>Open</span>
-                      </td>
-                      <td>
-                        <svg className="ac-arrow" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path d="M9 18l6-6-6-6"/>
-                        </svg>
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan="9">
+                        <div className="empty-state">
+                          <div className="empty-icon">📭</div>
+                          No complaints found
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    filtered.map((item, idx) => {
+                      const s = STATUS_MAP[item.status] || { label: item.status, cls: "badge-pending" };
+                      const isFormM = item.application_type === "FORM_M";
+                      return (
+                        <tr key={item.complaint_id}>
+                          <td style={{ color: "#9ca3af", fontWeight: 600 }}>{idx + 1}</td>
+                          <td>
+                            <span className="complaint-id">{item.complaint_id}</span>
+                          </td>
+                          <td>
+                            <span className="subject-text">{item.subject || "—"}</span>
+                          </td>
+                          <td>
+                            <span className={`form-type-badge ${isFormM ? "form-type-m" : "form-type-n"}`}>
+                              {item.application_type}
+                            </span>
+                          </td>
+                          <td>
+                            {item.complaint_register_no
+                              ? <span className="reg-no-text">{item.complaint_register_no}</span>
+                              : <span className="no-data">—</span>}
+                          </td>
+                          <td>
+                            <span className="date-text">{item.created_at}</span>
+                          </td>
+                          <td>
+                            <span className={`status-badge ${s.cls}`}>
+                              <span className="badge-dot" />
+                              {s.label}
+                            </span>
+                          </td>
+                          <td>
+                            {item.status === "reject"
+                              ? <span className="reject-reason">{item.reject_reson || "No reason provided"}</span>
+                              : <span className="no-data">—</span>}
+                          </td>
+                          <td>
+                            <button
+                              className="btn-view"
+                              onClick={() => navigate(`/admin/complaint/${item.complaint_id}`)}
+                            >
+                              View →
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
+
+          </div>
         </div>
       </div>
     </>

@@ -10,7 +10,7 @@ const isValidIFSC = (v) => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v);
 const isValidGST = (v) =>
   /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}Z[A-Z0-9]{1}$/.test(v);
 const isValidLicenseNumber = (v) =>
-  /^[A-Za-z0-9]{6,20}$/.test(v); 
+  /^[A-Za-z0-9]{6,20}$/.test(v);
 // min 6, max 20, only alphanumeric
 
 const isValidWebsite = (v) =>
@@ -29,30 +29,30 @@ const isValidAadhaar = (v) => v.length === 12;
 
 const handleValidatedChange = (e, onChange) => {
   let { name, value } = e.target;
-  
+
 
   if (name === "emailId") {
-  value = value
-    .replace(/[^a-zA-Z0-9@._-]/g, "") // allow only valid chars
-    .replace(/@{2,}/g, "@")           // only one @ continuously
-    .toLowerCase();
-}
-if (name === "websiteUrl") {
-  value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
-}
+    value = value
+      .replace(/[^a-zA-Z0-9@._-]/g, "") // allow only valid chars
+      .replace(/@{2,}/g, "@")           // only one @ continuously
+      .toLowerCase();
+  }
+  if (name === "websiteUrl") {
+    value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
+  }
 
   // TEXT ONLY
- // TEXT ONLY
-if (
-  name === "promoterName" ||
-  name === "fatherName" ||
-  name === "accountHolderName" ||
-  name === "bankState" ||        // ✅ ADD THIS
-  name === "bankName" ||         // ✅ ADD THIS
-  name === "branchName"          // ✅ ADD THIS
-) {
-  value = onlyText(value);
-}
+  // TEXT ONLY
+  if (
+    name === "promoterName" ||
+    name === "fatherName" ||
+    name === "accountHolderName" ||
+    name === "bankState" ||        // ✅ ADD THIS
+    name === "bankName" ||         // ✅ ADD THIS
+    name === "branchName"          // ✅ ADD THIS
+  ) {
+    value = onlyText(value);
+  }
 
   // DIGITS ONLY
   if (
@@ -65,24 +65,24 @@ if (
 
   // LENGTH LIMITS
   if (name === "accountNo") {
-  value = onlyDigits(value).slice(0, 18); // you can change 18 → any limit
-}
+    value = onlyDigits(value).slice(0, 18); // you can change 18 → any limit
+  }
   if (name === "mobileNumber") value = value.slice(0, 10);
   if (name === "aadhaarNumber") value = value.slice(0, 12);
-  
+
 
   // UPPERCASE
   if (name === "ifscCode") {
-  value = value
-    .replace(/[^A-Za-z0-9]/g, "") // ❌ remove special chars
-    .toUpperCase()
-    .slice(0, 11); // ✅ IFSC max length = 11
-}
-if (name === "gstNumber") {
-  value = value.replace(/[^A-Za-z0-9]/g, "") // ❌ remove special chars
-               .toUpperCase()
-               .slice(0, 15);
-}
+    value = value
+      .replace(/[^A-Za-z0-9]/g, "") // ❌ remove special chars
+      .toUpperCase()
+      .slice(0, 11); // ✅ IFSC max length = 11
+  }
+  if (name === "gstNumber") {
+    value = value.replace(/[^A-Za-z0-9]/g, "") // ❌ remove special chars
+      .toUpperCase()
+      .slice(0, 15);
+  } 
 
   // ALPHANUMERIC
   if (name === "licenseNumber") value = alphaNumeric(value);
@@ -98,46 +98,66 @@ export const PROMOTER_DETAILS_SUBSECTIONS = [
     id: "bank_account",
     label: "Bank Account Details",
     fields: [
-      { name: "bankState",         label: "Bank State",          type: "text"  },
-      { name: "bankName",          label: "Bank Name",           type: "text"  },
-      { name: "branchName",        label: "Branch Name",         type: "text"  },
-      { name: "accountNo",         label: "Account Number",      type: "text"  },
-      { name: "accountHolderName", label: "Account Holder Name", type: "text"  },
-      { name: "ifscCode",          label: "IFSC Code",           type: "text"  },
+      { name: "bankState", label: "Bank State", type: "text" },
+      { name: "bankName", label: "Bank Name", type: "text" },
+      { name: "branchName", label: "Branch Name", type: "text" },
+      { name: "accountNo", label: "Account Number", type: "text" },
+      { name: "accountHolderName", label: "Account Holder Name", type: "text" },
+      { name: "ifscCode", label: "IFSC Code", type: "text" },
     ],
   },
   {
     id: "promoter_personal",
     label: "Promoter Personal Details",
     fields: [
-      { name: "promoterName",   label: "Name",            type: "text"  },
-      { name: "fatherName",     label: "Father's Name",   type: "text"  },
-      { name: "mobileNumber",   label: "Mobile Number",   type: "text"  },
-      { name: "emailId",        label: "Email ID",        type: "email" },
-      { name: "aadhaarNumber",  label: "Aadhaar Number",  type: "text"  },
-      { name: "gstNumber",      label: "GST Number",      type: "text"  },
-      { name: "licenseNumber",  label: "License Number",  type: "text"  },
-      { name: "licenseDate",    label: "License Date",    type: "date"  },
-      { name: "websiteUrl",     label: "Website URL",     type: "text"  },
+      { name: "promoterName", label: "Name", type: "text" },
+      { name: "fatherName", label: "Father's Name", type: "text" },
+      { name: "mobileNumber", label: "Mobile Number", type: "text" },
+      { name: "emailId", label: "Email ID", type: "email" },
+      { name: "aadhaarNumber", label: "Aadhaar Number", type: "text" },
+      { name: "gstNumber", label: "GST Number", type: "text" },
+      { name: "licenseNumber", label: "License Number", type: "text" },
+      { name: "licenseDate", label: "License Date", type: "date" },
+      { name: "websiteUrl", label: "Website URL", type: "text" },
+      { name: "panNumber", label: "PAN Card Number", type: "text" },
+      { name: "landlineNumber", label: "Landline Number", type: "text" },
+      { name: "stateUt", label: "State/UT", type: "text" },
+      { name: "district", label: "District", type: "text" },
+      { name: "typeOfPromoter", label: "Type Of Promoter", type: "text" },
+      { name: "organisationName", label: "Organisation Name", type: "text" },
+      { name: "cinNumber", label: "CIN / Registration Number", type: "text" },
+      { name: "registrationDate", label: "Registration Date", type: "date" },
+      { name: "authSignatoryMobile", label: "Authorized Signatory Mobile", type: "text" },
+      { name: "authSignatoryEmail", label: "Authorized Signatory Email", type: "email" },
+      { name: "panCardDocument", label: "PAN Card Document", type: "text" },
+      { name: "aadhaarDocument", label: "Aadhaar Document", type: "text" },
+      { name: "licenseCertificate", label: "License Certificate", type: "text" },
+      { name: "gstDocument", label: "GST Document", type: "text" },
+      { name: "photo", label: "Photo", type: "text" },
+      { name: "incomeTaxYear1", label: "Income Tax Year 1", type: "text" },
+      { name: "incomeTaxYear2", label: "Income Tax Year 2", type: "text" },
+      { name: "incomeTaxYear3", label: "Income Tax Year 3", type: "text" },
+      { name: "consolidatedItReturns", label: "Consolidated IT Returns", type: "text" },
+      { name: "balanceSheet", label: "Balance Sheet", type: "text" },
     ],
   },
- 
+
 ];
 
 // ─── SHARED STYLES ────────────────────────────────────────────────────────────
 const S = {
-  wrap:     { padding: "20px" },
-  grid2:    { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
-  grid3:    { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" },
-  label:    { display: "block", fontWeight: "600", marginBottom: "5px", fontSize: "13px", color: "#1a2535" },
-  input:    { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box" },
+  wrap: { padding: "20px" },
+  grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
+  grid3: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" },
+  label: { display: "block", fontWeight: "600", marginBottom: "5px", fontSize: "13px", color: "#1a2535" },
+  input: { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box" },
   textarea: { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box", resize: "vertical" },
-  select:   { padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", width: "320px" },
-  btn:      { padding: "10px 24px", background: "#0f3460", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600", fontSize: "13px" },
-  btnDel:   { background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" },
-  table:    { width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "13px" },
-  th:       { background: "#0f3460", color: "#fff", padding: "10px 12px", border: "1px solid #ccd4e0", textAlign: "left", fontWeight: "600" },
-  td:       { padding: "9px 12px", border: "1px solid #e2e8f2", verticalAlign: "top" },
+  select: { padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", width: "320px" },
+  btn: { padding: "10px 24px", background: "#0f3460", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600", fontSize: "13px" },
+  btnDel: { background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" },
+  table: { width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "13px" },
+  th: { background: "#0f3460", color: "#fff", padding: "10px 12px", border: "1px solid #ccd4e0", textAlign: "left", fontWeight: "600" },
+  td: { padding: "9px 12px", border: "1px solid #e2e8f2", verticalAlign: "top" },
 };
 
 function FieldWrap({ label, children }) {
@@ -164,22 +184,22 @@ function BankAccountSection({ fields, formValues, onChange }) {
         ))}
         <FieldWrap label="Upload Document">
           <input
-  style={S.input}
-  type="file"
-  name="bankDocument"
-  accept="application/pdf"
-  onChange={(e) => {
-    const file = e.target.files[0];
+            style={S.input}
+            type="file"
+            name="bankDocument"
+            accept="application/pdf"
+            onChange={(e) => {
+              const file = e.target.files[0];
 
-    if (file && file.type !== "application/pdf") {
-      alert("Only PDF files are allowed");
-      e.target.value = ""; // reset
-      return;
-    }
+              if (file && file.type !== "application/pdf") {
+                alert("Only PDF files are allowed");
+                e.target.value = ""; // reset
+                return;
+              }
 
-    onChange(e);
-  }}
-/>
+              onChange(e);
+            }}
+          />
         </FieldWrap>
       </div>
     </div>
@@ -189,12 +209,12 @@ function BankAccountSection({ fields, formValues, onChange }) {
 // ─── PROMOTER PERSONAL SECTION ────────────────────────────────────────────────
 // ✅ Old Value = normal editable input (no hardcode)
 // ✅ Description field added in form and table
-function PromoterPersonalSection({ fields, onChange, tableData, setTableData }) {
+function PromoterPersonalSection({ fields, onChange, tableData, setTableData, previewData }) {
   const [selectedField, setSelectedField] = useState("");
-  const [oldValue,      setOldValue]      = useState("");
-  const [newValue,      setNewValue]      = useState("");
-  const [description,   setDescription]  = useState("");
-  const [documentFile,  setDocumentFile]  = useState(null);
+  const [oldValue, setOldValue] = useState("");
+  const [newValue, setNewValue] = useState("");
+  const [description, setDescription] = useState("");
+  const [documentFile, setDocumentFile] = useState(null);
 
   const selectedFieldData = fields.find((f) => f.name === selectedField);
 
@@ -208,69 +228,69 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData }) 
       alert("Please select a field.");
       return;
     }
-   if (!newValue.trim()) {
-  alert("Please enter the new value.");
-  return;
-}
+    if (!newValue.trim()) {
+      alert("Please enter the new value.");
+      return;
+    }
 
-// ✅ ADD HERE
+    // ✅ ADD HERE
 
-if (selectedField === "ifscCode") {
-  if (newValue.length !== 11) {
-    alert("IFSC Code must be exactly 11 characters");
-    return;
-  }
+    if (selectedField === "ifscCode") {
+      if (newValue.length !== 11) {
+        alert("IFSC Code must be exactly 11 characters");
+        return;
+      }
 
-  if (!isValidIFSC(newValue)) {
-    alert("Invalid IFSC format (e.g., SBIN0001234)");
-    return;
-  }
-}
+      if (!isValidIFSC(newValue)) {
+        alert("Invalid IFSC format (e.g., SBIN0001234)");
+        return;
+      }
+    }
 
-if (selectedField === "gstNumber") {
-  if (newValue.length !== 15) {
-    alert("GST Number must be 15 characters");
-    return;
-  }
+    if (selectedField === "gstNumber") {
+      if (newValue.length !== 15) {
+        alert("GST Number must be 15 characters");
+        return;
+      }
 
-  if (!isValidGST(newValue)) {
-    alert("Invalid GST format");
-    return;
-  }
-}
+      if (!isValidGST(newValue)) {
+        alert("Invalid GST format");
+        return;
+      }
+    }
 
-if (selectedField === "emailId") {
-  if (!isValidEmail(newValue)) {
-    alert("Enter a valid Email ID (must include @ and .)");
-    return;
-  }
-}
-if (selectedField === "licenseNumber") {
-  if (!isValidLicenseNumber(newValue)) {
-    alert("License Number must be 6-20 characters (only letters & numbers)");
-    return;
-  }
-}
-if (selectedField === "licenseDate") {
-  if (!isValidPastDate(newValue)) {
-    alert("License Date cannot be future date");
-    return;
-  }
-}
-if (selectedField === "websiteUrl") {
-  if (!isValidWebsite(newValue)) {
-    alert("Enter a valid Website URL (e.g., https://example.com)");
-    return;
-  }
-}
+    if (selectedField === "emailId") {
+      if (!isValidEmail(newValue)) {
+        alert("Enter a valid Email ID (must include @ and .)");
+        return;
+      }
+    }
+    if (selectedField === "licenseNumber") {
+      if (!isValidLicenseNumber(newValue)) {
+        alert("License Number must be 6-20 characters (only letters & numbers)");
+        return;
+      }
+    }
+    if (selectedField === "licenseDate") {
+      if (!isValidPastDate(newValue)) {
+        alert("License Date cannot be future date");
+        return;
+      }
+    }
+    if (selectedField === "websiteUrl") {
+      if (!isValidWebsite(newValue)) {
+        alert("Enter a valid Website URL (e.g., https://example.com)");
+        return;
+      }
+    }
 
     const newRow = {
-      field:       selectedFieldData.label,
-      fieldName:   selectedField,
-      oldValue:    oldValue.trim() || "-",
-      newValue:    newValue.trim(),
+      field: selectedFieldData.label,
+      fieldName: selectedField,
+      oldValue: oldValue.trim() || "-",
+      newValue: newValue.trim(),
       description: description.trim() || "-",
-      document:    documentFile?.name || "-",
+      document: documentFile?.name || "-",
       documentUrl: documentFile ? URL.createObjectURL(documentFile) : "",
     };
 
@@ -280,7 +300,7 @@ if (selectedField === "websiteUrl") {
     // notify parent so canGoStep3 enables & review page gets data
     onChange({
       target: {
-        name:  "__promoter_personal_rows",
+        name: "__promoter_personal_rows",
         value: JSON.stringify(updated),
       },
     });
@@ -293,7 +313,7 @@ if (selectedField === "websiteUrl") {
     setTableData(updated);
     onChange({
       target: {
-        name:  "__promoter_personal_rows",
+        name: "__promoter_personal_rows",
         value: updated.length ? JSON.stringify(updated) : "",
       },
     });
@@ -309,8 +329,46 @@ if (selectedField === "websiteUrl") {
           style={S.select}
           value={selectedField}
           onChange={(e) => {
-            setSelectedField(e.target.value);
-            setOldValue(""); setNewValue("");
+            const val = e.target.value;
+            setSelectedField(val);
+
+            let currentOld = "";
+            if (previewData && previewData.promoter_details) {
+              const p = previewData.promoter_details;
+              if (val === "promoterName") currentOld = p["Promoter Name"] || "";
+              else if (val === "fatherName") currentOld = p["Father Name"] || "";
+              else if (val === "mobileNumber") currentOld = p["Mobile Number"] || "";
+              else if (val === "emailId") currentOld = p["Email"] || "";
+              else if (val === "aadhaarNumber") currentOld = p["Aadhaar"] || "";
+              else if (val === "gstNumber") currentOld = p["GST Number"] || "";
+              else if (val === "licenseNumber") currentOld = p["License Number"] || "";
+              else if (val === "licenseDate") {
+                currentOld = p["License Issued Date"] || "";
+                if (currentOld) currentOld = currentOld.split("T")[0];
+              }
+              else if (val === "websiteUrl") currentOld = p["Promoter Website"] || "";
+              else if (val === "panNumber") currentOld = p["PAN"] || "";
+              else if (val === "landlineNumber") currentOld = p["Landline"] || "";
+              else if (val === "stateUt") currentOld = p["State"] || "";
+              else if (val === "district") currentOld = p["District"] || "";
+              else if (val === "typeOfPromoter") currentOld = p["Type Of Promoter"] || "";
+              else if (val === "organisationName") currentOld = p["Organisation Name"] || "";
+              else if (val === "cinNumber") currentOld = p["CIN Number"] || "";
+              else if (val === "registrationDate") currentOld = p["Registration Date"] ? p["Registration Date"].split("T")[0] : "";
+              else if (val === "authSignatoryMobile") currentOld = p["Authorized Signatory Mobile"] || "";
+              else if (val === "authSignatoryEmail") currentOld = p["Authorized Signatory Email"] || "";
+              else if (val === "panCardDocument") currentOld = p["PAN Card Document"] || "";
+              else if (val === "aadhaarDocument") currentOld = p["Aadhaar Document"] || "";
+              else if (val === "licenseCertificate") currentOld = p["License Certificate"] || "";
+              else if (val === "gstDocument") currentOld = p["GST Document"] || "";
+              else if (val === "photo") currentOld = p["Photo"] || "";
+              else if (val === "incomeTaxYear1") currentOld = p["Income Tax Year 1"] || "";
+              else if (val === "incomeTaxYear2") currentOld = p["Income Tax Year 2"] || "";
+              else if (val === "incomeTaxYear3") currentOld = p["Income Tax Year 3"] || "";
+              else if (val === "consolidatedItReturns") currentOld = p["Consolidated IT Returns"] || "";
+              else if (val === "balanceSheet") currentOld = p["Balance Sheet"] || "";
+            }
+            setOldValue(currentOld); setNewValue("");
           }}
         >
           <option value="">-- Select Field --</option>
@@ -327,35 +385,11 @@ if (selectedField === "websiteUrl") {
           <div style={{ ...S.grid2, marginBottom: "16px" }}>
             <FieldWrap label={`Old ${selectedFieldData.label}`}>
               <input
-                style={S.input}
+                style={{ ...S.input, backgroundColor: "#f0f0f0" }}
                 type={selectedFieldData.type}
                 value={oldValue}
-                onChange={(e) => {
-  let value = e.target.value;
-
-  if (selectedField === "promoterName" || selectedField === "fatherName")
-    value = onlyText(value);
-
-  if (selectedField === "mobileNumber")
-    value = onlyDigits(value).slice(0, 10);
-
-  if (selectedField === "aadhaarNumber")
-    value = onlyDigits(value).slice(0, 12);
-
-if (selectedField === "emailId") {
-  value = value
-    .replace(/[^a-zA-Z0-9@._-]/g, "")
-    .replace(/@{2,}/g, "@")
-    .toLowerCase();
-}
-if (selectedField === "licenseNumber")
-  value = alphaNumeric(value);
-if (selectedField === "websiteUrl")
-  value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
-
-  setOldValue(value);
-}}
-                placeholder={`Enter current ${selectedFieldData.label}`}
+                readOnly
+                placeholder={`Current ${selectedFieldData.label} unavailable`}
               />
             </FieldWrap>
             <FieldWrap label={`New ${selectedFieldData.label}`}>
@@ -364,29 +398,29 @@ if (selectedField === "websiteUrl")
                 type={selectedFieldData.type}
                 value={newValue}
                 onChange={(e) => {
-  let value = e.target.value;
+                  let value = e.target.value;
 
-  if (selectedField === "promoterName" || selectedField === "fatherName")
-    value = onlyText(value);
+                  if (selectedField === "promoterName" || selectedField === "fatherName")
+                    value = onlyText(value);
 
-  if (selectedField === "mobileNumber")
-    value = onlyDigits(value).slice(0, 10);
+                  if (selectedField === "mobileNumber")
+                    value = onlyDigits(value).slice(0, 10);
 
-  if (selectedField === "aadhaarNumber")
-    value = onlyDigits(value).slice(0, 12);
- if (selectedField === "emailId") {
-  value = value
-    .replace(/[^a-zA-Z0-9@._-]/g, "")
-    .replace(/@{2,}/g, "@")
-    .toLowerCase();
-}
-if (selectedField === "licenseNumber")
-  value = alphaNumeric(value);
-if (selectedField === "websiteUrl")
-  value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
+                  if (selectedField === "aadhaarNumber")
+                    value = onlyDigits(value).slice(0, 12);
+                  if (selectedField === "emailId") {
+                    value = value
+                      .replace(/[^a-zA-Z0-9@._-]/g, "")
+                      .replace(/@{2,}/g, "@")
+                      .toLowerCase();
+                  }
+                  if (selectedField === "licenseNumber")
+                    value = alphaNumeric(value);
+                  if (selectedField === "websiteUrl")
+                    value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
 
-  setNewValue(value);
-}}
+                  setNewValue(value);
+                }}
                 placeholder={`Enter new ${selectedFieldData.label}`}
               />
             </FieldWrap>
@@ -405,21 +439,21 @@ if (selectedField === "websiteUrl")
             </FieldWrap>
             <FieldWrap label="Upload Supporting Document">
               <input
-  style={S.input}
-  type="file"
-  accept="application/pdf"
-  onChange={(e) => {
-    const file = e.target.files[0];
+                style={S.input}
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => {
+                  const file = e.target.files[0];
 
-    if (file && file.type !== "application/pdf") {
-      alert("Only PDF files are allowed");
-      e.target.value = ""; // reset
-      return;
-    }
+                  if (file && file.type !== "application/pdf") {
+                    alert("Only PDF files are allowed");
+                    e.target.value = ""; // reset
+                    return;
+                  }
 
-    setDocumentFile(file);
-  }}
-/>
+                  setDocumentFile(file);
+                }}
+              />
               {documentFile && (
                 <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
                   📄 {documentFile.name}
@@ -458,7 +492,7 @@ if (selectedField === "websiteUrl")
                 <td style={S.td}>
                   {row.documentUrl
                     ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                        style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
+                      style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
                     : "-"}
                 </td>
                 <td style={{ ...S.td, textAlign: "center" }}>
@@ -518,15 +552,16 @@ function Promoter2Section({ fields, formValues, onChange }) {
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
 export default function PromoterDetailsForm({
   subSectionId,
-  formValues    = {},
-  onChange      = () => {},
-  tableStore    = {},
-  setTableStore = () => {},
+  formValues = {},
+  onChange = () => { },
+  tableStore = {},
+  setTableStore = () => { },
+  previewData
 }) {
   const subSection = PROMOTER_DETAILS_SUBSECTIONS.find((s) => s.id === subSectionId);
   if (!subSection) return null;
 
-  const tableData    = tableStore[subSectionId] || [];
+  const tableData = tableStore[subSectionId] || [];
   const setTableData = (rows) => setTableStore((prev) => ({ ...prev, [subSectionId]: rows }));
 
   switch (subSectionId) {
@@ -539,9 +574,10 @@ export default function PromoterDetailsForm({
           onChange={onChange}
           tableData={tableData}
           setTableData={setTableData}
+          previewData={previewData}
         />
       );
-    
+
     default:
       return null;
   }

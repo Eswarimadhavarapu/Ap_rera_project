@@ -135,3 +135,17 @@ def update_renewal_status(renewal_id, status, remarks):
     })
 
     db.session.commit()
+def get_all_projects():
+    query = text("""
+        SELECT 
+            id,
+            application_no,
+            promoter_type,
+            pan_number,
+            bank_name,
+            status
+        FROM project_registrations
+        ORDER BY id DESC
+    """)
+    
+    return db.session.execute(query).mappings().all()

@@ -197,6 +197,7 @@ from flask_cors import CORS
 from app.config import Config
 from app.models.database import db 
 from app.utils.request_logger import log_request
+from app.jobs.payment_reminder import start_scheduler
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -241,6 +242,7 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+    start_scheduler(app)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

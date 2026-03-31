@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "../styles/ChangeRequest.css";
 import { useLocation } from "react-router-dom";
-import { submitChangeRequest } from "../api/api";
-import ProjectDetailsForm,     { PROJECT_DETAILS_SUBSECTIONS     } from "../components/changeRequest/ProjectDetailsForm";
-import PromoterDetailsForm,    { PROMOTER_DETAILS_SUBSECTIONS    } from "../components/changeRequest/PromoterDetailsForm";
+import { submitChangeRequest, apiPost, apiGet } from "../api/api";
+import ProjectDetailsForm, { PROJECT_DETAILS_SUBSECTIONS } from "../components/changeRequest/ProjectDetailsForm";
+import PromoterDetailsForm, { PROMOTER_DETAILS_SUBSECTIONS } from "../components/changeRequest/PromoterDetailsForm";
 import DevelopmentDetailsForm, { DEVELOPMENT_DETAILS_SUBSECTIONS } from "../components/changeRequest/DevelopmentDetailsForm";
-import AssociateDetailsForm,   { ASSOCIATE_DETAILS_SUBSECTIONS   } from "../components/changeRequest/AssociateDetailsForm";
-import UploadDocumentsForm,    { UPLOAD_DOCUMENTS_SUBSECTIONS    } from "../components/changeRequest/UploadDocumentsForm";
-import ReviewSubmit                                                from "../components/changeRequest/ReviewSubmit";
-import CRPaymentPage                                              from "../components/changeRequest/CRPaymentPage";
+import AssociateDetailsForm, { ASSOCIATE_DETAILS_SUBSECTIONS } from "../components/changeRequest/AssociateDetailsForm";
+import UploadDocumentsForm, { UPLOAD_DOCUMENTS_SUBSECTIONS } from "../components/changeRequest/UploadDocumentsForm";
+import ReviewSubmit from "../components/changeRequest/ReviewSubmit";
+import CRPaymentPage from "../components/changeRequest/CRPaymentPage";
 
 
 const ALL_SUBSECTION_CONFIGS = [
@@ -20,52 +20,90 @@ const ALL_SUBSECTION_CONFIGS = [
 ];
 
 const SECTIONS_CONFIG = [
-  { id: "project_details",     label: "Project Details",     icon: "🏗️", subSections: PROJECT_DETAILS_SUBSECTIONS,     component: "project"     },
-  { id: "promoter_details",    label: "Promoter Details",    icon: "👤", subSections: PROMOTER_DETAILS_SUBSECTIONS,    component: "promoter"    },
+  { id: "project_details", label: "Project Details", icon: "🏗️", subSections: PROJECT_DETAILS_SUBSECTIONS, component: "project" },
+  { id: "promoter_details", label: "Promoter Details", icon: "👤", subSections: PROMOTER_DETAILS_SUBSECTIONS, component: "promoter" },
   { id: "development_details", label: "Development Details", icon: "🏢", subSections: DEVELOPMENT_DETAILS_SUBSECTIONS, component: "development" },
-  { id: "associate_details",   label: "Associate Details",   icon: "🤝", subSections: ASSOCIATE_DETAILS_SUBSECTIONS,   component: "associate"   },
-  { id: "upload_documents",    label: "Upload Documents",    icon: "📎", subSections: UPLOAD_DOCUMENTS_SUBSECTIONS,    component: "upload"      },
+  { id: "associate_details", label: "Associate Details", icon: "🤝", subSections: ASSOCIATE_DETAILS_SUBSECTIONS, component: "associate" },
+  { id: "upload_documents", label: "Upload Documents", icon: "📎", subSections: UPLOAD_DOCUMENTS_SUBSECTIONS, component: "upload" },
 ];
 
 const genRef = () => "CR" + Date.now().toString().slice(-8);
 
 // ─── ACCORDION BODY ───────────────────────────────────────────────────────────
-function AccordionFormBody({ panel, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore }) {
-  const props = { subSectionId: panel.subId, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore };
+function AccordionFormBody({ panel, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData }) {
+  const props = { subSectionId: panel.subId, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData };
   switch (panel.componentType) {
-    case "project":     return <ProjectDetailsForm     {...props} />;
-    case "promoter":    return <PromoterDetailsForm    {...props} />;
+    case "project": return <ProjectDetailsForm     {...props} />;
+    case "promoter": return <PromoterDetailsForm    {...props} />;
     case "development": return <DevelopmentDetailsForm {...props} />;
-    case "associate":   return <AssociateDetailsForm   {...props} />;
-    case "upload":      return <UploadDocumentsForm    {...props} />;
-    default:            return null;
+    case "associate": return <AssociateDetailsForm   {...props} />;
+    case "upload": return <UploadDocumentsForm    {...props} />;
+    default: return null;
   }
 }
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function ChangeRequest() {
-  const location  = useLocation();
-    console.log("FULL LOCATION DATA 👉", location);        // ✅ add this
-  console.log("STATE DATA 👉", location.state);          // ✅ add this
-
-  const project   = location.state?.projectData || {};
-  const panNumber = location.state?.panNumber   || "";
+  const location = useLocation();
+  console.log("FULL LOCATION DATA 👉", location);        
+  console.log("STATE DATA 👉", location.state);          
+  const project = location.state?.projectData || {};
+  const panNumber = location.state?.panNumber || "";
+  const email = location.state?.email || project.email || "";
 
   const APP_INFO = {
     applicationNumber: project.application_number || "-",
-    panNumber:         panNumber                  || "-",
-    projectName:       project.project_name       || "-",
-    applicantName:     project.name        || "-",
+    panNumber: panNumber || "-",
+    projectName: project.project_name || "-",
+    applicantName: project.name || "-",
+    email: email || "-",
   };
 
-  const [step,          setStep]          = useState(1);
-  const [refNo]                           = useState(genRef);
-  const [reason,        setReason]        = useState("");
-  const [selected,      setSelected]      = useState({});
-  const [formValues,    setFormValues]    = useState({});
-  const [docFiles,      setDocFiles]      = useState({});
+  const [step, setStep] = useState(1);
+  const [refNo] = useState(genRef);
+  const [reason, setReason] = useState("");
+  const [selected, setSelected] = useState({});
+  const [formValues, setFormValues] = useState({});
+  const [docFiles, setDocFiles] = useState({});
   const [openAccordion, setOpenAccordion] = useState(null);
-  const [tableStore,    setTableStore]    = useState({});
+  const [tableStore, setTableStore] = useState({});
+  const [previewData, setPreviewData] = useState(null);
+  const [loadingPreview, setLoadingPreview] = useState(true);
+
+  React.useEffect(() => {
+    const fetchPreviewData = async () => {
+      if (!APP_INFO.applicationNumber || !APP_INFO.panNumber) {
+        setLoadingPreview(false);
+        return;
+      }
+      try {
+        setLoadingPreview(true);
+        let res = await apiPost("/api/project/preview", {
+          applicationNumber: APP_INFO.applicationNumber,
+          panNumber: APP_INFO.panNumber
+        });
+
+        if (!res?.data?.project_details) {
+          res = await apiPost("/api/othertheninduvidual/project/preview", {
+            applicationNumber: APP_INFO.applicationNumber,
+            panNumber: APP_INFO.panNumber
+          });
+        }
+
+        const pd = res?.data || {};
+
+        const devRes = await apiGet(`/api/development-details?application_number=${APP_INFO.applicationNumber}&pan_number=${APP_INFO.panNumber}`);
+        pd.development_details_full = devRes?.data || {};
+
+        setPreviewData(pd);
+      } catch (err) {
+        console.error("Failed to fetch preview data", err);
+      } finally {
+        setLoadingPreview(false);
+      }
+    };
+    fetchPreviewData();
+  }, [APP_INFO.applicationNumber, APP_INFO.panNumber]);
 
   // ── SELECTION HELPERS ────────────────────────────────────────────────────
   const toggleSection = (sectionId) => {
@@ -98,15 +136,15 @@ export default function ChangeRequest() {
       section.subSections.forEach((sub) => {
         if (isSubSelected(section.id, sub.id)) {
           panels.push({
-            key:           `${section.id}__${sub.id}`,
-            sectionId:     section.id,
-            subId:         sub.id,
-            sectionLabel:  section.label,
-            subLabel:      sub.label,
+            key: `${section.id}__${sub.id}`,
+            sectionId: section.id,
+            subId: sub.id,
+            sectionLabel: section.label,
+            subLabel: sub.label,
             componentType: section.component,
-            isDoc:         !!sub.isDocumentSection,
-            fields:        sub.fields    || [],
-            documents:     sub.documents || [],
+            isDoc: !!sub.isDocumentSection,
+            fields: sub.fields || [],
+            documents: sub.documents || [],
           });
         }
       });
@@ -114,7 +152,7 @@ export default function ChangeRequest() {
     return panels;
   };
 
-  const activePanels  = getActivePanels();
+  const activePanels = getActivePanels();
   const totalSelected = activePanels.length;
 
   // ── HANDLERS ────────────────────────────────────────────────────────────
@@ -166,53 +204,69 @@ export default function ChangeRequest() {
 
         stored.forEach((r) => {
           if (r.workType !== undefined) {
-            rows.push({ subLabel: panel.subLabel, field: r.workType, oldValue: r.previousPercent || "-",
-              newValue: r.changePercent || "-", description: r.description || "-", document: "-", documentUrl: "", type: "field" });
+            rows.push({
+              subLabel: panel.subLabel, field: r.workType, oldValue: r.previousPercent || "-",
+              newValue: r.changePercent || "-", description: r.description || "-", document: "-", documentUrl: "", type: "field"
+            });
           } else if (r.docType !== undefined) {
-            rows.push({ subLabel: panel.subLabel, field: r.docType, oldValue: r.oldFileName || "-",
+            rows.push({
+              subLabel: panel.subLabel, field: r.docType, oldValue: r.oldFileName || "-",
               newValue: r.newFileName || "-", description: r.description || "-",
               document: r.newFileName || r.oldFileName || "-", documentUrl: r.newFileUrl || r.oldFileUrl || "", type: "file",
-              _oldFile: r._oldFile, _newFile: r._newFile });
+              _oldFile: r._oldFile, _newFile: r._newFile
+            });
           } else if (r.field !== undefined && r.newValue !== undefined && r.fileUrl !== undefined) {
-            rows.push({ subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
+            rows.push({
+              subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
               newValue: r.newValue, description: r.description || "-", document: r.fileName || "-",
-              documentUrl: r.fileUrl || "", type: "field" });
+              documentUrl: r.fileUrl || "", type: "field"
+            });
           } else if (r.field !== undefined && r.newValue !== undefined) {
-            rows.push({ subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
+            rows.push({
+              subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
               newValue: r.newValue, description: r.description || "-", document: r.document || "-",
-              documentUrl: r.documentUrl || "", type: "field", _proofFile: r._proofFile });
+              documentUrl: r.documentUrl || "", type: "field", _proofFile: r._proofFile
+            });
           } else if (r.__mode === "new") {
             const fieldHeaders = subFields.map((f) => ({ label: f.label, value: r[f.name] || "-" }));
-            rows.push({ subLabel: panel.subLabel, field: "__associate_new__", fieldHeaders,
+            rows.push({
+              subLabel: panel.subLabel, field: "__associate_new__", fieldHeaders,
               description: r.description || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
-              type: "associate_new" });
+              type: "associate_new"
+            });
           } else if (r.__mode === "old") {
             const selField = subFields.find((f) => f.name === r.__selField);
-            rows.push({ subLabel: panel.subLabel, field: selField?.label || r.__selField,
+            rows.push({
+              subLabel: panel.subLabel, field: selField?.label || r.__selField,
               oldValue: r[`old_${r.__selField}`] || "-", newValue: r[r.__selField] || "-",
               description: r.description || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
-              type: "associate_old" });
+              type: "associate_old"
+            });
           }
         });
         return;
       }
 
       const subConfig = ALL_SUBSECTION_CONFIGS.find((s) => s.id === panel.subId);
-      const fields    = subConfig?.fields || panel.fields || [];
+      const fields = subConfig?.fields || panel.fields || [];
 
       fields.forEach((f) => {
         const val = formValues[f.name];
         if (val && val !== "") {
-          rows.push({ subLabel: panel.subLabel, field: f.label, oldValue: "-", newValue: val,
+          rows.push({
+            subLabel: panel.subLabel, field: f.label, oldValue: "-", newValue: val,
             description: "-", document: "-", documentUrl: "",
-            type: panel.subId === "bank_account" ? "bank" : "field" });
+            type: panel.subId === "bank_account" ? "bank" : "field"
+          });
         }
       });
 
       if (panel.subId === "bank_account" && formValues["bankDocument"]) {
-        rows.push({ subLabel: panel.subLabel, field: "Upload Document", oldValue: "-",
+        rows.push({
+          subLabel: panel.subLabel, field: "Upload Document", oldValue: "-",
           newValue: formValues["bankDocument"], description: "-", document: formValues["bankDocument"],
-          documentUrl: "", type: "bank" });
+          documentUrl: "", type: "bank"
+        });
       }
     });
 
@@ -221,25 +275,26 @@ export default function ChangeRequest() {
 
   const reviewRows = buildReviewRows();
 
-  
+
   const handlePaymentAndSubmit = async (gateway) => {
     const fd = new FormData();
 
     // ── 1. TOP-LEVEL FIELDS ──────────────────────────────────────────────
-    fd.append("reference_no",           refNo);
-    fd.append("application_number",     APP_INFO.applicationNumber);
-    fd.append("pan_number",             APP_INFO.panNumber);
-    fd.append("project_name",           APP_INFO.projectName);
-    fd.append("applicant_name",         APP_INFO.applicantName);
-    fd.append("payment_gateway",        gateway);
+    fd.append("reference_no", refNo);
+    fd.append("application_number", APP_INFO.applicationNumber);
+    fd.append("pan_number", APP_INFO.panNumber);
+    fd.append("project_name", APP_INFO.projectName);
+    fd.append("applicant_name", APP_INFO.applicantName);
+    fd.append("email", APP_INFO.email);
+    fd.append("payment_gateway", gateway);
     fd.append("payment_transaction_id", "TXN" + Date.now().toString().slice(-8));
-    fd.append("payment_status",         "SUCCESS");
+    fd.append("payment_status", "SUCCESS");
 
     // ── 2. BUILD CHANGES ARRAY + COLLECT FILES ───────────────────────────
     // changes[] — JSON array (no File objects inside, files go separately)
     // fileMap   — indexed files: old_file_0, new_file_0, proof_file_0, ...
     const changesArray = [];
-    const fileMap      = {};  // { "old_file_0": File, "new_file_0": File, ... }
+    const fileMap = {};  // { "old_file_0": File, "new_file_0": File, ... }
 
     let idx = 0;  // global change index matching backend loop
 
@@ -249,14 +304,14 @@ export default function ChangeRequest() {
       if (panel.isDoc) {
         Object.entries(docFiles).forEach(([, file]) => {
           changesArray.push({
-            section:     panel.sectionId,
-            subsection:  panel.subId,
-            field_name:  "document",
-            old_value:   null,
-            new_value:   file.name,
+            section: panel.sectionId,
+            subsection: panel.subId,
+            field_name: "document",
+            old_value: null,
+            new_value: file.name,
             description: "Document upload",
             change_mode: "file",
-            data_json:   null,
+            data_json: null,
           });
           fileMap[`new_file_${idx}`] = file;
           idx++;
@@ -272,75 +327,75 @@ export default function ChangeRequest() {
           // External development work (workType)
           if (r.workType !== undefined) {
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  r.workType,
-              old_value:   r.previousPercent || null,
-              new_value:   r.changePercent   || null,
-              description: r.description    || null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: r.workType,
+              old_value: r.previousPercent || null,
+              new_value: r.changePercent || null,
+              description: r.description || null,
               change_mode: "update",
-              data_json:   null,
+              data_json: null,
             });
             idx++;
 
-          // Upload Documents (docType — has old file + new file)
+            // Upload Documents (docType — has old file + new file)
           } else if (r.docType !== undefined) {
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  r.docType,
-              old_value:   r.oldFileName || null,
-              new_value:   r.newFileName || null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: r.docType,
+              old_value: r.oldFileName || null,
+              new_value: r.newFileName || null,
               description: r.description || null,
               change_mode: "file",
-              data_json:   null,
+              data_json: null,
             });
             if (r._oldFile) fileMap[`old_file_${idx}`] = r._oldFile;
             if (r._newFile) fileMap[`new_file_${idx}`] = r._newFile;
             idx++;
 
-          // Consultancy (field / oldValue / newValue / fileUrl — has file)
+            // Consultancy (field / oldValue / newValue / fileUrl — has file)
           } else if (r.field !== undefined && r.fileUrl !== undefined) {
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  r.field,
-              old_value:   r.oldValue    || null,
-              new_value:   r.newValue    || null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: r.field,
+              old_value: r.oldValue || null,
+              new_value: r.newValue || null,
               description: r.description || null,
               change_mode: "old",
-              data_json:   null,
+              data_json: null,
             });
             if (r._file) fileMap[`proof_file_${idx}`] = r._file;
             idx++;
 
-          // Promoter personal (field / oldValue / newValue / documentUrl — has proof file)
+            // Promoter personal (field / oldValue / newValue / documentUrl — has proof file)
           } else if (r.field !== undefined && r.newValue !== undefined) {
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  r.fieldName || r.field,
-              old_value:   r.oldValue    || null,
-              new_value:   r.newValue    || null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: r.fieldName || r.field,
+              old_value: r.oldValue || null,
+              new_value: r.newValue || null,
               description: r.description || null,
               change_mode: "old",
-              data_json:   null,
+              data_json: null,
             });
             if (r._proofFile) fileMap[`proof_file_${idx}`] = r._proofFile;
             idx++;
 
-          // Associate NEW mode
+            // Associate NEW mode
           } else if (r.__mode === "new") {
             const subConfig = ALL_SUBSECTION_CONFIGS.find((s) => s.id === panel.subId);
             const subFields = subConfig?.fields || panel.fields || [];
             const data_json = {};
             subFields.forEach((f) => { if (r[f.name]) data_json[f.name] = r[f.name]; });
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  null,
-              old_value:   null,
-              new_value:   null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: null,
+              old_value: null,
+              new_value: null,
               description: r.description || null,
               change_mode: "new",
               data_json,
@@ -348,17 +403,17 @@ export default function ChangeRequest() {
             if (r._file) fileMap[`proof_file_${idx}`] = r._file;
             idx++;
 
-          // Associate OLD mode (edit one field)
+            // Associate OLD mode (edit one field)
           } else if (r.__mode === "old") {
             changesArray.push({
-              section:     panel.sectionId,
-              subsection:  panel.subId,
-              field_name:  r.__selField   || null,
-              old_value:   r[`old_${r.__selField}`] || null,
-              new_value:   r[r.__selField]           || null,
-              description: r.description             || null,
+              section: panel.sectionId,
+              subsection: panel.subId,
+              field_name: r.__selField || null,
+              old_value: r[`old_${r.__selField}`] || null,
+              new_value: r[r.__selField] || null,
+              description: r.description || null,
               change_mode: "old",
-              data_json:   null,
+              data_json: null,
             });
             if (r._file) fileMap[`proof_file_${idx}`] = r._file;
             idx++;
@@ -369,7 +424,7 @@ export default function ChangeRequest() {
 
       // ── Regular form fields (bank account, simple sections) ──────────
       const subConfig = ALL_SUBSECTION_CONFIGS.find((s) => s.id === panel.subId);
-      const fields    = subConfig?.fields || panel.fields || [];
+      const fields = subConfig?.fields || panel.fields || [];
 
       const filledFields = fields.filter((f) => formValues[f.name] && formValues[f.name] !== "");
       if (filledFields.length > 0) {
@@ -378,14 +433,14 @@ export default function ChangeRequest() {
         filledFields.forEach((f) => { data_json[f.name] = formValues[f.name]; });
 
         changesArray.push({
-          section:     panel.sectionId,
-          subsection:  panel.subId,
-          field_name:  filledFields.length === 1 ? filledFields[0].name : null,
-          old_value:   null,
-          new_value:   filledFields.length === 1 ? formValues[filledFields[0].name] : null,
+          section: panel.sectionId,
+          subsection: panel.subId,
+          field_name: filledFields.length === 1 ? filledFields[0].name : null,
+          old_value: null,
+          new_value: filledFields.length === 1 ? formValues[filledFields[0].name] : null,
           description: null,
           change_mode: "update",
-          data_json:   filledFields.length > 1 ? data_json : null,
+          data_json: filledFields.length > 1 ? data_json : null,
         });
 
         // Bank document file
@@ -405,13 +460,13 @@ export default function ChangeRequest() {
     });
 
     // ── 5. POST TO API ────────────────────────────────────────────────────
- try {
-  const res = await submitChangeRequest(fd); 
-  return res;
-} catch (error) {
-  console.error("Change Request Error:", error);
-  throw error;
-}
+    try {
+      const res = await submitChangeRequest(fd);
+      return res;
+    } catch (error) {
+      console.error("Change Request Error:", error);
+      throw error;
+    }
   };
 
   // ────────────────────────────────────────────────────────────────────────
@@ -438,10 +493,10 @@ export default function ChangeRequest() {
           <div className="cr-app-info-grid">
             {[
               // { label: "Application No", value: APP_INFO.applicationNumber },
-            // { label: "PAN Number",     value: APP_INFO.panNumber         },
-              { label: "Project Name",   value: APP_INFO.projectName       },
-              { label: "promoter Name", value: APP_INFO.applicantName     },
-             // { label: "Reference No",   value: refNo                      },
+              // { label: "PAN Number",     value: APP_INFO.panNumber         },
+              { label: "Project Name", value: APP_INFO.projectName },
+              { label: "promoter Name", value: APP_INFO.applicantName },
+              // { label: "Reference No",   value: refNo                      },
               { label: "Status", value: step === 5 ? "✔ Submitted" : "Draft", className: step === 5 ? "success" : "accent" },
             ].map((item) => (
               <div className="cr-app-info-item" key={item.label}>
@@ -478,8 +533,8 @@ export default function ChangeRequest() {
 
               <div className="cr-section-list">
                 {SECTIONS_CONFIG.map((section) => {
-                  const isChecked      = isSectionSelected(section.id);
-                  const subListOpen    = selected[section.id] !== undefined;
+                  const isChecked = isSectionSelected(section.id);
+                  const subListOpen = selected[section.id] !== undefined;
                   const selectedSubCnt = Object.values(selected[section.id] || {}).filter(Boolean).length;
                   return (
                     <div key={section.id} className={`cr-section-row ${isChecked ? "selected" : ""}`}>
@@ -526,6 +581,7 @@ export default function ChangeRequest() {
                                       onDocFile={handleDocFile}
                                       tableStore={tableStore}
                                       setTableStore={setTableStore}
+                                      previewData={previewData}
                                     />
                                   </div>
                                 )}
@@ -569,12 +625,12 @@ export default function ChangeRequest() {
 
               <div className="cr-accordion-list">
                 {activePanels.map((panel) => {
-                  const isOpen      = openAccordion === panel.key;
+                  const isOpen = openAccordion === panel.key;
                   const filledCount = !panel.isDoc
                     ? panel.fields.filter((f) => formValues[f.name] && formValues[f.name] !== "").length
                     : 0;
-                  const tableCount  = tableStore[panel.subId]?.length || 0;
-                  const docCount    = panel.isDoc ? Object.keys(docFiles).length : 0;
+                  const tableCount = tableStore[panel.subId]?.length || 0;
+                  const docCount = panel.isDoc ? Object.keys(docFiles).length : 0;
 
                   return (
                     <div key={panel.key} className={`cr-accordion ${isOpen ? "open" : ""}`}>
@@ -605,6 +661,7 @@ export default function ChangeRequest() {
                             onDocFile={handleDocFile}
                             tableStore={tableStore}
                             setTableStore={setTableStore}
+                            previewData={previewData}
                           />
                         </div>
                       )}
@@ -637,10 +694,10 @@ export default function ChangeRequest() {
           <CRPaymentPage
             appInfo={{
               applicationNumber: APP_INFO.applicationNumber,
-              panNumber:         APP_INFO.panNumber,
-              projectName:       APP_INFO.projectName,
-              applicantName:     APP_INFO.applicantName,
-              refNo:             refNo,
+              panNumber: APP_INFO.panNumber,
+              projectName: APP_INFO.projectName,
+              applicantName: APP_INFO.applicantName,
+              refNo: refNo,
             }}
             onBack={() => setStep(3)}
             onSuccess={() => setStep(5)}

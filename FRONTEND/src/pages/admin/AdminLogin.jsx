@@ -11,8 +11,11 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); // 👈 ADD THIS ABOVE
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
 
@@ -21,14 +24,13 @@ const AdminLogin = () => {
         password
       });
 
-      // save admin info
       localStorage.setItem("admin", JSON.stringify(data.admin));
 
-      navigate("/admin-dashboard");
-
+      navigate("/admin-dashboard", { replace: true });
     } catch (error) {
-      console.error(error);
-      alert(error.message || "Login Failed");
+      alert("Login Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,8 +68,8 @@ const AdminLogin = () => {
               />
             </div>
 
-            <button className="admin-login-btn" type="submit">
-              Login
+            <button className="admin-login-btn" type="submit" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </button>
 
           </form>

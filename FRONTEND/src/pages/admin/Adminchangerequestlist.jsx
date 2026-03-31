@@ -7,16 +7,18 @@ import "../../styles/admin/adminChangeRequest.css";
 
 // ─── STATUS CONFIG ────────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
-  SUBMITTED: { label: "Submitted",  color: "#1e6bbf", bg: "#e8f0fb" },
-  APPROVED:  { label: "Approved",   color: "#1a7a3c", bg: "#e6f6ec" },
-  REJECTED:  { label: "Rejected",   color: "#c0200f", bg: "#fdecea" },
-  PENDING:   { label: "Pending",    color: "#b07800", bg: "#fff8e1" },
+  ALL: { label: "All", color: "#333333", bg: "#f0f0f0" },
+  SUBMITTED: { label: "Pending", color: "#b07800", bg: "#fff8e1" },
+  APPROVED: { label: "Approved", color: "#1a7a3c", bg: "#e6f6ec" },
+  REJECTED: { label: "Rejected", color: "#c0200f", bg: "#fdecea" },
+  PENDING: { label: "Pending", color: "#b07800", bg: "#fff8e1" },
 };
 
 const TABS = [
-  { key: "SUBMITTED", label: "Submitted" },
-  { key: "APPROVED",  label: "Approved"  },
-  { key: "REJECTED",  label: "Rejected"  },
+  { key: "ALL", label: "All" },
+  { key: "SUBMITTED", label: "Pending" },
+  { key: "APPROVED", label: "Approved" },
+  { key: "REJECTED", label: "Rejected" },
 ];
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
@@ -24,29 +26,31 @@ const AdminChangeRequestList = () => {
   const navigate = useNavigate();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab,   setActiveTab]   = useState("SUBMITTED");
-  const [requests,    setRequests]    = useState([]);
-  const [stats,       setStats]       = useState({ SUBMITTED: 0, APPROVED: 0, REJECTED: 0 });
-  const [loading,     setLoading]     = useState(false);
-  const [search,      setSearch]      = useState("");
+  const [activeTab, setActiveTab] = useState("ALL");
+  const [requests, setRequests] = useState([]);
+  const [stats, setStats] = useState({ ALL: 0, SUBMITTED: 0, APPROVED: 0, REJECTED: 0 });
+  const [loading, setLoading] = useState(false);
+  const [searchField, setSearchField] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => { loadRequests(activeTab); }, [activeTab]);
-  useEffect(() => { loadStats(); },            []);
+  useEffect(() => { loadStats(); }, []);
 
   const loadStats = async () => {
     try {
-      // Load all statuses to get counts
-      const [sub, app, rej] = await Promise.allSettled([
+      const [all, sub, app, rej] = await Promise.allSettled([
+        apiGet("/api/change-request/status/ALL"),
         apiGet("/api/change-request/status/SUBMITTED"),
         apiGet("/api/change-request/status/APPROVED"),
         apiGet("/api/change-request/status/REJECTED"),
       ]);
       setStats({
+        ALL: all.status === "fulfilled" ? (all.value?.count || 0) : 0,
         SUBMITTED: sub.status === "fulfilled" ? (sub.value?.count || 0) : 0,
-        APPROVED:  app.status === "fulfilled" ? (app.value?.count || 0) : 0,
-        REJECTED:  rej.status === "fulfilled" ? (rej.value?.count || 0) : 0,
+        APPROVED: app.status === "fulfilled" ? (app.value?.count || 0) : 0,
+        REJECTED: rej.status === "fulfilled" ? (rej.value?.count || 0) : 0,
       });
-    } catch (_) {}
+    } catch (_) { }
   };
 
   const loadRequests = async (status) => {
@@ -63,11 +67,18 @@ const AdminChangeRequestList = () => {
   };
 
   const filtered = requests.filter((item) => {
-    const q = search.toLowerCase();
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+
+    if (searchField === "reference_no") return item.request?.reference_no?.toLowerCase().includes(q);
+    if (searchField === "application_number") return item.request?.application_number?.toLowerCase().includes(q);
+    if (searchField === "project_name") return item.request?.project_name?.toLowerCase().includes(q);
+    if (searchField === "applicant_name") return item.request?.applicant_name?.toLowerCase().includes(q);
+
     return (
-      item.request?.reference_no?.toLowerCase().includes(q)        ||
-      item.request?.applicant_name?.toLowerCase().includes(q)      ||
-      item.request?.application_number?.toLowerCase().includes(q)  ||
+      item.request?.reference_no?.toLowerCase().includes(q) ||
+      item.request?.applicant_name?.toLowerCase().includes(q) ||
+      item.request?.application_number?.toLowerCase().includes(q) ||
       item.request?.project_name?.toLowerCase().includes(q)
     );
   });
@@ -141,15 +152,29 @@ const AdminChangeRequestList = () => {
           </div>
 
           {/* ── SEARCH ── */}
-          <div className="acr-toolbar">
+          <div className="acr-toolbar" style={{ display: "flex", gap: "12px", padding: "16px", background: "#fff", borderRadius: "10px", marginBottom: "20px", border: "1px solid #e2e8f0", alignItems: "stretch" }}>
+            <select
+              style={{ flex: "0 0 220px", height: "42px", padding: "0 14px", borderRadius: "8px", border: "1px solid #ccd4e0", outline: "none", backgroundColor: "#f8fafd", fontSize: "13px", fontWeight: "600", color: "#0f3460", cursor: "pointer" }}
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+            >
+              <option value="all">All Fields</option>
+              <option value="reference_no">Reference No</option>
+              <option value="application_number">Application No</option>
+              <option value="project_name">Project Name</option>
+              <option value="applicant_name">Applicant Name</option>
+            </select>
+
             <input
               className="acr-search"
+              style={{ margin: 0, flex: "1 1 auto", minWidth: 0, height: "42px", padding: "0 16px", boxSizing: "border-box" }}
               type="text"
-              placeholder="🔍  Search by name, reference no, application no, project..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              placeholder={`Type here to search...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className="acr-refresh-btn" onClick={() => loadRequests(activeTab)}>
+
+            <button className="acr-refresh-btn" style={{ margin: 0, padding: "0 24px", flex: "0 0 auto", height: "42px", display: "flex", alignItems: "center", gap: "8px" }} onClick={() => loadRequests(activeTab)}>
               ↻ Refresh
             </button>
           </div>

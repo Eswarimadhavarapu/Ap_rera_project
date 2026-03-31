@@ -36,6 +36,13 @@ AP RERA
     server.sendmail(from_email, to_email, msg.as_string())
     server.quit()
 
+def send_change_request_approval_email(to_email, application_no):
+    send_email(
+        to_email,
+        "Change Request Approved",
+        f"Your change request for application {application_no} has been approved."
+    )    
+
     #code addded by ravi 
 
 def send_approval_email(to_email, application_no, expiry_date, certificate_path):
@@ -143,46 +150,140 @@ AP RERA
     server.login(smtp_user, smtp_password)
     server.sendmail(from_email, to_email, msg.as_string())
     server.quit()
+    
+    
+    
+def send_project_approval_email(to_email, application_no, project_name, certificate_path):
 
-def send_change_request_approval_email(email, ref_no, changes):
+    try:
 
-    smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT"))
-    smtp_user = os.getenv("SMTP_USER")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    from_email = os.getenv("FROM_EMAIL")
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(os.getenv("SMTP_PORT"))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_password = os.getenv("SMTP_PASSWORD")
+        from_email = os.getenv("FROM_EMAIL")
 
-    subject = f"Change Request Approved - {ref_no}"
+        subject = "AP RERA Project Approved"
 
-    change_text = ""
-    for i, c in enumerate(changes, 1):
-        change_text += f"""
-{i}. {c['field']}
-   Old: {c['old']}
-   New: {c['new']}
-"""
+        body = f"""
+Dear Applicant,
 
-    body = f"""
-Dear User,
+Your PROJECT REGISTRATION has been APPROVED.
 
-Your change request ({ref_no}) has been APPROVED.
+Application Number : {application_no}
+Project Name       : {project_name}
 
-Changed Details:
-{change_text}
+Please find your APPROVAL CERTIFICATE attached.
+
+Congratulations! Your project is now registered under AP RERA.
 
 Regards,
 AP RERA
 """
 
-    msg = MIMEMultipart()
-    msg["From"] = from_email
-    msg["To"] = email
-    msg["Subject"] = subject
+        msg = MIMEMultipart()
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
 
-    msg.attach(MIMEText(body, "plain"))
+        msg.attach(MIMEText(body, "plain"))
 
-    server = smtplib.SMTP(smtp_host, smtp_port)
-    server.starttls()
-    server.login(smtp_user, smtp_password)
-    server.sendmail(from_email, email, msg.as_string())
-    server.quit()
+        # ✅ Attach certificate
+        with open(certificate_path, "rb") as f:
+            part = MIMEApplication(f.read(), Name=os.path.basename(certificate_path))
+            part["Content-Disposition"] = f'attachment; filename="{os.path.basename(certificate_path)}"'
+            msg.attach(part)
+
+        print("Sending Project Approval Email...")
+
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+
+        print("PROJECT APPROVAL EMAIL SENT ✅")
+
+    except Exception as e:
+        print("PROJECT APPROVAL EMAIL ERROR:", str(e))
+        
+        
+
+
+def send_project_rejection_email(to_email, application_no, project_name, remarks):
+
+    try:
+
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(os.getenv("SMTP_PORT"))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_password = os.getenv("SMTP_PASSWORD")
+        from_email = os.getenv("FROM_EMAIL")
+
+        subject = "AP RERA Project Rejected"
+
+        body = f"""
+Dear Applicant,
+
+Your PROJECT REGISTRATION has been REJECTED.
+
+Application Number : {application_no}
+Project Name       : {project_name}
+
+Reason for Rejection:
+{remarks}
+
+Please review the remarks and re-apply after corrections.
+
+Regards,
+AP RERA
+"""
+
+        msg = MIMEMultipart()
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(body, "plain"))
+
+        print("Sending Project Rejection Email...")
+
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+
+        print("PROJECT REJECTION EMAIL SENT ❌")
+
+    except Exception as e:
+        print("PROJECT REJECTION EMAIL ERROR:", str(e))
+        
+def send_email(to_email, subject, body):
+
+    try:
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(os.getenv("SMTP_PORT"))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_password = os.getenv("SMTP_PASSWORD")
+        from_email = os.getenv("FROM_EMAIL")
+
+        msg = MIMEMultipart()
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(body, "plain"))
+
+        print("Sending reminder email...")
+
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+
+        print("✅ Reminder email sent")
+
+    except Exception as e:
+        print("❌ Reminder email error:", str(e))

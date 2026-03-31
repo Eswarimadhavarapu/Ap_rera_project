@@ -318,6 +318,7 @@ body {
    NAVBAR
 ===================================================== */
 .navbar {
+   width: 100%;
   background: linear-gradient(
     to right,
     #7b001c,
@@ -329,16 +330,20 @@ body {
 .nav-list {
   list-style: none;
   display: flex;
-  margin: 0;
-  padding: 0 30px;
+  justify-content: center;   /* ✅ center items */
+  align-items: center;
+
+  margin: 0 auto;            /* ✅ center container */
+  padding: 0 40px;           /* ✅ left & right spacing */
+  max-width: 1200px;         /* ✅ like your 4th image */
 }
 
 .nav-list > li {
   position: relative;
-  padding: 14px 16px;
+  padding: 10px 9px;
   color: #ffffff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   white-space: nowrap;
 
   display: flex;        /* ✅ ADD */

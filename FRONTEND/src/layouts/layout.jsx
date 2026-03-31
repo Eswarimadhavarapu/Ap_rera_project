@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
   return (
     <>
       <Navbar />
-      <main style={{ minHeight: "70vh" }}>{children}</main>
+      <main style={{ minHeight: "calc(105vh - 140px)" }}>{children}</main>
       <Footer/>
     </>
   );

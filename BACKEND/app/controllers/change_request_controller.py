@@ -163,7 +163,10 @@ def get_change_request(id):
 def get_change_requests_by_status(status):
 
     try:
-        requests = ProjectChangeRequest.query.filter_by(status=status).all()
+        if status.upper() == "ALL":
+            requests = ProjectChangeRequest.query.all()
+        else:
+            requests = ProjectChangeRequest.query.filter_by(status=status).all()
 
         result = []
         for req in requests:

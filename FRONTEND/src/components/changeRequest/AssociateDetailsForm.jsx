@@ -10,6 +10,7 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "agentMobile", label: "Agent Mobile", type: "text" },
       { name: "agentEmail", label: "Agent Email", type: "email" },
       { name: "agentReraRegNo", label: "Agent RERA Reg No", type: "text" },
+      { name: "agentAddress", label: "Agent Address", type: "textarea" },
     ],
   },
   {
@@ -20,7 +21,13 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "architectMobile", label: "Architect Mobile", type: "text" },
       { name: "architectEmail", label: "Architect Email", type: "email" },
       { name: "architectLicense", label: "Architect License No", type: "text" },
-      { name: "architectAddress", label: "Architect Address", type: "textarea" },
+      { name: "architectAddress", label: "Address Line 1", type: "textarea" },
+      { name: "architectAddress2", label: "Address Line 2", type: "textarea" },
+      { name: "architectState", label: "State", type: "text" },
+      { name: "architectDistrict", label: "District", type: "text" },
+      { name: "architectPincode", label: "Pincode", type: "text" },
+      { name: "architectYearOfEstablishment", label: "Year of Establishment", type: "text" },
+      { name: "architectKeyProjects", label: "Key Projects", type: "text" },
     ],
   },
   {
@@ -32,6 +39,10 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "structEngineerEmail", label: "Engineer Email", type: "email" },
       { name: "structEngineerLicense", label: "Engineer License No", type: "text" },
       { name: "structEngineerAddress", label: "Engineer Address", type: "textarea" },
+      { name: "structEngineerState", label: "State/UT", type: "text" },
+      { name: "structEngineerDistrict", label: "District", type: "text" },
+      { name: "structEngineerPincode", label: "PIN Code", type: "text" },
+      { name: "structEngineerKeyProjects", label: "No. of Key Projects", type: "text" },
     ],
   },
   {
@@ -43,6 +54,11 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "contractorEmail", label: "Contractor Email", type: "email" },
       { name: "contractorLicense", label: "Contractor License No", type: "text" },
       { name: "contractorAddress", label: "Contractor Address", type: "textarea" },
+      { name: "contractorState", label: "State/UT", type: "text" },
+      { name: "contractorDistrict", label: "District", type: "text" },
+      { name: "contractorPincode", label: "PIN Code", type: "text" },
+      { name: "contractorYearOfEstablishment", label: "Year of Establishment", type: "text" },
+      { name: "contractorKeyProjects", label: "No. of Key Projects", type: "text" },
     ],
   },
   {
@@ -54,6 +70,8 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "caEmail", label: "CA Email", type: "email" },
       { name: "caMembership", label: "CA Membership No", type: "text" },
       { name: "caAddress", label: "CA Address", type: "textarea" },
+      { name: "caState", label: "State/UT", type: "text" },
+      { name: "caDistrict", label: "District", type: "text" },
     ],
   },
   {
@@ -65,6 +83,10 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
       { name: "projEngineerEmail", label: "Engineer Email", type: "email" },
       { name: "projEngineerLicense", label: "Engineer License No", type: "text" },
       { name: "projEngineerAddress", label: "Engineer Address", type: "textarea" },
+      { name: "projEngineerState", label: "State/UT", type: "text" },
+      { name: "projEngineerDistrict", label: "District", type: "text" },
+      { name: "projEngineerPincode", label: "PIN Code", type: "text" },
+      { name: "projEngineerKeyProjects", label: "No. of Key Projects", type: "text" },
     ],
   },
 ];
@@ -78,7 +100,7 @@ function FormField({ field, value, onChange, error }) {
       <label style={{ display: "block", fontWeight: "600", marginBottom: "6px" }}>
         {field.label}
       </label>
-      
+
       {field.type === "textarea" ? (
         <textarea
           name={field.name}
@@ -86,12 +108,12 @@ function FormField({ field, value, onChange, error }) {
           onChange={onChange}
           rows={3}
           placeholder={`Enter ${field.label.toLowerCase()}...`}
-          style={{ 
-            width: "100%", 
-            padding: "8px", 
-            border: error ? "1px solid #e74c3c" : "1px solid #ccc", 
-            borderRadius: "6px", 
-            boxSizing: "border-box" 
+          style={{
+            width: "100%",
+            padding: "8px",
+            border: error ? "1px solid #e74c3c" : "1px solid #ccc",
+            borderRadius: "6px",
+            boxSizing: "border-box"
           }}
         />
       ) : (
@@ -101,22 +123,22 @@ function FormField({ field, value, onChange, error }) {
           value={value || ""}
           onChange={onChange}
           placeholder={`Enter ${field.label.toLowerCase()}...`}
-          style={{ 
-            width: "100%", 
-            padding: "8px", 
-            border: error ? "1px solid #e74c3c" : "1px solid #ccc", 
-            borderRadius: "6px", 
-            boxSizing: "border-box" 
+          style={{
+            width: "100%",
+            padding: "8px",
+            border: error ? "1px solid #e74c3c" : "1px solid #ccc",
+            borderRadius: "6px",
+            boxSizing: "border-box"
           }}
         />
       )}
 
       {error && (
-        <div style={{ 
-          color: "#e74c3c", 
-          fontSize: "12px", 
-          marginTop: "4px", 
-          fontWeight: "500" 
+        <div style={{
+          color: "#e74c3c",
+          fontSize: "12px",
+          marginTop: "4px",
+          fontWeight: "500"
         }}>
           {error}
         </div>
@@ -126,27 +148,73 @@ function FormField({ field, value, onChange, error }) {
 }
 
 // ─── INNER COMPONENT ────────────────────────────────────────────────────────
-function AssociateSectionInner({ subSection, onChange, tableData, setTableData }) {
+function AssociateSectionInner({ subSection, onChange, tableData, setTableData, previewData }) {
   const [mainMode, setMainMode] = useState("");
   const [formValues, setFormValues] = useState({});
-  const [errors, setErrors] = useState({});           
+  const [errors, setErrors] = useState({});           // ← NEW: for inline errors
   const [selectedField, setSelectedField] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
-  const [fileError, setFileError] = useState("");     // ← NEW: File error state
+
+  const getOldValuesList = (fieldName) => {
+    if (!previewData || !previewData.associate_details) return [];
+    const ad = previewData.associate_details;
+    let list = [];
+    if (subSection.id === "project_agent" && ad.agents) {
+      if (fieldName.includes("Name")) list = ad.agents.map(x => x.name);
+      else if (fieldName.includes("Mobile")) list = ad.agents.map(x => x.mobile);
+      else if (fieldName.includes("Email")) list = ad.agents.map(x => x.email);
+      else if (fieldName.includes("RegNo")) list = ad.agents.map(x => x.registration_number);
+    } else if (subSection.id === "architects" && ad.architects) {
+      if (fieldName.includes("Name")) list = ad.architects.map(x => x.name);
+      else if (fieldName.includes("Mobile")) list = ad.architects.map(x => x.mobile);
+      else if (fieldName.includes("Email")) list = ad.architects.map(x => x.email);
+      else if (fieldName.includes("License") || fieldName.includes("Reg")) list = ad.architects.map(x => x.reg_number);
+      else if (fieldName.includes("Address")) list = ad.architects.map(x => x.address);
+    } else if (subSection.id === "structural_engineers" && ad.engineers) {
+      if (fieldName.includes("Name")) list = ad.engineers.map(x => x.name);
+      else if (fieldName.includes("Mobile")) list = ad.engineers.map(x => x.mobile);
+      else if (fieldName.includes("Email")) list = ad.engineers.map(x => x.email);
+      else if (fieldName.includes("License")) list = ad.engineers.map(x => x.licence_number);
+      else if (fieldName.includes("Address")) list = ad.engineers.map(x => x.address);
+    } else if (subSection.id === "contractors" && ad.contractors) {
+      if (fieldName.includes("Name")) list = ad.contractors.map(x => x.contractor_name);
+      else if (fieldName.includes("Mobile")) list = ad.contractors.map(x => x.mobile_number);
+      else if (fieldName.includes("Email")) list = ad.contractors.map(x => x.email_id);
+      else if (fieldName.includes("License") || fieldName.includes("Reg")) list = ad.contractors.map(x => x.reg_number);
+      else if (fieldName.includes("Address")) list = ad.contractors.map(x => x.address_line1);
+    } else if (subSection.id === "chartered_accountant" && ad.accountants) {
+      if (fieldName.includes("Name")) list = ad.accountants.map(x => x.name);
+      else if (fieldName.includes("Mobile")) list = ad.accountants.map(x => x.mobile);
+      else if (fieldName.includes("Email")) list = ad.accountants.map(x => x.email);
+      else if (fieldName.includes("Membership")) list = ad.accountants.map(x => x.icai_member_id);
+      else if (fieldName.includes("Address")) list = ad.accountants.map(x => x.address);
+    } else if (subSection.id === "project_engineers" && ad.project_engineers) {
+      if (fieldName.includes("Name")) list = ad.project_engineers.map(x => x.engineer_name);
+      else if (fieldName.includes("Mobile")) list = ad.project_engineers.map(x => x.mobile_number);
+      else if (fieldName.includes("Email")) list = ad.project_engineers.map(x => x.email_id);
+      else if (fieldName.includes("License")) list = ad.project_engineers.map(x => x.reg_number);
+      else if (fieldName.includes("Address")) list = ad.project_engineers.map(x => x.address_line1);
+    }
+    return list.filter(Boolean);
+  };
 
   const selectedFieldLabel =
     subSection.fields.find((f) => f.name === selectedField)?.label || "";
 
-  // Validation Function (మీ అసలు code)
+  // Validation Function
   const validateField = (name, value) => {
     let error = "";
 
+    // NAME VALIDATION
     if (name.toLowerCase().includes("name")) {
       const nameRegex = /^[A-Za-z\s]*$/;
-      if (value && !nameRegex.test(value)) error = "Only alphabets and spaces allowed";
+      if (value && !nameRegex.test(value)) {
+        error = "Only alphabets and spaces allowed";
+      }
     }
 
+    // MOBILE VALIDATION
     if (name.toLowerCase().includes("mobile")) {
       const mobileRegex = /^[0-9]*$/;
       if (value && !mobileRegex.test(value)) {
@@ -156,11 +224,15 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       }
     }
 
+    // EMAIL VALIDATION
     if (name.toLowerCase().includes("email")) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (value && !emailRegex.test(value)) error = "Please enter a valid email address";
+      if (value && !emailRegex.test(value)) {
+        error = "Please enter a valid email address";
+      }
     }
 
+    // LICENSE / MEMBERSHIP / REG NO VALIDATION
     if (
       name.toLowerCase().includes("license") ||
       name.toLowerCase().includes("membership") ||
@@ -168,7 +240,9 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       name.toLowerCase().includes("rera")
     ) {
       const alphaNumRegex = /^[A-Za-z0-9]*$/;
-      if (value && !alphaNumRegex.test(value)) error = "Only letters and numbers allowed";
+      if (value && !alphaNumRegex.test(value)) {
+        error = "Only letters and numbers allowed";
+      }
     }
 
     return error;
@@ -176,10 +250,19 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Real-time validation
     const fieldError = validateField(name, value);
 
-    setErrors((prev) => ({ ...prev, [name]: fieldError }));
-    setFormValues((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: fieldError,
+    }));
+
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // notify parent
@@ -192,29 +275,8 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
     });
   };
 
-  // PDF Validation Function
-  const isValidPDF = (file) => {
-    if (!file) return false;
-    return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-  };
-
-  // File Change Handler with Inline Error
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFileError("");   // Clear previous error
-
-    if (selectedFile) {
-      if (isValidPDF(selectedFile)) {
-        setFile(selectedFile);
-      } else {
-        setFile(null);
-        setFileError("This file should be in PDF format only");
-        e.target.value = "";   // Clear input
-      }
-    }
-  };
-
   const handleAdd = () => {
+    // Check for validation errors before adding
     let hasError = false;
     const newErrors = {};
 
@@ -231,12 +293,6 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       return;
     }
 
-    // File validation before adding
-    if (file && !isValidPDF(file)) {
-      setFileError("This file should be in PDF format only");
-      return;
-    }
-
     let newEntry = {};
     let hasValue = false;
 
@@ -247,6 +303,7 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       }
     });
 
+    // For OLD mode
     if (mainMode === "old" && selectedField) {
       const oldKey = `old_${selectedField}`;
       if (formValues[oldKey]) {
@@ -283,7 +340,6 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
     setFormValues({});
     setDescription("");
     setFile(null);
-    setFileError("");
     setErrors({});
     setSelectedField("");
   };
@@ -299,11 +355,37 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
       {/* NEW / OLD RADIO */}
       <div style={{ marginBottom: "20px", display: "flex", gap: "30px" }}>
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
-          <input type="radio" value="new" checked={mainMode === "new"} onChange={(e) => { setMainMode(e.target.value); setSelectedField(""); setFormValues({}); setDescription(""); setFile(null); setFileError(""); setErrors({}); }} style={{ marginRight: "6px" }} />
+          <input
+            type="radio"
+            value="new"
+            checked={mainMode === "new"}
+            onChange={(e) => {
+              setMainMode(e.target.value);
+              setSelectedField("");
+              setFormValues({});
+              setDescription("");
+              setFile(null);
+              setErrors({});
+            }}
+            style={{ marginRight: "6px" }}
+          />
           New
         </label>
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
-          <input type="radio" value="old" checked={mainMode === "old"} onChange={(e) => { setMainMode(e.target.value); setSelectedField(""); setFormValues({}); setDescription(""); setFile(null); setFileError(""); setErrors({}); }} style={{ marginRight: "6px" }} />
+          <input
+            type="radio"
+            value="old"
+            checked={mainMode === "old"}
+            onChange={(e) => {
+              setMainMode(e.target.value);
+              setSelectedField("");
+              setFormValues({});
+              setDescription("");
+              setFile(null);
+              setErrors({});
+            }}
+            style={{ marginRight: "6px" }}
+          />
           Existing
         </label>
       </div>
@@ -313,7 +395,13 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
         <>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
             {subSection.fields.map((field) => (
-              <FormField key={field.name} field={field} value={formValues[field.name]} onChange={handleChange} error={errors[field.name]} />
+              <FormField
+                key={field.name}
+                field={field}
+                value={formValues[field.name]}
+                onChange={handleChange}
+                error={errors[field.name]}
+              />
             ))}
           </div>
 
@@ -321,31 +409,23 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
           <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
             <div style={{ flex: 1 }}>
               <label style={{ fontWeight: "600" }}>Description</label>
-              <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }} />
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+              />
             </div>
             <div style={{ flex: 1 }}>
               <label style={{ fontWeight: "600" }}>Upload Document</label>
-              <input 
-                type="file" 
-                onChange={handleFileChange} 
-              />
+              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
               {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
-              
-              {/* ← NEW: Red error message below file input */}
-              {fileError && (
-                <div style={{ 
-                  color: "#e74c3c", 
-                  fontSize: "12px", 
-                  marginTop: "4px", 
-                  fontWeight: "500" 
-                }}>
-                  {fileError}
-                </div>
-              )}
             </div>
           </div>
 
-          <button onClick={handleAdd} style={{ padding: "8px 18px", background: "#1e4d8f", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}>
+          <button
+            onClick={handleAdd}
+            style={{ padding: "8px 18px", background: "#1e4d8f", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}
+          >
             Add
           </button>
         </>
@@ -356,23 +436,98 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
         <>
           <div style={{ marginBottom: "15px" }}>
             <label style={{ fontWeight: "600" }}>Select Existing</label>
-            <select value={selectedField} onChange={(e) => setSelectedField(e.target.value)} style={{ width: "250px", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginLeft: "12px" }}>
+            <select
+              value={selectedField}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedField(val);
+                const opts = getOldValuesList(val);
+                if (opts.length === 1) {
+                  setFormValues(prev => ({ ...prev, [`old_${val}`]: opts[0] }));
+                } else if (opts.length === 0 || opts.length > 1) {
+                  setFormValues(prev => ({ ...prev, [`old_${val}`]: "" }));
+                }
+              }}
+              style={{ width: "250px", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginLeft: "12px" }}
+            >
               <option value="">Select</option>
-              {subSection.fields.map((field) => <option key={field.name} value={field.name}>{field.label}</option>)}
+              {subSection.fields.map((field) => (
+                <option key={field.name} value={field.name}>{field.label}</option>
+              ))}
             </select>
           </div>
 
           {selectedField && (
             <>
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
-                {/* Old & New value fields - unchanged */}
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>EXISTING {selectedFieldLabel}</label>
-                  <input type="text" name={`old_${selectedField}`} value={formValues[`old_${selectedField}`] || ""} onChange={handleChange} style={{ display: "block", padding: "8px", borderRadius: "6px", border: errors[`old_${selectedField}`] ? "1px solid #e74c3c" : "1px solid #ccc", width: "100%", marginTop: "4px" }} />
+                  <label style={{ fontWeight: "600" }}>OLD {selectedFieldLabel}</label>
+                  {getOldValuesList(selectedField).length > 0 ? (
+                    <select
+                      name={`old_${selectedField}`}
+                      value={formValues[`old_${selectedField}`] || ""}
+                      onChange={handleChange}
+                      style={{
+                        display: "block",
+                        padding: "8px",
+                        borderRadius: "6px",
+                        border: errors[`old_${selectedField}`] ? "1px solid #e74c3c" : "1px solid #ccc",
+                        width: "100%",
+                        marginTop: "4px",
+                        backgroundColor: "#fff"
+                      }}
+                    >
+                      <option value="">-- Select Existing --</option>
+                      {getOldValuesList(selectedField).map((val, idx) => (
+                        <option key={idx} value={val}>{val}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      name={`old_${selectedField}`}
+                      value={formValues[`old_${selectedField}`] || ""}
+                      readOnly
+                      placeholder="No existing data found"
+                      style={{
+                        display: "block",
+                        padding: "8px",
+                        borderRadius: "6px",
+                        border: "1px solid #ccc",
+                        width: "100%",
+                        marginTop: "4px",
+                        backgroundColor: "#f0f0f0"
+                      }}
+                    />
+                  )}
+                  {errors[`old_${selectedField}`] && (
+                    <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
+                      {errors[`old_${selectedField}`]}
+                    </div>
+                  )}
                 </div>
+
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>NEW {selectedFieldLabel}</label>
-                  <input type="text" name={selectedField} value={formValues[selectedField] || ""} onChange={handleChange} style={{ display: "block", padding: "8px", borderRadius: "6px", border: errors[selectedField] ? "1px solid #e74c3c" : "1px solid #ccc", width: "100%", marginTop: "4px" }} />
+                  <input
+                    type="text"
+                    name={selectedField}
+                    value={formValues[selectedField] || ""}
+                    onChange={handleChange}
+                    style={{
+                      display: "block",
+                      padding: "8px",
+                      borderRadius: "6px",
+                      border: errors[selectedField] ? "1px solid #e74c3c" : "1px solid #ccc",
+                      width: "100%",
+                      marginTop: "4px"
+                    }}
+                  />
+                  {errors[selectedField] && (
+                    <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
+                      {errors[selectedField]}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -380,31 +535,23 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>Description</label>
-                  <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }} />
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
+                  />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>Upload Document</label>
-                  <input 
-                    type="file" 
-                    onChange={handleFileChange} 
-                  />
+                  <input type="file" onChange={(e) => setFile(e.target.files[0])} />
                   {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
-                  
-                  {/* ← NEW: Red error message below file input */}
-                  {fileError && (
-                    <div style={{ 
-                      color: "#e74c3c", 
-                      fontSize: "12px", 
-                      marginTop: "4px", 
-                      fontWeight: "500" 
-                    }}>
-                      {fileError}
-                    </div>
-                  )}
                 </div>
               </div>
 
-              <button onClick={handleAdd} style={{ padding: "8px 18px", background: "#1e4d8f", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}>
+              <button
+                onClick={handleAdd}
+                style={{ padding: "8px 18px", background: "#1e4d8f", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}
+              >
                 Add
               </button>
             </>
@@ -412,7 +559,7 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
         </>
       )}
 
-      {/* TABLE - unchanged */}
+      {/* ── TABLE ── */}
       {tableData.length > 0 && (
         <table style={{ marginTop: "30px", width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
           <thead>
@@ -429,7 +576,9 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
               ) : (
                 <>
                   {subSection.fields.map((field) => (
-                    <th key={field.name} style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>{field.label}</th>
+                    <th key={field.name} style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>
+                      {field.label}
+                    </th>
                   ))}
                   <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Description</th>
                   <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Document</th>
@@ -443,27 +592,48 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
               <tr key={index} style={{ background: index % 2 === 0 ? "#fff" : "#f8fafd" }}>
                 {row.__mode === "old" ? (
                   <>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", fontWeight: "600", color: "#0f3460" }}>{subSection.fields.find(f => f.name === row.__selField)?.label || row.__selField}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#6b7c93" }}>{row[`old_${row.__selField}`] || "-"}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#1a7a3c", fontWeight: "600" }}>{row[row.__selField] || "-"}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ccc", fontWeight: "600", color: "#0f3460" }}>
+                      {subSection.fields.find(f => f.name === row.__selField)?.label || row.__selField}
+                    </td>
+                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#6b7c93" }}>
+                      {row[`old_${row.__selField}`] || "-"}
+                    </td>
+                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#1a7a3c", fontWeight: "600" }}>
+                      {row[row.__selField] || "-"}
+                    </td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a> : "-"}
+                      {row.fileURL ? (
+                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
+                          {row.fileName}
+                        </a>
+                      ) : "-"}
                     </td>
                   </>
                 ) : (
                   <>
                     {subSection.fields.map((field) => (
-                      <td key={field.name} style={{ padding: "8px", border: "1px solid #ccc" }}>{row[field.name] || "-"}</td>
+                      <td key={field.name} style={{ padding: "8px", border: "1px solid #ccc" }}>
+                        {row[field.name] || "-"}
+                      </td>
                     ))}
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
                     <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a> : "-"}
+                      {row.fileURL ? (
+                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
+                          {row.fileName}
+                        </a>
+                      ) : "-"}
                     </td>
                   </>
                 )}
                 <td style={{ padding: "8px", border: "1px solid #ccc", textAlign: "center" }}>
-                  <button onClick={() => handleDelete(index)} style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}>✕</button>
+                  <button
+                    onClick={() => handleDelete(index)}
+                    style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}
+                  >
+                    ✕
+                  </button>
                 </td>
               </tr>
             ))}
@@ -477,9 +647,10 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData }
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
 export default function AssociateDetailsForm({
   subSectionId,
-  onChange = () => {},
+  onChange = () => { },
   tableStore = {},
-  setTableStore = () => {},
+  setTableStore = () => { },
+  previewData
 }) {
   const subSection = ASSOCIATE_DETAILS_SUBSECTIONS.find((s) => s.id === subSectionId);
   if (!subSection) return null;
@@ -493,6 +664,7 @@ export default function AssociateDetailsForm({
       onChange={onChange}
       tableData={tableData}
       setTableData={setTableData}
+      previewData={previewData}
     />
   );
 }

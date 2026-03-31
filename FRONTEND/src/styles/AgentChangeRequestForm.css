@@ -304,6 +304,29 @@
   color:#666;
 }
 
+.issue-type-checkboxes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin:6px 0 0;
+}
+
+.issue-type-option{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid #d8d8d8;
+  padding:8px 12px;
+  border-radius:4px;
+  background:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.issue-type-option input{
+  accent-color:#1f73b7;
+}
+
 .issue-selector{
   margin-top:16px;
   border:1px solid #d8d8d8;

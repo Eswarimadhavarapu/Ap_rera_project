@@ -151,6 +151,13 @@ import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
 import AdminChangeRequestList   from "./pages/admin/AdminChangeRequestList";
 import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail";
 import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
+import ComplaintStatusForm from "./pages/ComplaintStatusForm.jsx";
+import ComplaintDetails from "./pages/complaintDetails.jsx";
+// import AdminComplaintDetails from "./pages/admin/admincomplaintsdetails.jsx";
+import AdminComplaintsDetailss from "./pages/admin/admincomplaintsdetails.jsx";
+import AdminProjectDetails from "./pages/admin/AdminProjectDetails";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+import AdminAgentChangeRequest from "./pages/admin/admin_agentchangerequest";
 
 
 function App() {
@@ -296,21 +303,105 @@ function App() {
             <Route path="/renewal/status" element={<RenewalStatus />} />
 
             <Route path="/renewal/receipt/:renewalId" element={<RenewalReceipt />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/requests" element={<AdminRequests />} />
-            <Route path="/admin/projects" element={<AdminProjects />} />
+            // Admin Dashboard
+<Route
+  path="/admin-dashboard"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+            // Admin Requests
+<Route
+  path="/admin/requests"
+  element={
+    <ProtectedRoute>
+      <AdminRequests />
+    </ProtectedRoute>
+  }
+/>
+           // Admin Projects
+<Route
+  path="/admin/projects"
+  element={
+    <ProtectedRoute>
+      <AdminProjects />
+    </ProtectedRoute>
+  }
+/>
             <Route path="/admin/agents" element={<AdminAgents />} />
-            <Route path="/admin/complaints" element={<AdminComplaints />} />
-            <Route path="/admin/complaints" element={<AdminComplaintDetail />} />
-            <Route path="/admin/renewal" element={<AdminRenewal />} />
-            <Route path="/admin/renewals/:status" element={<AdminRenewalList />} />
+            // Admin Complaints
+<Route
+  path="/admin/complaints"
+  element={
+    <ProtectedRoute>
+      <AdminComplaints />
+    </ProtectedRoute>
+  }
+/>
+            // Admin Complaint Detail
+<Route
+  path="/admin/complaint/:id"
+  element={
+    <ProtectedRoute>
+      <AdminComplaintDetail />
+    </ProtectedRoute>
+  }
+/>
+            <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} />
+            <Route path="/complaintstatus" element={<ComplaintStatusForm />} />
+            // Admin Renewal Dashboard
+<Route
+  path="/admin/renewal"
+  element={
+    <ProtectedRoute>
+      <AdminRenewal />
+    </ProtectedRoute>
+  }
+/>
+            // Admin Renewal List
+<Route
+  path="/admin/renewals/:status"
+  element={
+    <ProtectedRoute>
+      <AdminRenewalList />
+    </ProtectedRoute>
+  }
+/>
+// Admin Renewal Detail
+<Route
+  path="/admin/renewal/:id"
+  element={
+    <ProtectedRoute>
+      <AdminRenewalDetail />
+    </ProtectedRoute>
+  }
+/>
             <Route path="/admin/renewal/:id" element={<AdminRenewalDetail />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/apply-for-renewal-otp" element={<ApplyForRenewalOTP />} />
             <Route path="/renewal/certificate/:renewalId" element={<RenewalNewCertificate />} />
             <Route path="/promoter-otp-login" element={<PromoterOtpLogin />} />  
-            <Route path="/admin/change-requests"    element={<AdminChangeRequestList />} />
-            <Route path="/admin/change-request/:id" element={<AdminChangeRequestDetail />} />
+           
+// Admin Change Requests List
+<Route
+  path="/admin/change-requests"
+  element={
+    <ProtectedRoute>
+      <AdminChangeRequestList />
+    </ProtectedRoute>
+  }
+/>
+            // Admin Change Request Detail
+<Route
+  path="/admin/change-request/:id"
+  element={
+    <ProtectedRoute>
+      <AdminChangeRequestDetail />
+    </ProtectedRoute>
+  }
+/>
             
             <Route
   path="/agent_change_request_1"
@@ -323,6 +414,9 @@ function App() {
 />
 <Route path="/ChangeRequestProcess" element={<ChangeRequestProcess/>} />
 <Route path="/Changerequest1" element={<Changerequest />} />
+<Route path="/admin/project/:id" element={<AdminProjectDetails />} />
+<Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
+
           </Routes>
         </Layout></AgentFormProvider>
     </BrowserRouter>
