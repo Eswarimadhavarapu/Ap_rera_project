@@ -160,6 +160,21 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 import AdminAgentChangeRequest from "./pages/admin/admin_agentchangerequest";
 
 
+
+import ScrutinyProjectRegistration from "./pages/scrutiny/scrutiny_projectregistation";
+import ScrutinyProjectRegistration_1 from "./pages/scrutiny/scrutiny_projectregistation_1";
+import ScrutinyProjectRegistration_2 from "./pages/scrutiny/scrutiny_projectregistation_2";
+import ScrutinyProjectRegistration_3 from "./pages/scrutiny/scrutiny_projectregistation_3";
+import ScrutinyProjectRegistration_4 from "./pages/scrutiny/scrutiny_projectregistation_4";
+import ScrutinyProjectRegistration_5 from "./pages/scrutiny/scrutiny_projectregistation_5";
+import ScrutinyProjectRegistration_action from "./pages/scrutiny/scrutiny_projectregistation_action";
+import ScrutinyDashboard from "./pages/scrutiny/ScrutinityDashboard.jsx";
+import ScrutinyRegistration from "./pages/scrutiny/ScrutinyRegistration.jsx";
+import ScrutinyFpmsDashboard from "./pages/scrutiny/ScrutinyFpmsDashboard.jsx";
+import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
+import ScrutinyViewFiles from "./pages/scrutiny/ScrutinyViewFiles.jsx";
+
+
 function App() {
   const [showPopup, setShowPopup] = useState(false);
 
@@ -416,6 +431,24 @@ function App() {
 <Route path="/Changerequest1" element={<Changerequest />} />
 <Route path="/admin/project/:id" element={<AdminProjectDetails />} />
 <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
+
+<Route path="scrutinity/scrutiny-engineer" element={<ScrutinyDashboard />} />
+              <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
+  {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
+  <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
+<Route path="/scrutiny/project-registration_1" element={<ScrutinyProjectRegistration_1 />} />
+  <Route path="/scrutiny/project-registration_2" element={<ScrutinyProjectRegistration_2 />} />
+  <Route path="/scrutiny/project-registration_3" element={<ScrutinyProjectRegistration_3 />} />
+  <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
+   <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
+   <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
+
+
+  <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard />} />
+  <Route path="/scrutiny/create-files" element={<ScrutinyCreateFile />} />
+  <Route path="/scrutiny/view-files" element={<ScrutinyViewFiles />} />
+
+
 
           </Routes>
         </Layout></AgentFormProvider>

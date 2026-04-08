@@ -9,8 +9,10 @@ const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const isValidIFSC = (v) => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v);
 const isValidGST = (v) =>
   /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}Z[A-Z0-9]{1}$/.test(v);
+const isValidPAN = (v) =>
+  /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(v);
 const isValidLicenseNumber = (v) =>
-  /^[A-Za-z0-9]{6,20}$/.test(v);
+  /^[A-Z0-9]{6,20}$/.test(v); // ❌ no small letters
 // min 6, max 20, only alphanumeric
 
 const isValidWebsite = (v) =>
@@ -110,36 +112,18 @@ export const PROMOTER_DETAILS_SUBSECTIONS = [
     id: "promoter_personal",
     label: "Promoter Personal Details",
     fields: [
-      { name: "promoterName", label: "Name", type: "text" },
-      { name: "fatherName", label: "Father's Name", type: "text" },
-      { name: "mobileNumber", label: "Mobile Number", type: "text" },
-      { name: "emailId", label: "Email ID", type: "email" },
-      { name: "aadhaarNumber", label: "Aadhaar Number", type: "text" },
-      { name: "gstNumber", label: "GST Number", type: "text" },
-      { name: "licenseNumber", label: "License Number", type: "text" },
-      { name: "licenseDate", label: "License Date", type: "date" },
-      { name: "websiteUrl", label: "Website URL", type: "text" },
-      { name: "panNumber", label: "PAN Card Number", type: "text" },
-      { name: "landlineNumber", label: "Landline Number", type: "text" },
-      { name: "stateUt", label: "State/UT", type: "text" },
-      { name: "district", label: "District", type: "text" },
-      { name: "typeOfPromoter", label: "Type Of Promoter", type: "text" },
-      { name: "organisationName", label: "Organisation Name", type: "text" },
-      { name: "cinNumber", label: "CIN / Registration Number", type: "text" },
-      { name: "registrationDate", label: "Registration Date", type: "date" },
-      { name: "authSignatoryMobile", label: "Authorized Signatory Mobile", type: "text" },
-      { name: "authSignatoryEmail", label: "Authorized Signatory Email", type: "email" },
-      { name: "panCardDocument", label: "PAN Card Document", type: "text" },
-      { name: "aadhaarDocument", label: "Aadhaar Document", type: "text" },
-      { name: "licenseCertificate", label: "License Certificate", type: "text" },
-      { name: "gstDocument", label: "GST Document", type: "text" },
-      { name: "photo", label: "Photo", type: "text" },
-      { name: "incomeTaxYear1", label: "Income Tax Year 1", type: "text" },
-      { name: "incomeTaxYear2", label: "Income Tax Year 2", type: "text" },
-      { name: "incomeTaxYear3", label: "Income Tax Year 3", type: "text" },
-      { name: "consolidatedItReturns", label: "Consolidated IT Returns", type: "text" },
-      { name: "balanceSheet", label: "Balance Sheet", type: "text" },
-    ],
+  { name: "promoterName", label: "Name", type: "text" },
+  { name: "fatherName", label: "Father's Name", type: "text" },
+  { name: "mobileNumber", label: "Mobile Number", type: "text" },
+  { name: "emailId", label: "Email ID", type: "email" },
+  { name: "aadhaarNumber", label: "Aadhaar Number", type: "text" },
+  { name: "gstNumber", label: "GST Number", type: "text" },
+  { name: "licenseNumber", label: "License Number", type: "text" },
+  { name: "licenseDate", label: "License Date", type: "date" },
+  { name: "websiteUrl", label: "Website URL", type: "text" },
+  { name: "panNumber", label: "PAN Card Number", type: "text" },
+  { name: "landlineNumber", label: "Landline Number", type: "text" }
+]
   },
 
 ];
@@ -277,6 +261,18 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData, pr
         return;
       }
     }
+   
+if (selectedField === "panNumber") {
+  if (newValue.length !== 10) {
+    alert("PAN must be exactly 10 characters");
+    return;
+  }
+
+  if (!isValidPAN(newValue)) {
+    alert("Invalid PAN format (e.g., ABCDE1234F)");
+    return;
+  }
+}
     if (selectedField === "websiteUrl") {
       if (!isValidWebsite(newValue)) {
         alert("Enter a valid Website URL (e.g., https://example.com)");
@@ -349,24 +345,7 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData, pr
               else if (val === "websiteUrl") currentOld = p["Promoter Website"] || "";
               else if (val === "panNumber") currentOld = p["PAN"] || "";
               else if (val === "landlineNumber") currentOld = p["Landline"] || "";
-              else if (val === "stateUt") currentOld = p["State"] || "";
-              else if (val === "district") currentOld = p["District"] || "";
-              else if (val === "typeOfPromoter") currentOld = p["Type Of Promoter"] || "";
-              else if (val === "organisationName") currentOld = p["Organisation Name"] || "";
-              else if (val === "cinNumber") currentOld = p["CIN Number"] || "";
-              else if (val === "registrationDate") currentOld = p["Registration Date"] ? p["Registration Date"].split("T")[0] : "";
-              else if (val === "authSignatoryMobile") currentOld = p["Authorized Signatory Mobile"] || "";
-              else if (val === "authSignatoryEmail") currentOld = p["Authorized Signatory Email"] || "";
-              else if (val === "panCardDocument") currentOld = p["PAN Card Document"] || "";
-              else if (val === "aadhaarDocument") currentOld = p["Aadhaar Document"] || "";
-              else if (val === "licenseCertificate") currentOld = p["License Certificate"] || "";
-              else if (val === "gstDocument") currentOld = p["GST Document"] || "";
-              else if (val === "photo") currentOld = p["Photo"] || "";
-              else if (val === "incomeTaxYear1") currentOld = p["Income Tax Year 1"] || "";
-              else if (val === "incomeTaxYear2") currentOld = p["Income Tax Year 2"] || "";
-              else if (val === "incomeTaxYear3") currentOld = p["Income Tax Year 3"] || "";
-              else if (val === "consolidatedItReturns") currentOld = p["Consolidated IT Returns"] || "";
-              else if (val === "balanceSheet") currentOld = p["Balance Sheet"] || "";
+              
             }
             setOldValue(currentOld); setNewValue("");
           }}
@@ -405,17 +384,37 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData, pr
 
                   if (selectedField === "mobileNumber")
                     value = onlyDigits(value).slice(0, 10);
+                  if (selectedField === "landlineNumber") {
+  value = onlyDigits(value).slice(0, 11); // you can change length (10–11)
+}
+
 
                   if (selectedField === "aadhaarNumber")
                     value = onlyDigits(value).slice(0, 12);
+if (selectedField === "gstNumber") {
+  value = value
+    .replace(/[^A-Za-z0-9]/g, "") // remove special chars
+    .toUpperCase()
+    .slice(0, 15); // limit to 15 chars
+}
+
                   if (selectedField === "emailId") {
                     value = value
                       .replace(/[^a-zA-Z0-9@._-]/g, "")
                       .replace(/@{2,}/g, "@")
                       .toLowerCase();
                   }
-                  if (selectedField === "licenseNumber")
-                    value = alphaNumeric(value);
+                 if (selectedField === "licenseNumber") {
+  value = alphaNumeric(value)
+    .toUpperCase()   // ✅ convert to CAPITAL
+    .slice(0, 20);   // ✅ limit length
+}
+if (selectedField === "panNumber") {
+  value = value
+    .replace(/[^A-Za-z0-9]/g, "")
+    .toUpperCase()
+    .slice(0, 10);
+}
                   if (selectedField === "websiteUrl")
                     value = value.replace(/[^a-zA-Z0-9.:/?=&-]/g, "");
 

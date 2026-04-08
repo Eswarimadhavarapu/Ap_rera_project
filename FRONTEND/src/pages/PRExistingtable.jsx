@@ -9,8 +9,8 @@ const PRExistingtable = () => {
 
   const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
 
-const panNumber =
-  location.state?.panNumber || storedLogin?.pan_number;
+  const panNumber =
+    location.state?.panNumber || storedLogin?.pan_number;
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +27,8 @@ const panNumber =
     const fetchData = async () => {
       try {
         const json = await apiGet(
-  `/api/project/basic-details-by-pan?pan=${panNumber}`
-);
+          `/api/project/basic-details-by-pan?pan=${panNumber}`
+        );
 
         if (json.success) {
           setRows(json.data);
@@ -85,7 +85,11 @@ const panNumber =
                     className="extension-pa-link"
                     onClick={() =>
                       navigate("/prexisting", {
-                        state: { applicationNumber: row.application_number }
+                        state: {
+                          applicationNumber: row.application_number,
+                          panNumber: panNumber,
+                          promoterType: row.promoter_type
+                        }
                       })
                     }
                   >

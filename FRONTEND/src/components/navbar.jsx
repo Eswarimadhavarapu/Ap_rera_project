@@ -91,17 +91,10 @@ const Navbar = () => {
               <li onClick={() => navigate("/guidelinesRegistration")}>
                 Guidelines for Registration
               </li>
-              {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
-                Project Registration <span className="arrow">▸</span>
-                <ul className="sub-dropdown-menu">
-        <li onClick={(e) => {
-        e.stopPropagation();
-        navigate("/otplogin");
-      }}>
-           Extension
-        </li>
-      </ul>
-              </li> */}
+              <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
+                Project Registration 
+                
+              </li>
               {/* PROJECT REGISTRATION */}
               {/* <li className="sub-dropdown" onClick={() => navigate("/project-registration")}>
                 Project Registration <span className="arrow">▸</span>
@@ -141,17 +134,12 @@ const Navbar = () => {
     <li>Registration Lapsed Agents</li>
     <li>Agents Applied for Renewal</li>
   </ul>
-</li>
+</li>*/}
 <li className="sub-dropdown" onClick={() => navigate("/complaintRegistration")}>
-  Complaint Registration <span className="arrow">▸</span>
+  Complaint Registration 
 
-  <ul className="sub-dropdown-menu">
-    <li>
-      Concelation
-    </li>
-    
-  </ul>
-</li> */}
+ 
+</li> 
               <li onClick={() => navigate("/feecalculater")}>
                 Fee Calculator
               </li>
@@ -281,6 +269,9 @@ const Navbar = () => {
               <li onClick={() => navigate("/admin-login")}>
                 ADMIN LOGIN
               </li>
+               <li onClick={() => navigate("scrutinity/scrutiny-engineer")}>
+      Scrutiny Engineer
+    </li>
               <li onClick={() => navigate("/registered/projects")}>
                 DEPARTMENT LOGIN
               </li>

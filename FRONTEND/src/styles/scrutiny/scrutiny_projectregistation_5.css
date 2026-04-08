@@ -1,0 +1,252 @@
+.scrutiny-upload-container {
+  max-width: 1280px;
+  margin: 12px auto 80px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.scrutiny-upload-form {
+  width: 100%;
+}
+
+.scrutiny-upload-alert {
+  width: 100%;
+  margin: 10px 0 18px;
+  padding: 14px 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.scrutiny-upload-alert-success {
+  color: #2e7d32;
+  background: #e8f5e9;
+  border-color: #c8e6c9;
+}
+
+.scrutiny-upload-alert-success::before {
+  content: "✔";
+  margin-right: 10px;
+}
+
+.scrutiny-upload-alert-info {
+  color: #1f4f91;
+  background: #eaf3ff;
+  border-color: #c8daf7;
+}
+
+.scrutiny-upload-title {
+  margin: 10px 0 14px;
+  color: #000;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.scrutiny-upload-title::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 3px;
+  margin-top: 6px;
+  background: #1e88e5;
+}
+
+.scrutiny-upload-section {
+  margin-bottom: 14px;
+  padding: 14px 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.scrutiny-upload-heading {
+  margin: 0 0 16px;
+  color: #00838f;
+  font-size: 18px;
+  font-weight: 600;
+  position: relative;
+}
+
+.scrutiny-upload-heading::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  margin-top: 6px;
+  background: #1e88e5;
+}
+
+.scrutiny-upload-table-wrap {
+  overflow-x: auto;
+}
+
+.scrutiny-upload-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+}
+
+.scrutiny-upload-table thead {
+  background: #8e24aa;
+}
+
+.scrutiny-upload-table th {
+  padding: 12px 10px;
+  border: 1px solid #d8dce6;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  vertical-align: top;
+}
+
+.scrutiny-upload-table td {
+  padding: 12px 10px;
+  border: 1px solid #d8dce6;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.scrutiny-upload-table tbody tr:nth-child(even) td {
+  background: #fafcff;
+}
+
+.scrutiny-upload-doc-note {
+  color: #00695c;
+  font-weight: 600;
+}
+
+.scrutiny-upload-link {
+  color: #1e88e5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.scrutiny-upload-link:hover {
+  text-decoration: underline;
+}
+
+.scrutiny-upload-muted {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.scrutiny-upload-grid {
+  display: grid;
+  gap: 14px 18px;
+}
+
+.scrutiny-upload-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scrutiny-upload-full {
+  grid-column: 1 / -1;
+}
+
+.scrutiny-upload-display-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.scrutiny-upload-label {
+  margin-bottom: 6px;
+  color: #8e24aa;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.scrutiny-upload-value {
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.scrutiny-upload-note {
+  margin: 16px 0 0;
+  color: #d32f2f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.scrutiny-upload-checkline {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.scrutiny-upload-checkline input[type="checkbox"] {
+  margin-top: 3px;
+}
+
+.scrutiny-upload-note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scrutiny-upload-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.scrutiny-upload-button {
+  min-width: 170px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 4px;
+  background: #1e88e5;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.scrutiny-upload-button:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+.scrutiny-upload-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (max-width: 992px) {
+  .scrutiny-upload-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .scrutiny-upload-container {
+    padding: 10px 8px;
+  }
+
+  .scrutiny-upload-section {
+    padding: 12px 8px;
+  }
+
+  .scrutiny-upload-actions {
+    justify-content: stretch;
+  }
+
+  .scrutiny-upload-button {
+    width: 100%;
+  }
+}

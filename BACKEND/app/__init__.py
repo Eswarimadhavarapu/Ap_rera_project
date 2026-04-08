@@ -338,6 +338,7 @@ def create_app():
     from app.controllers.admin_requests_controller2 import admin_renewal_bp
     from app.controllers.admin_controller import admin_bp
     from app.controllers.agent_change_request_controller import agent_change_request_bp
+    from app.controllers.scrutiny_projectregistation_controller import scrutiny_bp
     
 
 
@@ -387,6 +388,7 @@ def create_app():
     app.register_blueprint(admin_renewal_bp, url_prefix="/api")
     app.register_blueprint(admin_bp, url_prefix="/api")
     app.register_blueprint(agent_change_request_bp, url_prefix="/api")
+    app.register_blueprint(scrutiny_bp, url_prefix="/api")
 
 
     return app

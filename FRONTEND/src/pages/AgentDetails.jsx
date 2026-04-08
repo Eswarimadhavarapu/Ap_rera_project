@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 import AgentStepper from "../components/AgentStepper";
 import { useAgentForm } from "./AgentFormContext";
-const BASE_URL = "https://0jv8810n-5173.inc1.devtunnels.ms";
+const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -1334,7 +1334,7 @@ console.log("===== FORM DATA END =====");
 
   try {
     const res = await fetch(
-      "https://0jv8810n-5173.inc1.devtunnels.ms/api/agent/other-than-individual",
+      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
       {
         method: "POST",
         body: formData,

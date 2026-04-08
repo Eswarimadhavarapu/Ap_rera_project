@@ -16,13 +16,29 @@ def get_org_profile(application_no):
 
 
 def get_org_rera_details(application_no):
-    row = db.session.execute(text("""
+    rows = db.session.execute(text("""
         SELECT *
         FROM rera_details_Other_t_INDV
         WHERE application_no = :app
-    """), {"app": application_no}).mappings().fetchone()
+    """), {"app": application_no}).mappings().fetchall()
 
-    return dict(row) if row else {}
+    return [dict(r) for r in rows] if rows else []
+
+def get_litigations(application_no):
+    rows = db.session.execute(text("""
+        SELECT *
+        FROM litigations_other_t_indv
+        WHERE application_no = :app
+    """), {"app": application_no}).mappings().fetchall()
+    return [dict(r) for r in rows] if rows else []
+
+def get_promoter2(application_no):
+    rows = db.session.execute(text("""
+        SELECT *
+        FROM promoter2_other_t_indv
+        WHERE application_no = :app
+    """), {"app": application_no}).mappings().fetchall()
+    return [dict(r) for r in rows] if rows else []
 
 
 def get_org_members(application_no):
