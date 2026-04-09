@@ -249,6 +249,44 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData, pr
         return;
       }
     }
+
+   if (selectedField === "mobileNumber") {
+  if (newValue.length !== 10) {
+    alert("Mobile Number must be exactly 10 digits");
+    return;
+  }
+
+  if (!/^[0-9]{10}$/.test(newValue)) {
+    alert("Mobile Number must contain only digits");
+    return;
+  }
+}
+
+if (selectedField === "aadhaarNumber") {
+  if (newValue.length !== 12) {
+    alert("Aadhaar Number must be exactly 12 digits");
+    return;
+  }
+
+  if (!/^[0-9]{12}$/.test(newValue)) {
+    alert("Aadhaar Number must contain only digits");
+    return;
+  }
+}
+
+if (selectedField === "landlineNumber") {
+  if (newValue.length !== 11) {
+    alert("Landline Number must be exactly 11 digits");
+    return;
+  }
+
+  if (!/^[0-9]{11}$/.test(newValue)) {
+    alert("Landline Number must contain only digits");
+    return;
+  }
+}
+
+    
     if (selectedField === "licenseNumber") {
       if (!isValidLicenseNumber(newValue)) {
         alert("License Number must be 6-20 characters (only letters & numbers)");
@@ -404,10 +442,11 @@ if (selectedField === "gstNumber") {
                       .replace(/@{2,}/g, "@")
                       .toLowerCase();
                   }
-                 if (selectedField === "licenseNumber") {
-  value = alphaNumeric(value)
-    .toUpperCase()   // ✅ convert to CAPITAL
-    .slice(0, 20);   // ✅ limit length
+      if (selectedField === "licenseNumber") {
+  value = value
+    .replace(/[^A-Za-z0-9]/g, "")
+    .toUpperCase()
+    .slice(0, 20);
 }
 if (selectedField === "panNumber") {
   value = value

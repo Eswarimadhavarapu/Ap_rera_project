@@ -7,17 +7,32 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
 
   const safe = (v) =>
     v !== undefined && v !== null && v !== "" ? v : "NA";
+  
+  const isExistingDirectorValue = String(formData.isExistingDirector || "").trim().toLowerCase();
 
   const getFileUrl = (path) => {
     if (!path) return "";
-    if (path instanceof File) return "";
-    return `${BASE_URL}/${path.replace(/\\/g, "/")}`;
+    if (path instanceof File) return URL.createObjectURL(path);
+
+    const normalizedPath = String(path).trim().replace(/\\/g, "/");
+    if (!normalizedPath) return "";
+    if (/^https?:\/\//i.test(normalizedPath)) return encodeURI(normalizedPath);
+
+    const uploadsIndex = normalizedPath.toLowerCase().indexOf("/uploads/");
+    const relativeUploadsPath =
+      uploadsIndex >= 0
+        ? normalizedPath.slice(uploadsIndex + 1)
+        : normalizedPath.toLowerCase().startsWith("uploads/")
+          ? normalizedPath
+          : normalizedPath.replace(/^\/+/, "");
+
+    return encodeURI(`${BASE_URL}/${relativeUploadsPath}`);
   };
 
   const getFileName = (path) => {
     if (!path) return "NA";
     if (path instanceof File) return path.name;
-    return path.replace(/\\/g, "/").split("/").pop();
+    return String(path).replace(/\\/g, "/").split("/").pop() || "NA";
   };
 
   return (
@@ -63,7 +78,7 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
               Is Existing Director / Member
             </span>
             <span className="display-field">
-              {formData.isExistingDirector === "yes" ? "Yes" : "No"}
+              {isExistingDirectorValue === "yes" ? "Yes" : isExistingDirectorValue === "no" ? "No" : "NA"}
             </span>
           </div>
         </div>
@@ -75,21 +90,13 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
 
         <div className="col-sm-3">
           <div className="display-group">
-            <span className="display-label">
-              Passport Photo
-            </span>
-            <span className="display-field">
-              {getFileName(
-                formData.authorizedSignatoryPhoto ||
-                formData.authorizedSignatoryPhotoPath
-              )}
-            </span>
-
+            <span className="display-label">Passport Photo</span>
             {getFileUrl(
               formData.authorizedSignatoryPhoto ||
               formData.authorizedSignatoryPhotoPath
-            ) && (
+            ) ? (
               <a
+                className="display-field"
                 href={getFileUrl(
                   formData.authorizedSignatoryPhoto ||
                   formData.authorizedSignatoryPhotoPath
@@ -97,29 +104,26 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                View
+                {getFileName(
+                  formData.authorizedSignatoryPhoto ||
+                  formData.authorizedSignatoryPhotoPath
+                )}
               </a>
+            ) : (
+              <span className="display-field">NA</span>
             )}
           </div>
         </div>
 
         <div className="col-sm-3">
           <div className="display-group">
-            <span className="display-label">
-              Board Resolution Copy
-            </span>
-            <span className="display-field">
-              {getFileName(
-                formData.boardResolutionCopy ||
-                formData.boardResolutionCopyPath
-              )}
-            </span>
-
+            <span className="display-label">Board Resolution Copy</span>
             {getFileUrl(
               formData.boardResolutionCopy ||
               formData.boardResolutionCopyPath
-            ) && (
+            ) ? (
               <a
+                className="display-field"
                 href={getFileUrl(
                   formData.boardResolutionCopy ||
                   formData.boardResolutionCopyPath
@@ -127,8 +131,13 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                View
+                {getFileName(
+                  formData.boardResolutionCopy ||
+                  formData.boardResolutionCopyPath
+                )}
               </a>
+            ) : (
+              <span className="display-field">NA</span>
             )}
           </div>
         </div>

@@ -3,6 +3,8 @@ import { BASE_URL } from "../../api/api";
 
 const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
 
+  const normalizeBoolean = (value) => ["true", "1", "yes", "y"].includes(String(value || "").trim().toLowerCase());
+
   /* ================= MAP DATA ================= */
   const mappedData = useMemo(() => {
 
@@ -34,11 +36,9 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
         formData.balance_amount ??
         "",
 
-      planModified:
-        String(formData.planModified) === "true",
+      planModified: normalizeBoolean(formData.planModified),
 
-      projectDelayed:
-        String(formData.projectDelayed) === "true",
+      projectDelayed: normalizeBoolean(formData.projectDelayed),
 
       architectPath:
         formData.architectCertificate ||
@@ -65,15 +65,27 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
 
   const getFileUrl = (path) => {
     if (!path) return "";
-    if (path instanceof File) return "";
-    if (path.startsWith("http")) return path;
-    return `${BASE_URL}/${path}`;
+    if (path instanceof File) return URL.createObjectURL(path);
+
+    const normalizedPath = String(path).trim().replace(/\\/g, "/");
+    if (!normalizedPath) return "";
+    if (/^https?:\/\//i.test(normalizedPath)) return encodeURI(normalizedPath);
+
+    const uploadsIndex = normalizedPath.toLowerCase().indexOf("/uploads/");
+    const relativeUploadsPath =
+      uploadsIndex >= 0
+        ? normalizedPath.slice(uploadsIndex + 1)
+        : normalizedPath.toLowerCase().startsWith("uploads/")
+          ? normalizedPath
+          : normalizedPath.replace(/^\/+/, "");
+
+    return encodeURI(`${BASE_URL}/${relativeUploadsPath}`);
   };
 
   const getFileName = (path) => {
     if (!path) return "NA";
     if (path instanceof File) return path.name;
-    return path.split("/").pop();
+    return String(path).replace(/\\/g, "/").split("/").pop() || "NA";
   };
 
   /* ================= RENDER ================= */
@@ -160,13 +172,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
         <div className="col-sm-4">
           <div className="display-group">
             <span className="display-label">Architect Certificate</span>
-            <span className="display-field">
-              {getFileName(mappedData.architectPath)}
-            </span>
-            {getFileUrl(mappedData.architectPath) && (
-              <a href={getFileUrl(mappedData.architectPath)} target="_blank" rel="noreferrer">
-                View
+            {getFileUrl(mappedData.architectPath) ? (
+              <a
+                className="display-field"
+                href={getFileUrl(mappedData.architectPath)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {getFileName(mappedData.architectPath)}
               </a>
+            ) : (
+              <span className="display-field">NA</span>
             )}
           </div>
         </div>
@@ -174,13 +190,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
         <div className="col-sm-4">
           <div className="display-group">
             <span className="display-label">Engineer Certificate</span>
-            <span className="display-field">
-              {getFileName(mappedData.engineerPath)}
-            </span>
-            {getFileUrl(mappedData.engineerPath) && (
-              <a href={getFileUrl(mappedData.engineerPath)} target="_blank" rel="noreferrer">
-                View
+            {getFileUrl(mappedData.engineerPath) ? (
+              <a
+                className="display-field"
+                href={getFileUrl(mappedData.engineerPath)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {getFileName(mappedData.engineerPath)}
               </a>
+            ) : (
+              <span className="display-field">NA</span>
             )}
           </div>
         </div>
@@ -188,13 +208,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
         <div className="col-sm-4">
           <div className="display-group">
             <span className="display-label">CA Certificate</span>
-            <span className="display-field">
-              {getFileName(mappedData.caPath)}
-            </span>
-            {getFileUrl(mappedData.caPath) && (
-              <a href={getFileUrl(mappedData.caPath)} target="_blank" rel="noreferrer">
-                View
+            {getFileUrl(mappedData.caPath) ? (
+              <a
+                className="display-field"
+                href={getFileUrl(mappedData.caPath)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {getFileName(mappedData.caPath)}
               </a>
+            ) : (
+              <span className="display-field">NA</span>
             )}
           </div>
         </div>

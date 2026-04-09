@@ -35,8 +35,8 @@ const [fpmsOpen, setFpmsOpen] = useState(isFpmsRoute);
       {/* ✅ FPMS Dashboard (Dropdown Trigger) */}
       <button
   onClick={() => {
-    navigate("/scrutiny/scrutiny-fpms"); // ✅ old functionality
-    setFpmsOpen(!fpmsOpen); // ✅ dropdown
+    navigate("/scrutiny/scrutiny-fpms");
+    setFpmsOpen(true); // ✅ always open
   }}
 >
   📊 FPMS Dashboard

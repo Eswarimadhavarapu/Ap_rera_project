@@ -147,6 +147,126 @@ function FormField({ field, value, onChange, error }) {
   );
 }
 
+// ─── TABLE STYLES ────────────────────────────────────────────────────────────
+const thStyle = { padding: "10px", border: "1px solid #ccc", textAlign: "left" };
+const tdStyle = { padding: "8px", border: "1px solid #ccc" };
+
+// ─── NEW ROWS TABLE ──────────────────────────────────────────────────────────
+function NewRowsTable({ rows, subSection, onDelete }) {
+  if (!rows.length) return null;
+  return (
+    <div style={{ marginTop: "30px" }}>
+      {/* Section label */}
+      <div style={{
+        display: "inline-flex", alignItems: "center", gap: "6px",
+        background: "#e8f5e9", color: "#1a7a3c", fontWeight: "700",
+        fontSize: "13px", padding: "4px 12px", borderRadius: "20px",
+        marginBottom: "8px", border: "1px solid #a5d6a7"
+      }}>
+        <span>🆕</span> New Entries
+      </div>
+
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+          <thead>
+            <tr style={{ background: "#1e4d8f", color: "#fff" }}>
+              {subSection.fields.map((field) => (
+                <th key={field.name} style={thStyle}>{field.label}</th>
+              ))}
+              <th style={thStyle}>Description</th>
+              <th style={thStyle}>Document</th>
+              <th style={{ ...thStyle, width: "60px" }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ row, originalIndex }) => (
+              <tr key={originalIndex} style={{ background: originalIndex % 2 === 0 ? "#fff" : "#f8fafd" }}>
+                {subSection.fields.map((field) => (
+                  <td key={field.name} style={tdStyle}>{row[field.name] || "-"}</td>
+                ))}
+                <td style={tdStyle}>{row.description || "-"}</td>
+                <td style={tdStyle}>
+                  {row.fileURL
+                    ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
+                        style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a>
+                    : "-"}
+                </td>
+                <td style={{ ...tdStyle, textAlign: "center" }}>
+                  <button
+                    onClick={() => onDelete(originalIndex)}
+                    style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}
+                  >✕</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── EXISTING ROWS TABLE ─────────────────────────────────────────────────────
+function ExistingRowsTable({ rows, subSection, onDelete }) {
+  if (!rows.length) return null;
+  return (
+    <div style={{ marginTop: "30px" }}>
+      {/* Section label */}
+      <div style={{
+        display: "inline-flex", alignItems: "center", gap: "6px",
+        background: "#e3f2fd", color: "#1565c0", fontWeight: "700",
+        fontSize: "13px", padding: "4px 12px", borderRadius: "20px",
+        marginBottom: "8px", border: "1px solid #90caf9"
+      }}>
+        <span>✏️</span> Existing Changes
+      </div>
+
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+          <thead>
+            <tr style={{ background: "#1e4d8f", color: "#fff" }}>
+              <th style={thStyle}>Field Changed</th>
+              <th style={thStyle}>Old Value</th>
+              <th style={thStyle}>New Value</th>
+              <th style={thStyle}>Description</th>
+              <th style={thStyle}>Document</th>
+              <th style={{ ...thStyle, width: "60px" }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ row, originalIndex }) => (
+              <tr key={originalIndex} style={{ background: originalIndex % 2 === 0 ? "#fff" : "#f8fafd" }}>
+                <td style={{ ...tdStyle, fontWeight: "600", color: "#0f3460" }}>
+                  {subSection.fields.find(f => f.name === row.__selField)?.label || row.__selField}
+                </td>
+                <td style={{ ...tdStyle, color: "#6b7c93" }}>
+                  {row[`old_${row.__selField}`] || "-"}
+                </td>
+                <td style={{ ...tdStyle, color: "#1a7a3c", fontWeight: "600" }}>
+                  {row[row.__selField] || "-"}
+                </td>
+                <td style={tdStyle}>{row.description || "-"}</td>
+                <td style={tdStyle}>
+                  {row.fileURL
+                    ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
+                        style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a>
+                    : "-"}
+                </td>
+                <td style={{ ...tdStyle, textAlign: "center" }}>
+                  <button
+                    onClick={() => onDelete(originalIndex)}
+                    style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}
+                  >✕</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ─── INNER COMPONENT ────────────────────────────────────────────────────────
 function AssociateSectionInner({ subSection, onChange, tableData, setTableData, previewData }) {
   const [mainMode, setMainMode] = useState("");
@@ -213,17 +333,20 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
         error = "Only alphabets and spaces allowed";
       }
     }
+// MOBILE VALIDATION
+if (name.toLowerCase().includes("mobile")) {
+  const mobileRegex = /^[0-9]*$/;
 
-    // MOBILE VALIDATION
-    if (name.toLowerCase().includes("mobile")) {
-      const mobileRegex = /^[0-9]*$/;
-      if (value && !mobileRegex.test(value)) {
-        error = "Mobile number must contain only numbers";
-      } else if (value && value.length > 10) {
-        error = "Mobile number must be maximum 10 digits";
-      }
-    }
-
+  if (value && !mobileRegex.test(value)) {
+    error = "Mobile number must contain only numbers";
+  } 
+  else if (value && value.length > 10) {
+    error = "Mobile number must be maximum 10 digits";
+  } 
+  else if (value && value.length < 10) {
+    error = "Mobile number must be exactly 10 digits";
+  }
+}
     // EMAIL VALIDATION
     if (name.toLowerCase().includes("email")) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -244,6 +367,36 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
         error = "Only letters and numbers allowed";
       }
     }
+
+    // STATE VALIDATION
+if (name.toLowerCase().includes("state")) {
+  const stateRegex = /^[A-Za-z\s]*$/;
+
+  if (value && !stateRegex.test(value)) {
+    error = "State should contain only alphabets";
+  }
+}
+
+// DISTRICT VALIDATION
+if (name.toLowerCase().includes("district")) {
+  const districtRegex = /^[A-Za-z\s]*$/;
+
+  if (value && !districtRegex.test(value)) {
+    error = "District should contain only alphabets";
+  }
+}
+
+// PINCODE VALIDATION
+if (name.toLowerCase().includes("pincode")) {
+  const pinRegex = /^[0-9]*$/;
+
+  if (value && !pinRegex.test(value)) {
+    error = "Pincode must contain only numbers";
+  } 
+  else if (value && value.length !== 6) {
+    error = "Pincode must be exactly 6 digits";
+  }
+}
 
     return error;
   };
@@ -276,73 +429,86 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
   };
 
   const handleAdd = () => {
-    // Check for validation errors before adding
-    let hasError = false;
-    const newErrors = {};
 
-    Object.keys(formValues).forEach((key) => {
-      const error = validateField(key, formValues[key]);
-      if (error) {
-        newErrors[key] = error;
-        hasError = true;
-      }
-    });
+  // ✅ NEW ADDITION (PDF validation block)
+  if (errors.file) {
+    alert("Please upload only PDF document");
+    return;
+  }
 
-    if (hasError) {
-      setErrors(newErrors);
-      return;
+  // Check for validation errors before adding
+  let hasError = false;
+  const newErrors = {};
+
+  Object.keys(formValues).forEach((key) => {
+    const error = validateField(key, formValues[key]);
+    if (error) {
+      newErrors[key] = error;
+      hasError = true;
     }
+  });
 
-    let newEntry = {};
-    let hasValue = false;
+  if (hasError) {
+    setErrors(newErrors);
+    return;
+  }
 
-    subSection.fields.forEach((field) => {
-      if (formValues[field.name] && formValues[field.name].trim() !== "") {
-        newEntry[field.name] = formValues[field.name];
-        hasValue = true;
-      }
-    });
+  let newEntry = {};
+  let hasValue = false;
 
-    // For OLD mode
-    if (mainMode === "old" && selectedField) {
-      const oldKey = `old_${selectedField}`;
-      if (formValues[oldKey]) {
-        newEntry[oldKey] = formValues[oldKey];
-        hasValue = true;
-      }
-      newEntry.__mode = "old";
-      newEntry.__selField = selectedField;
-    } else {
-      newEntry.__mode = "new";
-    }
-
-    if (description && description.trim() !== "") {
-      newEntry.description = description;
+  subSection.fields.forEach((field) => {
+    if (formValues[field.name] && formValues[field.name].trim() !== "") {
+      newEntry[field.name] = formValues[field.name];
       hasValue = true;
     }
+  });
 
-    if (file) {
-      newEntry.fileName = file.name;
-      newEntry.fileURL = URL.createObjectURL(file);
+  // OLD mode
+  if (mainMode === "old" && selectedField) {
+    const oldKey = `old_${selectedField}`;
+    if (formValues[oldKey]) {
+      newEntry[oldKey] = formValues[oldKey];
       hasValue = true;
     }
+    newEntry.__mode = "old";
+    newEntry.__selField = selectedField;
+  } else {
+    newEntry.__mode = "new";
+  }
 
-    if (!hasValue) {
-      alert("Please enter at least one field");
-      return;
-    }
+  if (description && description.trim() !== "") {
+    newEntry.description = description;
+    hasValue = true;
+  }
 
-    const updated = [...tableData, newEntry];
-    setTableData(updated);
-    notifyParent(updated);
+  // ✅ OPTIONAL EXTRA SAFETY (recommended)
+  if (file && file.type !== "application/pdf") {
+    alert("Only PDF files are allowed");
+    return;
+  }
 
-    // Reset form
-    setFormValues({});
-    setDescription("");
-    setFile(null);
-    setErrors({});
-    setSelectedField("");
-  };
+  if (file) {
+    newEntry.fileName = file.name;
+    newEntry.fileURL = URL.createObjectURL(file);
+    hasValue = true;
+  }
+
+  if (!hasValue) {
+    alert("Please enter at least one field");
+    return;
+  }
+
+  const updated = [...tableData, newEntry];
+  setTableData(updated);
+  notifyParent(updated);
+
+  // Reset form
+  setFormValues({});
+  setDescription("");
+  setFile(null);
+  setErrors({});
+  setSelectedField("");
+};
 
   const handleDelete = (idx) => {
     const updated = tableData.filter((_, i) => i !== idx);
@@ -350,7 +516,17 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
     notifyParent(updated);
   };
 
+  // ── Split rows by mode ──────────────────────────────────────────────────
+  const newRows = tableData
+    .map((row, originalIndex) => ({ row, originalIndex }))
+    .filter(({ row }) => row.__mode === "new");
+
+  const existingRows = tableData
+    .map((row, originalIndex) => ({ row, originalIndex }))
+    .filter(({ row }) => row.__mode === "old");
+
   return (
+
     <div style={{ padding: "20px" }}>
       {/* NEW / OLD RADIO */}
       <div style={{ marginBottom: "20px", display: "flex", gap: "30px" }}>
@@ -417,7 +593,42 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
             </div>
             <div style={{ flex: 1 }}>
               <label style={{ fontWeight: "600" }}>Upload Document</label>
-              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+              <input
+  key={file ? file.name : "empty"}
+  type="file"
+  onChange={(e) => {
+  const selectedFile = e.target.files[0];
+
+  if (selectedFile) {
+    if (selectedFile.type !== "application/pdf") {
+      setErrors((prev) => ({
+        ...prev,
+        file: "Document should be in PDF format"
+      }));
+      setFile(null);
+      return;
+    }
+
+    // valid PDF
+    setErrors((prev) => ({
+      ...prev,
+      file: ""
+    }));
+
+    setFile(selectedFile);
+  }
+}} />
+
+{errors.file && (
+  <div style={{
+    color: "#e74c3c",
+    fontSize: "12px",
+    marginTop: "4px",
+    fontWeight: "500"
+  }}>
+    {errors.file}
+  </div>
+)}
               {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
             </div>
           </div>
@@ -543,7 +754,38 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: "600" }}>Upload Document</label>
-                  <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+                  <input type="file" onChange={(e) => {
+  const selectedFile = e.target.files[0];
+
+  if (selectedFile) {
+    if (selectedFile.type !== "application/pdf") {
+      setErrors((prev) => ({
+        ...prev,
+        file: "Document should be in PDF format"
+      }));
+      setFile(null);
+      return;
+    }
+
+    // valid PDF
+    setErrors((prev) => ({
+      ...prev,
+      file: ""
+    }));
+
+    setFile(selectedFile);
+  }
+}} />
+{errors.file && (
+  <div style={{
+    color: "#e74c3c",
+    fontSize: "12px",
+    marginTop: "4px",
+    fontWeight: "500"
+  }}>
+    {errors.file}
+  </div>
+)}
                   {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
                 </div>
               </div>
@@ -559,87 +801,20 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
         </>
       )}
 
-      {/* ── TABLE ── */}
-      {tableData.length > 0 && (
-        <table style={{ marginTop: "30px", width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-          <thead>
-            <tr style={{ background: "#1e4d8f", color: "#fff" }}>
-              {mainMode === "old" ? (
-                <>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Field Changed</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Old Value</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>New Value</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Description</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Document</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", width: "60px" }}>Action</th>
-                </>
-              ) : (
-                <>
-                  {subSection.fields.map((field) => (
-                    <th key={field.name} style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>
-                      {field.label}
-                    </th>
-                  ))}
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Description</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", textAlign: "left" }}>Document</th>
-                  <th style={{ padding: "10px", border: "1px solid #ccc", width: "60px" }}>Action</th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row, index) => (
-              <tr key={index} style={{ background: index % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                {row.__mode === "old" ? (
-                  <>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", fontWeight: "600", color: "#0f3460" }}>
-                      {subSection.fields.find(f => f.name === row.__selField)?.label || row.__selField}
-                    </td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#6b7c93" }}>
-                      {row[`old_${row.__selField}`] || "-"}
-                    </td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc", color: "#1a7a3c", fontWeight: "600" }}>
-                      {row[row.__selField] || "-"}
-                    </td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL ? (
-                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
-                          {row.fileName}
-                        </a>
-                      ) : "-"}
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    {subSection.fields.map((field) => (
-                      <td key={field.name} style={{ padding: "8px", border: "1px solid #ccc" }}>
-                        {row[field.name] || "-"}
-                      </td>
-                    ))}
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{row.description || "-"}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-                      {row.fileURL ? (
-                        <a href={row.fileURL} target="_blank" rel="noopener noreferrer" style={{ color: "#1e4d8f", fontWeight: "600" }}>
-                          {row.fileName}
-                        </a>
-                      ) : "-"}
-                    </td>
-                  </>
-                )}
-                <td style={{ padding: "8px", border: "1px solid #ccc", textAlign: "center" }}>
-                  <button
-                    onClick={() => handleDelete(index)}
-                    style={{ background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" }}
-                  >
-                    ✕
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      {/* ── SEPARATE TABLES ── */}
+      {/* NEW entries table — always full-field columns */}
+      <NewRowsTable
+        rows={newRows}
+        subSection={subSection}
+        onDelete={handleDelete}
+      />
+
+      {/* EXISTING changes table — always Field/Old/New/Description/Document/Action */}
+      <ExistingRowsTable
+        rows={existingRows}
+        subSection={subSection}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }

@@ -163,3 +163,161 @@ def get_scrutiny_project_registration_by_application(application_no, promoter_ty
         return None
 
     return _serialize_row(row)
+
+
+# -----------------create file posting api ------------------
+# ----------------------------------------------------------------
+
+
+def _clean_optional(value):
+    if value is None:
+        return None
+    if isinstance(value, str):
+        value = value.strip()
+        return value or None
+    return value
+
+
+def create_scrutiny_file(data):
+    query = text(
+        """
+        INSERT INTO scrutiny_all (
+            file_number,
+            inward_no,
+            memo_number,
+            file_date,
+            "type",
+            from_where,
+            to_whom,
+            assign_to,
+            description,
+            remarks,
+            document_desc,
+            file_path
+        )
+        VALUES (
+            :file_number,
+            :inward_no,
+            :memo_number,
+            :file_date,
+            :type,
+            :from_where,
+            :to_whom,
+            :assign_to,
+            :description,
+            :remarks,
+            :document_desc,
+            :file_path
+        )
+        RETURNING
+            id,
+            file_number,
+            inward_no,
+            memo_number,
+            file_date,
+            "type" AS type,
+            from_where,
+            to_whom,
+            assign_to,
+            description,
+            remarks,
+            document_desc,
+            file_path,
+            created_at
+        """
+    )
+
+    params = {
+        "file_number": data.get("file_number"),
+        "inward_no": data.get("inward_no"),
+        "memo_number": _clean_optional(data.get("memo_number")),
+        "file_date": data.get("file_date"),
+        "type": data.get("type"),
+        "from_where": data.get("from_where"),
+        "to_whom": data.get("to_whom"),
+        "assign_to": data.get("assign_to"),
+        "description": data.get("description"),
+        "remarks": _clean_optional(data.get("remarks")),
+        "document_desc": _clean_optional(data.get("document_desc")),
+        "file_path": _clean_optional(data.get("file_path")),
+    }
+
+    row = db.session.execute(query, params).mappings().first()
+    db.session.commit()
+
+    return dict(row) if row else None
+
+
+# ---------------- fpms dashboard  get api ------------------
+# ------------------------------------------------------------
+
+
+def get_scrutiny_fpms_dashboard_data():
+    summary_query = text(
+        """
+        SELECT COUNT(*) AS total_files
+        FROM scrutiny_all
+        """
+    )
+
+    files_query = text(
+        """
+        SELECT
+            id,
+            file_number,
+            inward_no,
+            memo_number,
+            file_date,
+            "type" AS received_through,
+            from_where,
+            to_whom,
+            assign_to,
+            description,
+            remarks,
+            document_desc,
+            file_path,
+            created_at
+        FROM scrutiny_all
+        ORDER BY created_at DESC, id DESC
+        """
+    )
+
+    summary_row = db.session.execute(summary_query).mappings().first()
+    file_rows = db.session.execute(files_query).mappings().all()
+
+    total_files = int(summary_row["total_files"] or 0) if summary_row else 0
+
+    rows = []
+    for index, row in enumerate(file_rows, start=1):
+        rows.append(
+            {
+                "id": row["id"],
+                "s_no": index,
+                "file_number": row["file_number"],
+                "inward_no": row["inward_no"],
+                "memo_number": row["memo_number"],
+                "file_date": str(row["file_date"]) if row["file_date"] else None,
+                "file_description": row["description"],
+                "received_through": row["received_through"],
+                "from_where": row["from_where"],
+                "to_whom": row["to_whom"],
+                "assign_to": row["assign_to"],
+                "file_assigned_date": (
+                    str(row["created_at"]) if row["created_at"] else str(row["file_date"]) if row["file_date"] else None
+                ),
+                "status": "Created",
+                "remarks": row["remarks"],
+                "document_desc": row["document_desc"],
+                "file_path": row["file_path"],
+                "created_at": str(row["created_at"]) if row["created_at"] else None,
+            }
+        )
+
+    return {
+        "summary": {
+            "total_files": total_files,
+            "open_files": total_files,
+            "closed_files": 0,
+        },
+        "rows": rows,
+    }

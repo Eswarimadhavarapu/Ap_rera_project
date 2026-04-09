@@ -10,8 +10,12 @@ import GoogleTranslate from "./GoogleTranslate";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // ✅
+  const isScrutinyRoute =
+    location.pathname.startsWith("/scrutiny") ||
+    location.pathname.startsWith("/scrutinity");
 
   if (
+    isScrutinyRoute ||
     location.pathname.startsWith("/admin") ||
     location.pathname === "/admin-login"
   ) {
@@ -117,24 +121,13 @@ const Navbar = () => {
                   <li>Revoked Projects</li>
                 
                 </ul>
-              </li>
+              </li>*/}
                
     <li className="sub-dropdown" onClick={() => navigate("/agent-registration")}>
-  Agent Registration <span className="arrow">▸</span>
+  Agent Registration
 
-  <ul className="sub-dropdown-menu">
-    <li
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate("/feecalculater");
-      }}
-    >
-      Renewal
-    </li>
-    <li>Registration Lapsed Agents</li>
-    <li>Agents Applied for Renewal</li>
-  </ul>
-</li>*/}
+  
+</li>
 <li className="sub-dropdown" onClick={() => navigate("/complaintRegistration")}>
   Complaint Registration 
 

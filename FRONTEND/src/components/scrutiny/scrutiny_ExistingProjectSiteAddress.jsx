@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { apiGet } from "../../api/api";
+import { apiGet, BASE_URL } from "../../api/api";
 
 const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
 
@@ -10,11 +10,42 @@ const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
   /* ================= MAP DATA ================= */
   const mappedData = useMemo(() => {
     if (!formData) return {};
-    return { ...formData };
+    return {
+      ...formData,
+      addressProofPath:
+        formData.addressProof ||
+        formData.address_proof_path ||
+        "",
+    };
   }, [formData]);
 
   const safe = (v) =>
     v !== undefined && v !== null ? String(v) : "NA";
+
+  const getFileUrl = (path) => {
+    if (!path) return "";
+    if (path instanceof File) return URL.createObjectURL(path);
+
+    const normalizedPath = String(path).trim().replace(/\\/g, "/");
+    if (!normalizedPath) return "";
+    if (/^https?:\/\//i.test(normalizedPath)) return encodeURI(normalizedPath);
+
+    const uploadsIndex = normalizedPath.toLowerCase().indexOf("/uploads/");
+    const relativeUploadsPath =
+      uploadsIndex >= 0
+        ? normalizedPath.slice(uploadsIndex + 1)
+        : normalizedPath.toLowerCase().startsWith("uploads/")
+          ? normalizedPath
+          : normalizedPath.replace(/^\/+/, "");
+
+    return encodeURI(`${BASE_URL}/${relativeUploadsPath}`);
+  };
+
+  const getFileName = (path) => {
+    if (!path) return "NA";
+    if (path instanceof File) return path.name;
+    return String(path).replace(/\\/g, "/").split("/").pop() || "NA";
+  };
 
   /* ================= LOAD MASTER DATA ================= */
 
@@ -157,6 +188,24 @@ const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
               {mappedData.planApprovingAuthority === "7" && "DTCP"}
               {mappedData.planApprovingAuthority === "9" && "VMRDA"}
             </span>
+          </div>
+        </div>
+
+        <div className="col-sm-3">
+          <div className="display-group">
+            <span className="display-label">Address Proof</span>
+            {getFileUrl(mappedData.addressProofPath) ? (
+              <a
+                className="display-field"
+                href={getFileUrl(mappedData.addressProofPath)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {getFileName(mappedData.addressProofPath)}
+              </a>
+            ) : (
+              <span className="display-field">NA</span>
+            )}
           </div>
         </div>
 

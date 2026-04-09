@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiPost } from "../../api/api";
 import "../../styles/scrutiny/ScrutinyCreateFile.css";
+import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
 const TYPE_OPTIONS = [
   "Memo",
@@ -170,7 +171,8 @@ const ScrutinyCreateFile = () => {
   };
 
   return (
-    <div className="scf-scf-main">
+    <ScrutinyLayout>
+<div className="scf-scf-main">
       <div className="scf-scf-body">
         <div className="scf-scf-content">
           <p className="scf-breadcrumb">
@@ -369,6 +371,8 @@ const ScrutinyCreateFile = () => {
         </div>
       </div>
     </div>
+    </ScrutinyLayout>
+    
   );
 };
 

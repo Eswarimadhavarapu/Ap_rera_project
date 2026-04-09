@@ -1,11 +1,14 @@
 import React, { use } from "react";
 import "../../styles/scrutiny/ScrutinyViewFiles.css";
 import { useNavigate } from "react-router-dom";
+import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
 const ScrutinyViewFiles = () => {
    const  navigate=useNavigate()
   return (
-    <div className="Svff-svf-main">
+
+    <ScrutinyLayout>
+<div className="Svff-svf-main">
 
       {/* HEADER */}
       
@@ -63,6 +66,8 @@ const ScrutinyViewFiles = () => {
         </div>
       </div>
     </div>
+    </ScrutinyLayout>
+    
   );
 };
 

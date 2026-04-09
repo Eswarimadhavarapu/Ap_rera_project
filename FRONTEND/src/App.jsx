@@ -173,6 +173,7 @@ import ScrutinyRegistration from "./pages/scrutiny/ScrutinyRegistration.jsx";
 import ScrutinyFpmsDashboard from "./pages/scrutiny/ScrutinyFpmsDashboard.jsx";
 import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
 import ScrutinyViewFiles from "./pages/scrutiny/ScrutinyViewFiles.jsx";
+import ScrutinyLayout from "./components/scrutiny/ScrutinyLayout.jsx";
 
 
 function App() {

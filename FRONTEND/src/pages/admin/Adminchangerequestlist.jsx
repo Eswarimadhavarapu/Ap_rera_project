@@ -10,7 +10,7 @@ const STATUS_CONFIG = {
   ALL: { label: "All", color: "#333333", bg: "#f0f0f0" },
   SUBMITTED: { label: "Pending", color: "#b07800", bg: "#fff8e1" },
   APPROVED: { label: "Approved", color: "#1a7a3c", bg: "#e6f6ec" },
-  REJECTED: { label: "Rejected", color: "#c0200f", bg: "#fdecea" },
+  REJECTED: { label: "Rejected", color: "#c0200f", bg: "#8e362dff" },
   PENDING: { label: "Pending", color: "#b07800", bg: "#fff8e1" },
 };
 
@@ -21,7 +21,7 @@ const TABS = [
   { key: "REJECTED", label: "Rejected" },
 ];
 
-// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
+
 const AdminChangeRequestList = () => {
   const navigate = useNavigate();
 
@@ -69,12 +69,10 @@ const AdminChangeRequestList = () => {
   const filtered = requests.filter((item) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
-
     if (searchField === "reference_no") return item.request?.reference_no?.toLowerCase().includes(q);
     if (searchField === "application_number") return item.request?.application_number?.toLowerCase().includes(q);
     if (searchField === "project_name") return item.request?.project_name?.toLowerCase().includes(q);
     if (searchField === "applicant_name") return item.request?.applicant_name?.toLowerCase().includes(q);
-
     return (
       item.request?.reference_no?.toLowerCase().includes(q) ||
       item.request?.applicant_name?.toLowerCase().includes(q) ||
@@ -132,8 +130,6 @@ const AdminChangeRequestList = () => {
               </div>
             ))}
           </div>
-
-          {/* ── TABS ── */}
           <div className="acr-tabs">
             {TABS.map((t) => (
               <button
@@ -150,21 +146,17 @@ const AdminChangeRequestList = () => {
               </button>
             ))}
           </div>
-
-          {/* ── SEARCH ── */}
           <div className="acr-toolbar" style={{ display: "flex", gap: "12px", padding: "16px", background: "#fff", borderRadius: "10px", marginBottom: "20px", border: "1px solid #e2e8f0", alignItems: "stretch" }}>
             <select
               style={{ flex: "0 0 220px", height: "42px", padding: "0 14px", borderRadius: "8px", border: "1px solid #ccd4e0", outline: "none", backgroundColor: "#f8fafd", fontSize: "13px", fontWeight: "600", color: "#0f3460", cursor: "pointer" }}
               value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-            >
+              onChange={(e) => setSearchField(e.target.value)}            >
               <option value="all">All Fields</option>
               <option value="reference_no">Reference No</option>
               <option value="application_number">Application No</option>
               <option value="project_name">Project Name</option>
               <option value="applicant_name">Applicant Name</option>
             </select>
-
             <input
               className="acr-search"
               style={{ margin: 0, flex: "1 1 auto", minWidth: 0, height: "42px", padding: "0 16px", boxSizing: "border-box" }}
