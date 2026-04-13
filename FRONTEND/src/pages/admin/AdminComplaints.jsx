@@ -4,15 +4,14 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import TopHeader from "../../components/admin/TopHeader";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
+  @import
+  url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
   .complaints-wrapper {
     font-family: 'Plus Jakarta Sans', sans-serif;
     padding: 28px;
     background: #f4f6fb;
     min-height: 100vh;
   }
-
   .complaints-page-title {
     font-size: 22px;
     font-weight: 700;
@@ -44,18 +43,15 @@ const styles = `
     transition: all 0.18s;
     user-select: none;
   }
-
   .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.10);
   }
-
   .stat-card.active-total   { border-color: #3b5bdb; background: #eef1ff; }
   .stat-card.active-open    { border-color: #3b82f6; background: #eff6ff; }
   .stat-card.active-pending { border-color: #f59e0b; background: #fffbeb; }
   .stat-card.active-close   { border-color: #12b76a; background: #ecfdf5; }
   .stat-card.active-reject  { border-color: #f04438; background: #fef2f2; }
-
   .stat-label {
     font-size: 11px;
     font-weight: 600;
@@ -66,12 +62,10 @@ const styles = `
     align-items: center;
     gap: 5px;
   }
-
   .stat-value {
     font-size: 24px;
     font-weight: 700;
   }
-
   .stat-dot {
     width: 7px;
     height: 7px;
@@ -79,13 +73,11 @@ const styles = `
     display: inline-block;
     flex-shrink: 0;
   }
-
   .stat-total   .stat-value { color: #3b5bdb; }
   .stat-open    .stat-value { color: #3b82f6; }
   .stat-pending .stat-value { color: #f59e0b; }
   .stat-close   .stat-value { color: #12b76a; }
   .stat-reject  .stat-value { color: #f04438; }
-
   .dot-total   { background: #3b5bdb; }
   .dot-open    { background: #3b82f6; }
   .dot-pending { background: #f59e0b; }
@@ -184,7 +176,7 @@ const styles = `
     text-align: left;
     font-size: 11px;
     font-weight: 700;
-    color: #6b7280;
+    color: #f8f8f8ff;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     white-space: nowrap;
@@ -338,7 +330,7 @@ const styles = `
 const STATUS_MAP = {
   open:    { label: "Open",    cls: "badge-open"    },
   pending: { label: "Pending", cls: "badge-pending" },
-  close:   { label: "Closed",  cls: "badge-close"   },
+  closed:   { label: "Closed",  cls: "badge-close"   },
   reject:  { label: "Rejected",cls: "badge-reject"  },
 };
 
@@ -346,7 +338,7 @@ const STAT_CARDS = [
   { key: "all",     label: "Total",    dotCls: "dot-total",   cardCls: "stat-total",   activeCls: "active-total"   },
   { key: "open",    label: "Open",     dotCls: "dot-open",    cardCls: "stat-open",    activeCls: "active-open"    },
   { key: "pending", label: "Pending",  dotCls: "dot-pending", cardCls: "stat-pending", activeCls: "active-pending" },
-  { key: "close",   label: "Closed",   dotCls: "dot-close",   cardCls: "stat-close",   activeCls: "active-close"   },
+  { key: "closed",   label: "Closed",   dotCls: "dot-close",   cardCls: "stat-close",   activeCls: "active-close"   },
   { key: "reject",  label: "Rejected", dotCls: "dot-reject",  cardCls: "stat-reject",  activeCls: "active-reject"  },
 ];
 
@@ -362,7 +354,7 @@ const AdminComplaints = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   useEffect(() => {
-    fetch("https://7zgjxth4-5055.inc1.devtunnels.ms/api/complint/list")
+    fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/list")
       .then((res) => res.json())
       .then((data) => setComplaints(data.data || []))
       .catch((err) => console.log(err));
@@ -372,7 +364,7 @@ const AdminComplaints = () => {
     all:     complaints.length,
     open:    complaints.filter((c) => c.status === "open").length,
     pending: complaints.filter((c) => c.status === "pending").length,
-    close:   complaints.filter((c) => c.status === "close").length,
+    closed:   complaints.filter((c) => c.status === "closed").length,
     reject:  complaints.filter((c) => c.status === "reject").length,
   };
 
@@ -425,11 +417,11 @@ const AdminComplaints = () => {
             <div className="complaints-toolbar">
               <div className="search-box">
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /> 
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search ID, subject, register no..."
+                  placeholder="   Search ID, subject, register no..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -464,20 +456,19 @@ const AdminComplaints = () => {
             <div className="results-count">
               Showing <strong>{filtered.length}</strong> of <strong>{complaints.length}</strong> complaints
             </div>
-
             {/* ── Table ── */}
             <div className="table-container">
               <table className="complaints-table">
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th>S.No</th>
                     <th>Complaint ID</th>
                     <th>Subject</th>
                     <th>Form Type</th>
                     <th>Register No.</th>
                     <th>Date</th>
                     <th>Status</th>
-                    <th>Reject Reason</th>
+                   
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -523,11 +514,7 @@ const AdminComplaints = () => {
                               {s.label}
                             </span>
                           </td>
-                          <td>
-                            {item.status === "reject"
-                              ? <span className="reject-reason">{item.reject_reson || "No reason provided"}</span>
-                              : <span className="no-data">—</span>}
-                          </td>
+                         
                           <td>
                             <button
                               className="btn-view"

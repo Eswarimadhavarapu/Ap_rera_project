@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/admin/adminLogin.css";
-import TopHeader from "../../components/admin/TopHeader";
-import { apiPost } from "../../api/api";
-import { useAdmin } from "../../context/AdminContext";
+import "../styles/admin/adminLogin.css";
+import TopHeader from "../components/admin/TopHeader";
+import { apiPost } from "../api/api";
+import { useAdmin } from "../context/AdminContext";
 
-const AdminLogin = () => {
+const DepartmentLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
@@ -39,7 +39,7 @@ const AdminLogin = () => {
     try {
       const data = await apiPost("/api/admin/verify-otp", { username, otp });
       saveAdmin(data.admin); // ✅ saves to context + localStorage in one call
-      navigate("/admin-dashboard", { replace: true });
+      navigate("/scrutiny/scrutiny-engineer", { replace: true });
     } catch {
       setError("Invalid or expired OTP. Please try again.");
     } finally {
@@ -73,7 +73,7 @@ const AdminLogin = () => {
           </div>
 
           <h2 className="admin-login-title">
-            {step === "login" ? "Admin Portal" : "Verify OTP"}
+            {step === "login" ? "Department Portal" : "Verify OTP"}
           </h2>
           <p className="admin-login-subtitle">
             {step === "login"
@@ -192,4 +192,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default DepartmentLogin;

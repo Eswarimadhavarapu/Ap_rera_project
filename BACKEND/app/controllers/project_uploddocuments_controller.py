@@ -1,239 +1,3 @@
-# import os
-# import logging
-# from flask import Blueprint, request, jsonify, current_app
-# from werkzeug.utils import secure_filename
-
-# from app.models.database import db
-# from app.models.project_upload_documents import ProjectRegistrationDocument
-# from app.models.project_registration_consultant import ProjectRegistrationConsultant
-
-# logger = logging.getLogger(__name__)
-
-# project_upload_documents_bp = Blueprint(
-#     "project_upload_documents",
-#     __name__
-# )
-
-# # =====================================================
-# # 1️⃣ UPLOAD DOCUMENTS (POST)
-# # =====================================================
-# @project_upload_documents_bp.route(
-#     "/project/documents/upload",
-#     methods=["POST"]
-# )
-# def upload_documents():
-#     try:
-#         application_number = request.form.get("application_number")
-#         pan_number = request.form.get("pan_number")
-#         files = request.files
-
-#         if not application_number or not pan_number:
-#             return jsonify({
-#                 "status": "error",
-#                 "message": "application_number and pan_number required"
-#             }), 400
-
-#         base_path = os.path.join(
-#             current_app.root_path,
-#             "uploads",
-#             "project_documents",
-#             str(application_number)
-#         )
-#         os.makedirs(base_path, exist_ok=True)
-
-#         documents_json = {}
-
-#         for key in files:
-#             if key.startswith("doc_"):
-#                 doc_id = key.split("_")[1]
-#                 file = files[key]
-
-#                 filename = secure_filename(file.filename)
-#                 saved_path = os.path.join(base_path, filename)
-#                 file.save(saved_path)
-
-#                 documents_json[doc_id] = saved_path
-
-#         record = ProjectRegistrationDocument.query.filter_by(
-#             application_number=application_number,
-#             pan_number=pan_number
-#         ).first()
-
-#         if record:
-#             old_docs = record.documents or {}
-#             old_docs.update(documents_json)
-#             record.documents = old_docs
-#         else:
-#             record = ProjectRegistrationDocument(
-#                 application_number=application_number,
-#                 pan_number=pan_number,
-#                 documents=documents_json
-#             )
-#             db.session.add(record)
-
-#         db.session.commit()
-
-#         return jsonify({
-#             "status": "success",
-#             "documents": documents_json
-#         }), 200
-
-#     except Exception as e:
-#         db.session.rollback()
-#         logger.exception("UPLOAD FAILED")
-#         return jsonify({
-#             "status": "error",
-#             "message": str(e)
-#         }), 500
-
-
-# # =====================================================
-# # 2️⃣ SAVE CONSULTANT (POST - UPSERT)
-# # =====================================================
-# @project_upload_documents_bp.route(
-#     "/project/consultant-declaration/save",
-#     methods=["POST"]
-# )
-# def save_consultant_declaration():
-#     try:
-#         data = request.json
-
-#         application_number = data.get("application_number")
-#         pan_number = data.get("pan_number")
-
-#         if not application_number or not pan_number:
-#             return jsonify({
-#                 "status": "error",
-#                 "message": "application_number and pan_number required"
-#             }), 400
-
-#         record = ProjectRegistrationConsultant.query.filter_by(
-#             application_number=application_number,
-#             pan_number=pan_number
-#         ).first()
-
-#         if record:
-#             record.consultancy_name = data.get("consultancy_name")
-#             record.consultant_name = data.get("consultant_name")
-#             record.mobile_number = data.get("mobile_number")
-#             record.email_id = data.get("email_id")
-#             record.address = data.get("address")
-#             record.declaration_name = data.get("declaration_name")
-#             record.declaration_accept = data.get("declaration_accept")
-#             record.note1_accept = data.get("note1_accept")
-#             record.note2_accept = data.get("note2_accept")
-#         else:
-#             record = ProjectRegistrationConsultant(**data)
-#             db.session.add(record)
-
-#         db.session.commit()
-
-#         return jsonify({"status": "success"}), 200
-
-#     except Exception as e:
-#         db.session.rollback()
-#         logger.exception("SAVE FAILED")
-#         return jsonify({
-#             "status": "error",
-#             "message": str(e)
-#         }), 500
-
-
-# # =====================================================
-# # 3️⃣ GET DOCUMENTS + CONSULTANT (POST)
-# # =====================================================
-# @project_upload_documents_bp.route(
-#     "/project/documents-consultant/get",
-#     methods=["POST"]
-# )
-# def get_documents_consultant():
-#     try:
-#         data = request.json
-
-#         application_number = data.get("application_number")
-#         pan_number = data.get("pan_number")
-
-#         if not application_number or not pan_number:
-#             return jsonify({
-#                 "status": "error",
-#                 "message": "application_number and pan_number required"
-#             }), 400
-
-#         document_record = ProjectRegistrationDocument.query.filter_by(
-#             application_number=application_number,
-#             pan_number=pan_number
-#         ).first()
-
-#         consultant_record = ProjectRegistrationConsultant.query.filter_by(
-#             application_number=application_number,
-#             pan_number=pan_number
-#         ).first()
-
-#         return jsonify({
-#             "status": "success",
-#             "documents": document_record.documents if document_record else {},
-#             "consultant": consultant_record.to_dict() if consultant_record else {}
-#         }), 200
-
-#     except Exception as e:
-#         logger.exception("GET FAILED")
-#         return jsonify({
-#             "status": "error",
-#             "message": str(e)
-#         }), 500
-
-
-# # =====================================================
-# # 4️⃣ UPDATE CONSULTANT (PUT)
-# # =====================================================
-# @project_upload_documents_bp.route(
-#     "/project/consultant-declaration/update",
-#     methods=["PUT"]
-# )
-# def update_consultant_declaration():
-#     try:
-#         data = request.json
-
-#         application_number = data.get("application_number")
-#         pan_number = data.get("pan_number")
-
-#         record = ProjectRegistrationConsultant.query.filter_by(
-#             application_number=application_number,
-#             pan_number=pan_number
-#         ).first()
-
-#         if not record:
-#             return jsonify({
-#                 "status": "error",
-#                 "message": "Record not found"
-#             }), 404
-
-#         record.consultancy_name = data.get("consultancy_name")
-#         record.consultant_name = data.get("consultant_name")
-#         record.mobile_number = data.get("mobile_number")
-#         record.email_id = data.get("email_id")
-#         record.address = data.get("address")
-#         record.declaration_name = data.get("declaration_name")
-#         record.declaration_accept = data.get("declaration_accept")
-#         record.note1_accept = data.get("note1_accept")
-#         record.note2_accept = data.get("note2_accept")
-
-#         db.session.commit()
-
-#         return jsonify({
-#             "status": "success",
-#             "message": "Updated successfully"
-#         }), 200
-
-#     except Exception as e:
-#         db.session.rollback()
-#         logger.exception("UPDATE FAILED")
-#         return jsonify({
-#             "status": "error",
-#             "message": str(e)
-#         }), 500
-
-
 import os
 import logging
 import json
@@ -538,3 +302,78 @@ def update_consultant_declaration():
             "status": "error",
             "message": str(e)
         }), 500
+    
+@project_upload_documents_bp.route("/project/documents/details", methods=["GET"])
+def get_project_documents_details():
+    try:
+        # ✅ Accept BOTH formats
+        application_number = request.args.get("application_number") or request.args.get(
+            "applicationNumber"
+        )
+        pan_number = request.args.get("pan_number") or request.args.get("panNumber")
+
+        print("APP:", application_number)
+        print("PAN:", pan_number)
+
+        if not application_number or not pan_number:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": "application_number and pan_number required",
+                    }
+                ),
+                400,
+            )
+
+        # =========================
+        # 🔹 GET DOCUMENTS
+        # =========================
+        document_record = ProjectRegistrationDocument.query.filter_by(
+            application_number=application_number, pan_number=pan_number
+        ).first()
+
+        # =========================
+        # 🔹 GET CONSULTANT
+        # =========================
+        consultant_record = ProjectRegistrationConsultant.query.filter_by(
+            application_number=application_number, pan_number=pan_number
+        ).first()
+
+        # =========================
+        # 🔹 FORMAT DOCUMENTS (OPTIONAL URL)
+        # =========================
+        documents_data = {}
+        if document_record and document_record.documents:
+            base_url = request.host_url.rstrip("/")
+            for key, path in document_record.documents.items():
+                if path:
+                    filename = path.split("/")[-1]
+                    documents_data[key] = (
+                        f"{base_url}/uploads/project_documents/{application_number}/{filename}"
+                    )
+
+        # =========================
+        # 🔹 FORMAT CONSULTANT
+        # =========================
+        consultant_data = consultant_record.to_dict() if consultant_record else {}
+
+        # =========================
+        # 🔹 FINAL RESPONSE
+        # =========================
+        if not document_record and not consultant_record:
+            return jsonify({"status": "error", "message": "No data found"}), 404
+
+        return (
+            jsonify(
+                {
+                    "status": "success",
+                    "documents": documents_data,
+                    "consultant": consultant_data,
+                }
+            ),
+            200,
+        )
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

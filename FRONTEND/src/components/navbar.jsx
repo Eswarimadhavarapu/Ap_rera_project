@@ -265,7 +265,7 @@ const Navbar = () => {
                <li onClick={() => navigate("scrutinity/scrutiny-engineer")}>
       Scrutiny Engineer
     </li>
-              <li onClick={() => navigate("/registered/projects")}>
+              <li onClick={() => navigate("/department")}>
                 DEPARTMENT LOGIN
               </li>
               <li onClick={() => navigate("/promoter")}>

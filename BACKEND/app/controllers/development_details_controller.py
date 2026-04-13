@@ -282,3 +282,46 @@ def get_development_details():
             "message": "Internal Server Error",
             "error": str(e)
         }), 500
+
+
+@development_details_bp.route("/development-details/all", methods=["GET"])
+def get_development_detailss():
+    try:
+        application_number = request.args.get("application_number")
+        pan_number = request.args.get("pan_number")
+
+        # ✅ Validate input
+        if not application_number or not pan_number:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": "application_number and pan_number are required",
+                    }
+                ),
+                400,
+            )
+
+        # ✅ Fetch ALL records (IMPORTANT CHANGE)
+        results = DevelopmentDetailsModel.get_all_by_application_and_pan(
+            application_number, pan_number
+        )
+
+        # ✅ If no data
+        if not results:
+            return jsonify({"status": "success", "count": 0, "data": []}), 200
+
+        # ✅ Success response
+        return (
+            jsonify({"status": "success", "count": len(results), "data": results}),
+            200,
+        )
+
+    except Exception as e:
+        logging.exception("🔥 GET development-details failed")
+        return (
+            jsonify(
+                {"status": "error", "message": "Internal Server Error", "error": str(e)}
+            ),
+            500,
+        )

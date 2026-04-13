@@ -174,6 +174,7 @@ import ScrutinyFpmsDashboard from "./pages/scrutiny/ScrutinyFpmsDashboard.jsx";
 import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
 import ScrutinyViewFiles from "./pages/scrutiny/ScrutinyViewFiles.jsx";
 import ScrutinyLayout from "./components/scrutiny/ScrutinyLayout.jsx";
+import DepartmentLogin from "./pages/DepartmentLogin.jsx";
 
 
 function App() {
@@ -434,6 +435,9 @@ function App() {
 <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
 
 <Route path="scrutinity/scrutiny-engineer" element={<ScrutinyDashboard />} />
+<Route path="/planning/planning-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/legal/legal-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/audit/audit-dashboard" element={<ScrutinyDashboard />} />
               <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
   {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
   <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
@@ -448,6 +452,9 @@ function App() {
   <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard />} />
   <Route path="/scrutiny/create-files" element={<ScrutinyCreateFile />} />
   <Route path="/scrutiny/view-files" element={<ScrutinyViewFiles />} />
+   <Route path="/department" element={<DepartmentLogin />} />
+   
+
 
 
 

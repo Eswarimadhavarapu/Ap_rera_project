@@ -30,8 +30,8 @@ const SECTIONS_CONFIG = [
 const genRef = () => "CR" + Date.now().toString().slice(-8);
 
 // ─── ACCORDION BODY ───────────────────────────────────────────────────────────
-function AccordionFormBody({ panel, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData }) {
-  const props = { subSectionId: panel.subId, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData };
+function AccordionFormBody({ panel, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData, applicationNumber, panNumber }) {
+  const props = { subSectionId: panel.subId, formValues, onChange, docFiles, onDocFile, tableStore, setTableStore, previewData, applicationNumber, panNumber };
   switch (panel.componentType) {
     case "project": return <ProjectDetailsForm     {...props} />;
     case "promoter": return <PromoterDetailsForm    {...props} />;
@@ -204,10 +204,11 @@ export default function ChangeRequest() {
 
         stored.forEach((r) => {
           if (r.workType !== undefined) {
-            rows.push({
-              subLabel: panel.subLabel, field: r.workType, oldValue: r.previousPercent || "-",
-              newValue: r.changePercent || "-", description: r.description || "-", document: "-", documentUrl: "", type: "field"
-            });
+           rows.push({
+  subLabel: panel.subLabel, field: r.workType, oldValue: r.previousPercent || "-",
+  newValue: r.changePercent || "-", description: r.description || "-",
+  document: r.documentName || "-", documentUrl: "", type: "field"
+});
           } else if (r.docType !== undefined) {
             rows.push({
               subLabel: panel.subLabel, field: r.docType, oldValue: r.oldFileName || "-",
@@ -573,16 +574,18 @@ export default function ChangeRequest() {
                                     background: "#f9fbff",
                                     borderRadius: "8px",
                                   }}>
-                                    <AccordionFormBody
-                                      panel={{ subId: sub.id, componentType: section.component }}
-                                      formValues={formValues}
-                                      onChange={handleFieldChange}
-                                      docFiles={docFiles}
-                                      onDocFile={handleDocFile}
-                                      tableStore={tableStore}
-                                      setTableStore={setTableStore}
-                                      previewData={previewData}
-                                    />
+                                   <AccordionFormBody
+  panel={{ subId: sub.id, componentType: section.component }}
+  formValues={formValues}
+  onChange={handleFieldChange}
+  docFiles={docFiles}
+  onDocFile={handleDocFile}
+  tableStore={tableStore}
+  setTableStore={setTableStore}
+  previewData={previewData}
+  applicationNumber={APP_INFO.applicationNumber}
+  panNumber={APP_INFO.panNumber}
+/>
                                   </div>
                                 )}
                               </div>

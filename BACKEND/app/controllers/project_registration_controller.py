@@ -436,3 +436,64 @@ def get_project_basic_details_by_pan_controller():
         "success": True,
         "data": data
     }), 200
+
+# =====================================
+# ✅ SINGLE PROJECT (AUTO TYPE - BEST API)
+# =====================================
+@project_registration_bp.route("/planning-single", methods=["GET"])
+def planning_single():
+
+    application_number = request.args.get("applicationNumber")
+    pan_number = request.args.get("panNumber")
+
+    if not application_number or not pan_number:
+        return jsonify({"error": "Missing data"}), 400
+
+    from app.models.planning_documents_model import get_planning_single
+
+    data = get_planning_single(application_number, pan_number)
+
+    if not data:
+        return jsonify({"error": "No project found"}), 404
+
+    return jsonify({
+        "success": True,
+        "data": data
+    }), 200
+
+
+# =====================================
+# ✅ ALL PROJECTS (INDIVIDUAL + OTHER)
+# =====================================
+@project_registration_bp.route("/planning-dashboard-all", methods=["GET"])
+def planning_dashboard_all():
+
+    from app.models.planning_documents_model import get_all_planning_dashboard_mixed
+
+    data = get_all_planning_dashboard_mixed()
+
+    return jsonify({
+        "success": True,
+        "data": data
+    }), 200
+
+
+# =====================================
+# ✅ FILTER BY TYPE
+# =====================================
+@project_registration_bp.route("/planning-dashboard-all-by-type", methods=["GET"])
+def planning_dashboard_all_by_type():
+
+    user_type = request.args.get("type")  # individual / other
+
+    if not user_type:
+        return jsonify({"error": "type required"}), 400
+
+    from app.models.planning_documents_model import get_all_planning_dashboard_by_type
+
+    data = get_all_planning_dashboard_by_type(user_type)
+
+    return jsonify({
+        "success": True,
+        "data": data
+    }), 200

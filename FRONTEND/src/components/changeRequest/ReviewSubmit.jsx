@@ -159,12 +159,14 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                           <td style={{ ...S.td, ...S.oldVal }}>{row.oldValue || "-"}</td>
                           <td style={{ ...S.td, ...S.newVal }}>{row.newValue}</td>
                           <td style={{ ...S.td, color: "#555", fontSize: "12.5px" }}>{row.description || "-"}</td>
-                          <td style={S.td}>
-                            {row.documentUrl
-                              ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                                  style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
-                              : "-"}
-                          </td>
+                         <td style={S.td}>
+  {row.documentUrl
+    ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
+        style={{ color: "#0f3460", fontWeight: "600" }}>📎 {row.document}</a>
+    : row.document && row.document !== "-"
+      ? <span style={{ color: "#1a7a3c" }}>📎 {row.document}</span>
+      : "-"}
+</td>
                         </tr>
                       ))}
                     </tbody>

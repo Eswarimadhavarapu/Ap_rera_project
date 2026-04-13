@@ -6,7 +6,7 @@ class Engineer(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     
-    engineer_type = db.Column(db.String(50), nullable=False)  # 'structural' or 'project'
+    engineer_type = db.Column(db.String(50), nullable=False)  # 'stru'project'
     engineer_name = db.Column(db.String(200), nullable=False)
     email_id = db.Column(db.String(100))
     address_line1 = db.Column(db.String(300), nullable=False)
