@@ -4,6 +4,7 @@ import { apiGet, BASE_URL } from "../../api/api";
 import ProjectWizard from "../../components/scrutiny/scrutiny_steper";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import "../../styles/scrutiny/scrutiny_projectregistation_1.css";
+import { useAdmin } from "../../context/AdminContext";
 
 const EMPTY_FORM = {
   applicationNo: "",
@@ -38,9 +39,6 @@ const EMPTY_FORM = {
   registrationNumber: "",
   registrationDate: "",
 };
-
-
-
 
 
 
@@ -171,7 +169,12 @@ function DataTable({ className = "", columns, rows, emptyText = "No data availab
 
 export default function ScrutinyProjectRegistrationDetail() {
   const navigate = useNavigate();
+  const { admin } = useAdmin();
+const dept = admin?.department?.toLowerCase();
+const isPlanning = dept === "planning";
+
   const location = useLocation();
+
   const panNumber =
     location.state?.panNumber || sessionStorage.getItem("panNumber") || "";
   const applicationNumber =
@@ -552,11 +555,13 @@ export default function ScrutinyProjectRegistrationDetail() {
                       <DisplayItem label="Account No" value={formData.accountNo} />
                       <DisplayItem label="Account Holder's Name as in Bank Pass Book" value={formData.accountHolder} />
                       <DisplayItem label="IFSC Code" value={formData.ifsc} />
-                      <DisplayItem
-                        label="Bank Account Statement"
-                        value={bankStatementUrl ? bankStatementUrl : "N/A"}
-                        linkText="View Document"
-                      />
+                      {!isPlanning && (
+  <DisplayItem
+    label="Bank Account Statement"
+    value={bankStatementUrl ? bankStatementUrl : "N/A"}
+    linkText="View Document"
+  />
+)}
                     </div>
                   </Section>
 
@@ -592,11 +597,15 @@ export default function ScrutinyProjectRegistrationDetail() {
                       <DataTable className="spr-red-head" columns={litigationColumns} rows={litigationEntries} />
                     ) : (
                       <div className="spr-affidavit">
-                        {affidavitUrl ? (
-                          <a href={affidavitUrl} target="_blank" rel="noreferrer">Affidavit NO CASE PENDING.pdf</a>
-                        ) : (
-                          <span className="spr-display-field">No affidavit uploaded.</span>
-                        )}
+                      {!isPlanning && (
+  affidavitUrl ? (
+    <a href={affidavitUrl} target="_blank" rel="noreferrer">
+      Affidavit NO CASE PENDING.pdf
+    </a>
+  ) : (
+    <span className="spr-display-field">No affidavit uploaded.</span>
+  )
+)}
                       </div>
                     )}
                   </Section>

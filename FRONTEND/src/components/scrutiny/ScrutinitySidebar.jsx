@@ -1,22 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAdmin } from "../../context/AdminContext";
 
 const ScrutinySidebar = ({ sidebarOpen }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  
+
+  // ✅ FIX: inside component
+  const { admin } = useAdmin();
+  const dept = admin?.department?.toLowerCase();
 
   // ✅ Dropdown state
-  const isFpmsRoute = location.pathname.includes("/scrutiny");
+  const isFpmsRoute =
+    dept === "engineer" && location.pathname.includes("/scrutiny");
 
-const [fpmsOpen, setFpmsOpen] = useState(isFpmsRoute);
-
-
-  // ✅ Toggle function
-  const toggleFpms = () => {
-    setFpmsOpen(!fpmsOpen);
-  };
+  const [fpmsOpen, setFpmsOpen] = useState(isFpmsRoute);
 
   return (
     <div
@@ -25,46 +24,46 @@ const [fpmsOpen, setFpmsOpen] = useState(isFpmsRoute);
       }`}
     >
 
-      <h2 className="scrutiny-sidebar-title">SCRUTINY PANEL</h2>
+      {/* ✅ Dynamic Panel */}
+      <h2 className="scrutiny-sidebar-title">
+        {dept === "planning"
+          ? "PLANNING PANEL"
+          : dept === "legal"
+          ? "LEGAL PANEL"
+          : dept === "audit"
+          ? "AUDIT PANEL"
+          : "SCRUTINY PANEL"}
+      </h2>
 
       {/* Project Registration */}
       <button onClick={() => navigate("/scrutiny/project-registration")}>
         Project Registration
       </button>
 
-      {/* ✅ FPMS Dashboard (Dropdown Trigger) */}
-      <button
-  onClick={() => {
-    navigate("/scrutiny/scrutiny-fpms");
-    setFpmsOpen(true); // ✅ always open
-  }}
->
-  📊 FPMS Dashboard
-</button>
-
-      {/* ✅ Dropdown Items */}
-      {fpmsOpen && (
-        <div style={{ paddingLeft: "20px" }}>
-          
+      {/* ✅ FPMS only for engineer */}
+      {dept === "engineer" && (
+        <>
           <button
-   onClick={() => navigate("/scrutiny/create-files")}
+            onClick={() => {
+              navigate("/scrutiny/scrutiny-fpms");
+              setFpmsOpen(true);
+            }}
           >
-            📄 Create Files
+            📊 FPMS Dashboard
           </button>
 
-          <button
-          onClick={() => {
-  if (location.pathname === "/scrutiny/view-files") {
-    navigate("/scrutiny/view-files", { replace: true });
-  } else {
-    navigate("/scrutiny/view-files");
-  }
-}}
-          >
-            📁 View Files
-          </button>
+          {fpmsOpen && (
+            <div style={{ paddingLeft: "20px" }}>
+              <button onClick={() => navigate("/scrutiny/create-files")}>
+                📄 Create Files
+              </button>
 
-        </div>
+              <button onClick={() => navigate("/scrutiny/view-files")}>
+                📁 View Files
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Logout */}

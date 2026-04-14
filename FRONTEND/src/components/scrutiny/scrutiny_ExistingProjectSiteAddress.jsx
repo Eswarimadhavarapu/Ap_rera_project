@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { apiGet, BASE_URL } from "../../api/api";
+import { useAdmin } from "../../context/AdminContext";
 
 const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
 
   const [districts, setDistricts] = useState([]);
   const [mandals, setMandals] = useState([]);
   const [villages, setVillages] = useState([]);
+  const { admin } = useAdmin();
+const dept = admin?.department?.toLowerCase();
+const isPlanning = dept === "planning";
 
   /* ================= MAP DATA ================= */
   const mappedData = useMemo(() => {
@@ -191,23 +195,25 @@ const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Address Proof</span>
-            {getFileUrl(mappedData.addressProofPath) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(mappedData.addressProofPath)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(mappedData.addressProofPath)}
-              </a>
-            ) : (
-              <span className="display-field">NA</span>
-            )}
-          </div>
-        </div>
+        {!isPlanning && (
+  <div className="col-sm-3">
+    <div className="display-group">
+      <span className="display-label">Address Proof</span>
+      {getFileUrl(mappedData.addressProofPath) ? (
+        <a
+          className="display-field"
+          href={getFileUrl(mappedData.addressProofPath)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {getFileName(mappedData.addressProofPath)}
+        </a>
+      ) : (
+        <span className="display-field">NA</span>
+      )}
+    </div>
+  </div>
+)}
 
         <div className="col-sm-3">
           <div className="display-group">

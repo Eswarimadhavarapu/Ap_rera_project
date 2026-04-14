@@ -39,7 +39,17 @@ const DepartmentLogin = () => {
     try {
       const data = await apiPost("/api/admin/verify-otp", { username, otp });
       saveAdmin(data.admin); // ✅ saves to context + localStorage in one call
-      navigate("/scrutiny/scrutiny-engineer", { replace: true });
+      const dept = data.admin.department?.toLowerCase();
+
+if (dept === "planning") {
+  navigate("/planning/planning-dashboard", { replace: true });
+} else if (dept === "legal") {
+  navigate("/legal/legal-dashboard", { replace: true });
+} else if (dept === "audit") {
+  navigate("/audit/audit-dashboard", { replace: true });
+} else if (dept === "engineer") {
+  navigate("/scrutinity/scrutiny-engineer", { replace: true });
+}
     } catch {
       setError("Invalid or expired OTP. Please try again.");
     } finally {
