@@ -514,7 +514,7 @@ export default function UploadDocumentsWithApi() {
 
             {/* Title */}
             <h2 className="uploaddoc-title">Project Registration</h2>
-            <ProjectWizard currentStep={5} />
+            <ProjectWizard currentStep={5} type="individual"/>
             <div className="uploaddoc-title-line" />
 
             {/* Table */}

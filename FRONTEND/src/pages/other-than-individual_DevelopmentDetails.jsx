@@ -469,7 +469,7 @@ console.log("Application Number:", applicationNumber);
                 <span>Registration / Project Registration</span>
             </div>
            
-            <ProjectWizard currentStep={3} />
+            <ProjectWizard currentStep={3} type="other" />
 
             <form onSubmit={handleSubmit} className="development-details-form">
                 <div className="development-detailsform-section">

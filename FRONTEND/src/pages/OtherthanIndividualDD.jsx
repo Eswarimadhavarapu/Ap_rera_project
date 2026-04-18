@@ -551,7 +551,7 @@ const OtherthanIndividualDD = () => {
 
 
 
-            <ProjectWizard currentStep={3} />
+            <ProjectWizard currentStep={3} type="other" />
 
             <form onSubmit={handleSubmit} className="development-details-form">
                 <div className="development-detailsform-section">

@@ -18,3 +18,5 @@ class LitigationOtherTINDV(db.Model):
 
     interim_order = db.Column(db.String(10))
     final_order_details = db.Column(db.String(10))
+    interim_order_certificate_path = db.Column(db.Text)
+    disposed_certificate_path = db.Column(db.Text)

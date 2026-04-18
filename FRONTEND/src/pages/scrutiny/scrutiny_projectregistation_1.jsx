@@ -95,7 +95,7 @@ const normalizePromoterType = (value) => {
 const getFileUrl = (value) => {
   if (!value) return "";
   if (String(value).startsWith("http")) return value;
-  return `${BASE_URL}/api/${String(value).replace(/^\/+/, "")}`;
+  return `${BASE_URL}/${String(value).replace(/^\/+/, "")}`;
 };
 
 const getDaysFromDate = (value) => {
@@ -131,6 +131,20 @@ function Section({ title, children }) {
       <h2 className="spr-section-title">{title}</h2>
       {children}
     </section>
+  );
+}
+
+function DocumentCell({ path, label = "View Document" }) {
+  const href = getFileUrl(path);
+
+  if (!href) {
+    return <span className="spr-display-field">N/A</span>;
+  }
+
+  return (
+    <a className="spr-file-link" href={href} target="_blank" rel="noreferrer">
+      {label}
+    </a>
   );
 }
 
@@ -303,6 +317,10 @@ const isPlanning = dept === "planning";
             applicationNo: firstFilled(data.formData.applicationNo, applicationNumber),
             promoterType: "other",
             panNumber: resolvedPanNumber || data.formData.panNumber || prev.panNumber,
+            name: firstFilled(data.formData.name, data.formData.organizationName),
+            email: firstFilled(data.formData.email, data.formData.authorizedSignatoryEmail),
+            mobile: firstFilled(data.formData.mobile, data.formData.authorizedSignatoryMobile),
+            landline: firstFilled(data.formData.landline, data.formData.authorizedSignatoryLandline),
             registrationNumber: firstFilled(data.formData.registrationNumber, data.formData.cinNumber),
             registrationDate: formatApiDate(data.formData.registrationDate),
             licenseDate: formatApiDate(data.formData.licenseDate),
@@ -424,6 +442,16 @@ const isPlanning = dept === "planning";
       label: "Final Order Details",
       render: (row) => formatBoolean(firstFilled(row?.finalOrderDetails)),
     },
+    {
+      key: "interimOrderCertificatePath",
+      label: "Interim Order Certificate",
+      render: (row) => <DocumentCell path={firstFilled(row?.interimOrderCertificatePath)} />,
+    },
+    {
+      key: "disposedCertificatePath",
+      label: "Disposed Certificate",
+      render: (row) => <DocumentCell path={firstFilled(row?.disposedCertificatePath)} />,
+    },
   ];
 
   const promoterColumns = [
@@ -443,6 +471,11 @@ const isPlanning = dept === "planning";
     { key: "mobile", label: "Phone No", render: (row) => pickValue(row, ["promoter2Mobile"]) },
     { key: "email", label: "Email ID", render: (row) => pickValue(row, ["promoter2Email"]) },
     { key: "pan", label: "PAN Card No", render: (row) => pickValue(row, ["promoter2PanCard"]) },
+    {
+      key: "supportingDocumentPath",
+      label: "Supporting Document",
+      render: (row) => <DocumentCell path={firstFilled(row?.supportingDocumentPath)} />,
+    },
   ];
 
   return (
@@ -564,6 +597,37 @@ const isPlanning = dept === "planning";
 )}
                     </div>
                   </Section>
+
+                  {isOther && !isPlanning && (
+                    <Section title="Uploaded Documents">
+                      <div className="spr-grid">
+                        <DisplayItem
+                          label="Organisation Registration Document"
+                          value={<DocumentCell path={firstFilled(formData.organizationRegistrationFile)} />}
+                        />
+                        <DisplayItem
+                          label="GST Document"
+                          value={<DocumentCell path={firstFilled(formData.gstDocumentFile)} />}
+                        />
+                        <DisplayItem
+                          label="PAN Card"
+                          value={<DocumentCell path={firstFilled(formData.panCardFile)} />}
+                        />
+                        <DisplayItem
+                          label="Address Proof"
+                          value={<DocumentCell path={firstFilled(formData.addressProofFile)} />}
+                        />
+                        <DisplayItem
+                          label="Income Tax Returns"
+                          value={<DocumentCell path={firstFilled(formData.itrReturnsFile)} />}
+                        />
+                        <DisplayItem
+                          label="Balance Sheet"
+                          value={<DocumentCell path={firstFilled(formData.balanceSheetFile)} />}
+                        />
+                      </div>
+                    </Section>
+                  )}
 
                   {isOther && (
                     <Section title="Member Details">

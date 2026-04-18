@@ -332,7 +332,7 @@ navigate("/Development-Details", {
 
   return (
     <div className="project-details-container">
-      <ProjectWizard currentStep={2} />
+      <ProjectWizard currentStep={2} type="individual" />
 
       {/* 🔹 ONE FORM ONLY */}
       <form onSubmit={handleSubmit} className="project-form">

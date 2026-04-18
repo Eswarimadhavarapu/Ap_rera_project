@@ -210,6 +210,7 @@ const DataTable = ({ headers, rows, tableClassName = "" }) => (
 export default function ScrutinyProjectRegistrationThree() {
   const navigate = useNavigate();
   const location = useLocation();
+  const department = sessionStorage.getItem("department");
 
   const applicationNumber =
     location.state?.applicationNumber || sessionStorage.getItem("applicationNumber") || "";
@@ -385,7 +386,7 @@ export default function ScrutinyProjectRegistrationThree() {
                       </div>
                     </div>
 
-                    {unitRows.length > 0 ? (
+                    {department !== "Planning" && unitRows.length > 0 ? (
                       <div className="vdd-table-wrap vdd-units-wrap">
                         <table className="vdd-data-table vdd-units-table">
                           <thead>

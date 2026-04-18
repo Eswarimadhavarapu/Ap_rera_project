@@ -26,3 +26,4 @@ class Promoter2OtherTINDV(db.Model):
     pan_card = db.Column(db.String(20))
     aadhaar = db.Column(db.String(20))
     passport_no = db.Column(db.String(50))
+    supporting_document_path = db.Column(db.Text)

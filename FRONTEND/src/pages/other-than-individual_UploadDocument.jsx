@@ -361,7 +361,7 @@ setTimeout(() => {
 
       {/* Title */}
       <h2 className="uploaddoc-title">Project Registration</h2>
-      <ProjectWizard currentStep={5} />
+      <ProjectWizard currentStep={5} type="other"/>
       <div className="uploaddoc-title-line" />
 
       {/* Stepper */}

@@ -1,10 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import "../styles/projectWizard2.css";
 import { EXISTINGWIZARD_STEPS } from "./ExistingwizardConfig";
 
 export default function ExistingProjectWizard({ currentStep }) {
   const navigate = useNavigate();
+  const { id } = useParams();
+const location = useLocation();
+
+// ✅ fallback if id not in URL
+const appId = id || location.state?.id;
 
   return (
     <div className="projwizard-WIZARDDIV">
@@ -23,11 +28,17 @@ export default function ExistingProjectWizard({ currentStep }) {
                 isCompleted ? "projwizard-completed" : ""
               } ${isActive ? "projwizard-active" : ""}`}
               onClick={() => {
-                // Allow navigation only to completed or active steps
-                if (isCompleted || isActive) {
-                  navigate(step.path);
-                }
-              }}
+  if (isCompleted || isActive) {
+    let path = step.path;
+
+    // 🔥 FIX: replace :id with real value
+    if (path.includes(":id")) {
+      path = path.replace(":id", appId);
+    }
+
+    navigate(path);
+  }
+}}
             >
               <div className="projwizard-step-circle">{step.id}</div>
               <div className="projwizard-step-label">{step.label}</div>

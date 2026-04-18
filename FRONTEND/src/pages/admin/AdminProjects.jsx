@@ -239,7 +239,7 @@ useEffect(() => {
           {selectedType && (
             <>
 <table className="ap-table">
-  <thead>
+  <thead className="theadtable">
     <tr>
       <th>ID</th>
       <th>Application No</th>

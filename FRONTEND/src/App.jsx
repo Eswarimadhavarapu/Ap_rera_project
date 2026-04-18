@@ -148,7 +148,6 @@ import AgentChangeRequestPayment from "./pages/AgentChangeRequestPayment";
 import PromoterOtpLogin from "./pages/PromoterOtpLogin.jsx";
 import Changerequest from "./pages/Changerequest.jsx";
 import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
-import AdminChangeRequestList   from "./pages/admin/AdminChangeRequestList";
 import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail";
 import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
 import ComplaintStatusForm from "./pages/ComplaintStatusForm.jsx";
@@ -175,7 +174,8 @@ import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
 import ScrutinyViewFiles from "./pages/scrutiny/ScrutinyViewFiles.jsx";
 import ScrutinyLayout from "./components/scrutiny/ScrutinyLayout.jsx";
 import DepartmentLogin from "./pages/DepartmentLogin.jsx";
-
+import Chatbot from "./components/Chatbot";
+import AdminChangeRequestList from "./pages/admin/Adminchangerequestlist.jsx";
 
 function App() {
   const [showPopup, setShowPopup] = useState(false);
@@ -321,144 +321,141 @@ function App() {
 
             <Route path="/renewal/receipt/:renewalId" element={<RenewalReceipt />} />
             // Admin Dashboard
-<Route
-  path="/admin-dashboard"
-  element={
-    <ProtectedRoute>
-      <AdminDashboard />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
             // Admin Requests
-<Route
-  path="/admin/requests"
-  element={
-    <ProtectedRoute>
-      <AdminRequests />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/requests"
+              element={
+                <ProtectedRoute>
+                  <AdminRequests />
+                </ProtectedRoute>
+              }
+            />
            // Admin Projects
-<Route
-  path="/admin/projects"
-  element={
-    <ProtectedRoute>
-      <AdminProjects />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/projects"
+              element={
+                <ProtectedRoute>
+                  <AdminProjects />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/admin/agents" element={<AdminAgents />} />
             // Admin Complaints
-<Route
-  path="/admin/complaints"
-  element={
-    <ProtectedRoute>
-      <AdminComplaints />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/complaints"
+              element={
+                <ProtectedRoute>
+                  <AdminComplaints />
+                </ProtectedRoute>
+              }
+            />
             // Admin Complaint Detail
-<Route
-  path="/admin/complaint/:id"
-  element={
-    <ProtectedRoute>
-      <AdminComplaintDetail />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/complaint/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminComplaintDetail />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} />
             <Route path="/complaintstatus" element={<ComplaintStatusForm />} />
             // Admin Renewal Dashboard
-<Route
-  path="/admin/renewal"
-  element={
-    <ProtectedRoute>
-      <AdminRenewal />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/renewal"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewal />
+                </ProtectedRoute>
+              }
+            />
             // Admin Renewal List
-<Route
-  path="/admin/renewals/:status"
-  element={
-    <ProtectedRoute>
-      <AdminRenewalList />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/renewals/:status"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewalList />
+                </ProtectedRoute>
+              }
+            />
 // Admin Renewal Detail
-<Route
-  path="/admin/renewal/:id"
-  element={
-    <ProtectedRoute>
-      <AdminRenewalDetail />
-    </ProtectedRoute>
-  }
-/>
+            <Route
+              path="/admin/renewal/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewalDetail />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/admin/renewal/:id" element={<AdminRenewalDetail />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/apply-for-renewal-otp" element={<ApplyForRenewalOTP />} />
             <Route path="/renewal/certificate/:renewalId" element={<RenewalNewCertificate />} />
-            <Route path="/promoter-otp-login" element={<PromoterOtpLogin />} />  
-           
+            <Route path="/promoter-otp-login" element={<PromoterOtpLogin />} />
+
 // Admin Change Requests List
-<Route
-  path="/admin/change-requests"
-  element={
-    <ProtectedRoute>
-      <AdminChangeRequestList />
-    </ProtectedRoute>
-  }
-/>
-            // Admin Change Request Detail
-<Route
-  path="/admin/change-request/:id"
-  element={
-    <ProtectedRoute>
-      <AdminChangeRequestDetail />
-    </ProtectedRoute>
-  }
-/>
-            
             <Route
-  path="/agent_change_request_1"
-  element={<AgentChangeRequest1 />}
-/>
-<Route path="/Agentchangerequest2" element={<Agentchangerequest/>} />
-<Route
-  path="/agent-change-request-payment"
-  element={<AgentChangeRequestPayment />}
-/>
-<Route path="/ChangeRequestProcess" element={<ChangeRequestProcess/>} />
-<Route path="/Changerequest1" element={<Changerequest />} />
-<Route path="/admin/project/:id" element={<AdminProjectDetails />} />
-<Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
+              path="/admin/change-requests"
+              element={
+                <ProtectedRoute>
+                  <AdminChangeRequestList />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Change Request Detail
+            <Route
+              path="/admin/change-request/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminChangeRequestDetail />
+                </ProtectedRoute>
+              }
+            />
 
-<Route path="scrutinity/scrutiny-engineer" element={<ScrutinyDashboard />} />
-<Route path="/planning/planning-dashboard" element={<ScrutinyDashboard />} />
-<Route path="/legal/legal-dashboard" element={<ScrutinyDashboard />} />
-<Route path="/audit/audit-dashboard" element={<ScrutinyDashboard />} />
-              <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
-  {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
-  <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
-<Route path="/scrutiny/project-registration_1" element={<ScrutinyProjectRegistration_1 />} />
-  <Route path="/scrutiny/project-registration_2" element={<ScrutinyProjectRegistration_2 />} />
-  <Route path="/scrutiny/project-registration_3" element={<ScrutinyProjectRegistration_3 />} />
-  <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
-   <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
-   <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
+            <Route
+              path="/agent_change_request_1"
+              element={<AgentChangeRequest1 />}
+            />
+            <Route path="/Agentchangerequest2" element={<Agentchangerequest />} />
+            <Route
+              path="/agent-change-request-payment"
+              element={<AgentChangeRequestPayment />}
+            />
+            <Route path="/ChangeRequestProcess" element={<ChangeRequestProcess />} />
+            <Route path="/Changerequest1" element={<Changerequest />} />
+            <Route path="/admin/project/:id" element={<AdminProjectDetails />} />
+            <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
+
+            <Route path="scrutinity/scrutiny-engineer" element={<ScrutinyDashboard />} />
+            <Route path="/planning/planning-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/legal/legal-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/audit/audit-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
+            {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
+            <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
+            <Route path="/scrutiny/project-registration_1" element={<ScrutinyProjectRegistration_1 />} />
+            <Route path="/scrutiny/project-registration_2" element={<ScrutinyProjectRegistration_2 />} />
+            <Route path="/scrutiny/project-registration_3" element={<ScrutinyProjectRegistration_3 />} />
+            <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
+            <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
+            <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
 
 
-  <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard />} />
-  <Route path="/scrutiny/create-files" element={<ScrutinyCreateFile />} />
-  <Route path="/scrutiny/view-files" element={<ScrutinyViewFiles />} />
-   <Route path="/department" element={<DepartmentLogin />} />
-   
-
-
-
+            <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard />} />
+            <Route path="/scrutiny/create-files" element={<ScrutinyCreateFile />} />
+            <Route path="/scrutiny/view-files" element={<ScrutinyViewFiles />} />
+            <Route path="/department" element={<DepartmentLogin />} />
 
           </Routes>
+          <Chatbot />
         </Layout></AgentFormProvider>
     </BrowserRouter>
   );

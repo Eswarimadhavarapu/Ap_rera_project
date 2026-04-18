@@ -1,4 +1,7 @@
-from flask import Blueprint, request, jsonify
+import json
+import os
+import time
+from flask import Blueprint, request, jsonify, current_app
 from app import db
 from app.models.promoter_other_t_indv import PromoterOtherTINDV
 from app.models.promoter2_other_t_indv import Promoter2OtherTINDV
@@ -6,13 +9,62 @@ from app.models.org_member_other_t_indv import OrgMemberOtherTINDV
 from app.models.rera_other_t_indv import ReraOtherTINDV
 from app.models.past_project_other_t_indv import PastProjectOtherTINDV
 from app.models.litigation_other_t_indv import LitigationOtherTINDV
+from werkzeug.utils import secure_filename
 
 promoter_other_t_indv_bp = Blueprint("promoter_other_t_indv_bp", __name__)
 
+UPLOAD_SUBFOLDER = "other_t_indv"
+
+
+def _get_request_data():
+    if request.files or request.form or request.mimetype == "multipart/form-data":
+        data = request.form.to_dict()
+        json_fields = [
+            "promoter2Entries",
+            "orgMemberEntries",
+            "reraEntries",
+            "projectEntries",
+            "litigationEntries",
+        ]
+        for field in json_fields:
+            raw_value = data.get(field, "[]")
+            try:
+                data[field] = json.loads(raw_value) if raw_value else []
+            except json.JSONDecodeError:
+                data[field] = []
+        return data
+    return request.get_json(silent=True) or {}
+
+
+def _save_uploaded_file(file, application_no, folder_name):
+    if not file or not file.filename:
+        return None
+
+    filename = secure_filename(file.filename)
+    if not filename:
+        return None
+
+    base_dir = os.path.join(
+        current_app.config["UPLOAD_FOLDER"],
+        UPLOAD_SUBFOLDER,
+        str(application_no),
+        folder_name,
+    )
+    os.makedirs(base_dir, exist_ok=True)
+
+    name, ext = os.path.splitext(filename)
+    timestamp = int(time.time() * 1000)
+    stored_filename = f"{name}_{timestamp}{ext}"
+    absolute_path = os.path.join(base_dir, stored_filename)
+    file.save(absolute_path)
+
+    return "/".join(
+        ["uploads", UPLOAD_SUBFOLDER, str(application_no), folder_name, stored_filename]
+    )
+
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/save", methods=["POST"])
 def save_full_application():
-
-    data = request.json
+    data = _get_request_data()
 
     try:
         application_no = data["applicationNo"]
@@ -49,10 +101,36 @@ def save_full_application():
             account_no=data["accountNo"],
             account_holder=data["accountHolder"],
             ifsc_code=data["ifsc"],
+            bank_statement_path=_save_uploaded_file(
+                request.files.get("bankStatementFile"), application_no, "bank"
+            ),
             other_state_reg=data["otherStateReg"],
             last_five_years=data["lastFiveYears"],
             litigation=data["litigation"],
-            promoter2=data["promoter2"]
+            promoter2=data["promoter2"],
+            organization_registration_doc_path=_save_uploaded_file(
+                request.files.get("organizationRegistrationFile"),
+                application_no,
+                "organization",
+            ),
+            gst_document_path=_save_uploaded_file(
+                request.files.get("gstDocumentFile"), application_no, "organization"
+            ),
+            pan_card_doc_path=_save_uploaded_file(
+                request.files.get("panCardFile"), application_no, "organization"
+            ),
+            address_proof_doc_path=_save_uploaded_file(
+                request.files.get("addressProofFile"), application_no, "organization"
+            ),
+            self_affidavit_path=_save_uploaded_file(
+                request.files.get("selfAffidavitFile"), application_no, "litigation"
+            ),
+            itr_returns_path=_save_uploaded_file(
+                request.files.get("itrReturnsFile"), application_no, "financial"
+            ),
+            balance_sheet_path=_save_uploaded_file(
+                request.files.get("balanceSheetFile"), application_no, "financial"
+            ),
         )
 
         db.session.add(promoter)
@@ -61,7 +139,7 @@ def save_full_application():
         # ===============================
         # 2️⃣ SAVE PROMOTER 2 ENTRIES
         # ===============================
-        for p2 in data.get("promoter2Entries", []):
+        for index, p2 in enumerate(data.get("promoter2Entries", [])):
             entry = Promoter2OtherTINDV(
                 application_no=application_no,
                 is_organization=p2["promoter2IsOrganization"],
@@ -75,7 +153,12 @@ def save_full_application():
                 mobile=p2["promoter2Mobile"],
                 email=p2["promoter2Email"],
                 pan_card=p2["promoter2PanCard"],
-                aadhaar=p2.get("promoter2Aadhaar")
+                aadhaar=p2.get("promoter2Aadhaar"),
+                supporting_document_path=_save_uploaded_file(
+                    request.files.get(f"promoter2DocumentFile_{index}"),
+                    application_no,
+                    "promoter2",
+                ),
             )
             db.session.add(entry)
 
@@ -134,7 +217,7 @@ def save_full_application():
         # ===============================
         # 6️⃣ SAVE LITIGATIONS
         # ===============================
-        for l in data.get("litigationEntries", []):
+        for index, l in enumerate(data.get("litigationEntries", [])):
             entry = LitigationOtherTINDV(
                 application_no=application_no,
                 case_no=l["caseNo"],
@@ -144,7 +227,17 @@ def save_full_application():
                 case_facts=l["caseFacts"],
                 case_status=l["caseStatus"],
                 interim_order=l["interimOrder"],
-                final_order_details=l["finalOrderDetails"]
+                final_order_details=l["finalOrderDetails"],
+                interim_order_certificate_path=_save_uploaded_file(
+                    request.files.get(f"litigationInterimOrderFile_{index}"),
+                    application_no,
+                    "litigation",
+                ),
+                disposed_certificate_path=_save_uploaded_file(
+                    request.files.get(f"litigationDisposedFile_{index}"),
+                    application_no,
+                    "litigation",
+                ),
             )
             db.session.add(entry)
 
@@ -185,10 +278,19 @@ def get_full_application(application_no):
             "accountNo": promoter.account_no,
             "accountHolder": promoter.account_holder,
             "ifsc": promoter.ifsc_code,
+            "bankStatement": promoter.bank_statement_path or "",
             "otherStateReg": promoter.other_state_reg,
             "lastFiveYears": promoter.last_five_years,
             "litigation": promoter.litigation,
-            "promoter2": promoter.promoter2
+            "promoter2": promoter.promoter2,
+            "organizationRegistrationFile": promoter.organization_registration_doc_path or "",
+            "gstDocumentFile": promoter.gst_document_path or "",
+            "panCardFile": promoter.pan_card_doc_path or "",
+            "addressProofFile": promoter.address_proof_doc_path or "",
+            "selfAffidavit": promoter.self_affidavit_path or "",
+            "selfAffidavitFile": promoter.self_affidavit_path or "",
+            "itrReturnsFile": promoter.itr_returns_path or "",
+            "balanceSheetFile": promoter.balance_sheet_path or "",
         }
 
         # Arrays
@@ -207,7 +309,8 @@ def get_full_application(application_no):
                 "promoter2Mobile": p2.mobile,
                 "promoter2Email": p2.email,
                 "promoter2PanCard": p2.pan_card,
-                "promoter2Aadhaar": p2.aadhaar or ""
+                "promoter2Aadhaar": p2.aadhaar or "",
+                "supportingDocumentPath": p2.supporting_document_path or "",
             })
 
         orgMemberEntries = []
@@ -264,7 +367,9 @@ def get_full_application(application_no):
                 "caseFacts": l.case_facts,
                 "caseStatus": l.case_status,
                 "interimOrder": l.interim_order,
-                "finalOrderDetails": l.final_order_details
+                "finalOrderDetails": l.final_order_details,
+                "interimOrderCertificatePath": l.interim_order_certificate_path or "",
+                "disposedCertificatePath": l.disposed_certificate_path or "",
             })
 
         return jsonify({
@@ -281,7 +386,7 @@ def get_full_application(application_no):
 
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/update", methods=["PUT"])
 def update_full_application():
-    data = request.json
+    data = _get_request_data()
     try:
         application_no = data["applicationNo"]
         promoter = PromoterOtherTINDV.query.filter_by(application_no=application_no).first()
@@ -307,10 +412,46 @@ def update_full_application():
         promoter.account_no = data.get("accountNo")
         promoter.account_holder = data.get("accountHolder")
         promoter.ifsc_code = data.get("ifsc")
+        promoter.bank_statement_path = (
+            _save_uploaded_file(request.files.get("bankStatementFile"), application_no, "bank")
+            or promoter.bank_statement_path
+        )
         promoter.other_state_reg = data.get("otherStateReg")
         promoter.last_five_years = data.get("lastFiveYears")
         promoter.litigation = data.get("litigation")
         promoter.promoter2 = data.get("promoter2")
+        promoter.organization_registration_doc_path = (
+            _save_uploaded_file(
+                request.files.get("organizationRegistrationFile"),
+                application_no,
+                "organization",
+            )
+            or promoter.organization_registration_doc_path
+        )
+        promoter.gst_document_path = (
+            _save_uploaded_file(request.files.get("gstDocumentFile"), application_no, "organization")
+            or promoter.gst_document_path
+        )
+        promoter.pan_card_doc_path = (
+            _save_uploaded_file(request.files.get("panCardFile"), application_no, "organization")
+            or promoter.pan_card_doc_path
+        )
+        promoter.address_proof_doc_path = (
+            _save_uploaded_file(request.files.get("addressProofFile"), application_no, "organization")
+            or promoter.address_proof_doc_path
+        )
+        promoter.self_affidavit_path = (
+            _save_uploaded_file(request.files.get("selfAffidavitFile"), application_no, "litigation")
+            or promoter.self_affidavit_path
+        )
+        promoter.itr_returns_path = (
+            _save_uploaded_file(request.files.get("itrReturnsFile"), application_no, "financial")
+            or promoter.itr_returns_path
+        )
+        promoter.balance_sheet_path = (
+            _save_uploaded_file(request.files.get("balanceSheetFile"), application_no, "financial")
+            or promoter.balance_sheet_path
+        )
 
         # Delete existing collections
         Promoter2OtherTINDV.query.filter_by(application_no=application_no).delete()
@@ -322,7 +463,7 @@ def update_full_application():
         db.session.flush()
 
         # Insert new entries
-        for p2 in data.get("promoter2Entries", []):
+        for index, p2 in enumerate(data.get("promoter2Entries", [])):
             db.session.add(Promoter2OtherTINDV(
                 application_no=application_no,
                 is_organization=p2.get("promoter2IsOrganization"),
@@ -336,7 +477,12 @@ def update_full_application():
                 mobile=p2.get("promoter2Mobile"),
                 email=p2.get("promoter2Email"),
                 pan_card=p2.get("promoter2PanCard"),
-                aadhaar=p2.get("promoter2Aadhaar")
+                aadhaar=p2.get("promoter2Aadhaar"),
+                supporting_document_path=_save_uploaded_file(
+                    request.files.get(f"promoter2DocumentFile_{index}"),
+                    application_no,
+                    "promoter2",
+                ),
             ))
 
         for member in data.get("orgMemberEntries", []):
@@ -379,7 +525,7 @@ def update_full_application():
                 survey_no=proj.get("surveyNo")
             ))
 
-        for l in data.get("litigationEntries", []):
+        for index, l in enumerate(data.get("litigationEntries", [])):
             db.session.add(LitigationOtherTINDV(
                 application_no=application_no,
                 case_no=l.get("caseNo"),
@@ -389,7 +535,17 @@ def update_full_application():
                 case_facts=l.get("caseFacts"),
                 case_status=l.get("caseStatus"),
                 interim_order=l.get("interimOrder"),
-                final_order_details=l.get("finalOrderDetails")
+                final_order_details=l.get("finalOrderDetails"),
+                interim_order_certificate_path=_save_uploaded_file(
+                    request.files.get(f"litigationInterimOrderFile_{index}"),
+                    application_no,
+                    "litigation",
+                ),
+                disposed_certificate_path=_save_uploaded_file(
+                    request.files.get(f"litigationDisposedFile_{index}"),
+                    application_no,
+                    "litigation",
+                ),
             ))
 
         db.session.commit()

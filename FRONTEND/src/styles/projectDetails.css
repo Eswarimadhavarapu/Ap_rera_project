@@ -286,6 +286,44 @@ select.inputbox {
   height: 38px;
   background-color: #faf7f6;
 }
+
+.project-details-container .form-control.inputbox,
+.project-details-container select.inputbox,
+.project-details-container input[type="date"].inputbox,
+.project-details-container input[type="text"].inputbox,
+.project-details-container input[type="number"].inputbox {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf !important;
+  border-radius: 6px;
+  background-color: #f9f7f7 !important;
+  color: #333;
+  box-shadow: none;
+}
+
+.project-details-container select.inputbox,
+.project-details-container input[type="date"].inputbox {
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+.project-details-container input[type="date"].inputbox::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.project-details-container .form-control.inputbox:focus,
+.project-details-container select.inputbox:focus,
+.project-details-container input[type="date"].inputbox:focus,
+.project-details-container input[type="text"].inputbox:focus,
+.project-details-container input[type="number"].inputbox:focus {
+  border-color: #1e88e5 !important;
+  outline: none;
+  background-color: #ffffff !important;
+}
+
 input[type="file"].inputbox {
   height: 38px;
   padding: 6px;

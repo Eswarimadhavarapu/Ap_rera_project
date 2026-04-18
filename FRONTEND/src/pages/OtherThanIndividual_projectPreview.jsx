@@ -453,7 +453,7 @@ console.log("📄 Document pages:", documentPages.length);
           <span>Registration / Project Registration / Preview</span>
         </div>
 
-        <ProjectWizard currentStep={6} />
+        <ProjectWizard currentStep={6} type="other"/>
 
         <div className="preview-actions">
           <button onClick={handleDownloadPDF} className="btn btn-download">

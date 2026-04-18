@@ -1770,6 +1770,24 @@ useEffect(() => {
         return;
       }
 
+      if (
+        formData.applicantType === "individual" &&
+        !formData.individualReplaceReason.trim()
+      ) {
+        alert("Please fill replacement reason also.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (
+        formData.applicantType === "other-than-individual" &&
+        !formData.organizationReplaceReason.trim()
+      ) {
+        alert("Please fill replacement reason also.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const organizationFieldPayload = buildFieldPayload("organization");
       const formPayload = new FormData();
 
@@ -1847,6 +1865,20 @@ useEffect(() => {
   const displayAddress =
     displayedAgentInfo?.address1 || displayedAgentInfo?.address_line_1 || "-";
   const displayStatus = displayedAgentInfo?.status || "-";
+  const selectedChangeCount =
+    formData.applicantType === "individual"
+      ? formData.individualSelectedFields.length
+      : formData.organizationSelectedFields.length;
+  const replacementReasonFieldName =
+    formData.applicantType === "individual"
+      ? "individualReplaceReason"
+      : "organizationReplaceReason";
+  const replacementReasonValue =
+    replacementReasonFieldName === "individualReplaceReason"
+      ? formData.individualReplaceReason
+      : formData.organizationReplaceReason;
+  const shouldShowReplacementReason =
+    Boolean(formData.applicantType) && selectedChangeCount > 0;
 
   return (
     <div className="change-request-page">
@@ -2052,6 +2084,24 @@ useEffect(() => {
                   )}
                 </>
               )}
+            </>
+          )}
+
+          {shouldShowReplacementReason && (
+            <>
+              <label htmlFor="replacementReason">
+                Replacement Reason <span style={{ color: "red" }}>*</span>
+              </label>
+              <textarea
+                id="replacementReason"
+                name={replacementReasonFieldName}
+                value={replacementReasonValue}
+                onChange={handleChange}
+                placeholder="Enter replacement reason"
+                rows={4}
+                maxLength={500}
+                required
+              />
             </>
           )}
 

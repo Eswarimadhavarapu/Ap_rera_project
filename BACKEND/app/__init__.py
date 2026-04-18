@@ -146,6 +146,8 @@ def create_app():
     from app.controllers.admin_controller import admin_bp
     from app.controllers.agent_change_request_controller import agent_change_request_bp
     from app.controllers.scrutiny_projectregistation_controller import scrutiny_bp
+    from app.controllers.chat_controller import chat_bp
+    from app.controllers.faq_controller import faq_bp
     
 
 
@@ -196,6 +198,8 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/api")
     app.register_blueprint(agent_change_request_bp, url_prefix="/api")
     app.register_blueprint(scrutiny_bp, url_prefix="/api")
+    app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(faq_bp, url_prefix="/api")
 
 
     return app

@@ -7,6 +7,7 @@ import StructuralEngineers from "../components/Existing_StructuralEngineers";
 import ProjectContractors from "../components/Existing_ProjectContractors";
 import CharteredAccountant from "../components/Existing_CharteredAccountant";
 import ProjectEngineers from "../components/Existing_ProjectEngineers";
+import ExistingProjectWizard from '../components/ExistingProjectWizard';
 
 import { apiGet, apiPost } from "../api/api";
 import "../styles/AssociateDetails.css";
@@ -178,10 +179,11 @@ const ExistingAssociateDetails = () => {
   // -----------------------------
   return (
     <div className="associate-details-container">
+      
       <div className="breadcrumb">
         Home / Project Registration / Associate Details
       </div>
-
+<ExistingProjectWizard currentStep={4} />
       <h2 className="page-title">Associate Details</h2>
 
       {loading && <div className="loading-spinner">Loading...</div>}

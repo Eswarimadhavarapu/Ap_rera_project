@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../../styles/admin_agentchangerequest.css";
 import { apiGet, apiPut, BASE_URL } from "../../api/api";
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import TopHeader from "../../components/admin/TopHeader";
 
 const BACKEND_BASE_URL = BASE_URL.replace(/\/$/, "");
 
@@ -159,12 +161,14 @@ const getFieldDocumentByLabel = (fieldDocuments, label) => {
 };
 
 function AdminAgentChangeRequest() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [requests, setRequests] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const stats = useMemo(() => {
@@ -194,11 +198,14 @@ function AdminAgentChangeRequest() {
   const handleAction = async (id, newStatus) => {
     try {
       setActionError("");
+      setActionMessage("");
+
+      let response;
 
       if (newStatus === "Approved") {
-        await apiPut(`/api/admin/change-requests/${id}/approve`, {});
+        response = await apiPut(`/api/admin/change-requests/${id}/approve`, {});
       } else {
-        await apiPut(`/api/admin/change-requests/${id}/status`, {
+        response = await apiPut(`/api/admin/change-requests/${id}/status`, {
           status: newStatus
         });
       }
@@ -212,9 +219,23 @@ function AdminAgentChangeRequest() {
       setSelectedRequest((prev) =>
         prev && prev.id === id ? { ...prev, status: newStatus } : prev
       );
+
+      if (response?.mail_sent) {
+        setActionMessage(
+          response.mail_message ||
+            `${newStatus} successfully and mail sent to registered email.`
+        );
+      } else if (response?.mail_error) {
+        setActionError(
+          `Status updated successfully, but mail was not sent. ${response.mail_error}`
+        );
+      } else {
+        setActionMessage(`${newStatus} successfully.`);
+      }
     } catch (actionErrorValue) {
       console.error("Failed to update request status", actionErrorValue);
       setActionError(actionErrorValue.message || "Failed to update request status.");
+      setActionMessage("");
     }
   };
 
@@ -319,24 +340,29 @@ function AdminAgentChangeRequest() {
   }, [selectedRequest]);
 
   return (
-    <div className="admin-change-request-page">
-      <header className="admin-change-request-header">
-        <div>
-          <h1>Agent Change Requests</h1>
-          <p className="placeholder-text">
-            Review, approve, or reject agent change requests submitted through the
-            portal.
-          </p>
-        </div>
-        <div className="search-area">
-          <input
-            type="search"
-            placeholder="Search by application or agent name"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-          />
-        </div>
-      </header>
+    <div className="admin-layout">
+      <AdminSidebar sidebarOpen={sidebarOpen} />
+      <div className={`admin-main ${sidebarOpen ? "" : "admin-main-full"}`}>
+        <TopHeader toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <div className="admin-dashboard-content">
+          <div className="admin-change-request-page">
+            <header className="admin-change-request-header">
+              <div>
+                <h1>Agent Change Requests</h1>
+                <p className="placeholder-text">
+                  Review, approve, or reject agent change requests submitted through the
+                  portal.
+                </p>
+              </div>
+              <div className="search-area">
+                <input
+                  type="search"
+                  placeholder="Search by application or agent name"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                />
+              </div>
+            </header>
 
       <section className="admin-status-cards">
         {STATUS_FILTERS.slice(1).map((status) => (
@@ -379,6 +405,11 @@ function AdminAgentChangeRequest() {
 
       {error && <p className="error-message">{error}</p>}
       {actionError && <p className="error-message">{actionError}</p>}
+      {actionMessage && (
+        <p className="success-message" style={{ color: "green", marginBottom: "16px" }}>
+          {actionMessage}
+        </p>
+      )}
 
       <section className="admin-request-table">
         <div className="table-wrapper">
@@ -387,7 +418,7 @@ function AdminAgentChangeRequest() {
               <tr>
                 <th>Application No.</th>
                 <th>Agent / Applicant</th>
-                <th>Payment Status</th>
+                <th>Request Status</th>
                 <th>Submitted On</th>
                 <th>Actions</th>
               </tr>
@@ -662,6 +693,9 @@ function AdminAgentChangeRequest() {
           </div>
         </section>
       )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

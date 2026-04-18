@@ -550,7 +550,7 @@ const DevelopmentDetails = () => {
 
 
 
-            <ProjectWizard currentStep={3} />
+            <ProjectWizard currentStep={3} type="individual"/>
 
             <form onSubmit={handleSubmit} className="development-details-form">
                 <div className="development-detailsform-section">

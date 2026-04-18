@@ -148,6 +148,8 @@ const OtherThanIndividualAssociateDetails = () => {
   // -----------------------------
   return (
     <div className="associate-details-container">
+      {/* ✅ ADD HERE */}
+    <ProjectWizard currentStep={4} type="other" />
       <div className="breadcrumb">
         Home / Project Registration / Associate Details
       </div>

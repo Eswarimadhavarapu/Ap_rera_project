@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.jpg";
+// import "../../styles/admin/adminsidebar.css"
 
 const TopHeader = ({ toggleSidebar, showHamburger = true }) => {
 
@@ -29,7 +30,7 @@ const TopHeader = ({ toggleSidebar, showHamburger = true }) => {
         )}
 
         <img src={logo} alt="AP RERA" className="admin-header-logo" />
-        <h2>ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</h2>
+        <h2 className="admin-header-heading">ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</h2>
       </div>
 
       <div className="admin-header-right">
