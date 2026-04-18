@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiPost } from "../../api/api";
 import "../../styles/scrutiny/ScrutinyCreateFile.css";
-import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
+
 
 const TYPE_OPTIONS = [
   "Memo",
@@ -171,13 +171,20 @@ const ScrutinyCreateFile = () => {
   };
 
   return (
-    <ScrutinyLayout>
+    
 <div className="scf-scf-main">
       <div className="scf-scf-body">
         <div className="scf-scf-content">
           <p className="scf-breadcrumb">
-            You are here : <span>DashBoard</span> / Create File
-          </p>
+  You are here :{" "}
+  <span
+    style={{ cursor: "pointer", color: "blue" }}
+    onClick={() => navigate("/fpms/dashboard")}
+  >
+    DashBoard
+  </span>{" "}
+  / Create File
+</p>
 
           <div className="scf-form-box">
             <h3>File Creation</h3>
@@ -371,7 +378,7 @@ const ScrutinyCreateFile = () => {
         </div>
       </div>
     </div>
-    </ScrutinyLayout>
+  
     
   );
 };

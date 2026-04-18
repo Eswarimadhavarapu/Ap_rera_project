@@ -1,32 +1,30 @@
-import React, { use } from "react";
+import React from "react";
 import "../../styles/scrutiny/ScrutinyViewFiles.css";
 import { useNavigate } from "react-router-dom";
-import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
 const ScrutinyViewFiles = () => {
-   const  navigate=useNavigate()
+  const navigate = useNavigate();
+
   return (
-
-    <ScrutinyLayout>
-<div className="Svff-svf-main">
-
-      {/* HEADER */}
-      
+    <div className="Svff-svf-main">
 
       <div className="Svff-svf-body">
 
-        {/* SIDEBAR */}
-        
-
-        {/* CONTENT */}
         <div className="Svff-svf-content">
 
           {/* Breadcrumb */}
           <p className="Svff-breadcrumb">
-            You are here : <span>DashBoard</span> / View Files
-          </p>
+  You are here :{" "}
+  <span
+    style={{ cursor: "pointer", color: "blue" }}
+    onClick={() => navigate("/fpms/dashboard")}
+  >
+    DashBoard
+  </span>{" "}
+  / View Files
+</p>
 
-          {/* CARD */}
+          {/* Card */}
           <div className="Svff-svf-card">
 
             <h3>Scrutiny View Files</h3>
@@ -56,7 +54,17 @@ const ScrutinyViewFiles = () => {
 
               <div className="Svff-buttons">
                 <button className="Svff-btn-blue">Get Details</button>
-                <button className="Svff-btn-red">Clear</button>
+
+                <button className="Svff-btn-red">
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  className="scf-clear"
+                  onClick={() => navigate(-1)}
+                >
+                  Back
+                </button>
               </div>
 
             </div>
@@ -64,10 +72,10 @@ const ScrutinyViewFiles = () => {
           </div>
 
         </div>
+
       </div>
+
     </div>
-    </ScrutinyLayout>
-    
   );
 };
 

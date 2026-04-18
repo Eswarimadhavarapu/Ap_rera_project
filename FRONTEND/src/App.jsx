@@ -177,6 +177,79 @@ import DepartmentLogin from "./pages/DepartmentLogin.jsx";
 import Chatbot from "./components/Chatbot";
 import AdminChangeRequestList from "./pages/admin/Adminchangerequestlist.jsx";
 
+//// new imports for mis reports
+import MisReports from './pages/MisReports';
+import R1_1_Report from './pages/R1_1_Report';
+import AgentStatusReport from './pages/AgentStatusReport';
+import ApartmentsReport from './pages/ApartmentsReport';
+import CommercialReport from './pages/CommercialReport';
+import MixedReport from './pages/MixedReport';
+import LayoutForPlotsReport from './pages/LayoutForPlotsReport';
+import LayoutForPlotsBuildingsReport from './pages/LayoutForPlotsBuildingsReport';
+import ApprovedProjectReport from './pages/ApprovedProjectReport';
+import ApprovedAgentReport from './pages/ApprovedAgentReport';
+import ApcrdaReport from './pages/ApcrdaReport';
+import UdaReport from './pages/UdaReport';
+import UlbReport from './pages/UlbReport';
+import DtcpReport from './pages/DtcpReport';
+import OfficerPendingReport from './pages/OfficerPendingReport';
+import ApprovedProjectReportSheet from './pages/ApprovedProjectReportSheet';
+import R9_2_Report from './pages/R9_2_Report';
+import R9_3_Report from './pages/R9_3_Report';
+import DistrictFinancialAgentReport from './pages/DistrictFinancialAgentReport';
+import DistrictFinancialProjectReport from './pages/DistrictFinancialProjectReport';
+import R15_2 from './pages/R15_2';
+import R17_1 from './pages/R17_1';
+import R17_2 from './pages/R17_2';
+import R20_1 from './pages/R20_1';
+import R20_2 from './pages/R20_2';
+import R20_3 from './pages/R20_3';
+import R21_2 from './pages/R21_2';
+import R22_2 from './pages/R22_2';
+import R23_1 from './pages/R23_1';
+import R24_1 from './pages/R24_1';
+import R1_3 from './pages/R1_3';
+import R2_1 from './pages/R2_1';
+import R2_2 from './pages/R2_2';
+import R2_3 from './pages/R2_3';
+import R3_2 from './pages/R3_2';
+import R3_3 from './pages/R3_3';
+import R6_1 from './pages/R6_1';
+import R6_2_1 from './pages/R6_2_1';
+import R6_2_2 from './pages/R6_2_2';
+import R6_2_3 from './pages/R6_2_3';
+import R6_3 from './pages/R6_3';
+import R7_1 from './pages/R7_1';
+import R7_3 from './pages/R7_3';
+import R7_2 from './pages/R7_2';
+import R8_1 from './pages/R8_1';
+import R8_2 from './pages/R8_2';
+import R10_1 from './pages/R10_1';
+import R10_2 from './pages/R10_2';
+import R10_3 from './pages/R10_3';
+import R11_1 from './pages/R11_1';
+import R13_1 from './pages/R13_1';
+import R13_2 from './pages/R13_2';
+import R13_3 from './pages/R13_3';
+import R13_4 from './pages/R13_4';
+import R14_1 from './pages/R14_1';
+import R14_2 from './pages/R14_2';
+import R14_3 from './pages/R14_3';
+import R18_1 from './pages/R18_1';
+import R18_2 from './pages/R18_2';
+import R16_1 from './pages/R16_1';
+import R12_1 from './pages/R12_1';
+import R12_2 from './pages/R12_2';
+import R12_3 from './pages/R12_3';
+import R12_4 from './pages/R12_4';
+import R25_1 from "./pages/R25_1";
+import R25_2 from "./pages/R25-2";
+import R25_3 from "./pages/R25_3";
+import R15_1 from "./pages/R15_1";
+import R19_1 from "./pages/R19_1";
+import FPMSLayout from "./pages/scrutiny/FPMSLayout.jsx";
+
+
 function App() {
   const [showPopup, setShowPopup] = useState(false);
 
@@ -449,10 +522,82 @@ function App() {
             <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
 
 
-            <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard />} />
-            <Route path="/scrutiny/create-files" element={<ScrutinyCreateFile />} />
-            <Route path="/scrutiny/view-files" element={<ScrutinyViewFiles />} />
+<Route path="/fpms" element={<FPMSLayout />}>
+  <Route path="dashboard" element={<ScrutinyFpmsDashboard />} />
+  <Route path="create-files" element={<ScrutinyCreateFile />} />
+  <Route path="view-files" element={<ScrutinyViewFiles />} />
+</Route>
             <Route path="/department" element={<DepartmentLogin />} />
+
+            <Route path="/mis-reports" element={<MisReports />} />
+             <Route path="/reports/R1.1" element={<R1_1_Report />} />
+             <Route path="/reports/R1.2" element={<AgentStatusReport />} />
+             <Route path="/reports/R3.1" element={<ApartmentsReport />} />
+             <Route path="/reports/R3.4" element={<CommercialReport />} />
+             <Route path="/reports/R3.5" element={<MixedReport />} />
+             <Route path="/reports/R3.6" element={<LayoutForPlotsReport />} />
+             <Route path="/reports/R3.7" element={<LayoutForPlotsBuildingsReport />} />
+             <Route path="/reports/R4.1" element={<ApprovedProjectReport />} />
+             <Route path="/reports/R4.2" element={<ApprovedAgentReport />} />
+             <Route path="/reports/R5.1" element={<ApcrdaReport />} />
+             <Route path="/reports/R5.2" element={<UdaReport />} />
+             <Route path="/reports/R5.3" element={<UlbReport />} />
+             <Route path="/reports/R5.4" element={<DtcpReport />} />
+             <Route path="/reports/R6.4" element={<OfficerPendingReport />} />
+             <Route path="/reports/approved-detailed" element={<ApprovedProjectReportSheet />} />
+             <Route path="/reports/R9.2" element={<R9_2_Report />} />
+             <Route path="/reports/R9.3" element={<R9_3_Report />} />
+             <Route path="/reports/R13.5" element={<DistrictFinancialAgentReport />} />
+             <Route path="/reports/R13.6" element={<DistrictFinancialProjectReport />} />
+             <Route path="/reports/R15.2" element={<R15_2 />} />
+             <Route path="/reports/R17.1" element={<R17_1 />} />
+             <Route path="/reports/R17.2" element={<R17_2 />} />
+             <Route path="/reports/R20.1" element={<R20_1 />} />
+             <Route path="/reports/R20.2" element={<R20_2 />} />
+             <Route path="/reports/R20.3" element={<R20_3 />} />
+             <Route path="/reports/R21.2" element={<R21_2 />} />
+             <Route path="/reports/R22.2" element={<R22_2 />} />
+             <Route path="/reports/R23.1" element={<R23_1 />} />
+             <Route path="/reports/R24.1" element={<R24_1 />} />
+             <Route path="/reports/R1.3" element={<R1_3 />} />
+             <Route path="/reports/R2.1" element={<R2_1 />} />
+             <Route path="/reports/R2.2" element={<R2_2 />} />
+             <Route path="/reports/R2.3" element={<R2_3 />} />
+             <Route path="/reports/R3.2" element={<R3_2 />} />
+             <Route path="/reports/R3.3" element={<R3_3 />} />
+             <Route path="/reports/R6.1" element={<R6_1 />} />
+             <Route path="/reports/R6.2.1" element={<R6_2_1 />} />
+             <Route path="/reports/R6.2.2" element={<R6_2_2 />} />
+             <Route path="/reports/R6.2.3" element={<R6_2_3 />} />
+             <Route path="/reports/R6.3" element={<R6_3 />} />
+             <Route path="/reports/R7.3" element={<R7_3 />} />
+             <Route path="/reports/R7.2" element={<R7_2 />} />
+             <Route path="/reports/R7.1" element={<R7_1 />} />
+             <Route path="/reports/R8.1" element={<R8_1 />} />
+             <Route path="/reports/R8.2" element={<R8_2 />} />
+             <Route path="/reports/R10.2" element={<R10_2 />} />
+             <Route path="/reports/R10.3" element={<R10_3 />} />
+             <Route path="/reports/R11.1" element={<R11_1 />} />
+             <Route path="/reports/R10.1" element={<R10_1 />} />
+             <Route path="/reports/R13.1" element={<R13_1 />} />
+             <Route path="/reports/R13.2" element={<R13_2 />} />
+             <Route path="/reports/R13.4" element={<R13_4 />} />
+             <Route path="/reports/R13.3" element={<R13_3 />} />
+             <Route path="/reports/R14.1" element={<R14_1 />} />
+             <Route path="/reports/R14.2" element={<R14_2 />} />
+             <Route path="/reports/R14.3" element={<R14_3 />} />
+             <Route path="/reports/R18.1" element={<R18_1 />} />
+             <Route path="/reports/R18.2" element={<R18_2 />} />
+             <Route path="/reports/R16.1" element={<R16_1 />} />
+             <Route path="/reports/R12.1" element={<R12_1 />} />
+             <Route path="/reports/R12.2" element={<R12_2 />} />
+             <Route path="/reports/R12.3" element={<R12_3 />} />
+             <Route path="/reports/R12.4" element={<R12_4 />} />
+             <Route path="/reports/R25.1" element={<R25_1 />} />
+             <Route path="/reports/R25.2" element={<R25_2 />} />
+             <Route path="/reports/R25.3" element={<R25_3 />} />
+             <Route path="/reports/R15.1" element={<R15_1 />} />
+             <Route path="/reports/R19.1" element={<R19_1 />} />
 
           </Routes>
           <Chatbot />

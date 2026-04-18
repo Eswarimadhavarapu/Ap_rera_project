@@ -426,57 +426,79 @@ const isPlanning = dept === "planning";
   ];
 
   const litigationColumns = [
-    { key: "serial", label: "S.No.", render: (_, index) => index + 1 },
-    { key: "caseNo", label: "Case No.", render: (row) => pickValue(row, ["caseNo"]) },
-    { key: "tribunalPlace", label: "Tribunal / Authority", render: (row) => pickValue(row, ["tribunalPlace"]) },
-    { key: "petitionerName", label: "Petitioner", render: (row) => pickValue(row, ["petitionerName"]) },
-    { key: "respondentName", label: "Respondent", render: (row) => pickValue(row, ["respondentName"]) },
-    { key: "caseStatus", label: "Present Status", render: (row) => pickValue(row, ["caseStatus"]) },
-    {
-      key: "interimOrder",
-      label: "Interim Order",
-      render: (row) => formatBoolean(firstFilled(row?.interimOrder)),
-    },
-    {
-      key: "finalOrderDetails",
-      label: "Final Order Details",
-      render: (row) => formatBoolean(firstFilled(row?.finalOrderDetails)),
-    },
-    {
-      key: "interimOrderCertificatePath",
-      label: "Interim Order Certificate",
-      render: (row) => <DocumentCell path={firstFilled(row?.interimOrderCertificatePath)} />,
-    },
-    {
-      key: "disposedCertificatePath",
-      label: "Disposed Certificate",
-      render: (row) => <DocumentCell path={firstFilled(row?.disposedCertificatePath)} />,
-    },
-  ];
+  { key: "serial", label: "S.No.", render: (_, index) => index + 1 },
+  { key: "caseNo", label: "Case No.", render: (row) => pickValue(row, ["caseNo"]) },
+  { key: "tribunalPlace", label: "Tribunal / Authority", render: (row) => pickValue(row, ["tribunalPlace"]) },
+  { key: "petitionerName", label: "Petitioner", render: (row) => pickValue(row, ["petitionerName"]) },
+  { key: "respondentName", label: "Respondent", render: (row) => pickValue(row, ["respondentName"]) },
+  { key: "caseStatus", label: "Present Status", render: (row) => pickValue(row, ["caseStatus"]) },
+
+  {
+    key: "interimOrder",
+    label: "Interim Order",
+    render: (row) => formatBoolean(firstFilled(row?.interimOrder)),
+  },
+  {
+    key: "finalOrderDetails",
+    label: "Final Order Details",
+    render: (row) => formatBoolean(firstFilled(row?.finalOrderDetails)),
+  },
+
+  // 👇 CHANGE ONLY THIS PART
+  ...(!isPlanning
+    ? [
+        {
+          key: "interimOrderCertificatePath",
+          label: "Interim Order Certificate",
+          render: (row) => (
+            <DocumentCell path={firstFilled(row?.interimOrderCertificatePath)} />
+          ),
+        },
+        {
+          key: "disposedCertificatePath",
+          label: "Disposed Certificate",
+          render: (row) => (
+            <DocumentCell path={firstFilled(row?.disposedCertificatePath)} />
+          ),
+        },
+      ]
+    : []),
+];
 
   const promoterColumns = [
-    { key: "serial", label: "S.No.", render: (_, index) => index + 1 },
-    { key: "nationality", label: "Nationality", render: (row) => pickValue(row, ["promoter2IsIndian"], "Indian") },
-    {
-      key: "promoterType",
-      label: "Copromoter Type",
-      render: (row) => (String(row?.promoter2IsOrganization || "").toLowerCase() === "yes" ? "Organization" : "Individual"),
-    },
-    { key: "promoter2Name", label: "Name", render: (row) => pickValue(row, ["promoter2Name"]) },
-    { key: "state", label: "State/UT", render: (row) => pickValue(row, ["promoter2State", "state"]) },
-    { key: "district", label: "District", render: (row) => pickValue(row, ["promoter2District", "district"]) },
-    { key: "address1", label: "Address Line 1", render: (row) => pickValue(row, ["promoter2AddressLine1"]) },
-    { key: "address2", label: "Address Line 2", render: (row) => pickValue(row, ["promoter2AddressLine2"]) },
-    { key: "pinCode", label: "PIN Code", render: (row) => pickValue(row, ["promoter2PinCode", "pinCode"]) },
-    { key: "mobile", label: "Phone No", render: (row) => pickValue(row, ["promoter2Mobile"]) },
-    { key: "email", label: "Email ID", render: (row) => pickValue(row, ["promoter2Email"]) },
-    { key: "pan", label: "PAN Card No", render: (row) => pickValue(row, ["promoter2PanCard"]) },
-    {
-      key: "supportingDocumentPath",
-      label: "Supporting Document",
-      render: (row) => <DocumentCell path={firstFilled(row?.supportingDocumentPath)} />,
-    },
-  ];
+  { key: "serial", label: "S.No.", render: (_, index) => index + 1 },
+  { key: "nationality", label: "Nationality", render: (row) => pickValue(row, ["promoter2IsIndian"], "Indian") },
+  {
+    key: "promoterType",
+    label: "Copromoter Type",
+    render: (row) =>
+      (String(row?.promoter2IsOrganization || "").toLowerCase() === "yes"
+        ? "Organization"
+        : "Individual"),
+  },
+  { key: "promoter2Name", label: "Name", render: (row) => pickValue(row, ["promoter2Name"]) },
+  { key: "state", label: "State/UT", render: (row) => pickValue(row, ["promoter2State", "state"]) },
+  { key: "district", label: "District", render: (row) => pickValue(row, ["promoter2District", "district"]) },
+  { key: "address1", label: "Address Line 1", render: (row) => pickValue(row, ["promoter2AddressLine1"]) },
+  { key: "address2", label: "Address Line 2", render: (row) => pickValue(row, ["promoter2AddressLine2"]) },
+  { key: "pinCode", label: "PIN Code", render: (row) => pickValue(row, ["promoter2PinCode", "pinCode"]) },
+  { key: "mobile", label: "Phone No", render: (row) => pickValue(row, ["promoter2Mobile"]) },
+  { key: "email", label: "Email ID", render: (row) => pickValue(row, ["promoter2Email"]) },
+  { key: "pan", label: "PAN Card No", render: (row) => pickValue(row, ["promoter2PanCard"]) },
+
+  // ✅ correct way
+  ...(!isPlanning
+    ? [
+        {
+          key: "supportingDocumentPath",
+          label: "Supporting Document",
+          render: (row) => (
+            <DocumentCell path={firstFilled(row?.supportingDocumentPath)} />
+          ),
+        },
+      ]
+    : []),
+];
 
   return (
     <ScrutinyLayout>

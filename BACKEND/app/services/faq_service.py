@@ -4,15 +4,13 @@ from app.models.faq_model import FAQ
 
 class FaqService:
 
-    # 🔥 synonym + normalization map
+    # 🔥 Synonyms (better understanding)
     SYNONYMS = {
         "docs": "document",
         "documents": "document",
         "papers": "document",
-        "file": "document",
 
         "needed": "require",
-        "require": "require",
         "required": "require",
 
         "registration": "register",
@@ -30,70 +28,107 @@ class FaqService:
 
     STOPWORDS = {"the", "is", "for", "of", "to", "a", "in", "on", "and"}
 
+    # ---------------- NORMALIZE ----------------
     @staticmethod
     def normalize_text(text: str):
         words = text.lower().split()
 
-        normalized = []
-        for word in words:
-            if word in FaqService.STOPWORDS:
+        result = []
+        for w in words:
+            if w in FaqService.STOPWORDS:
                 continue
+            result.append(FaqService.SYNONYMS.get(w, w))
 
-            word = FaqService.SYNONYMS.get(word, word)
-            normalized.append(word)
+        return result
 
-        return normalized
-
-    @staticmethod
-    def calculate_score(user_words, question_text):
-        score = 0
-
-        for word in user_words:
-            if word in question_text:
-                score += 3  # strong weight
-
-        # phrase bonus
-        if " ".join(user_words) in question_text:
-            score += 5
-
-        return score
-
+    # ---------------- SEARCH ----------------
     @staticmethod
     def search_faq(user_message: str) -> str | None:
 
-        if not user_message:
-            return None
+        words = FaqService.normalize_text(user_message)
 
-        user_words = FaqService.normalize_text(user_message)
-
-        if not user_words:
+        if not words:
             return None
 
         faqs = FAQ.query.all()
 
-        best_match = None
+        best = None
         max_score = 0
 
         for faq in faqs:
-            question = faq.question.lower()
+            q = faq.question.lower()
 
-            score = FaqService.calculate_score(user_words, question)
+            score = sum(3 for w in words if w in q)
+
+            if " ".join(words) in q:
+                score += 5
 
             if score > max_score:
                 max_score = score
-                best_match = faq
+                best = faq
 
-        print(f"[FAQ DEBUG] Input: {user_message}")
-        print(f"[FAQ DEBUG] Words: {user_words}")
-        print(f"[FAQ DEBUG] Score: {max_score}")
-        print(f"[FAQ DEBUG] Match: {best_match.question if best_match else None}")
+        print(f"[FAQ] {user_message} → score={max_score}")
 
-        # 🔥 confidence threshold
         if max_score < 3:
             return None
 
-        return best_match.answer if best_match else None
+        return best.answer if best else None
 
+    # ---------------- 🔥 MAIN LLM CONTEXT ----------------
+    @staticmethod
+    def get_all_faqs_as_text():
+
+        faqs = FAQ.query.all()
+
+        context = """
+AP RERA SYSTEM KNOWLEDGE:
+
+AP RERA is a real estate regulatory system in Andhra Pradesh.
+
+MAIN MODULES:
+- Project Registration
+- Promoter Registration
+- Agent Registration
+- Complaint Registration
+- Fee Calculator
+- Status Tracking
+
+PROCESS DETAILS:
+
+Project Registration:
+- Requires promoter details, land documents, approvals
+- Done through Registration → Project Registration
+
+Promoter:
+- Must be registered before project registration
+
+Agent:
+- Agents must register before operating
+
+Fee:
+- Depends on project size
+- Use Fee Calculator
+
+Status:
+- Requires application number
+
+Complaint:
+- Available via Complaint Registration
+
+Knowledge Hub:
+- Forms, Manuals, Videos
+
+Navigation:
+- Registration menu → all modules
+- Registered → projects, agents
+"""
+
+        for faq in faqs:
+            context += f"\nQ: {faq.question}\nA: {faq.answer}\n"
+
+        return context
+
+    # ---------------- DATA INIT ----------------
     @staticmethod
     def initialize_sample_data():
 
@@ -105,58 +140,68 @@ class FaqService:
         sample_faqs = [
 
             FAQ(
-                question="register project process",
-                answer="Go to Dashboard → Project Registration and fill promoter, location, and documents."
-            ),
-
-            FAQ(
                 question="documents required for project registration",
-                answer="You need promoter details, land documents, approvals, and project plans."
+                answer="Promoter details, land documents, approvals, layout plans and financial details are required."
             ),
 
             FAQ(
-                question="change agent process",
-                answer="Go to Agent Registration → Change Request and update agent details."
+                question="how to register project",
+                answer="Go to Registration → Project Registration, fill details and upload documents."
             ),
 
             FAQ(
-                question="reset password login issue",
-                answer="Click 'Forgot Password' on login page and follow instructions."
+                question="project registration fee",
+                answer="Fee depends on project size. Use Fee Calculator in the portal."
             ),
 
             FAQ(
-                question="login problem help",
-                answer="Check credentials or reset password using Forgot Password."
+                question="how to check application status",
+                answer="Use your application number in Status Tracking section."
             ),
 
             FAQ(
-                question="check application status",
-                answer="Use your application number in status tracking section."
+                question="approval time for project",
+                answer="Approval takes 15 to 30 working days after verification."
             ),
 
             FAQ(
-                question="project registration fee details",
-                answer="Fee depends on project size. Use Fee Calculator in portal."
+                question="how to register promoter",
+                answer="Go to Registration → Promoter Registration."
             ),
 
             FAQ(
-                question="approval time project registration",
-                answer="Approval takes around 15–30 working days after verification."
+                question="how to register agent",
+                answer="Go to Registration → Agent Registration."
             ),
 
             FAQ(
-                question="edit submitted application",
-                answer="You can edit before final submission. After submission, approval is required."
+                question="agent change request",
+                answer="Go to Agent Registration → Change Request."
             ),
 
             FAQ(
-                question="promoter profile details",
-                answer="Promoter profile contains builder details, past projects, and credentials."
+                question="login problem",
+                answer="Use Forgot Password or check credentials."
             ),
 
             FAQ(
-                question="withdraw money from rera account",
-                answer="Withdrawals allowed based on project completion certified by CA and engineer."
+                question="download forms",
+                answer="Go to Knowledge Hub → Forms Download."
+            ),
+
+            FAQ(
+                question="complaint registration",
+                answer="Go to Registration → Complaint Registration."
+            ),
+
+            FAQ(
+                question="registered projects",
+                answer="Go to Registered → Projects."
+            ),
+
+            FAQ(
+                question="registered agents",
+                answer="Go to Registered → Agents."
             ),
         ]
 

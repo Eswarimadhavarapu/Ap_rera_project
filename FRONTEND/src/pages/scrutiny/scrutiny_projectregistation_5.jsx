@@ -1078,24 +1078,19 @@ const isPlanning = dept === "planning";
   });
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [remarks, setRemarks] = useState("");
+  const [showModal, setShowModal] = useState(false);
+const [selectedDoc, setSelectedDoc] = useState(null);
 
-  const handleOpenDocument = (url, fileName) => {
-    if (!url) return;
+const handleOpenDocument = (url, fileName) => {
+  console.log("CLICK WORKING", url);
 
-    const ext = getFileExtension(fileName || url);
-    const targetUrl = officeViewerExtensions.has(ext)
-      ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-          url
-        )}`
-      : url;
+  setSelectedDoc({
+    url: url,
+    name: fileName
+  });
 
-    const newWindow = window.open(targetUrl, "_blank", "noopener,noreferrer");
-
-    if (!newWindow) {
-      window.location.href = targetUrl;
-    }
-  };
-
+  setShowModal(true);
+};
   useEffect(() => {
     sessionStorage.setItem("panNumber", panNumber);
     sessionStorage.setItem("applicationNumber", applicationNumber);
@@ -1187,6 +1182,7 @@ const documentsWithStatus = useMemo(() => {
   };
 
   return (
+    <>
     <ScrutinyLayout>
       <div className="scrutiny-upload-container">
         <ScrutinyPageHeader />
@@ -1229,7 +1225,7 @@ const documentsWithStatus = useMemo(() => {
                 <tbody>
                   {documentsWithStatus.map((doc, index) => (
                     <tr key={doc.id}>
-                      <td>{index + 1}</td>
+                      <td>{doc.id}</td>
                       <td>
                         {doc.text}
                         {doc.text1 && (
@@ -1241,19 +1237,13 @@ const documentsWithStatus = useMemo(() => {
                       </td>
                       <td>
                         {doc.url ? (
-                          <a
-                            href={doc.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="scrutiny-upload-link"
-                            onClick={(event) => {
-                              event.preventDefault();
-                              handleOpenDocument(doc.url, doc.fileName);
-                            }}
-                            title={`Open ${doc.fileName}`}
-                          >
-                            {doc.fileName}
-                          </a>
+                          <span
+  className="scrutiny-upload-link"
+  style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+  onClick={() => handleOpenDocument(doc.url, doc.fileName)}
+>
+  {doc.fileName}
+</span>
                         ) : (
                           <span className="scrutiny-upload-muted">No file uploaded</span>
                         )}
@@ -1395,6 +1385,91 @@ const documentsWithStatus = useMemo(() => {
         </form>
       </div>
     </ScrutinyLayout>
+      {/* ✅ MOVE POPUP HERE */}
+   {showModal && (
+  <div className="doc-overlay">
+    <div className="doc-popup">
+
+      {/* HEADER */}
+      <div className="doc-header">
+        <span>{selectedDoc?.name}</span>
+        <button onClick={() => setShowModal(false)}>✖</button>
+      </div>
+
+      {/* DOCUMENT */}
+      <div className="doc-body">
+        <iframe
+          src={selectedDoc?.url}
+          width="100%"
+          height="500px"
+          title="Document"
+        />
+      </div>
+
+      {/* ACTION */}
+      <div className="doc-section">
+        <div className="doc-section-title">ACTION TO BE TAKEN</div>
+
+        <div className="doc-action-row">
+          <span>Does the document have shortfall ?</span>
+
+          <label>
+            <input type="radio" name="shortfall" /> Yes
+          </label>
+
+          <label>
+            <input type="radio" name="shortfall" /> No
+          </label>
+        </div>
+
+        <textarea
+          className="doc-textarea"
+          placeholder="Enter remarks..."
+        />
+
+        <div style={{ textAlign: "right" }}>
+          <button className="doc-btn">Submit</button>
+        </div>
+      </div>
+
+      {/* UPDATED REMARKS */}
+      <div className="doc-section">
+        <div className="doc-section-title">UPDATED REMARKS</div>
+
+        <table className="doc-table">
+          <thead>
+            <tr>
+              <th>SNo</th>
+              <th>Authority</th>
+              <th>Is Shortfall</th>
+              <th>Remarks</th>
+              <th>Remarks Date</th>
+              <th>Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Verification Team</td>
+              <td>Yes</td>
+              <td>
+                As per the DPMS data, status of the application submitted...
+              </td>
+              <td>14-04-2026 11:47 PM</td>
+              <td>
+                <span style={{ color: "blue", cursor: "pointer" }}>
+                  View
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+)}
+</>
   );
 };
 
