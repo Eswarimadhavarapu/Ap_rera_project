@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiPost } from "../../api/api";
 import "../../styles/scrutiny/ScrutinyCreateFile.css";
-
+import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
 const TYPE_OPTIONS = [
   "Memo",
@@ -70,12 +70,23 @@ const ScrutinyCreateFile = () => {
     [formData]
   );
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setBanner({ type: "", text: "" });
-  };
+ const handleChange = (event) => {
+  const { name, value } = event.target;
 
+  // Only numbers allow for fileNumber, inwardNo & memoNumber
+  if (
+    name === "fileNumber" ||
+    name === "inwardNo" ||
+    name === "memoNumber"
+  ) {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    setFormData((prev) => ({ ...prev, [name]: numericValue }));
+  } else {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  setBanner({ type: "", text: "" });
+};
   const handleFileChange = (event) => {
     const file = event.target.files?.[0] || null;
     setFormData((prev) => ({ ...prev, file }));
@@ -171,20 +182,13 @@ const ScrutinyCreateFile = () => {
   };
 
   return (
-    
+    <ScrutinyLayout>
 <div className="scf-scf-main">
       <div className="scf-scf-body">
         <div className="scf-scf-content">
           <p className="scf-breadcrumb">
-  You are here :{" "}
-  <span
-    style={{ cursor: "pointer", color: "blue" }}
-    onClick={() => navigate("/fpms/dashboard")}
-  >
-    DashBoard
-  </span>{" "}
-  / Create File
-</p>
+            You are here : <span>DashBoard</span> / Create File
+          </p>
 
           <div className="scf-form-box">
             <h3>File Creation</h3>
@@ -203,34 +207,39 @@ const ScrutinyCreateFile = () => {
                 <div>
                   <label>File Number <span className="req">*</span></label>
                   <input
-                    type="text"
-                    name="fileNumber"
-                    value={formData.fileNumber}
-                    onChange={handleChange}
-                    placeholder="File Number"
-                  />
+  type="text"
+  name="fileNumber"
+  value={formData.fileNumber}
+  onChange={handleChange}
+  placeholder="File Number"
+  inputMode="numeric"
+  pattern="[0-9]*"
+/>
                 </div>
 
                 <div>
                   <label>Inward No <span className="req">*</span></label>
-                  <input
-                    type="text"
-                    name="inwardNo"
-                    value={formData.inwardNo}
-                    onChange={handleChange}
-                    placeholder="Inward No"
-                  />
+               <input
+  type="text"
+  name="inwardNo"
+  value={formData.inwardNo}
+  onChange={handleChange}
+  placeholder="Inward No"
+  inputMode="numeric"
+  pattern="[0-9]*"
+/>
                 </div>
 
                 <div>
                   <label>Memo Number</label>
                   <input
-                    type="text"
-                    name="memoNumber"
-                    value={formData.memoNumber}
-                    onChange={handleChange}
-                    placeholder="Memo Number"
-                  />
+  type="text"
+  name="memoNumber"
+  value={formData.memoNumber}
+  onChange={handleChange}
+  placeholder="Memo Number"
+  inputMode="numeric"
+/>
                 </div>
 
                 <div>
@@ -378,7 +387,7 @@ const ScrutinyCreateFile = () => {
         </div>
       </div>
     </div>
-  
+    </ScrutinyLayout>
     
   );
 };

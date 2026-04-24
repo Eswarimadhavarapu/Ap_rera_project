@@ -149,7 +149,8 @@ def create_app():
     from app.controllers.chat_controller import chat_bp
     from app.controllers.faq_controller import faq_bp
     from app.controllers.verification_controller import verification_bp
-    from app.controllers.project_unregistered_controller import project_unregistered_bp
+    from app.controllers.project_unregistered_controller import project_unregistered_bp 
+    from app.controllers.project_exemption_controller import project_exemption_bp
     
 
 
@@ -204,6 +205,7 @@ def create_app():
     app.register_blueprint(faq_bp, url_prefix="/api")
     app.register_blueprint(verification_bp, url_prefix="/api")
     app.register_blueprint(project_unregistered_bp, url_prefix="/api")
+    app.register_blueprint(project_exemption_bp, url_prefix="/project-exemption")
 
 
     return app

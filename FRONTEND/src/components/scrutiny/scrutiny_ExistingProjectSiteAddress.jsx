@@ -9,7 +9,7 @@ const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
   const [villages, setVillages] = useState([]);
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
-const isPlanning = dept === "planning";
+const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
 
   /* ================= MAP DATA ================= */
   const mappedData = useMemo(() => {
@@ -195,7 +195,7 @@ const isPlanning = dept === "planning";
           </div>
         </div>
 
-        {!isPlanning && (
+        {!isRestrictedDept && (
   <div className="col-sm-3">
     <div className="display-group">
       <span className="display-label">Address Proof</span>

@@ -33,6 +33,7 @@ import {
   FaBuilding,
   FaUserTie,
   FaFileAlt,
+  FaStamp,
 } from "react-icons/fa";
 
 
@@ -376,6 +377,11 @@ function Services() {
   {
     title: "List of un-registered projects with APRERA",
     icon: FaListUl,
+  },
+   {
+    title: "exemption",
+    icon: FaStamp,
+    path: "/exemption",
   },
 ];
 

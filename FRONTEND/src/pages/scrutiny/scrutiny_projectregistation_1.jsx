@@ -185,7 +185,9 @@ export default function ScrutinyProjectRegistrationDetail() {
   const navigate = useNavigate();
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
-const isPlanning = dept === "planning";
+
+// ✅ NEW LINE ADD
+const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
 
   const location = useLocation();
 
@@ -445,7 +447,7 @@ const isPlanning = dept === "planning";
   },
 
   // 👇 CHANGE ONLY THIS PART
-  ...(!isPlanning
+  ...(!isRestrictedDept
     ? [
         {
           key: "interimOrderCertificatePath",
@@ -487,7 +489,7 @@ const isPlanning = dept === "planning";
   { key: "pan", label: "PAN Card No", render: (row) => pickValue(row, ["promoter2PanCard"]) },
 
   // ✅ correct way
-  ...(!isPlanning
+  ...(!isRestrictedDept
     ? [
         {
           key: "supportingDocumentPath",
@@ -610,7 +612,7 @@ const isPlanning = dept === "planning";
                       <DisplayItem label="Account No" value={formData.accountNo} />
                       <DisplayItem label="Account Holder's Name as in Bank Pass Book" value={formData.accountHolder} />
                       <DisplayItem label="IFSC Code" value={formData.ifsc} />
-                      {!isPlanning && (
+                      {!isRestrictedDept && (
   <DisplayItem
     label="Bank Account Statement"
     value={bankStatementUrl ? bankStatementUrl : "N/A"}
@@ -620,7 +622,7 @@ const isPlanning = dept === "planning";
                     </div>
                   </Section>
 
-                  {isOther && !isPlanning && (
+                  {isOther && !isRestrictedDept && (
                     <Section title="Uploaded Documents">
                       <div className="spr-grid">
                         <DisplayItem
@@ -683,7 +685,7 @@ const isPlanning = dept === "planning";
                       <DataTable className="spr-red-head" columns={litigationColumns} rows={litigationEntries} />
                     ) : (
                       <div className="spr-affidavit">
-                      {!isPlanning && (
+                      {!isRestrictedDept && (
   affidavitUrl ? (
     <a href={affidavitUrl} target="_blank" rel="noreferrer">
       Affidavit NO CASE PENDING.pdf

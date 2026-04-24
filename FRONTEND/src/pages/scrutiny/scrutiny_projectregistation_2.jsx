@@ -328,6 +328,7 @@ const res = await apiGet(endpoint);
         setIsExistingProject(false);
 
       }
+      
     };
 
     loadProject();

@@ -200,6 +200,7 @@ import R9_2_Report from './pages/R9_2_Report';
 import R9_3_Report from './pages/R9_3_Report';
 import DistrictFinancialAgentReport from './pages/DistrictFinancialAgentReport';
 import DistrictFinancialProjectReport from './pages/DistrictFinancialProjectReport';
+import ExemptionFileUpload from "./pages/exemption.jsx";
 import R15_2 from './pages/R15_2';
 import R17_1 from './pages/R17_1';
 import R17_2 from './pages/R17_2';
@@ -536,6 +537,7 @@ function App() {
             <Route path="/department" element={<DepartmentLogin />} />
             <Route path="/UnregisterList" element={<UnregisterList />} />
   <Route path="/scrutiny/project-unregistered/:id" element={<UnregistrationProjectDetails />} />
+  <Route path="/extensionprocess" element={<ExtensionProcess />} />
 
             <Route path="/mis-reports" element={<MisReports />} />
              <Route path="/reports/R1.1" element={<R1_1_Report />} />

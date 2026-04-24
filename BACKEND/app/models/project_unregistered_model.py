@@ -38,10 +38,10 @@ class ProjectUnregisteredDetails(db.Model):
     approval_status = db.Column(db.String(30))
     s1_remarks = db.Column(db.Text)
     s2_remarks = db.Column(db.Text)
-    s6_remarks = db.Column(db.Text)
-    s3_remarks = db.Column(db.Text)
-    s4_remarks = db.Column(db.Text)
-    s5_remarks = db.Column(db.Text)
+    s6_remorks = db.Column(db.Text)
+    s3_remorks = db.Column(db.Text)
+    s4_remorks = db.Column(db.Text)
+    s5_remorks = db.Column(db.Text)
     first_notice_doc_path = db.Column(db.Text)
     rera_personal_notice_doc_path = db.Column(db.Text)
     sh_document_path = db.Column(db.Text)
@@ -97,10 +97,10 @@ class ProjectUnregisteredDetails(db.Model):
             "approval_status": self.approval_status,
             "s1_remarks": self.s1_remarks,
             "s2_remarks": self.s2_remarks,
-            "s3_remarks": self.s3_remarks,
-            "s4_remarks": self.s4_remarks,
-            "s5_remarks": self.s5_remarks,
-            "s6_remarks": self.s6_remarks,
+            "s3_remarks": self.s3_remorks,
+            "s4_remarks": self.s4_remorks,
+            "s5_remarks": self.s5_remorks,
+            "s6_remarks": self.s6_remorks,
             "first_notice_doc_path": self.first_notice_doc_path,
             "rera_personal_notice_doc_path": self.rera_personal_notice_doc_path,
             "sh_document_path": self.sh_document_path,

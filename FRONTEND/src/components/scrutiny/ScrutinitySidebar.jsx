@@ -48,7 +48,7 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
         <>
           <button
             onClick={() => {
-              navigate("/scrutiny/scrutiny-fpms");
+              navigate("/fpms/dashboard");
               setFpmsOpen(true);
             }}
           >

@@ -269,12 +269,13 @@ def update_status(record_id):
         # 🔥 Use form-data instead of JSON
         body = request.form
 
-        # 🔥 FILES
+       
         first_notice_file = request.files.get("first_notice")
+        second_notice_file = request.files.get("second_notice")
         rera_notice_file = request.files.get("rera_notice")
         sh_file = request.files.get("sh_document")
-
-        # Ensure folder exists
+        
+       
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
         # 🔥 SAVE FILES
@@ -283,6 +284,11 @@ def update_status(record_id):
             path = os.path.join(UPLOAD_FOLDER, filename)
             first_notice_file.save(path)
             record.first_notice_doc_path = path
+        if second_notice_file:
+            filename = secure_filename(second_notice_file.filename)
+            path = os.path.join(UPLOAD_FOLDER, filename)
+            second_notice_file.save(path)
+            record.second_notice_doc_path = path
 
         if rera_notice_file:
             filename = secure_filename(rera_notice_file.filename)
@@ -387,9 +393,10 @@ def get_all_records():
         # --------------------------------------------------
         # 🔥 SORTING
         # --------------------------------------------------
-        sort_column = getattr(
-            ProjectUnregisteredDetails, sort_by, ProjectUnregisteredDetails.id
-        )
+        if hasattr(ProjectUnregisteredDetails, sort_by):
+          sort_column = getattr(ProjectUnregisteredDetails, sort_by)
+        else:
+          sort_column = ProjectUnregisteredDetails.id
 
         if order == "asc":
             query = query.order_by(sort_column.asc())
@@ -484,7 +491,7 @@ Failure to comply within 15 days will result in legal action under Section 59 of
 Regards,  
 AP RERA Authority  
 """
-        # ================= SEND MAIL =================
+       
         send_email(
             email,
             subject,

@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import '../../styles/scrutiny/unregisterList.css';
 import { useAdmin } from "../../context/AdminContext";
 
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms/api";
+const BASE_URL = "https://7zgjxth4-5056.inc1.devtunnels.ms/api";
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" }) : null;
