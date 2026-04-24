@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
+from werkzeug.utils import secure_filename
 from app.models.agent_renewal_model import AgentRenewal
 from app.models.database import db
 from app.utils.renewal_certificate_utils import generate_certificate,generate_certificate2
@@ -231,38 +232,55 @@ def get_agent_details(application_no):
 
         return jsonify({"error": str(e)}), 500
     
-UPLOAD_FOLDER = "app/uploads/agent_renewal_docs"
-
+# ===============================
+# Upload Documents (FIXED)
+# ===============================
 @agent_renewal_bp.route("/upload-doc", methods=["POST"])
 def upload_doc():
 
-    renewal_id = request.form.get("renewal_id")
+    try:
+        renewal_id = request.form.get("renewal_id")
 
-    if not renewal_id:
-        return {"error": "renewal_id missing"}, 400
+        if not renewal_id:
+            return {"error": "renewal_id missing"}, 400
 
-    files = request.files
+        files = request.files
 
-    saved_files = {}
+        if not files:
+            return {"error": "No files received"}, 400
 
-    for key in files:
+        # ✅ Correct upload folder
+        upload_folder = os.path.join("app", "uploads", "agent_renewal_docs")
 
-        file = files.get(key)
+        # ✅ Create folder if not exists
+        os.makedirs(upload_folder, exist_ok=True)
 
-        if file:
+        saved_files = {}
 
-            filename = file.filename
+        for key in files:
 
-            path = os.path.join(UPLOAD_FOLDER, filename)
+            file = files.get(key)
 
-            file.save(path)
+            if file and file.filename:
 
-            saved_files[key] = path
+                # ✅ Secure filename
+                filename = secure_filename(file.filename)
 
-    return {
-        "message": "Files uploaded successfully",
-        "files": saved_files
-    }
+                file_path = os.path.join(upload_folder, filename)
+
+                # ✅ Save file
+                file.save(file_path)
+
+                saved_files[key] = file_path
+
+        return {
+            "message": "Files uploaded successfully",
+            "files": saved_files
+        }
+
+    except Exception as e:
+        print("UPLOAD ERROR:", str(e))
+        return {"error": str(e)}, 500
     
 @agent_renewal_bp.route("/officer/list", methods=["GET"])
 def officer_list():

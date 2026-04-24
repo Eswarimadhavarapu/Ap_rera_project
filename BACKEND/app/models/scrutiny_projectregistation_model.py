@@ -321,3 +321,100 @@ def get_scrutiny_fpms_dashboard_data():
         },
         "rows": rows,
     }
+
+
+# ------------------remarks api ----------------------
+# ---------------------------------------------------
+
+
+def create_verification_remark(data):
+    query = text(
+        """
+        INSERT INTO verification_remarks (
+            application_no,
+            document_name,
+            verification_team,
+            is_shortfall,
+            status,
+            remarks,
+            document_path,
+            verified_by,
+            updated_at
+        )
+        VALUES (
+            :application_no,
+            :document_name,
+            :verification_team,
+            :is_shortfall,
+            :status,
+            :remarks,
+            :document_path,
+            :verified_by,
+            CURRENT_TIMESTAMP
+        )
+        RETURNING
+            id,
+            application_no,
+            document_name,
+            verification_team,
+            is_shortfall,
+            status,
+            remarks,
+            document_path,
+            created_at,
+            updated_at,
+            verified_by
+        """
+    )
+
+    params = {
+        "application_no": data.get("application_no"),
+        "document_name": data.get("document_name"),
+        "verification_team": data.get("verification_team"),
+        "is_shortfall": bool(data.get("is_shortfall", False)),
+        "status": data.get("status") or "pending",
+        "remarks": _clean_optional(data.get("remarks")),
+        "document_path": _clean_optional(data.get("document_path")),
+        "verified_by": _clean_optional(data.get("verified_by")),
+    }
+
+    row = db.session.execute(query, params).mappings().first()
+    db.session.commit()
+
+    return dict(row) if row else None
+
+# ------------------remarks get api ----------------------
+# ---------------------------------------------------
+
+
+def get_verification_remarks(application_no, document_name=None, verification_team=None):
+    query = text(
+        """
+        SELECT
+            id,
+            application_no,
+            document_name,
+            verification_team,
+            is_shortfall,
+            status,
+            remarks,
+            document_path,
+            created_at,
+            updated_at,
+            verified_by
+        FROM verification_remarks
+        WHERE application_no = :application_no
+          AND (:document_name IS NULL OR document_name = :document_name)
+          AND (:verification_team IS NULL OR verification_team = :verification_team)
+        ORDER BY created_at DESC, id DESC
+        """
+    )
+
+    params = {
+        "application_no": application_no,
+        "document_name": _clean_optional(document_name),
+        "verification_team": _clean_optional(verification_team),
+    }
+
+    rows = db.session.execute(query, params).mappings().all()
+    return [dict(row) for row in rows]

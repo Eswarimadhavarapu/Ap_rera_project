@@ -176,6 +176,8 @@ import ScrutinyLayout from "./components/scrutiny/ScrutinyLayout.jsx";
 import DepartmentLogin from "./pages/DepartmentLogin.jsx";
 import Chatbot from "./components/Chatbot";
 import AdminChangeRequestList from "./pages/admin/Adminchangerequestlist.jsx";
+import UnregisterList from "./pages/scrutiny/Unregisterlist .jsx";
+import UnregistrationProjectDetails from "./pages/scrutiny/Unregistrationprojectdetails.jsx";
 
 //// new imports for mis reports
 import MisReports from './pages/MisReports';
@@ -507,10 +509,14 @@ function App() {
             <Route path="/admin/project/:id" element={<AdminProjectDetails />} />
             <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
 
-            <Route path="scrutinity/scrutiny-engineer" element={<ScrutinyDashboard />} />
-            <Route path="/planning/planning-dashboard" element={<ScrutinyDashboard />} />
-            <Route path="/legal/legal-dashboard" element={<ScrutinyDashboard />} />
-            <Route path="/audit/audit-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/scrutiny-engineer" element={<ScrutinyDashboard />} />
+<Route path="/planning/planning-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/legal/legal-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/audit/audit-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/verification/verification-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/ad/ad-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/dd/dd-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/it/it-dashboard" element={<ScrutinyDashboard />} />
             <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
             {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
             <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
@@ -528,6 +534,8 @@ function App() {
   <Route path="view-files" element={<ScrutinyViewFiles />} />
 </Route>
             <Route path="/department" element={<DepartmentLogin />} />
+            <Route path="/UnregisterList" element={<UnregisterList />} />
+  <Route path="/scrutiny/project-unregistered/:id" element={<UnregistrationProjectDetails />} />
 
             <Route path="/mis-reports" element={<MisReports />} />
              <Route path="/reports/R1.1" element={<R1_1_Report />} />

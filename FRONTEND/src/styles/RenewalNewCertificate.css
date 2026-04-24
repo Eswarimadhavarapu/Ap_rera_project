@@ -89,3 +89,14 @@ input[type="file"]{
 .upload-btn:hover{
   background:#0b5ed7;
 }
+
+.certificate-container {
+  position: relative;   /* important */
+  min-height: 400px;
+}
+
+.back-btn-wrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}

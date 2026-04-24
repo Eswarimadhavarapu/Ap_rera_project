@@ -1,5 +1,7 @@
 import "../styles/navbar.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+
 import OfficeorderPdf from "../../public/assets/pdfs/Officeorder.pdf";
 import CAUSELISTPdf from "../../public/assets/pdfs/CAuselist.pdf";
 import appealPdf from "../../public/assets/pdfs/AppealToBuyer.pdf";
@@ -7,9 +9,10 @@ import legalpdf from "../../public/assets/pdfs/LEGAL_APRERA_CORPORATE_PRESENTATI
 import Logo from "../../public/assets/images/logo.jpg";
 import GoogleTranslate from "./GoogleTranslate";
 
-const Navbar = () => {
+const Navbar = ({ setHideNotice }) => {
   const navigate = useNavigate();
   const location = useLocation(); // ✅
+  const [showNotice, setShowNotice] = useState(false);
   const isScrutinyRoute =
     location.pathname.startsWith("/scrutiny") ||
     location.pathname.startsWith("/scrutinity");
@@ -47,41 +50,7 @@ const Navbar = () => {
             HOME
           </li>
 
-          {/* ABOUT US DROPDOWN */}
-          <li className="dropdown">ABOUT US <span className="arrow"></span>
-
-            <ul className="dropdown-menu">
-              {/* <li onClick={() => navigate("/aprera")}>
-                What is APRERA
-              </li> */}
-
-              <li onClick={() => navigate("/organogram")}>
-                Organisation Structure
-              </li>
-
-              <li onClick={() => navigate("/ourservices")}>
-                Our Services
-              </li>
-              <li onClick={() => navigate("/recruitment")}>Recruitment</li>
-
-              <li onClick={() => navigate("/rti")}>RTI</li>
-
-              <li onClick={() => navigate("/our-leadership")}>
-                Our Leadership
-              </li>
-              <li className="contact-submenu">
-                <span className="contact-title">
-                  Contact Us <span className="right-arrow">▶</span>
-                </span>
-
-                <ul className="contact-submenu-box">
-                  <li onClick={() => navigate("/contact-us/aprera")}>
-                    APRERA
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
+          
 
           {/* <li>APREAT</li> */}
 
@@ -153,7 +122,7 @@ const Navbar = () => {
           <li className="dropdown">REPORTS <span className="arrow"></span>
             <ul className="dropdown-menu">
 
-              <li>MIS reports</li>
+              <li onClick={() => navigate("/mis-reports")}>MIS reports</li>
               <li>GIS reports</li>
             </ul>
           </li>
@@ -257,6 +226,44 @@ const Navbar = () => {
           </li>
 
           <li onClick={() => navigate("/apreat")}>APREAT</li>
+
+
+{/* ABOUT US DROPDOWN */}
+          <li className="dropdown">ABOUT US <span className="arrow"></span>
+
+            <ul className="dropdown-menu">
+              {/* <li onClick={() => navigate("/aprera")}>
+                What is APRERA
+              </li> */}
+
+              <li onClick={() => navigate("/organogram")}>
+                Organisation Structure
+              </li>
+
+              <li onClick={() => navigate("/ourservices")}>
+                Our Services
+              </li>
+              <li onClick={() => navigate("/recruitment")}>Recruitment</li>
+
+              <li onClick={() => navigate("/rti")}>RTI</li>
+
+              <li onClick={() => navigate("/our-leadership")}>
+                Our Leadership
+              </li>
+              <li className="contact-submenu">
+                <span className="contact-title">
+                  Contact Us <span className="right-arrow">▶</span>
+                </span>
+
+                <ul className="contact-submenu-box">
+                  <li onClick={() => navigate("/contact-us/aprera")}>
+                    APRERA
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
           <li className="dropdown dropdown-right">LOGIN <span className="arrow"></span>
             <ul className="dropdown-menu">
               <li onClick={() => navigate("/admin-login")}>
@@ -273,7 +280,71 @@ const Navbar = () => {
 
             </ul>
           </li>
-        </ul>
+
+ {/* 🔔 Bell Icon */}
+
+<li className="nav-bell" style={{ position: "relative" }}>
+  <span onClick={() => setShowNotice(!showNotice)}>
+    🔔
+  </span>
+
+{showNotice && ( <div className="notice-dropdown">
+   <div className="notice-scroll-box"> <ul className="notice-scroll-list">
+
+
+      <li>
+         <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          One Time Opportunity with 50% Concession on Late Fee for Un-registered Projects.
+        </div>
+      </li>
+
+      <li>
+      <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          Quarterly Updates: All the Promoters have to submit the Quarterly Update of January 2026 - March 2026 on or before 21/04/2026 without fail.
+        </div>
+      </li>
+
+      <li>
+        <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          Promoters intending to obtain a project extension are advised to appear before the Authority at the office of APRERA on working days.
+        </div>
+      </li>
+
+      <li>
+         <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          All promoters are hereby informed that the Project Extension Module has been enabled online.
+        </div>
+      </li>
+
+      <li>
+         <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          Promoters are requested to display the APRERA Registration Certificate / ID at the respective project site.
+        </div>
+      </li>
+
+      <li
+        onClick={() => navigate("/promotregistration")}
+        style={{ cursor: "pointer" }}
+      >
+         <span className="new-inline">NEW</span>
+        <div className="notice-text">
+          All the promoters are instructed to register themselves in the AP RERA web portal.
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</div>
+)}
+
+
+
+</li>      </ul>
       </nav>
     </>
   );

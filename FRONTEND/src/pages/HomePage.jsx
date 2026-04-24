@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/HomePage.css";
+
 import { useNavigate } from "react-router-dom";
 import "../styles/QuickLinks.css";
 import "../styles/publicnotice.css";
@@ -71,65 +72,78 @@ import {
    ✅ NAVBAR COMPONENT
 =========================== */
 function Navbar() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+
+ 
+
   return (
-    <header className="homenavbar-new-navbar">   
+    <header className="homenavbar-new-navbar">
 
-      <div className="homenavbar-new-notice-board">
-         <div className="homenavbar-new-notice-line">
-          <a 
-  href="../../../public/assets/pdfs/Circular-P-18.pdf" 
-  target="_blank" 
-  rel="noopener noreferrer"
-  className="homenavbar-new-notice-line"
->
-          <span className="homenavbar-new-notice-text">
-           <span className="homenavbar-new-badge">NEW</span>
-            One Time Opportunity with 50% Concession on Late Fee for Un-registered
-            Projects.
-            <span className="homenavbar-new-badge">NEW</span> 
-          </span>
-          </a>
+      <div className="homenavbar-new-notice-wrapper">
+
+        <div className="homenavbar-new-notice-board">
+
+           {/* 🔔 ICON */}
+          <div
+            className="homenavbar-new-icon-box"
+              // ✅ CLICK TO TOGGLE
+            style={{ cursor: "pointer" }}
+          >
+            🔔
+          </div>
+
+          {/* VERTICAL LINE */}
+          <div className="homenavbar-new-divider"></div>
+
+          {/* LIST */}
+          <ul className="homenavbar-new-list">
+
+            <li>
+              <a
+                href="/assets/pdfs/Circular-P-18.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                One Time Opportunity with 50% Concession on Late Fee for Un-registered Projects.
+                <span className="homenavbar-new-badge">NEW</span>
+              </a>
+            </li>
+
+            <li>
+              Quarterly Updates: All the Promoters have to submit the Quarterly Update of January 2026 - March 2026 on or before 21/04/2026 without fail.
+              <span className="homenavbar-new-badge">NEW</span>
+            </li>
+
+            <li>
+              Promoters intending to obtain a project extension are advised to appear before the Authority at the office of APRERA on working days.
+              <span className="homenavbar-new-badge">NEW</span>
+            </li>
+
+            <li>
+              All promoters are hereby informed that the Project Extension Module has been enabled online.
+              <span className="homenavbar-new-badge">NEW</span>
+            </li>
+
+            <li>
+              Promoters are requested to display the APRERA Registration Certificate / ID at the respective project site.
+              <span className="homenavbar-new-badge">NEW</span>
+            </li>
+
+            <li
+              onClick={() => navigate("/promotregistration")}
+              style={{ cursor: "pointer" }}
+            >
+              All the promoters are instructed to register themselves in the AP RERA web portal.
+              <span className="homenavbar-new-badge">NEW</span>
+            </li>
+
+          </ul>
+
         </div>
 
-        {/* <div className="homenavbar-new-notice-line">
-          <span className="homenavbar-new-notice-text">
-            <span className="homenavbar-new-badge">NEW</span>
-            Quarterly Updates: All the promoters have to submit the Quarterly
-            Updates of October 2025 – December 2025 on or before 21/01/2026
-            without fail.
-            <span className="homenavbar-new-badge">NEW</span>
-          </span>
-        </div> */}
-
-        <div className="homenavbar-new-notice-line">
-          <span className="homenavbar-new-notice-text">
-            <span className="homenavbar-new-badge">NEW</span>
-            All promoters are hereby informed that the Project Extension Module
-            has been enabled online.
-            <span className="homenavbar-new-badge">NEW</span>
-          </span>
-        </div>
-
-        <div className="homenavbar-new-notice-line">
-          <span className="homenavbar-new-notice-text">
-            <span className="homenavbar-new-badge">NEW</span>
-            Promoters are requested to display the APRERA Registration
-            Certificate / ID at the respective project site for information of
-            buyers.
-            <span className="homenavbar-new-badge">NEW</span>
-          </span>
-        </div>
-
-        <div className="homenavbar-new-notice-line">
-          <span className="homenavbar-new-notice-text" onClick={() => navigate("/promotregistration")} style={{ cursor: "pointer" }}>
-            <span className="homenavbar-new-badge">NEW</span>
-            All the promoters are instructed to register themselves in the AP
-            RERA web portal for creation of the Promoter's database.
-            <span className="homenavbar-new-badge">NEW</span>
-          </span>
-        </div>
       </div>
+
     </header>
   );
 }
@@ -219,7 +233,7 @@ function Hero() {
                 alt="Sri N. Chandrababu Naidu"
               />
               <h4>Sri N. Chandrababu Naidu</h4>
-              <p>Hon’ble Chief Minister of Andhra Pradesh</p>
+              <p>Hon’ble Chief Minister of Andhra Pradesh</p> 
             </div>
 
             {/* Vertical Line */}
@@ -483,7 +497,9 @@ function Publicnotice() {
         <div className="homepublic-notice-grid">
           {notices.map((notice, index) => (
             <div className="homepublic-notice-card" key={index}>
-              <div className="homepublic-notice-icon">{notice.icon}</div>
+             <div className={`homepublic-notice-icon icon-${index}`}>
+      {notice.icon}
+    </div>
               {/* <h3 className="homepublic-notice-title">{notice.title}</h3> */}
               <p className="homepublic-notice-text">{notice.description}</p>
             </div>

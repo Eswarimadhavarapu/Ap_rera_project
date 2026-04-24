@@ -10,6 +10,16 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
   // ✅ FIX: inside component
   const { admin } = useAdmin();
   const dept = admin?.department?.toLowerCase();
+  const panelNames = {
+  planning: "PLANNING PANEL",
+  legal: "LEGAL PANEL",
+  audit: "AUDIT PANEL",
+  engineer: "SCRUTINY ENGINEER PANEL",
+  verification: "VERIFICATION PANEL",
+  ad: "ASSISTANT DIRECTOR PANEL",
+  dd: "DEPUTY DIRECTOR PANEL",
+  it: "IT PANEL",
+};
 
   // ✅ Dropdown state
   const isFpmsRoute =
@@ -26,14 +36,8 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
 
       {/* ✅ Dynamic Panel */}
       <h2 className="scrutiny-sidebar-title">
-        {dept === "planning"
-          ? "PLANNING PANEL"
-          : dept === "legal"
-          ? "LEGAL PANEL"
-          : dept === "audit"
-          ? "AUDIT PANEL"
-          : "SCRUTINY PANEL"}
-      </h2>
+  {panelNames[dept] || "SCRUTINY PANEL"}
+</h2>
 
       {/* Project Registration */}
       <button onClick={() => navigate("/scrutiny/project-registration")}>
@@ -41,7 +45,6 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
       </button>
 
       {/* ✅ FPMS only for engineer */}
-      {dept === "engineer" && (
         <>
           <button
             onClick={() => {
@@ -64,8 +67,9 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
             </div>
           )}
         </>
-      )}
-
+      <button onClick={() => navigate("/UnregisterList")}>
+        Rera unregistration
+      </button>
       {/* Logout */}
       <button onClick={() => navigate("/")}>
         Logout

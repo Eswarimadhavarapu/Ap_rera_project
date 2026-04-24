@@ -99,3 +99,15 @@
 .pay-btn:hover{
   background:#0b5ed7;
 }
+
+.payment-container {
+  position: relative; /* important */
+  min-height: 400px;  /* gives space for bottom positioning */
+}
+
+/* bottom-left position */
+.back-btn-wrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}

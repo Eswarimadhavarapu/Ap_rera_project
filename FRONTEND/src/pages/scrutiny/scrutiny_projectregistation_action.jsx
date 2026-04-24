@@ -6,27 +6,29 @@ import ProjectWizard from "../../components/scrutiny/scrutiny_steper";
 import ScrutinyRemarksField from "../../components/scrutiny/ScrutinyRemarksField";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import "../../styles/scrutiny/scrutiny_projectregistation_action.css";
+import { useAdmin } from "../../context/AdminContext";
 
-const ACTION_OPTIONS = [
-  {
-    value: "approve",
-    title: "Approve Application",
-    subtitle: "Use when the scrutiny review is complete and ready for final processing.",
-    nextDesk: "Director / Final Approval Desk",
-  },
-  {
-    value: "shortfall",
-    title: "Raise Shortfall",
-    subtitle: "Return the file with observations so the applicant can respond.",
-    nextDesk: "Applicant / Compliance Response",
-  },
-  {
-    value: "reject",
-    title: "Reject Application",
-    subtitle: "Use when the application cannot proceed under the current submission.",
-    nextDesk: "Closed With Rejection Order",
-  },
-];
+
+// const ACTION_OPTIONS = [
+//   {
+//     value: "approve",
+//     title: "Approve Application",
+//     subtitle: "Use when the scrutiny review is complete and ready for final processing.",
+//     nextDesk: "Director / Final Approval Desk",
+//   },
+//   {
+//     value: "shortfall",
+//     title: "Raise Shortfall",
+//     subtitle: "Return the file with observations so the applicant can respond.",
+//     nextDesk: "Applicant / Compliance Response",
+//   },
+//   {
+//     value: "reject",
+//     title: "Reject Application",
+//     subtitle: "Use when the application cannot proceed under the current submission.",
+//     nextDesk: "Closed With Rejection Order",
+//   },
+// ];
 
 const REVIEW_SECTIONS = [
   ["promoter", "Promoter Profile", "Promoter identity, declarations and profile records.", "/scrutiny/project-registration_1"],
@@ -117,12 +119,19 @@ const countUploadedDocuments = (documents) => {
   return 0;
 };
 
-const getActionOption = (value) =>
-  ACTION_OPTIONS.find((option) => option.value === value) || ACTION_OPTIONS[1];
+// const getActionOption = (value) =>
+//   ACTION_OPTIONS.find((option) => option.value === value) || ACTION_OPTIONS[1];
 
 export default function ScrutinyProjectRegistrationAction() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { admin } = useAdmin();
+const dept = admin?.department?.toLowerCase();
+
+// ✅ ADD THESE 3 LINES
+const isPlanning = dept?.includes("planning");
+const isLegal = dept?.includes("legal");
+const isAudit = dept?.includes("audit");
 
   const applicationNumber =
     location.state?.applicationNumber ||
@@ -142,8 +151,21 @@ export default function ScrutinyProjectRegistrationAction() {
   const [previewData, setPreviewData] = useState(null);
   const [developmentData, setDevelopmentData] = useState(null);
   const [uploadedDocumentCount, setUploadedDocumentCount] = useState(0);
-  const [decision, setDecision] = useState("shortfall");
+  // const [decision, setDecision] = useState("shortfall");
   const [remarks, setRemarks] = useState("");
+  
+  const [remarksList, setRemarksList] = useState([]);
+  const loadRemarks = async () => {
+  try {
+    const res = await apiGet(
+      `/api/remarks?application_no=${applicationNumber}`
+    );
+    setRemarksList(res);
+  } catch (err) {
+    console.error(err);
+  }
+};
+const [shortfall, setShortfall] = useState("");
   const [reviewChecklist, setReviewChecklist] = useState({
     reviewedSections: false,
     validatedDocuments: false,
@@ -162,7 +184,7 @@ export default function ScrutinyProjectRegistrationAction() {
     if (!savedDraft) return;
     try {
       const parsed = JSON.parse(savedDraft);
-      if (parsed.decision) setDecision(parsed.decision);
+      // if (parsed.decision) setDecision(parsed.decision);
       if (typeof parsed.remarks === "string") setRemarks(parsed.remarks);
       if (parsed.reviewChecklist) {
         setReviewChecklist((prev) => ({ ...prev, ...parsed.reviewChecklist }));
@@ -239,8 +261,12 @@ export default function ScrutinyProjectRegistrationAction() {
         console.error("Unable to load scrutiny action context", loadError);
         setError(loadError.message || "Unable to load scrutiny action details.");
       } finally {
-        setLoading(false);
-      }
+  if (applicationNumber) {
+    loadRemarks();   // ✅ ADD THIS LINE
+  }
+
+  setLoading(false);
+}
     };
 
     loadContext();
@@ -335,7 +361,7 @@ export default function ScrutinyProjectRegistrationAction() {
 
   const checklistCompleted = Object.values(reviewChecklist).every(Boolean);
   const canSubmit = remarks.trim().length >= 10 && checklistCompleted && !submitting;
-  const selectedAction = getActionOption(decision);
+  // const selectedAction = getActionOption(decision);
 
   const persistDraft = (message) => {
     sessionStorage.setItem(
@@ -344,10 +370,8 @@ export default function ScrutinyProjectRegistrationAction() {
         applicationNumber,
         panNumber,
         promoterType,
-        decision,
         remarks,
         reviewChecklist,
-        nextDesk: selectedAction.nextDesk,
         savedAt: new Date().toISOString(),
       })
     );
@@ -358,21 +382,47 @@ export default function ScrutinyProjectRegistrationAction() {
     setReviewChecklist((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!canSubmit) {
-      setBanner("Please enter at least 10 characters in final remarks and confirm all review checks.");
-      return;
-    }
+  const handleAddRemark = async () => {
 
-    setSubmitting(true);
-    try {
-      persistDraft(`${selectedAction.title} saved locally for application ${applicationNumber}.`);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  if (!remarks || shortfall === "") {
+    alert("Please select shortfall and enter remarks");
+    return;
+  }
 
+  try {
+    await apiPost("/api/remarks/add", {
+      application_no: applicationNumber,
+      authority: "Verification Team",
+      is_shortfall: shortfall,
+      remarks: remarks,
+    });
+
+    // 🔥 IMPORTANT: reload table from DB
+    await loadRemarks();
+
+    // clear form
+    setRemarks("");
+    setShortfall("");
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+const handleFinalSubmit = async () => {
+  try {
+    await apiPost("/api/scrutiny/final-submit", {
+      application_no: applicationNumber,
+      is_shortfall: shortfall
+    });
+
+    alert("Final Submitted");
+
+  } catch (err) {
+    console.error(err);
+  }
+};
   return (
     <ScrutinyLayout>
       <div className="sra-page">
@@ -407,15 +457,12 @@ export default function ScrutinyProjectRegistrationAction() {
             {loading ? (
               <div className="sra-state-card">Loading scrutiny action details...</div>
             ) : (
-              <form onSubmit={handleSubmit} className="sra-form">
+              <>
                 <section className="sra-panel">
                   <div className="sra-panel-head">
                     <div>
                       <h2>Application Snapshot</h2>
                       <p>Live summary from the scrutiny application context.</p>
-                    </div>
-                    <div className="sra-progress-badge">
-                      {completionStats.completed}/{completionStats.total} sections reviewed
                     </div>
                   </div>
 
@@ -428,7 +475,50 @@ export default function ScrutinyProjectRegistrationAction() {
                     ))}
                   </div>
                 </section>
+                <section className="sra-panel">
+  <div className="sra-panel-head">
+    <h2>UPDATED REMARKS</h2>
+  </div>
 
+  <div className="sra-table-wrapper">
+    <table className="sra-table">
+      <thead>
+        <tr>
+          <th>SNo</th>
+          <th>Description</th>
+          <th>Is there any Shortfall in data/Payment</th>
+          <th>Remarks</th>
+          <th>Upload Observations Document</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+  {remarksList.length > 0 ? (
+    remarksList.map((item, index) => (
+      <tr key={index}>
+  <td>{index + 1}</td> {/* ✅ SNo FIX */}
+  <td>{item.authority}</td>
+  <td>{item.is_shortfall === "yes" ? "Yes" : "No"}</td>
+  <td>{item.remarks}</td>
+  <td>NA</td>
+  <td>{new Date(item.created_at).toLocaleString()}</td>
+</tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="6" style={{ textAlign: "center" }}>
+        No remarks available
+      </td>
+    </tr>
+  )}
+</tbody>
+    </table>
+  </div>
+</section>
+   {!(isPlanning || isLegal || isAudit) && (
+    
+  <form className="sra-form">
                 <section className="sra-panel">
                   <div className="sra-panel-head">
                     <div>
@@ -476,12 +566,12 @@ export default function ScrutinyProjectRegistrationAction() {
                 <section className="sra-panel">
                   <div className="sra-panel-head">
                     <div>
-                      <h2>Recommended Action</h2>
+                      {/* <h2>Recommended Action</h2> */}
                       <p>Select the action that should be recorded for this application.</p>
                     </div>
                   </div>
 
-                  <div className="sra-action-grid">
+                  {/* <div className="sra-action-grid">
                     {ACTION_OPTIONS.map((option) => (
                       <label
                         key={option.value}
@@ -506,7 +596,7 @@ export default function ScrutinyProjectRegistrationAction() {
                         </div>
                       </label>
                     ))}
-                  </div>
+                  </div> */}
                 </section>
 
                 <div className="sra-dual-grid">
@@ -548,41 +638,66 @@ export default function ScrutinyProjectRegistrationAction() {
                     </div>
                   </section>
 
-                  <section className="sra-panel sra-routing-panel">
-                    <div className="sra-panel-head">
-                      <div>
-                        <h2>Routing Preview</h2>
-                        <p>Expected outcome after saving this action.</p>
-                      </div>
-                    </div>
-
-                    <div className="sra-route-card">
-                      <div className="sra-route-label">Selected Action</div>
-                      <div className="sra-route-value">{selectedAction.title}</div>
-                    </div>
-
-                    <div className="sra-route-card">
-                      <div className="sra-route-label">Next Desk</div>
-                      <div className="sra-route-value">{selectedAction.nextDesk}</div>
-                    </div>
-
-                    <div className="sra-route-card">
-                      <div className="sra-route-label">Uploaded Documents</div>
-                      <div className="sra-route-value">
-                        {uploadedDocumentCount} document(s) available
-                      </div>
-                    </div>
-                  </section>
+                  
                 </div>
 
-                <ScrutinyRemarksField
-                  id="scrutiny-final-action-remarks"
-                  value={remarks}
-                  onChange={setRemarks}
-                  label="Final Action Remarks / Shortfall Observations*"
-                  placeholder="Enter the final scrutiny note, approval comment, or shortfall points."
-                  className="sra-remarks-card"
-                />
+                <section className="sra-panel">
+  <div className="sra-panel-head">
+    <h2>ACTION TO BE TAKEN</h2>
+  </div>
+
+  {/* Shortfall */}
+ <div className="sra-shortfall-row">
+  <label className="sra-label">
+    Is there any shortfall in data/payment
+  </label>
+
+  <label className="sra-radio">
+    <input
+      type="radio"
+      name="shortfall"
+      value="yes"
+      checked={shortfall === "yes"}
+      onChange={(e) => setShortfall(e.target.value)}
+    />
+    <span>Yes</span>
+  </label>
+
+  <label className="sra-radio">
+    <input
+      type="radio"
+      name="shortfall"
+      value="no"
+      checked={shortfall === "no"}
+      onChange={(e) => setShortfall(e.target.value)}
+    />
+    <span>No</span>
+  </label>
+</div>
+
+  {/* Remarks */}
+  <div className="sra-remarks-box">
+    <textarea
+  className="sra-textarea"
+  placeholder="Enter remarks..."
+  rows={4}
+  value={remarks}
+  onChange={(e) => setRemarks(e.target.value)}
+/>
+  </div>
+
+  {/* Submit */}
+  <div className="sra-submit-row">
+    <button
+  type="button"
+  className="sra-btn sra-btn-primary"
+  onClick={handleAddRemark}
+>
+  Add Remark
+</button>
+  </div>
+</section>
+
 
                 <div className="sra-footer">
                   <button
@@ -608,15 +723,17 @@ export default function ScrutinyProjectRegistrationAction() {
                   </button>
 
                   <button
-                    type="submit"
-                    className="sra-btn sra-btn-primary"
-                    disabled={!canSubmit}
-                  >
-                    {submitting ? "Submitting..." : selectedAction.title}
-                  </button>
+  type="button"
+  className="sra-btn sra-btn-primary"
+  onClick={handleFinalSubmit}
+>
+  Final Submit
+</button>
                 </div>
               </form>
-            )}
+             )}
+ </>
+ )}
           </div>
         </div>
       </div>

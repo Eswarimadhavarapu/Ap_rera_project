@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import RenewalStepper from "../components/RenewalStepper";
 import "../styles/RenewalNewCertificate.css";
 
-function RenewalNewCertificate(){
+function RenewalNewCertificate() {
 
   const { renewalId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function RenewalNewCertificate(){
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
-    if(selectedFile && selectedFile.type !== "application/pdf"){
+    if (selectedFile && selectedFile.type !== "application/pdf") {
       alert("Only PDF files are allowed");
       return;
     }
@@ -22,7 +22,7 @@ function RenewalNewCertificate(){
   };
 
   const handleSubmit = () => {
-    if(!file){
+    if (!file) {
       alert("Please upload certificate PDF");
       return;
     }
@@ -35,7 +35,7 @@ function RenewalNewCertificate(){
     navigate("/"); // or next page
   };
 
-  return(
+  return (
 
     <div className="renewal-page-wrapper">
 
@@ -81,6 +81,15 @@ function RenewalNewCertificate(){
             Upload Certificate
           </button>
 
+        </div>
+
+        <div className="back-btn-wrapper">
+          <button
+            className="upload-btn"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
         </div>
 
       </div>

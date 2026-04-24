@@ -11,6 +11,16 @@ const ScrutinyDashboard = () => {
 
   const { admin } = useAdmin(); // ✅ get admin
   const dept = admin?.department?.toLowerCase(); // ✅ get department
+  const dashboardNames = {
+  planning: "Planning Dashboard",
+  legal: "Legal Dashboard",
+  audit: "Audit Dashboard",
+  engineer: "Engineer Dashboard",
+  verification: "Verification Dashboard",
+  ad: "Assistant Director Dashboard",
+  dd: "Deputy Director Dashboard",
+  it: "IT Dashboard",
+};
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -27,14 +37,8 @@ const ScrutinyDashboard = () => {
 
         <div style={{ padding: "20px" }}>
           <h2>
-            {dept === "planning"
-              ? "Planning Dashboard"
-              : dept === "legal"
-              ? "Legal Dashboard"
-              : dept === "audit"
-              ? "Audit Dashboard"
-              : "Scrutiny Dashboard"}
-          </h2>
+  {dashboardNames[dept] || "Scrutiny Dashboard"}
+</h2>
 
           <p>This page is under development...</p>
         </div>

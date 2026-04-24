@@ -36,18 +36,19 @@ const createVillaRows = () =>
     saved:false,
   }));
 
-const ResidentialBlock = ({ onUpload, blockData, setBlockData }) => (
+const ResidentialBlock = ({ onUpload, blockData, setBlockData,residentialPhotos }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
-      <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Block Name</th>
-          <th>Construction Status</th>
-          <th>Remarks</th>
-          <th>Upload Photos</th>
-        </tr>
-      </thead>
+     <thead>
+<tr>
+<th></th>
+<th>S.No</th>
+<th>Block</th>
+<th>Status</th>
+<th>Remarks</th>
+<th>Upload Photos</th>
+</tr>
+</thead>
       <tbody>
        {blockData.map((row, index) => (
           <tr key={index} className={row.saved ? "saved-row" : ""}>
@@ -118,14 +119,18 @@ const ResidentialBlock = ({ onUpload, blockData, setBlockData }) => (
                 }}
               />
             </td>
-            <td>
-              <button
-                className="projectblockvilla-view-btn"
-                onClick={() => onUpload(index)}
-              >
-                Upload/View
-              </button>
-            </td>
+           <td>
+<button
+className="projectblockvilla-view-btn"
+onClick={() => onUpload(index)}
+>
+Upload/View
+</button>
+
+{residentialPhotos[`1-${index}`]?.length > 0 && (
+<span className="uploaded-text">Uploaded</span>
+)}
+</td>
           </tr>
         ))}
       </tbody>
@@ -133,19 +138,20 @@ const ResidentialBlock = ({ onUpload, blockData, setBlockData }) => (
   </div>
 );
 
-const ResidentialFloor = ({ onUpload, floorData, setFloorData }) => (
+const ResidentialFloor = ({ onUpload, floorData, setFloorData ,residentialPhotos }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
       <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Block</th>
-          <th>Floor</th>
-          <th>Status</th>
-          <th>Remarks</th>
-          <th>Upload Photos</th>
-        </tr>
-      </thead>
+<tr>
+<th></th>
+<th>S.No</th>
+<th>Block</th>
+<th>Floor</th>
+<th>Status</th>
+<th>Remarks</th>
+<th>Upload Photos</th>
+</tr>
+</thead>
       <tbody>
         {floorData.map((row, index) => (
           <tr key={index} className={row.saved ? "saved-row" : ""}>
@@ -230,13 +236,17 @@ const ResidentialFloor = ({ onUpload, floorData, setFloorData }) => (
               />
             </td>
             <td>
-              <button
-                className="projectblockvilla-view-btn"
-                onClick={() => onUpload(index)}
-              >
-                Upload/View
-              </button>
-            </td>
+<button
+className="projectblockvilla-view-btn"
+onClick={() => onUpload(index)}
+>
+Upload/View
+</button>
+
+{residentialPhotos[`2-${index}`]?.length > 0 && (
+<span className="uploaded-text">Uploaded</span>
+)}
+</td>
           </tr>
         ))}
       </tbody>
@@ -244,78 +254,91 @@ const ResidentialFloor = ({ onUpload, floorData, setFloorData }) => (
   </div>
 );
 
-const ResidentialFlat = ({ onUpload, flatData, setFlatData }) => (
+const ResidentialFlat = ({ onUpload, flatData, setFlatData, residentialPhotos }) => (
   <div className="projectblockvilla-table-wrapper">
     <table className="projectblockvilla-table">
       <thead>
         <tr>
+          <th></th>
           <th>S.No</th>
           <th>Block</th>
           <th>Floor</th>
           <th>Flat</th>
-          <th>Status</th>
+          <th>Construction Status</th>
+          <th>Sale Status</th>
+          <th>Remarks</th>
+          <th>Sale Document</th>
           <th>Upload Photos</th>
         </tr>
       </thead>
+
       <tbody>
-       {flatData.map((row, index) => (
+        {flatData.map((row, index) => (
           <tr key={index} className={row.saved ? "saved-row" : ""}>
 
+            {/* Checkbox */}
             <td>
               <input
-  type="checkbox"
-  checked={row.saved || row.checked}
-  className={
-    row.saved
-      ? "checkbox-green"
-      : row.checked
-      ? "checkbox-blue"
-      : ""
-  }
-  onChange={() => {
-    const updated = [...flatData];
-    updated[index].checked = !updated[index].checked;
-    setFlatData(updated);
-  }}
-/>
+                type="checkbox"
+                checked={row.saved || row.checked}
+                className={
+                  row.saved
+                    ? "checkbox-green"
+                    : row.checked
+                    ? "checkbox-blue"
+                    : ""
+                }
+                onChange={() => {
+                  const updated = [...flatData];
+                  updated[index].checked = !updated[index].checked;
+                  setFlatData(updated);
+                }}
+              />
             </td>
 
+            {/* S.No */}
             <td>{index + 1}</td>
 
+            {/* Block */}
             <td>
-  <select
-    value={row.block}
-    onChange={(e) => {
-      const updated = [...flatData];
-      updated[index].block = e.target.value;
-      setFlatData(updated);
-    }}
-  >
-    <option value="">Select Block</option>
-    <option value="Block A">Block A</option>
-    <option value="Block B">Block B</option>
-    <option value="Block C">Block C</option>
-  </select>
-</td>
+              <select
+                value={row.block}
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].block = e.target.value;
+                  setFlatData(updated);
+                }}
+              >
+                <option value="">Select Block</option>
+                <option value="Block A">Block A</option>
+                <option value="Block B">Block B</option>
+                <option value="Block C">Block C</option>
+              </select>
+            </td>
 
-<td>
-  <select
-    value={row.floor}
-    onChange={(e) => {
-      const updated = [...flatData];
-      updated[index].floor = e.target.value;
-      setFlatData(updated);
-    }}
-  >
-    <option value="">Select Floor</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </select>
-</td>
+            {/* Floor */}
+            <td>
+              <select
+                value={row.floor}
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].floor = e.target.value;
+                  setFlatData(updated);
+                }}
+              >
+                <option value="">Select Floor</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </td>
+
+            {/* Flat Number */}
             <td>{100 + index}</td>
+
+            {/* Construction Status */}
             <td>
               <select
                 value={row.status}
@@ -325,10 +348,55 @@ const ResidentialFlat = ({ onUpload, flatData, setFlatData }) => (
                   setFlatData(updated);
                 }}
               >
+                <option value="">Select</option>
                 <option>Yet To Start</option>
+                <option>In Progress</option>
                 <option>Completed</option>
               </select>
             </td>
+
+            {/* Sale Status */}
+            <td>
+              <select
+                value={row.saleStatus}
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].saleStatus = e.target.value;
+                  setFlatData(updated);
+                }}
+              >
+                <option value="">Select</option>
+                <option>Sold</option>
+                <option>Available</option>
+              </select>
+            </td>
+
+            {/* Remarks */}
+            <td>
+              <input
+                type="text"
+                value={row.remarks}
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].remarks = e.target.value;
+                  setFlatData(updated);
+                }}
+              />
+            </td>
+
+            {/* Sale Document */}
+            <td>
+              <input
+                type="file"
+                onChange={(e) => {
+                  const updated = [...flatData];
+                  updated[index].saleDoc = e.target.files[0];
+                  setFlatData(updated);
+                }}
+              />
+            </td>
+
+            {/* Upload Photos */}
             <td>
               <button
                 className="projectblockvilla-view-btn"
@@ -336,7 +404,12 @@ const ResidentialFlat = ({ onUpload, flatData, setFlatData }) => (
               >
                 Upload/View
               </button>
+
+              {residentialPhotos[`3-${index}`]?.length > 0 && (
+                <span className="uploaded-text">Uploaded</span>
+              )}
             </td>
+
           </tr>
         ))}
       </tbody>
@@ -884,8 +957,9 @@ className={
 )}
 {projectType === "Residential" && activeStep === 1 && (
   <ResidentialBlock
-   blockData={blockData}
+  blockData={blockData}
   setBlockData={setBlockData}
+  residentialPhotos={residentialPhotos}
   onUpload={(row) => {
     setActiveRow(row);
     setShowModal(true);
@@ -895,8 +969,9 @@ className={
 
 {projectType === "Residential" && activeStep === 2 && (
   <ResidentialFloor
-   floorData={floorData}
+  floorData={floorData}
   setFloorData={setFloorData}
+  residentialPhotos={residentialPhotos}
   onUpload={(row) => {
     setActiveRow(row);
     setShowModal(true);
@@ -906,8 +981,9 @@ className={
 
 {projectType === "Residential" && activeStep === 3 && (
   <ResidentialFlat
-    flatData={flatData}
+  flatData={flatData}
   setFlatData={setFlatData}
+  residentialPhotos={residentialPhotos}
   onUpload={(row) => {
     setActiveRow(row);
     setShowModal(true);
@@ -1205,65 +1281,85 @@ className={
 )}
 {/* 🔵 RESIDENTIAL BOTTOM BUTTONS */}
 {projectType === "Residential" && (
-  <div className="residential-bottom-buttons">
+  <div className="residential-section">
+    <div className="residential-bottom-buttons">
 
-    {/* 🔹 BLOCK STEP */}
+    {/* BLOCK STEP */}
     {activeStep === 1 && (
-      <>
-        <button
-          className="res-submit-btn"
-  onClick={handleSaveBlock}
->
-  Submit
-</button>
-
-        <button
-          className="res-next-btn"
-          onClick={() => setActiveStep(2)}
-        >
-          Next
-        </button>
-      </>
-    )}
-
-    {/* 🔹 FLOOR STEP */}
-    {activeStep === 2 && (
-      <>
-        <button
-          className="res-submit-btn"
-         onClick={handleSaveFloor}
-        >
-          Submit
-        </button>
-
-        <button
-          className="res-next-btn"
-          onClick={() => setActiveStep(3)}
-        >
-          Next
-        </button>
-      </>
-    )}
-
-    {/* 🔹 FLAT STEP */}
-    {activeStep === 3 && (
-      <>
+  <>
+    {/* CENTER SAVE */}
     <button
-      className="res-save-btn"
-      onClick={handleSaveFlat}
+      className="block-save-btn"
+      onClick={handleSaveBlock}
+    >
+      Save
+    </button>
+
+    {/* RIGHT NEXT */}
+    <button
+      className="block-next-btn"
+      onClick={() => setActiveStep(2)}
+    >
+      Next
+    </button>
+  </>
+)}
+    {/* FLOOR STEP */}
+    {activeStep === 2 && (
+  <div className="floor-button-layout">
+
+    <button
+      className="floor-prev-btn"
+      onClick={() => setActiveStep(1)}
+    >
+      Previous
+    </button>
+
+    <button
+      className="floor-save-btn"
+      onClick={handleSaveFloor}
     >
       Save
     </button>
 
     <button
-      className="res-submit-btn"
-      onClick={() => alert("Residential Submitted Successfully")}
+      className="floor-next-btn"
+      onClick={() => setActiveStep(3)}
     >
-      Submit
+      Next
     </button>
-  </>
+
+  </div>
 )}
 
+    {/* FLAT STEP */}
+    {activeStep === 3 && (
+      <>
+        {/* 🔥 Previous Button */}
+        <button
+          className="res-prev-btn"
+          onClick={() => setActiveStep(2)}
+        >
+          Previous
+        </button>
+
+        <button
+          className="res-save-btn"
+          onClick={handleSaveFlat}
+        >
+          Save
+        </button>
+
+        <button
+          className="res-submit-btn"
+          onClick={() => alert("Residential Submitted Successfully")}
+        >
+          Submit
+        </button>
+      </>
+    )}
+
+  </div>
   </div>
 )}
 {projectType === "Commercial" && (

@@ -41,15 +41,19 @@ const DepartmentLogin = () => {
       saveAdmin(data.admin); // ✅ saves to context + localStorage in one call
       const dept = data.admin.department?.toLowerCase();
 
-if (dept === "planning") {
-  navigate("/planning/planning-dashboard", { replace: true });
-} else if (dept === "legal") {
-  navigate("/legal/legal-dashboard", { replace: true });
-} else if (dept === "audit") {
-  navigate("/audit/audit-dashboard", { replace: true });
-} else if (dept === "engineer") {
-  navigate("/scrutinity/scrutiny-engineer", { replace: true });
-}
+const deptRoutes = {
+  planning: "/planning/planning-dashboard",
+  legal: "/legal/legal-dashboard",
+  audit: "/audit/audit-dashboard",
+  engineer: "/scrutiny/scrutiny-engineer",
+  verification: "/verification/verification-dashboard",
+  ad: "/ad/ad-dashboard",
+  dd: "/dd/dd-dashboard",
+  it: "/it/it-dashboard",
+};
+
+navigate(deptRoutes[dept] || "/admin-dashboard", { replace: true });
+
     } catch {
       setError("Invalid or expired OTP. Please try again.");
     } finally {

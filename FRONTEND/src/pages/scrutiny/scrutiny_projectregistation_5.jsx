@@ -694,6 +694,9 @@
 
 
 
+
+
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -704,6 +707,7 @@ import ScrutinyRemarksField from "../../components/scrutiny/ScrutinyRemarksField
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import { apiPost, BASE_URL } from "../../api/api";
 import { useAdmin } from "../../context/AdminContext";
+import ScrutinyDocumentRemarkModal from "../../components/ScrutinyDocumentRemarkModal";
 
 const scrutinyUploadDocuments = [
   {
@@ -1049,6 +1053,14 @@ const ScrutinyProjectregistation5 = () => {
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
 const isPlanning = dept === "planning";
+const allowedDocsByDept = {
+  verification: "ALL",
+
+  legal: [1,4,5,6,7,14,18,19,20,21,22,23,25,26,27],
+  audit: [16,17,18,19,25],
+  planning: [2,3,7,8,9,10,14,26],
+  engineer: [8,10,12,13,14,15,16,24],
+};
 
   const panNumber =
     location.state?.panNumber ||
@@ -1081,16 +1093,16 @@ const isPlanning = dept === "planning";
   const [showModal, setShowModal] = useState(false);
 const [selectedDoc, setSelectedDoc] = useState(null);
 
-const handleOpenDocument = (url, fileName) => {
-  console.log("CLICK WORKING", url);
-
+const handleOpenDocument = (url, fileName, doc) => {
   setSelectedDoc({
-    url: url,
-    name: fileName
-  });
-
+  url: url,
+  fileName: fileName,
+  title: doc.text,   // ✅ document type name
+  docId: doc.id      // ✅ VERY IMPORTANT
+});
   setShowModal(true);
 };
+
   useEffect(() => {
     sessionStorage.setItem("panNumber", panNumber);
     sessionStorage.setItem("applicationNumber", applicationNumber);
@@ -1151,16 +1163,14 @@ const handleOpenDocument = (url, fileName) => {
       fetchExistingData();
     }
   }, [applicationNumber, panNumber]);
-
-  const allowedPlanningDocs = [2, 3, 7, 8, 9, 10, 14, 26];
-
 const documentsWithStatus = useMemo(() => {
   let docs = scrutinyUploadDocuments;
 
-  // ✅ Planning ki only selected docs
-  if (isPlanning) {
+  const allowed = allowedDocsByDept[dept];
+
+  if (allowed && allowed !== "ALL") {
     docs = scrutinyUploadDocuments.filter((doc) =>
-      allowedPlanningDocs.includes(doc.id)
+      allowed.includes(doc.id)
     );
   }
 
@@ -1173,7 +1183,7 @@ const documentsWithStatus = useMemo(() => {
       fileName: uploaded?.fileName || `Document ${doc.id}`,
     };
   });
-}, [uploadedFiles, isPlanning]);
+}, [uploadedFiles, dept]);
 
   const handleSaveAndContinue = () => {
     navigate("/scrutiny/project-registration_action", {
@@ -1240,7 +1250,7 @@ const documentsWithStatus = useMemo(() => {
                           <span
   className="scrutiny-upload-link"
   style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-  onClick={() => handleOpenDocument(doc.url, doc.fileName)}
+  onClick={() => handleOpenDocument(doc.url, doc.fileName, doc)}
 >
   {doc.fileName}
 </span>
@@ -1385,89 +1395,13 @@ const documentsWithStatus = useMemo(() => {
         </form>
       </div>
     </ScrutinyLayout>
-      {/* ✅ MOVE POPUP HERE */}
-   {showModal && (
-  <div className="doc-overlay">
-    <div className="doc-popup">
-
-      {/* HEADER */}
-      <div className="doc-header">
-        <span>{selectedDoc?.name}</span>
-        <button onClick={() => setShowModal(false)}>✖</button>
-      </div>
-
-      {/* DOCUMENT */}
-      <div className="doc-body">
-        <iframe
-          src={selectedDoc?.url}
-          width="100%"
-          height="500px"
-          title="Document"
-        />
-      </div>
-
-      {/* ACTION */}
-      <div className="doc-section">
-        <div className="doc-section-title">ACTION TO BE TAKEN</div>
-
-        <div className="doc-action-row">
-          <span>Does the document have shortfall ?</span>
-
-          <label>
-            <input type="radio" name="shortfall" /> Yes
-          </label>
-
-          <label>
-            <input type="radio" name="shortfall" /> No
-          </label>
-        </div>
-
-        <textarea
-          className="doc-textarea"
-          placeholder="Enter remarks..."
-        />
-
-        <div style={{ textAlign: "right" }}>
-          <button className="doc-btn">Submit</button>
-        </div>
-      </div>
-
-      {/* UPDATED REMARKS */}
-      <div className="doc-section">
-        <div className="doc-section-title">UPDATED REMARKS</div>
-
-        <table className="doc-table">
-          <thead>
-            <tr>
-              <th>SNo</th>
-              <th>Authority</th>
-              <th>Is Shortfall</th>
-              <th>Remarks</th>
-              <th>Remarks Date</th>
-              <th>Document</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Verification Team</td>
-              <td>Yes</td>
-              <td>
-                As per the DPMS data, status of the application submitted...
-              </td>
-              <td>14-04-2026 11:47 PM</td>
-              <td>
-                <span style={{ color: "blue", cursor: "pointer" }}>
-                  View
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-  </div>
+    {showModal && selectedDoc && (
+  <ScrutinyDocumentRemarkModal
+    isOpen={showModal}
+    documentItem={selectedDoc}
+    onClose={() => setShowModal(false)}
+    applicationNo={applicationNumber}
+  />
 )}
 </>
   );

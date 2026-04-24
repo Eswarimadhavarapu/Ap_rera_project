@@ -377,3 +377,122 @@ body {
   right: 0;
   left: auto;
 }
+
+/* =========================
+   BELL ICON STYLE
+========================= */
+/* .nav-bell span {
+  background: #8b5e3c;
+  color: #fff;
+  font-size: 14px;   /* smaller icon 
+  
+  width: 28px;       /* fixed size 
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  cursor: pointer;
+} */
+
+.notice-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+
+  width: 600px;        /* ⬅️ increase width (try 550–650px) */
+  max-width: 90vw;     /* ⬅️ responsive for small screens */
+
+  max-height: 350px;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+  padding: 15px;
+}
+
+.notice-scroll-box {
+  height: 120px;
+  overflow: hidden;
+}
+
+.notice-scroll-list {
+  display: flex;
+  flex-direction: column;
+  animation: scrollUp 12s linear infinite;
+}
+
+@keyframes scrollUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+.notice-text {
+  color: #000 !important;   /* ⬅️ force black */
+}
+
+
+/* /* .homenavbar-new-badge {
+  background: #8b5e3c;
+  color: #fff;   /* only badge white 
+}  */
+
+
+/* remove dots */
+.notice-scroll-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* align properly */
+.notice-scroll-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 5px;
+}
+
+/* text styling */
+.notice-text {
+  flex: 1;
+}
+
+/* 🔥 SMALL OVAL NEW BADGE */
+.new-inline {
+  min-width: 38px;
+  height: 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 9px;
+  font-weight: bold;
+  color: #fff;
+
+  background: radial-gradient(circle, #ffe600 30%, #ff0000 80%);
+  border-radius: 50px;
+
+  padding: 0 6px;
+
+  text-shadow: 0 0 2px #000;
+
+  /* glow */
+  box-shadow: 0 0 4px red;
+
+  animation: blinkNew 1s infinite alternate;
+}
+
+/* blinking */
+@keyframes blinkNew {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 4px red;
+  }
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px yellow;
+  }
+}

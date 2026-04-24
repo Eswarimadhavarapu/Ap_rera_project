@@ -4,23 +4,23 @@ import { useParams, useNavigate } from "react-router-dom";
 import RenewalStepper from "../components/RenewalStepper";
 import "../styles/RenewalPayment.css";
 
-function RenewalPayment(){
+function RenewalPayment() {
 
   const { renewalId } = useParams();
   const navigate = useNavigate();
 
-  const [method,setMethod] = useState("card");
+  const [method, setMethod] = useState("card");
 
-  const pay = async()=>{
-    try{
+  const pay = async () => {
+    try {
       await makePayment(renewalId);
       navigate(`/renewal/receipt/${renewalId}`);
-    }catch{
+    } catch {
       alert("Payment Failed");
     }
   };
 
-  return(
+  return (
 
     <div className="renewal-page-wrapper">
 
@@ -51,7 +51,7 @@ function RenewalPayment(){
 
           <select
             value={method}
-            onChange={(e)=>setMethod(e.target.value)}
+            onChange={(e) => setMethod(e.target.value)}
           >
             <option value="card">Credit / Debit Card</option>
             <option value="upi">UPI</option>
@@ -65,6 +65,15 @@ function RenewalPayment(){
             Pay Now
           </button>
 
+        </div>
+
+        <div className="back-btn-wrapper">
+          <button
+            className="upload-btn"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
         </div>
 
       </div>

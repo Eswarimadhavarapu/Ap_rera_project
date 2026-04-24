@@ -143,5 +143,14 @@
   border-bottom:1px solid #eee;
 }
 
+.receipt-container {
+  position: relative;  /* important */
+  min-height: 400px;
+}
 
-
+/* bottom-left position */
+.back-btn-wrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}

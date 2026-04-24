@@ -381,3 +381,35 @@
     width: 100%;
   }
 }
+
+.sra-shortfall-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 15px 0;
+}
+
+.sra-radio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sra-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.sra-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.sra-radio span {
+  margin-left: 6px;
+  font-size: 14px;
+  color: #333;
+}

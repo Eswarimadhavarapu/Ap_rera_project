@@ -5,7 +5,9 @@ from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 
 from app.models.scrutiny_projectregistation_model import (
+    create_verification_remark,
     create_scrutiny_file as create_scrutiny_file_record,
+    get_verification_remarks,
     get_scrutiny_fpms_dashboard_data,
     get_scrutiny_project_registration_by_application,
     get_scrutiny_project_registrations,
@@ -30,6 +32,12 @@ def _save_scrutiny_file(file_obj):
     file_obj.save(absolute_path)
 
     return f"uploads/scrutiny_files/{filename}"
+
+
+def _parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    return str(value or "").strip().lower() in {"true", "1", "yes", "y"}
 
 
 @scrutiny_bp.route("/scrutiny/project-registrations", methods=["GET", "OPTIONS"])
@@ -150,5 +158,119 @@ def scrutiny_fpms_dashboard():
     try:
         data = get_scrutiny_fpms_dashboard_data()
         return jsonify(data), 200
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+# ------------------remarks api ----------------------
+# ---------------------------------------------------
+
+
+@scrutiny_bp.route("/scrutiny/verification-remarks", methods=["POST"])
+def create_verification_remark_api():
+    try:
+        payload = request.form if request.form else (request.get_json(silent=True) or {})
+
+        data = {
+            "application_no": payload.get("application_no") or payload.get("applicationNo"),
+            "document_name": payload.get("document_name") or payload.get("documentName"),
+            "verification_team": payload.get("verification_team") or payload.get("verificationTeam"),
+            "is_shortfall": _parse_bool(payload.get("is_shortfall") if "is_shortfall" in payload else payload.get("isShortfall")),
+            "status": payload.get("status") or "pending",
+            "remarks": payload.get("remarks"),
+            "document_path": payload.get("document_path") or payload.get("documentPath"),
+            "verified_by": payload.get("verified_by") or payload.get("verifiedBy"),
+        }
+
+        required_fields = {
+            "application_no": "application_no",
+            "document_name": "document_name",
+            "verification_team": "verification_team",
+        }
+
+        missing_fields = [
+            label for key, label in required_fields.items()
+            if not str(data.get(key) or "").strip()
+        ]
+
+        if missing_fields:
+            return (
+                jsonify(
+                    {
+                        "error": "Missing required fields",
+                        "missing_fields": missing_fields,
+                    }
+                ),
+                400,
+            )
+
+        allowed_teams = {"verification", "audit", "planning", "legal", "engineer"}
+        allowed_statuses = {"pending", "approved", "rejected"}
+
+        data["verification_team"] = str(data["verification_team"]).strip().lower()
+        if data["verification_team"] == "scrutiny":
+           data["verification_team"] = "verification"
+        data["status"] = str(data["status"] or "pending").strip().lower()
+
+        if data["verification_team"] not in allowed_teams:
+            return (
+                jsonify(
+                    {
+                        "error": "Invalid verification_team",
+                        "allowed_values": sorted(allowed_teams),
+                    }
+                ),
+                400,
+            )
+
+        if data["status"] not in allowed_statuses:
+            return (
+                jsonify(
+                    {
+                        "error": "Invalid status",
+                        "allowed_values": sorted(allowed_statuses),
+                    }
+                ),
+                400,
+            )
+
+        created_row = create_verification_remark(data)
+
+        return (
+            jsonify(
+                {
+                    "message": "Verification remark saved successfully",
+                    "data": created_row,
+                }
+            ),
+            201,
+        )
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+# ------------------remarks get api ----------------------
+# ---------------------------------------------------
+
+
+@scrutiny_bp.route("/scrutiny/verification-remarks", methods=["GET"])
+def get_verification_remark_api():
+    try:
+        application_no = request.args.get("application_no") or request.args.get("applicationNo")
+        document_name = request.args.get("document_name") or request.args.get("documentName")
+        verification_team = request.args.get("verification_team") or request.args.get("verificationTeam")
+
+        if not str(application_no or "").strip():
+            return jsonify({"error": "application_no is required"}), 400
+
+        if verification_team is not None:
+            verification_team = str(verification_team).strip().lower() or None
+
+        rows = get_verification_remarks(
+            application_no=str(application_no).strip(),
+            document_name=document_name,
+            verification_team=verification_team,
+        )
+
+        return jsonify({"rows": rows}), 200
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500

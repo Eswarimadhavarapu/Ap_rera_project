@@ -2,12 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import RenewalStepper from "../components/RenewalStepper";
 import "../styles/RenewalReceipt.css";
 
-function RenewalReceipt(){
+function RenewalReceipt() {
 
   const { renewalId } = useParams();
   const navigate = useNavigate();
 
-  return(
+  return (
 
     <div className="renewal-page-wrapper">
 
@@ -52,7 +52,7 @@ function RenewalReceipt(){
           <div className="btn-group">
             <button
               className="print-btn"
-              onClick={()=>window.print()}
+              onClick={() => window.print()}
             >
               Print Receipt
             </button>
@@ -66,8 +66,18 @@ function RenewalReceipt(){
           </div>
 
         </div>
+        <div className="back-btn-wrapper">
+          <button
+            className="print-btn"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
+        </div>
+
 
       </div>
+
 
     </div>
 

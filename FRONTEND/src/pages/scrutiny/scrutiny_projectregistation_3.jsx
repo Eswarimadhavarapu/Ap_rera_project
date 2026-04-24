@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiGet, apiPost } from "../../api/api";
+import { apiGet, apiPost, BASE_URL } from "../../api/api";
 import ScrutinyPageHeader from "../../components/scrutiny/ScrutinyPageHeader";
 import ProjectWizard from "../../components/scrutiny/scrutiny_steper";
 import ScrutinyRemarksField from "../../components/scrutiny/ScrutinyRemarksField";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import "../../styles/projectWizard.css";
 import "../../styles/scrutiny/scrutiny_projectregistation_3.css";
+import MapModal from "../../components/MapModal";
+
 
 const EXTERNAL_WORK_LABELS = [
   ["roads", "Roads"],
@@ -184,6 +186,8 @@ const useProjectPreview = (applicationNumber, panNumber) => {
   return projectPreview;
 };
 
+
+
 const DataTable = ({ headers, rows, tableClassName = "" }) => (
   <div className="vdd-table-wrap">
     <table className={`vdd-data-table ${tableClassName}`.trim()}>
@@ -210,7 +214,6 @@ const DataTable = ({ headers, rows, tableClassName = "" }) => (
 export default function ScrutinyProjectRegistrationThree() {
   const navigate = useNavigate();
   const location = useLocation();
-  const department = sessionStorage.getItem("department");
 
   const applicationNumber =
     location.state?.applicationNumber || sessionStorage.getItem("applicationNumber") || "";
@@ -223,6 +226,43 @@ export default function ScrutinyProjectRegistrationThree() {
   const [developmentData, setDevelopmentData] = useState(null);
   const [remarks, setRemarks] = useState("");
   const projectPreview = useProjectPreview(applicationNumber, panNumber);
+  const [showMap, setShowMap] = useState(false);
+  const [geoData, setGeoData] = useState(null);
+
+  const fetchGeoData = async () => {
+  try {
+    const res = await fetch(
+  `${BASE_URL}/api/verify/${applicationNumber}`
+);
+
+    const data = await res.json();
+
+    console.log("API Response:", data);
+
+    // ✅ Handle backend error
+    if (data.error) {
+      alert(data.error);       // show message
+      setGeoData(null);        // clear data
+      setShowMap(false);       // ❌ don't open map
+      return;
+    }
+
+    // ✅ Validate lat/lng
+    if (!data.lat || !data.lng) {
+      console.error("Invalid coordinates");
+      setShowMap(false);
+      return;
+    }
+
+    // ✅ Safe to use
+    setGeoData(data);
+    setShowMap(true);
+
+  } catch (err) {
+    console.error("Error fetching geo data", err);
+    setShowMap(false);
+  }
+};
 
   useEffect(() => {
     if (applicationNumber) sessionStorage.setItem("applicationNumber", applicationNumber);
@@ -386,7 +426,7 @@ export default function ScrutinyProjectRegistrationThree() {
                       </div>
                     </div>
 
-                    {department !== "Planning" && unitRows.length > 0 ? (
+                    {unitRows.length > 0 ? (
                       <div className="vdd-table-wrap vdd-units-wrap">
                         <table className="vdd-data-table vdd-units-table">
                           <thead>
@@ -463,6 +503,76 @@ export default function ScrutinyProjectRegistrationThree() {
                       <p className="vdd-other-empty">Other External Development Works details not available</p>
                     )}
                   </section>
+                  {/* ================= GEO LOCATION ================= */}
+<section className="vdd-section-block">
+  <h3 className="vdd-section-title">Geo Location Verification</h3>
+  <div className="vdd-section-divider"></div>
+
+  <button onClick={fetchGeoData}>
+    View Map
+  </button>
+
+  {geoData && (
+    <>
+      <p><b>Latitude:</b> {geoData.lat}</p>
+      <p><b>Longitude:</b> {geoData.lng}</p>
+
+     {showMap && geoData && (
+  <MapModal 
+  key={`${geoData.lat}-${geoData.lng}-${geoData.img_lat}-${geoData.img_lng}`}
+  lat={geoData.lat} 
+  lng={geoData.lng} 
+  imgLat={geoData.img_lat} 
+  imgLng={geoData.img_lng}
+/>
+)}
+
+  <div style={{ marginTop: "10px" }}>
+    <p>
+      <b>Distance:</b>{" "}
+      {geoData.distance_km
+        ? geoData.distance_km.toFixed(2) + " km"
+        : "N/A"}
+    </p>
+
+    <p>
+      <b>Status:</b>{" "}
+      <span
+        style={{
+          color: geoData.location_valid ? "green" : "red",
+          fontWeight: "bold",
+        }}
+      >
+        {geoData.location_valid
+          ? "VALID (Within 500m)"
+          : "INVALID (Too far / Missing)"}
+      </span>
+    </p>
+  </div>
+
+
+{geoData?.note && (
+  <p style={{ color: "orange" }}>
+    ⚠️ {geoData.note}
+  </p>
+)}
+      <h4>Site Images</h4>
+      <div style={{ display: "flex", gap: "10px" }}>
+        {geoData.images?.map((img, i) => (
+          <div key={i}>
+            {img.url && (
+  <img
+  src={`${BASE_URL}${img.url}`}
+  width="120"
+/>
+)}
+            <p>{img.date}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  )}
+</section>
 
                   <ScrutinyRemarksField
                     id="scrutiny-development-remarks"

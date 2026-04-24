@@ -13,6 +13,12 @@ import QPR from "../../public/assets/pdfs/QPR-circular_Uninterupted.pdf";
 import Bank from "../../public/assets/pdfs/Bank_Circular.pdf";
 
 const announcements = [
+    {
+    title: "Circular No. P/2/2026  Dt.12-01-2026",
+    description:
+      "50% Concession on applicable penalty levied for delayed submission of QPRs",
+    pdf: Circular,
+  },
   {
     title: "Circular No. P/18/2025 Dt.29-12-2025",
     description:
@@ -25,6 +31,8 @@ const announcements = [
       "APRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority).",
     pdf: QUStatus,
   },
+  
+
   // {
   //   title: "Circular No. P/10/2025, Dt.14-05-2025",
   //   description:
