@@ -48,8 +48,8 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
         <>
           <button
             onClick={() => {
-              navigate("/fpms/dashboard");
-              setFpmsOpen(true);
+              window.open("/fpms/dashboard", "_blank");
+         setFpmsOpen(false);
             }}
           >
             📊 FPMS Dashboard
@@ -57,11 +57,11 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
 
           {fpmsOpen && (
             <div style={{ paddingLeft: "20px" }}>
-              <button onClick={() => navigate("/scrutiny/create-files")}>
+              <button onClick={() => navigate("/fpms/create-files")}>
                 📄 Create Files
               </button>
 
-              <button onClick={() => navigate("/scrutiny/view-files")}>
+              <button onClick={() => navigate("/fpms/view-files")}>
                 📁 View Files
               </button>
             </div>

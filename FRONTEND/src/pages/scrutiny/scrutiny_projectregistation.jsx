@@ -3,6 +3,7 @@ import { BASE_URL } from "../../api/api";
 import "../../styles/scrutiny/scrutiny_projectregistation.css";
 import { useNavigate } from "react-router-dom";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
+import { useAdmin } from "../../context/AdminContext";
 
 const PAGE_SIZES = [15, 25, 50];
 
@@ -68,6 +69,8 @@ const normalizeScrutinyRow = (record) => {
 };
 
 export default function ScrutinyProjectRegistration() {
+  const { admin } = useAdmin();
+const dept = admin?.department?.toLowerCase();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,11 +82,17 @@ export default function ScrutinyProjectRegistration() {
   const showBanner = (text, type = "ok") => setBanner({ text, type });
 
   const refresh = async () => {
-    setLoading(true);
-    try {
-      const base = await fetch(`${BASE_URL}/api/scrutiny/project-registrations`).then(res => res.json());
-      setRows((base || []).map((row) => normalizeScrutinyRow(row)));
-    } catch (error) {
+  setLoading(true);
+  try {
+    const base = await fetch(
+      `${BASE_URL}/api/scrutiny/project-registrations?dept=${dept}`
+    ).then(res => res.json());
+
+    const list = Array.isArray(base) ? base : base.data || [];
+
+    setRows(list.map((row) => normalizeScrutinyRow(row)));
+
+  } catch (error) {
       showBanner(error.message || "Unable to load scrutiny requests.", "err");
     } finally {
       setLoading(false);

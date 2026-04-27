@@ -126,17 +126,33 @@ export default function ScrutinyProjectRegistrationAction() {
   const navigate = useNavigate();
   const location = useLocation();
   const { admin } = useAdmin();
-const dept = admin?.department?.toLowerCase();
+let dept = admin?.department?.toLowerCase();
 
-// ✅ ADD THESE 3 LINES
-const isPlanning = dept?.includes("planning");
-const isLegal = dept?.includes("legal");
-const isAudit = dept?.includes("audit");
+if (dept?.includes("planning")) dept = "planning";
+else if (dept?.includes("legal")) dept = "legal";
+else if (dept?.includes("audit")) dept = "audit";
+else if (dept?.includes("engineer")) dept = "engineer";
+else if (dept?.includes("assistant director")) dept = "ad";
+else if (dept?.includes("deputy director")) dept = "dd";
+else if (dept?.includes("verification")) dept = "verification";
 
+console.log("FINAL DEPT:", dept);
+
+// ✅ ADD THIS
+const isPlanning = dept === "planning";
+const isLegal = dept === "legal";
+const isAudit = dept === "audit";
+const isEngineer = dept === "engineer";
+const isAD = dept === "ad";
+const isDD = dept === "dd";
   const applicationNumber =
+  String(
     location.state?.applicationNumber ||
     sessionStorage.getItem("applicationNumber") ||
-    "";
+    ""
+  ).trim();
+
+console.log("APPLICATION NUMBER:", applicationNumber);
   const panNumber =
     location.state?.panNumber || sessionStorage.getItem("panNumber") || "";
   const promoterType = normalizePromoterType(
@@ -153,16 +169,38 @@ const isAudit = dept?.includes("audit");
   const [uploadedDocumentCount, setUploadedDocumentCount] = useState(0);
   // const [decision, setDecision] = useState("shortfall");
   const [remarks, setRemarks] = useState("");
+  const [finalRemarks, setFinalRemarks] = useState("");
   
   const [remarksList, setRemarksList] = useState([]);
-  const loadRemarks = async () => {
+const loadRemarks = async () => {
   try {
-    const res = await apiGet(
-      `/api/remarks?application_no=${applicationNumber}`
+    const response = await apiGet(
+      `/api/scrutiny/final-status?application_no=${applicationNumber}`
     );
-    setRemarksList(res);
-  } catch (err) {
-    console.error(err);
+
+    const rows = response?.rows || []; 
+
+    // 👇 current user department
+    const currentDept = (admin?.department || "").toLowerCase();
+
+const filtered = rows.filter((item) => {
+  const rowDept = (item.verified_by || "").toLowerCase();
+
+  // ✅ Verification → ONLY own
+  if (currentDept.includes("verification")) {
+    return rowDept === "verification";
+  }
+
+  // ✅ Other departments → verification + own
+  return (
+    rowDept === "verification" ||
+    rowDept.includes(currentDept)   
+  );
+});
+
+    setRemarksList(filtered); // ✅ USE FILTERED DATA
+  } catch (error) {
+    console.error("Error loading remarks:", error);
   }
 };
 const [shortfall, setShortfall] = useState("");
@@ -213,7 +251,7 @@ const [shortfall, setShortfall] = useState("");
 
         const [rowsResult, previewResult, developmentResult, documentsResult] =
           await Promise.allSettled([
-            apiGet("/api/scrutiny/project-registrations"),
+            apiGet(`/api/scrutiny/project-registrations?dept=${dept}`),
             apiPost(previewEndpoint, { applicationNumber, panNumber }),
             panNumber
               ? apiGet(
@@ -262,7 +300,6 @@ const [shortfall, setShortfall] = useState("");
         setError(loadError.message || "Unable to load scrutiny action details.");
       } finally {
   if (applicationNumber) {
-    loadRemarks();   // ✅ ADD THIS LINE
   }
 
   setLoading(false);
@@ -271,6 +308,13 @@ const [shortfall, setShortfall] = useState("");
 
     loadContext();
   }, [applicationNumber, panNumber, promoterType]);
+  // ✅ ADD THIS NEW BLOCK JUST BELOW
+useEffect(() => {
+  if (applicationNumber) {
+    console.log("Calling loadRemarks for:", applicationNumber);
+    loadRemarks();
+  }
+}, [applicationNumber]);
 
   const promoterDetails = normalizeObject(previewData?.promoter_details);
   const projectDetails = normalizeObject(previewData?.project_details);
@@ -382,42 +426,47 @@ const [shortfall, setShortfall] = useState("");
     setReviewChecklist((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleAddRemark = async () => {
+const handleAddRemark = () => {
 
-  if (!remarks || shortfall === "") {
+  if (!finalRemarks || shortfall === "") {
     alert("Please select shortfall and enter remarks");
     return;
   }
 
-  try {
-    await apiPost("/api/remarks/add", {
-      application_no: applicationNumber,
-      authority: "Verification Team",
-      is_shortfall: shortfall,
-      remarks: remarks,
-    });
+  const newRemark = {
+    verified_by: admin?.department || "Verification",
+    is_shortfall: shortfall,
+    remarks: finalRemarks,
+    verified_at: new Date().toISOString()
+  };
 
-    // 🔥 IMPORTANT: reload table from DB
-    await loadRemarks();
+  setRemarksList((prev) => [newRemark, ...prev]);
 
-    // clear form
-    setRemarks("");
-    setShortfall("");
-
-  } catch (err) {
-    console.error(err);
-  }
+  // ❌ DO NOT CLEAR HERE
 };
 
 
 const handleFinalSubmit = async () => {
+
+  if (!finalRemarks || shortfall === "") {
+    alert("Please fill shortfall and remarks");
+    return;
+  }
+
   try {
     await apiPost("/api/scrutiny/final-submit", {
-      application_no: applicationNumber,
-      is_shortfall: shortfall
-    });
+  application_no: applicationNumber,
+  department: dept,   // 👈 ADD THIS LINE
+  is_shortfall: shortfall,
+  remarks: finalRemarks
+});
 
-    alert("Final Submitted");
+    await loadRemarks();
+
+    setFinalRemarks("");   // reset here
+    setShortfall("");
+
+    alert("Final Verification Completed");
 
   } catch (err) {
     console.error(err);
@@ -475,50 +524,10 @@ const handleFinalSubmit = async () => {
                     ))}
                   </div>
                 </section>
-                <section className="sra-panel">
-  <div className="sra-panel-head">
-    <h2>UPDATED REMARKS</h2>
-  </div>
-
-  <div className="sra-table-wrapper">
-    <table className="sra-table">
-      <thead>
-        <tr>
-          <th>SNo</th>
-          <th>Description</th>
-          <th>Is there any Shortfall in data/Payment</th>
-          <th>Remarks</th>
-          <th>Upload Observations Document</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-
-      <tbody>
-  {remarksList.length > 0 ? (
-    remarksList.map((item, index) => (
-      <tr key={index}>
-  <td>{index + 1}</td> {/* ✅ SNo FIX */}
-  <td>{item.authority}</td>
-  <td>{item.is_shortfall === "yes" ? "Yes" : "No"}</td>
-  <td>{item.remarks}</td>
-  <td>NA</td>
-  <td>{new Date(item.created_at).toLocaleString()}</td>
-</tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="6" style={{ textAlign: "center" }}>
-        No remarks available
-      </td>
-    </tr>
-  )}
-</tbody>
-    </table>
-  </div>
-</section>
-   {!(isPlanning || isLegal || isAudit) && (
+  
     
   <form className="sra-form">
+    {!(isPlanning || isLegal || isAudit || isEngineer || isAD || isDD) && (
                 <section className="sra-panel">
                   <div className="sra-panel-head">
                     <div>
@@ -562,7 +571,8 @@ const handleFinalSubmit = async () => {
                     ))}
                   </div>
                 </section>
-
+)}
+{!(isPlanning || isLegal || isAudit || isEngineer || isAD || isDD) && (
                 <section className="sra-panel">
                   <div className="sra-panel-head">
                     <div>
@@ -598,7 +608,8 @@ const handleFinalSubmit = async () => {
                     ))}
                   </div> */}
                 </section>
-
+)}
+{!(isPlanning || isLegal || isAudit || isEngineer || isAD || isDD) && (
                 <div className="sra-dual-grid">
                   <section className="sra-panel">
                     <div className="sra-panel-head">
@@ -640,6 +651,7 @@ const handleFinalSubmit = async () => {
 
                   
                 </div>
+           )}     
 
                 <section className="sra-panel">
   <div className="sra-panel-head">
@@ -681,8 +693,8 @@ const handleFinalSubmit = async () => {
   className="sra-textarea"
   placeholder="Enter remarks..."
   rows={4}
-  value={remarks}
-  onChange={(e) => setRemarks(e.target.value)}
+  value={finalRemarks}
+  onChange={(e) => setFinalRemarks(e.target.value)}
 />
   </div>
 
@@ -698,6 +710,51 @@ const handleFinalSubmit = async () => {
   </div>
 </section>
 
+ <section className="sra-panel">
+  <div className="sra-panel-head">
+    <h2>UPDATED REMARKS</h2>
+  </div>
+
+  <div className="sra-table-wrapper">
+    <table className="sra-table">
+      <thead>
+        <tr>
+          <th>SNo</th>
+          <th>Description</th>
+          <th>Is there any Shortfall in data/Payment</th>
+          <th>Remarks</th>
+          <th>Upload Observations Document</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+  {remarksList && remarksList.length > 0 ? (
+    remarksList.map((item, index) => (
+      <tr key={index}>
+        <td>{index + 1}</td>
+        <td>{item.verified_by}</td>
+        <td>{item.is_shortfall}</td>
+        <td>{item.remarks}</td>
+        <td>NA</td>
+        <td>
+          {item.verified_at
+            ? new Date(item.verified_at).toLocaleString()
+            : "N/A"}
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="6" style={{ textAlign: "center" }}>
+        No remarks available
+      </td>
+    </tr>
+  )}
+</tbody>
+    </table>
+  </div>
+</section>
 
                 <div className="sra-footer">
                   <button
@@ -722,16 +779,17 @@ const handleFinalSubmit = async () => {
                     Save Draft
                   </button>
 
-                  <button
-  type="button"
-  className="sra-btn sra-btn-primary"
-  onClick={handleFinalSubmit}
->
-  Final Submit
-</button>
+                  
+  <button
+    type="button"
+    className="sra-btn sra-btn-primary"
+    onClick={handleFinalSubmit}
+  >
+    Final Submit
+  </button>
+
                 </div>
               </form>
-             )}
  </>
  )}
           </div>

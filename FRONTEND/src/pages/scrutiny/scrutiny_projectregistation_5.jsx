@@ -1052,7 +1052,9 @@ const ScrutinyProjectregistation5 = () => {
   const location = useLocation();
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
-const isPlanning = dept === "planning";
+
+// ✅ ADD THIS LINE
+const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
 const allowedDocsByDept = {
   verification: "ALL",
 
@@ -1166,7 +1168,9 @@ const handleOpenDocument = (url, fileName, doc) => {
 const documentsWithStatus = useMemo(() => {
   let docs = scrutinyUploadDocuments;
 
-  const allowed = allowedDocsByDept[dept];
+  const allowed = isRestrictedDept
+  ? allowedDocsByDept["planning"]
+  : allowedDocsByDept[dept];
 
   if (allowed && allowed !== "ALL") {
     docs = scrutinyUploadDocuments.filter((doc) =>

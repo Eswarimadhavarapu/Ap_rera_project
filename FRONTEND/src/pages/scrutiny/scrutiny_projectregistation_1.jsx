@@ -339,7 +339,7 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
 
         if (!summaryFromState) {
           try {
-            const rows = await apiGet("/api/scrutiny/project-registrations");
+            const rows = await apiGet(`/api/scrutiny/project-registrations?dept=${dept}`);
             const match = Array.isArray(rows)
               ? rows.find((row) => String(row.application_no) === String(applicationNumber))
               : null;
@@ -357,7 +357,7 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
     };
 
     loadData();
-  }, [applicationNumber, promoterTypeFromState, summaryFromState]);
+  }, [applicationNumber, promoterTypeFromState, summaryFromState, dept]);
 
   const isOther = normalizePromoterType(formData.promoterType || promoterTypeFromState) === "other";
 
@@ -707,7 +707,7 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
                     )}
                   </Section>
                 </div>
-
+                {dept === "verification" && (
                 <div className="spr-remarks-card">
                   <div className="spr-remarks-head">
                     <h3>Enter Remarks (Data Shortfall Remarks if any)<span>*</span></h3>
@@ -721,6 +721,7 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
                     placeholder="Maximum of 5000 Characters"
                   />
                 </div>
+                )}
               </>
             )}
           </div>

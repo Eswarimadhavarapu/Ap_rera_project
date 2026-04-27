@@ -3,6 +3,8 @@ from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
+from sqlalchemy import text
+from app.models.database import db
 
 from app.models.scrutiny_projectregistation_model import (
     create_verification_remark,
@@ -43,12 +45,70 @@ def _parse_bool(value):
 @scrutiny_bp.route("/scrutiny/project-registrations", methods=["GET", "OPTIONS"])
 def scrutiny_project_registrations():
     try:
-        data = get_scrutiny_project_registrations()
+        dept = request.args.get("dept")   # 👈 ADD THIS LINE
+        data = get_scrutiny_project_registrations(dept)   # 👈 MODIFY
         return jsonify(data), 200
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
+# ✅ ADD THIS API BELOW project-registrations API
 
+from app.models.scrutiny_projectregistation_model import create_final_verification
+
+@scrutiny_bp.route("/scrutiny/final-submit", methods=["POST"])
+def final_submit():
+    try:
+        data = request.get_json()
+
+        payload = {
+            "application_no": data.get("application_no"),
+            "status": "verified",   # ✅ THIS LINE ADD CHEY
+            "is_shortfall": True if str(data.get("is_shortfall")).lower() == "yes" else False,
+            "verified_by": data.get("department"),
+            "remarks": data.get("remarks")
+        }
+
+        if not payload["application_no"]:
+            return jsonify({"error": "application_no required"}), 400
+
+        result = create_final_verification(payload)
+
+        return jsonify({
+            "message": "Final Verification Done",
+            "data": result
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@scrutiny_bp.route("/scrutiny/final-status", methods=["GET"])
+def get_final_status():
+    try:
+        application_no = request.args.get("application_no")
+
+        query = text("""
+            SELECT 
+                application_no,
+                status,
+                is_shortfall,
+                verified_by,
+                verified_at,
+                remarks
+            FROM verification_final_status
+            WHERE TRIM(application_no) = TRIM(:application_no)
+        """)
+
+        rows = db.session.execute(query, {
+            "application_no": application_no
+        }).mappings().all()
+
+        # ✅ FIX HERE
+        data = [dict(row) for row in rows]
+
+        return jsonify({"rows": data}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 @scrutiny_bp.route(
     "/scrutiny/project-registrations/details",
     methods=["GET", "OPTIONS"],
@@ -274,3 +334,5 @@ def get_verification_remark_api():
         return jsonify({"rows": rows}), 200
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+

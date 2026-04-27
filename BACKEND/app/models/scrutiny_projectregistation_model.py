@@ -51,10 +51,66 @@ def _serialize_row(row):
         "preview": {},
     }
 
+def get_scrutiny_project_registrations(dept=None):
 
-def get_scrutiny_project_registrations():
-    query = text(
+    condition1 = ""
+    condition2 = ""
+    
+    # Assistant Director (AD) gets these districts. Deputy Director (DD) gets the rest.
+    # Note: "Vijayawada" is part of "NTR" district.
+    ad_districts = [
+        "Alluri Sitharama Raju",
+        "Anakapalli",
+        "Anantapuramu",
+        "Annamayya",
+        "Bapatla",
+        "Chittoor",
+        "Dr. B.R. Ambedkar Konaseema",
+        "East Godavari",
+        "Eluru",
+        "Guntur",
+        "Kakinada",
+        "Krishna",
+        "NTR" # This handles Vijayawada
+    ]
+    ad_districts_str = ", ".join([f"UPPER('{d}')" for d in ad_districts])
+
+    if dept and dept.lower() != "verification":
+        required_verification = "'verification'"
+        is_ad = dept.lower() in ["ad", "assistant director"]
+        is_dd = dept.lower() in ["dd", "deputy director"]
+
+        if is_ad or is_dd:
+            required_verification = "'planning'"
+
+        condition1 = f"""
+        AND EXISTS (
+            SELECT 1 
+            FROM verification_final_status v
+            WHERE TRIM(v.application_no) = TRIM(preg.application_no)
+            AND v.status = 'verified'
+            AND LOWER(v.verified_by) = {required_verification}
+        )
         """
+        
+        condition2 = f"""
+        AND EXISTS (
+            SELECT 1 
+            FROM verification_final_status v
+            WHERE TRIM(v.application_no) = TRIM(ppo.application_no)
+            AND v.status = 'verified'
+            AND LOWER(v.verified_by) = {required_verification}
+        )
+        """
+
+        if is_ad:
+            condition1 += f"\n        AND UPPER(COALESCE(dm.district_name, CAST(pr.project_district AS TEXT), preg.district)) IN ({ad_districts_str})"
+            condition2 += f"\n        AND UPPER(COALESCE(dm2.district_name, CAST(opr.project_district AS TEXT), ppo.district)) IN ({ad_districts_str})"
+        elif is_dd:
+            condition1 += f"\n        AND (UPPER(COALESCE(dm.district_name, CAST(pr.project_district AS TEXT), preg.district)) NOT IN ({ad_districts_str}) OR COALESCE(dm.district_name, CAST(pr.project_district AS TEXT), preg.district) IS NULL)"
+            condition2 += f"\n        AND (UPPER(COALESCE(dm2.district_name, CAST(opr.project_district AS TEXT), ppo.district)) NOT IN ({ad_districts_str}) OR COALESCE(dm2.district_name, CAST(opr.project_district AS TEXT), ppo.district) IS NULL)"
+
+    query = text(f"""
         SELECT
             preg.application_no AS application_no,
             'individual' AS promoter_type,
@@ -73,7 +129,9 @@ def get_scrutiny_project_registrations():
          AND pr.pan_number = preg.pan_number
         LEFT JOIN district_master_t dm
           ON CAST(pr.project_district AS TEXT) = CAST(dm.district_id AS TEXT)
+
         WHERE COALESCE(LOWER(preg.promoter_type), 'individual') <> 'other'
+        {condition1}
 
         UNION ALL
 
@@ -96,13 +154,13 @@ def get_scrutiny_project_registrations():
         LEFT JOIN district_master_t dm2
           ON CAST(opr.project_district AS TEXT) = CAST(dm2.district_id AS TEXT)
 
+        WHERE 1=1
+        {condition2}
         ORDER BY application_no DESC
-        """
-    )
+    """)
 
     rows = db.session.execute(query).mappings().all()
     return [_serialize_row(row) for row in rows]
-
 
 def get_scrutiny_project_registration_by_application(application_no, promoter_type):
     promoter_type = (promoter_type or "").lower()
@@ -418,3 +476,34 @@ def get_verification_remarks(application_no, document_name=None, verification_te
 
     rows = db.session.execute(query, params).mappings().all()
     return [dict(row) for row in rows]
+
+def create_final_verification(data):
+    query = text("""
+        INSERT INTO verification_final_status (
+            application_no,
+            status,
+            is_shortfall,
+            verified_by,
+            remarks
+        )
+        VALUES (
+            :application_no,
+            'verified',
+            :is_shortfall,
+            :verified_by,
+            :remarks
+        )
+        ON CONFLICT (application_no, verified_by)
+        DO UPDATE SET
+            status = 'verified',
+            is_shortfall = EXCLUDED.is_shortfall,
+            verified_by = EXCLUDED.verified_by,
+            remarks = EXCLUDED.remarks,
+            verified_at = CURRENT_TIMESTAMP
+        RETURNING *;
+    """)
+
+    row = db.session.execute(query, data).mappings().first()
+    db.session.commit()
+
+    return dict(row)
