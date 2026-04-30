@@ -55,3 +55,16 @@
 .login-box button:active {
   transform: scale(0.97);
 }
+
+.password-wrapper {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}

@@ -20,11 +20,11 @@ const ALL_SUBSECTION_CONFIGS = [
 ];
 
 const SECTIONS_CONFIG = [
-  { id: "project_details", label: "Project Details", icon: "🏗️", subSections: PROJECT_DETAILS_SUBSECTIONS, component: "project" },
-  { id: "promoter_details", label: "Promoter Details", icon: "👤", subSections: PROMOTER_DETAILS_SUBSECTIONS, component: "promoter" },
-  { id: "development_details", label: "Development Details", icon: "🏢", subSections: DEVELOPMENT_DETAILS_SUBSECTIONS, component: "development" },
-  { id: "associate_details", label: "Associate Details", icon: "🤝", subSections: ASSOCIATE_DETAILS_SUBSECTIONS, component: "associate" },
-  { id: "upload_documents", label: "Upload Documents", icon: "📎", subSections: UPLOAD_DOCUMENTS_SUBSECTIONS, component: "upload" },
+  { id: "project_details", label: "Project Details", subSections: PROJECT_DETAILS_SUBSECTIONS, component: "project" },
+  { id: "promoter_details", label: "Promoter Details",  subSections: PROMOTER_DETAILS_SUBSECTIONS, component: "promoter" },
+  { id: "development_details", label: "Development Details",  subSections: DEVELOPMENT_DETAILS_SUBSECTIONS, component: "development" },
+  { id: "associate_details", label: "Associate Details", subSections: ASSOCIATE_DETAILS_SUBSECTIONS, component: "associate" },
+  { id: "upload_documents", label: "Upload Documents",  subSections: UPLOAD_DOCUMENTS_SUBSECTIONS, component: "upload" },
 ];
 
 const genRef = () => "CR" + Date.now().toString().slice(-8);
@@ -69,6 +69,8 @@ export default function ChangeRequest() {
   const [tableStore, setTableStore] = useState({});
   const [previewData, setPreviewData] = useState(null);
   const [loadingPreview, setLoadingPreview] = useState(true);
+
+  const [activeSection, setActiveSection] = useState("");
 
   React.useEffect(() => {
     const fetchPreviewData = async () => {
@@ -191,7 +193,7 @@ export default function ChangeRequest() {
           const doc = subConfig?.documents?.find((d) => d.id === Number(docId));
           rows.push({
             subLabel: panel.subLabel, field: doc?.label || `Document #${docId}`,
-            oldValue: "-", newValue: file.name, document: file.name, documentUrl: "", type: "file",
+            existingValue: "-", newValue: file.name, document: file.name, documentUrl: "", type: "file",
           });
         });
         return;
@@ -205,43 +207,43 @@ export default function ChangeRequest() {
         stored.forEach((r) => {
           if (r.workType !== undefined) {
            rows.push({
-  subLabel: panel.subLabel, field: r.workType, oldValue: r.previousPercent || "-",
-  newValue: r.changePercent || "-", description: r.description || "-",
-  document: r.documentName || "-", documentUrl: "", type: "field"
+  subLabel: panel.subLabel, field: r.workType, existingValue: r.previousPercent || "-",
+  newValue: r.changePercent || "-", description: r.remarks || "-",
+  document: r.supportingdocumentsName || "-", documentUrl: "", type: "field"
 });
           } else if (r.docType !== undefined) {
             rows.push({
-              subLabel: panel.subLabel, field: r.docType, oldValue: r.oldFileName || "-",
-              newValue: r.newFileName || "-", description: r.description || "-",
-              document: r.newFileName || r.oldFileName || "-", documentUrl: r.newFileUrl || r.oldFileUrl || "", type: "file",
-              _oldFile: r._oldFile, _newFile: r._newFile
+              subLabel: panel.subLabel, field: r.docType, existingValue: r.existingFileName || "-",
+              newValue: r.newFileName || "-", description: r.remarks|| "-",
+              document: r.newFileName || r.existingFileName || "-", documentUrl: r.newFileUrl || r.existingFileUrl || "", type: "file",
+              _existingFile: r._existingFile, _newFile: r._newFile
             });
           } else if (r.field !== undefined && r.newValue !== undefined && r.fileUrl !== undefined) {
             rows.push({
-              subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
-              newValue: r.newValue, description: r.description || "-", document: r.fileName || "-",
+              subLabel: panel.subLabel, field: r.field, existingValue: r.existingValue || "-",
+              newValue: r.newValue, description: r.remarks || "-", document: r.fileName || "-",
               documentUrl: r.fileUrl || "", type: "field"
             });
           } else if (r.field !== undefined && r.newValue !== undefined) {
             rows.push({
-              subLabel: panel.subLabel, field: r.field, oldValue: r.oldValue || "-",
-              newValue: r.newValue, description: r.description || "-", document: r.document || "-",
-              documentUrl: r.documentUrl || "", type: "field", _proofFile: r._proofFile
+              subLabel: panel.subLabel, field: r.field, existingValue: r.existingValue || "-",
+              newValue: r.newValue, description: r.remarks|| "-", document: r.supportingdocuments || "-",
+              documentUrl: r.supportingdocumentsUrl || "", type: "field", _proofFile: r._proofFile
             });
           } else if (r.__mode === "new") {
             const fieldHeaders = subFields.map((f) => ({ label: f.label, value: r[f.name] || "-" }));
             rows.push({
               subLabel: panel.subLabel, field: "__associate_new__", fieldHeaders,
-              description: r.description || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
+              description: r.remarks || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
               type: "associate_new"
             });
-          } else if (r.__mode === "old") {
+          } else if (r.__mode === "existing") {
             const selField = subFields.find((f) => f.name === r.__selField);
             rows.push({
               subLabel: panel.subLabel, field: selField?.label || r.__selField,
-              oldValue: r[`old_${r.__selField}`] || "-", newValue: r[r.__selField] || "-",
-              description: r.description || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
-              type: "associate_old"
+             existingValue: r[`existing_${r.__selField}`] || "-", newValue: r[r.__selField] || "-",
+              description: r.remarks || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
+              type: "associate_existing"
             });
           }
         });
@@ -255,7 +257,7 @@ export default function ChangeRequest() {
         const val = formValues[f.name];
         if (val && val !== "") {
           rows.push({
-            subLabel: panel.subLabel, field: f.label, oldValue: "-", newValue: val,
+            subLabel: panel.subLabel, field: f.label, existingValue: "-", newValue: val,
             description: "-", document: "-", documentUrl: "",
             type: panel.subId === "bank_account" ? "bank" : "field"
           });
@@ -264,9 +266,9 @@ export default function ChangeRequest() {
 
       if (panel.subId === "bank_account" && formValues["bankDocument"]) {
         rows.push({
-          subLabel: panel.subLabel, field: "Upload Document", oldValue: "-",
+          subLabel: panel.subLabel, field: "Upload Document", existingValue: "-",
           newValue: formValues["bankDocument"], description: "-", document: formValues["bankDocument"],
-          documentUrl: "", type: "bank"
+          supportingdocumentsUrl: "", type: "bank"
         });
       }
     });
@@ -308,7 +310,7 @@ export default function ChangeRequest() {
             section: panel.sectionId,
             subsection: panel.subId,
             field_name: "document",
-            old_value: null,
+            existing_value: null,
             new_value: file.name,
             description: "Document upload",
             change_mode: "file",
@@ -331,9 +333,9 @@ export default function ChangeRequest() {
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: r.workType,
-              old_value: r.previousPercent || null,
+              existing_value: r.previousPercent || null,
               new_value: r.changePercent || null,
-              description: r.description || null,
+              description: r.remarks || null,
               change_mode: "update",
               data_json: null,
             });
@@ -345,13 +347,13 @@ export default function ChangeRequest() {
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: r.docType,
-              old_value: r.oldFileName || null,
+              existing_value: r.existingFileName || null,
               new_value: r.newFileName || null,
-              description: r.description || null,
+              description: r.remarks || null,
               change_mode: "file",
               data_json: null,
             });
-            if (r._oldFile) fileMap[`old_file_${idx}`] = r._oldFile;
+            if (r._existingFile) fileMap[`existing_file_${idx}`] = r._existingFile;
             if (r._newFile) fileMap[`new_file_${idx}`] = r._newFile;
             idx++;
 
@@ -361,10 +363,10 @@ export default function ChangeRequest() {
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: r.field,
-              old_value: r.oldValue || null,
+              existing_value: r.existingValue || null,
               new_value: r.newValue || null,
-              description: r.description || null,
-              change_mode: "old",
+              description: r.remarks || null,
+              change_mode: "existing",
               data_json: null,
             });
             if (r._file) fileMap[`proof_file_${idx}`] = r._file;
@@ -376,10 +378,10 @@ export default function ChangeRequest() {
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: r.fieldName || r.field,
-              old_value: r.oldValue || null,
+              existing_value: r.existingValue || null,
               new_value: r.newValue || null,
-              description: r.description || null,
-              change_mode: "old",
+              description: r.remarks || null,
+              change_mode: "existing",
               data_json: null,
             });
             if (r._proofFile) fileMap[`proof_file_${idx}`] = r._proofFile;
@@ -395,9 +397,9 @@ export default function ChangeRequest() {
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: null,
-              old_value: null,
+              existing_value: null,
               new_value: null,
-              description: r.description || null,
+              description: r.remarks || null,
               change_mode: "new",
               data_json,
             });
@@ -405,15 +407,15 @@ export default function ChangeRequest() {
             idx++;
 
             // Associate OLD mode (edit one field)
-          } else if (r.__mode === "old") {
+          } else if (r.__mode === "existing") {
             changesArray.push({
               section: panel.sectionId,
               subsection: panel.subId,
               field_name: r.__selField || null,
-              old_value: r[`old_${r.__selField}`] || null,
+              existing_value: r[`existing_${r.__selField}`] || null,
               new_value: r[r.__selField] || null,
-              description: r.description || null,
-              change_mode: "old",
+              description: r.remarks || null,
+              change_mode: "existing",
               data_json: null,
             });
             if (r._file) fileMap[`proof_file_${idx}`] = r._file;
@@ -437,7 +439,7 @@ export default function ChangeRequest() {
           section: panel.sectionId,
           subsection: panel.subId,
           field_name: filledFields.length === 1 ? filledFields[0].name : null,
-          old_value: null,
+          existing_value: null,
           new_value: filledFields.length === 1 ? formValues[filledFields[0].name] : null,
           description: null,
           change_mode: "update",
@@ -479,15 +481,171 @@ export default function ChangeRequest() {
 
   const STEP_LABELS = ["Select Sections", "Review & Submit", "Payment", "Done"];
 
-  // ── RENDER ───────────────────────────────────────────────────────────────
+  // ── RENDER ──────────────────────────────────────────────────────────────
   return (
-    <div className="cr-page">
-      <div className="cr-container">
+    <div className="cr-page" style={{ width: "100%", margin: 0, padding: 0 }}>
 
-        <div className="cr-page-title">Change Request Form</div>
+  {/* ✅ PAGE TITLE */}
+  <div className="cr-title">
+    Change Request
+  </div>
+
+
+
+
+
+      {/* <div className="cr-container"> */}
+{step === 1 && (
+ <div className="cr-container">
+
+  {/* LEFT SIDEBAR */}
+<div className="cr-sidebar">
+  {/* ✅ PROJECT INFO */}
+<div className="cr-sidebar-header">
+  <div className="cr-sidebar-label">Project Name</div>
+  <div className="cr-sidebar-value">{APP_INFO.projectName}</div>
+
+  <div className="cr-sidebar-label" style={{ marginTop: "10px" }}>
+    Promoter Name
+  </div>
+  <div className="cr-sidebar-value">{APP_INFO.applicantName}</div>
+</div>
+    {SECTIONS_CONFIG.map((section) => (
+      <div key={section.id}>
+        
+        {/* MAIN SECTION */}
+        <div
+  style={{
+    padding: "12px 16px",
+    cursor: "pointer",
+    fontWeight: "600",
+    borderBottom: "1px solid #e6ecf5"
+  }}
+          onClick={() => setActiveSection(section.id)}
+        >
+          {section.icon} {section.label}
+        </div>
+
+        {/* SUB SECTIONS */}
+        {section.subSections.map((sub) => (
+  <div
+    key={sub.id}
+    style={{
+      padding: "8px 30px",
+      cursor: "pointer",
+      borderBottom: "1px solid #f0f2f7",
+      fontSize: "13px",
+      background:
+        activeSection === `${section.id}__${sub.id}` ? "#eef3fb" : "#fff"
+    }}
+    onClick={() =>
+      setActiveSection(`${section.id}__${sub.id}`)
+    }
+  >
+    {sub.label}
+  </div>
+))}
+      </div>
+    ))}
+  </div>
+
+  {/* RIGHT PANEL */}
+ <div className="cr-right-panel">
+  {activeSection.includes("__") && (() => {
+    const [sectionId, subId] = activeSection.split("__");
+
+    const section = SECTIONS_CONFIG.find(s => s.id === sectionId);
+    const sub = section?.subSections.find(s => s.id === subId);
+
+    if (!section || !sub) return <div>Select a section</div>;
+
+    return (
+      <>
+        <AccordionFormBody
+          panel={{
+            subId: sub.id,
+            componentType: section.component
+          }}
+          formValues={formValues}
+          onChange={handleFieldChange}
+          docFiles={docFiles}
+          onDocFile={handleDocFile}
+          tableStore={tableStore}
+          setTableStore={setTableStore}
+          previewData={previewData}
+          applicationNumber={APP_INFO.applicationNumber}
+          panNumber={APP_INFO.panNumber}
+        />
+
+        {/* ✅ SUBMIT BUTTON */}
+<div style={{ marginTop: "30px", textAlign: "right" }}>
+  {/* <button
+    className="cr-btn-primary"
+    onClick={() => {
+      if (!activeSection || !activeSection.includes("__")) {
+        alert("Please select a subsection");
+        return;
+      }
+
+      setStep(2); // ✅ GO TO STEP 2 (Make Your Changes)
+    }}
+  >
+    Submit
+  </button> */}
+
+  <button
+  className="cr-btn-primary"
+  onClick={() => {
+    if (!activeSection || !activeSection.includes("__")) {
+      alert("Please select a subsection");
+      return;
+    }
+
+    const [sectionId, subId] = activeSection.split("__");
+
+    // ✅ ADD THIS BLOCK (VERY IMPORTANT)
+    setSelected((prev) => ({
+      ...prev,
+      [sectionId]: {
+        ...(prev[sectionId] || {}),
+        [subId]: true
+      }
+    }));
+
+    setStep(2); // ✅ Step 2
+  }}
+>
+  Submit
+</button>
+</div>
+
+        {/* ✅ SUBMIT BUTTON */}
+        {/* <div style={{ marginTop: "30px", textAlign: "right" }}>
+          <button
+            className="cr-btn-primary"
+            onClick={() => setStep(3)}   // 👉 goes to Review
+          >
+            Submit
+          </button>
+        </div> */}
+      </>
+    );
+  })()}
+</div>
+
+</div>
+)}
+
+
+
+
+
+
+
+        {/* <div className="cr-page-title">Change Request Form</div> */}
 
         {/* APP INFO */}
-        <div className="cr-app-card">
+        {/* <div className="cr-app-card">
           <div className="cr-card-header">
             <span className="cr-card-header-icon">📋</span>Application Information
           </div>
@@ -506,10 +664,10 @@ export default function ChangeRequest() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* STEP BAR */}
-        <div className="cr-steps">
+        {/* <div className="cr-steps">
           {STEP_LABELS.map((s, i) => {
             const num = i + 1;
             const cls = step === num ? "active" : step > num ? "done" : "";
@@ -520,10 +678,10 @@ export default function ChangeRequest() {
               </div>
             );
           })}
-        </div>
+        </div> */}
 
         {/* ══ STEP 1 ══════════════════════════════════════════════════════ */}
-        {step === 1 && (
+        {/* {step === 1 && (
           <div className="cr-main-card">
             <div className="cr-main-card-header"><span>①</span> Select What You Want to Change</div>
             <div className="cr-main-card-body">
@@ -573,8 +731,8 @@ export default function ChangeRequest() {
                                     padding: "15px",
                                     background: "#f9fbff",
                                     borderRadius: "8px",
-                                  }}>
-                                   <AccordionFormBody
+                                  }}> */}
+                                   {/* <AccordionFormBody
   panel={{ subId: sub.id, componentType: section.component }}
   formValues={formValues}
   onChange={handleFieldChange}
@@ -609,7 +767,7 @@ export default function ChangeRequest() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* ══ STEP 2 ══════════════════════════════════════════════════════ */}
         {step === 2 && (
@@ -733,6 +891,6 @@ export default function ChangeRequest() {
         )}
 
       </div>
-    </div>
+    
   );
 }

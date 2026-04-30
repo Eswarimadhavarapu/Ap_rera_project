@@ -49,7 +49,8 @@ const deptRoutes = {
   verification: "/verification/verification-dashboard",
   ad: "/ad/ad-dashboard",
   dd: "/dd/dd-dashboard",
-  it: "/it/it-dashboard",
+  l1: "/scrutiny/L1/L1-dashboard",
+  l2: "/scrutiny/L2/L2-dashboard",
 };
 
 navigate(deptRoutes[dept] || "/admin-dashboard", { replace: true });

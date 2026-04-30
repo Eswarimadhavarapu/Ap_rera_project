@@ -14,8 +14,6 @@ Lib/
 site-packages/
 node_modules/
 *.zip
-BACKEND/app/uploads/
-BACKEND/uploads/
 .env
 
 # Python virtual environment

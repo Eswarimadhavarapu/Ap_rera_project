@@ -201,6 +201,7 @@ import R9_3_Report from './pages/R9_3_Report';
 import DistrictFinancialAgentReport from './pages/DistrictFinancialAgentReport';
 import DistrictFinancialProjectReport from './pages/DistrictFinancialProjectReport';
 import ExemptionFileUpload from "./pages/exemption.jsx";
+import ExemptionUserDetails from "./pages/exemptionUserDetails.jsx"
 import R15_2 from './pages/R15_2';
 import R17_1 from './pages/R17_1';
 import R17_2 from './pages/R17_2';
@@ -251,6 +252,8 @@ import R25_3 from "./pages/R25_3";
 import R15_1 from "./pages/R15_1";
 import R19_1 from "./pages/R19_1";
 import FPMSLayout from "./pages/scrutiny/FPMSLayout.jsx";
+import AdminExemptionPage from "./pages/scrutiny/admin_exemption.jsx";
+import UserDetails from "./pages/exemptionUserDetails.jsx";
 
 
 function App() {
@@ -384,7 +387,7 @@ function App() {
             <Route path="/promoter" element={<PromoterLogin />} />
             <Route path="/promoterData" element={<PromoterData />} />
             <Route path="/closure" element={<ClosureTable />} />
-
+            
             <Route path="/" element={<HomePage />} />
             <Route path="/agent-renewal" element={<AgentRenewal />} />
 
@@ -538,6 +541,12 @@ function App() {
             <Route path="/UnregisterList" element={<UnregisterList />} />
   <Route path="/scrutiny/project-unregistered/:id" element={<UnregistrationProjectDetails />} />
   <Route path="/extensionprocess" element={<ExtensionProcess />} />
+  <Route path="/scrutiny/exemption" element={<AdminExemptionPage />} />
+  <Route path="/adminexemption" element={<AdminExemptionPage/>} />
+  <Route path="/adminexemption" element={<UserDetails/>} />
+  <Route path="/exemption" element={<ExemptionFileUpload />} />
+  <Route path="/scrutiny/L1/L1-dashboard" element={<ScrutinyDashboard />} />
+<Route path="/scrutiny/L2/L2-dashboard" element={<ScrutinyDashboard />} />
 
             <Route path="/mis-reports" element={<MisReports />} />
              <Route path="/reports/R1.1" element={<R1_1_Report />} />
@@ -608,7 +617,7 @@ function App() {
              <Route path="/reports/R25.3" element={<R25_3 />} />
              <Route path="/reports/R15.1" element={<R15_1 />} />
              <Route path="/reports/R19.1" element={<R19_1 />} />
-
+             <Route path="/exemptiondetails/:id" element={<ExemptionUserDetails />} />
           </Routes>
           <Chatbot />
         </Layout></AgentFormProvider>

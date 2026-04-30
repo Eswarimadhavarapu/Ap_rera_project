@@ -92,6 +92,8 @@ def get_final_status():
                 status,
                 is_shortfall,
                 verified_by,
+
+                     
                 verified_at,
                 remarks
             FROM verification_final_status

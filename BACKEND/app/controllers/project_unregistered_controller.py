@@ -1,6 +1,7 @@
 import os
 from werkzeug.utils import secure_filename
 from sqlalchemy import func
+from datetime import date
 
 UPLOAD_FOLDER = "backend/uploads/ReraUnRegister_Documents"
 from flask import Blueprint, request, jsonify
@@ -8,7 +9,7 @@ from app.models.database import db
 from app.models.project_unregistered_model import ProjectUnregisteredDetails
 import pandas as pd
 import traceback
-from app.utils.mail_service import send_email
+from app.utils.mail_service import send_email, send_email_with_attachment
 from flask import send_from_directory
 
 project_unregistered_bp = Blueprint("project_unregistered", __name__)
@@ -269,13 +270,11 @@ def update_status(record_id):
         # 🔥 Use form-data instead of JSON
         body = request.form
 
-       
         first_notice_file = request.files.get("first_notice")
         second_notice_file = request.files.get("second_notice")
         rera_notice_file = request.files.get("rera_notice")
         sh_file = request.files.get("sh_document")
-        
-       
+
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
         # 🔥 SAVE FILES
@@ -307,13 +306,20 @@ def update_status(record_id):
             "approval_status",
             "s1_remarks",
             "s2_remarks",
+            "s4_remarks",
+            "s5_remarks",
             "aprera_register_status",
             "rera_registered",
             "rera_registration_no",
             "rera_register_no",
             "exemption_id",
+            "secound_notice_sent_date",
+            "first_notice_sent_date",
+            "pan_number",
             "s1_authority_id",
             "s2_authority_id",
+            "s4_authority_id",
+            "s5_authority_id",
         ]
 
         for field in patch_fields:
@@ -394,9 +400,9 @@ def get_all_records():
         # 🔥 SORTING
         # --------------------------------------------------
         if hasattr(ProjectUnregisteredDetails, sort_by):
-          sort_column = getattr(ProjectUnregisteredDetails, sort_by)
+            sort_column = getattr(ProjectUnregisteredDetails, sort_by)
         else:
-          sort_column = ProjectUnregisteredDetails.id
+            sort_column = ProjectUnregisteredDetails.id
 
         if order == "asc":
             query = query.order_by(sort_column.asc())
@@ -443,12 +449,17 @@ def send_notice_mail(record_id):
         remarks = request.form.get("remarks")
         subject = request.form.get("subject", "AP RERA Notice")
 
-        notice_file = request.files.get("notice1")
+        # ================= FILES =================
+        notice1 = request.files.get("notice1")
+        notice2 = request.files.get("notice2")
+
+        print("NOTICE1:", notice1)
+        print("NOTICE2:", notice2)
 
         if not email:
             return jsonify({"success": False, "message": "Email required"}), 400
 
-        if not notice_file:
+        if not notice1 and not notice2:
             return (
                 jsonify({"success": False, "message": "Notice document required"}),
                 400,
@@ -457,14 +468,40 @@ def send_notice_mail(record_id):
         # ================= SAVE FILE =================
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        filename = secure_filename(notice_file.filename)
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        notice_file.save(file_path)
+        file_path = None  # 🔥 IMPORTANT (initialize)
 
-        # ================= UPDATE DB =================
-        record.first_notice_doc_path = file_path
-        record.s1_remarks = remarks
-        record.approval_status = "s4"
+        # ================= FIRST NOTICE =================
+        if notice1:
+            print("✅ notice1 received")
+
+            filename = secure_filename(notice1.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            notice1.save(file_path)
+            record.first_notice_sent_date = date.today()
+            record.first_notice_doc_path = file_path
+            record.s2_remarks = remarks
+
+            # 🔥 STATUS UPDATE (S3 → S4)
+            record.approval_status = "s4"
+
+        # ================= SECOND NOTICE =================
+        elif notice2:
+            print("✅ notice2 received")
+
+            filename = secure_filename(notice2.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            notice2.save(file_path)
+            record.secound_notice_sent_date = date.today()
+            record.rera_personal_notice_doc_path = file_path
+            record.s5_remarks = remarks
+
+            # 🔥 STATUS UPDATE (S6 → S7)
+            record.approval_status = "s7"
+
+        else:
+            print("❌ No file received")
+
+        # ================= EMAIL BODY =================
         body = f"""
 To  
 The Project Owner / Promoter  
@@ -475,24 +512,19 @@ Dear Sir/Madam,
 
 It has come to the notice of Andhra Pradesh Real Estate Regulatory Authority (AP RERA) that your project has not been registered under the provisions of the Real Estate (Regulation and Development) Act, 2016.  
 
-As per Section 3(1) of the Act, it is mandatory for every promoter to register the project before advertising, marketing, booking, or selling.  
-
 ⚠️ Reason for Notice:
 {remarks}
 
-You are hereby directed to:
+You are hereby directed to comply with RERA rules immediately.
 
-1. Register your project immediately on AP RERA portal  
-2. Submit all required documents  
-3. Ensure compliance with all rules and regulations  
-
-Failure to comply within 15 days will result in legal action under Section 59 of the Act.  
+Failure to comply will result in legal action.
 
 Regards,  
 AP RERA Authority  
 """
-       
-        send_email(
+
+        # ================= SEND EMAIL =================
+        send_email_with_attachment(
             email,
             subject,
             body,
@@ -505,8 +537,8 @@ AP RERA Authority
             jsonify(
                 {
                     "success": True,
-                    "message": "Mail sent & document updated successfully",
-                    "file_path": file_path,
+                    "message": "Mail sent & status updated successfully",
+                    "status": record.approval_status,
                 }
             ),
             200,
@@ -514,14 +546,5 @@ AP RERA Authority
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
-
-
-@project_unregistered_bp.route(
-    "/project-unregistered/view-file/<path:filename>", methods=["GET"]
-)
-def view_file(filename):
-    try:
-        return send_from_directory("backend/uploads/ReraUnRegister_Documents", filename)
-    except Exception as e:
+        print("ERROR:", str(e))
         return jsonify({"success": False, "message": str(e)}), 500

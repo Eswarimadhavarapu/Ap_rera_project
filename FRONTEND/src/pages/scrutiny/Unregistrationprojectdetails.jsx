@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import '../../styles/scrutiny/unregisterList.css';
+import '../../styles/scrutiny/unregisterDetails.css';
 import { useAdmin } from "../../context/AdminContext";
+import { BASE_URL } from "../../api/api";
 
-const BASE_URL = "https://7zgjxth4-5056.inc1.devtunnels.ms/api";
+
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" }) : null;
@@ -38,7 +39,7 @@ const Row = ({ label, children }) => (
 const S1Modal = ({ data, onClose, onSuccess, user }) => {
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
-
+  
   const handleSubmit = async () => {
     if (!remarks.trim()) return;
     setLoading(true);
@@ -48,7 +49,7 @@ const S1Modal = ({ data, onClose, onSuccess, user }) => {
       fd.append("s1_remarks", remarks.trim());
       fd.append("s1_authority_id", user?.id);
 
-      const res = await fetch(`${BASE_URL}/project-unregistered/${data.id}`, {
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
         method: "PATCH",
         body: fd,
       });
@@ -109,10 +110,6 @@ const S1Modal = ({ data, onClose, onSuccess, user }) => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   MODAL 2 — S2: Auto-generate notice + send
-   approval_status → s3 | s1_remarks → user input | first_notice → PDF
-───────────────────────────────────────────── */
 const S2Modal = ({ data, onClose, onSuccess, user }) => {
   const [remarks, setRemarks] = useState("");
   const [signImg, setSignImg] = useState(null);
@@ -166,7 +163,7 @@ const S2Modal = ({ data, onClose, onSuccess, user }) => {
         fd.append("first_notice", noticePdfBlob, `notice_${data.id}.pdf`);
       }
 
-      const res = await fetch(`${BASE_URL}/project-unregistered/${data.id}`, {
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
         method: "PATCH",
         body: fd,
       });
@@ -182,7 +179,7 @@ const S2Modal = ({ data, onClose, onSuccess, user }) => {
   }
 
   await fetch(
-    `${BASE_URL}/project-unregistered/send-notice-mail/${data.id}`,
+    `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
     {
       method: "POST",
       body: mailFd,
@@ -506,13 +503,14 @@ const S3Modal = ({ data, onClose, onSuccess }) => {
   setLoading(true);
   try {
     const fd = new FormData();
+     fd.append("approval_status", "s4");
     fd.append("email", data.owner_email);
     fd.append("remarks", remarks.trim());
     fd.append("subject", "AP RERA Notice");
 
     // ✅ FIX HERE
     const fileResponse = await fetch(
-      `${BASE_URL}/project-unregistered/view-file/${data.first_notice_doc_path}`
+      `${BASE_URL}/api/project-unregistered/view-file/${data.first_notice_doc_path}`
     );
 
     const blob = await fileResponse.blob();
@@ -520,7 +518,7 @@ const S3Modal = ({ data, onClose, onSuccess }) => {
     fd.append("notice1", blob, "notice.pdf");
 
     const res = await fetch(
-      `${BASE_URL}/project-unregistered/send-notice-mail/${data.id}`,
+      `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
       {
         method: "POST",
         body: fd,
@@ -574,21 +572,374 @@ const S3Modal = ({ data, onClose, onSuccess }) => {
     </div>
   );
 };
+const S4Modal = ({ data, onClose, onSuccess, user }) => {
+  const [remarks, setRemarks] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const handleSubmit = async () => {
+    if (!remarks.trim()) return;
+
+    setLoading(true);
+    try {
+      const fd = new FormData();
+
+      // ✅ IMPORTANT CHANGE
+      fd.append("approval_status", "s5");   
+      fd.append("s4_remarks", remarks.trim());
+      fd.append("s4_authority_id", user?.id);
+
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+        method: "PATCH",
+        body: fd,
+      });
+
+      if (!res.ok) throw new Error("Server error");
+
+      onSuccess("Second time authority informed successfully.");
+    } catch {
+      onSuccess("Request failed", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="unreg-modal-backdrop">
+      <div className="unreg-modal">
+        <div className="unreg-modal-head">
+          <div className="unreg-modal-title">
+            📨 Inform Authority (2nd Time)
+          </div>
+          <button onClick={onClose}>✕</button>
+        </div>
+
+        <div className="unreg-modal-body">
+          <textarea
+            rows={5}
+            placeholder="Enter remarks..."
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+          />
+        </div>
+
+        <div className="unreg-modal-footer">
+          <button onClick={onClose}>Cancel</button>
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const S5Modal = ({ data, onClose, onSuccess, user }) => {
+  const [remarks, setRemarks] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [signature, setSignature] = useState(null);
+  const noticeRef = useRef(null);
+
+  const handleSubmit = async () => {
+    if (!remarks.trim()) return;
+
+    setLoading(true);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      const noticePdfBlob = await html2pdf()
+        .set({
+          margin: 10,
+          filename: `rera_notice_${data.id}.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4" },
+        })
+        .from(noticeRef.current)
+        .outputPdf("blob");
+
+      const fd = new FormData();
+
+      // ✅ IMPORTANT (YOUR REQUIREMENT)
+      fd.append("approval_status", "s6");
+      fd.append("s5_authority_id", user?.id);
+      fd.append("s5_remarks", remarks.trim());
+      fd.append("rera_notice", noticePdfBlob);
+
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+        method: "PATCH",
+        body: fd,
+      });
+
+      if (!res.ok) throw new Error("Server error");
+
+      onSuccess("2nd Notice generated successfully");
+    } catch {
+      onSuccess("Failed to generate 2nd notice", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="unreg-modal-backdrop">
+      <div className="unreg-modal unreg-modal-wide">
+        <div className="unreg-modal-head">
+          <div className="unreg-modal-title">📄 Generate 2nd Notice (PH Notice)</div>
+          <button onClick={onClose}>✕</button>
+        </div>
+
+        <div className="unreg-modal-body">
+
+          {/* ✅ DIFFERENT NOTICE FORMAT */}
+          <div ref={noticeRef} style={{ padding: "20px", fontFamily: "serif" }}>
+
+             <h3 style={{ textAlign: "center" }}>
+    ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY
+  </h3>
+
+  <p style={{ textAlign: "center" }}>
+    6th & 7th Floors, APCRDA Project Office, Rayapudi Post, Tulluru Mandal,<br/>
+    Amaravati, Guntur District - 522237
+  </p>
+
+  <p style={{ textAlign: "center" }}>
+    Email: helpdesk-rera@ap.gov.in | Mobile: 6304906011
+  </p>
+
+  <p>
+    <b>Notice No:</b> {data.s_no}/UR/{data.district}/2026 &nbsp;&nbsp;
+    <b>Date:</b> {new Date().toLocaleDateString()}
+  </p>
+
+  <p>
+    <b>Sub:</b> Notice under Section 35(1) of Real Estate (Regulation and Development) Act, 2016 – Direction for registration of the Real Estate Project - Reg.
+  </p>
+
+  <p>
+    <b>Ref:</b> BP No: {data.ba_no} &nbsp; Dt: {data.proceeding_order_date}
+  </p>
+
+  <p>*****</p>
+
+  <p>
+    It is noticed that you have obtained building permission for developing 
+    <b> {data.project_type || "Residential Project"} </b> at 
+    <b> {data.building_address} </b>. Despite notices issued earlier, you have neither responded nor applied for registration of the project till date.
+  </p>
+
+  <p>
+    As per Section 3 r/w 35(1) of the Act, 2016, you are directed to appear in person 
+    or through an authorized representative before this Authority at 
+    <b> 11:00 AM </b> on <b> {new Date().toLocaleDateString()} </b> at the office of APRERA 
+    and to submit your written submissions along with the following documents:
+  </p>
+
+  <ol>
+    <li>Approved Plan and proceeding copy / GST returns / Income tax returns</li>
+    <li>Copy of Estimated Cost of the project certified by CA</li>
+    <li>All Bank Statements pertaining to the project</li>
+  </ol>
+
+  <p>
+    Failure to appear before the Authority and submit relevant documents shall result in 
+    ex-parte action under Section 59(1) of the Act, 2016, with penalty up to 10% of project cost.
+  </p>
+
+  {/* SIGNATURE */}
+  <div style={{ textAlign: "right", marginTop: "50px" }}>
+    {signature && (
+      <img
+        src={URL.createObjectURL(signature)}
+        alt="signature"
+        style={{ width: "150px", height: "80px" }}
+      />
+    )}
+    <p>Authorised Officer</p>
+    <p>A.P Real Estate Regulatory Authority</p>
+  </div>
+
+  {/* OWNER DETAILS */}
+  <p><b>To</b></p>
+
+  <p>
+    OWNER: {data.owner_name}
+  </p>
+
+  <p>
+    Address: {data.owner_builder_address}
+  </p>
+
+  <p>
+    Mobile No: {data.owner_mobile_no}
+  </p>
+
+  <p>
+    <b>Note:</b> If already applied for registration, mention it in reply.
+  </p>
+            <div style={{ textAlign: "right", marginTop: "40px" }}>
+              <p>Authorised Officer</p>
+              <p>AP RERA</p>
+            </div>
+
+          </div>
+
+          {/* Remarks */}
+          <textarea
+            rows={4}
+            placeholder="Enter remarks..."
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+          />
+          <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => setSignature(e.target.files[0])}
+/>
+
+        </div>
+
+        <div className="unreg-modal-footer">
+          <button onClick={onClose}>Cancel</button>
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Generating..." : "Generate 2nd Notice"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const S6Modal = ({ data, onClose, onSuccess }) => {
+  const [remarks, setRemarks] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!remarks.trim()) return;
+
+    setLoading(true);
+    try {
+      const fd = new FormData();
+
+      fd.append("email", data.owner_email);
+      fd.append("remarks", remarks.trim());
+      fd.append("subject", "AP RERA 2nd Notice");
+
+      // ✅ IMPORTANT: fetch 2nd notice (rera_notice)
+      const fileResponse = await fetch(
+        `${BASE_URL}/api/project-unregistered/view-file/${data.rera_personal_notice_doc_path}`
+      );
+
+      const blob = await fileResponse.blob();
+
+      // ✅ send as notice2
+      fd.append("notice2", blob, "rera_notice.pdf");
+      fd.append("approval_status", "s7");
+      // ✅ SEND MAIL
+      const res = await fetch(
+        `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
+        {
+          method: "POST",
+          body: fd,
+        }
+      );
+
+      if (!res.ok) throw new Error("Mail failed");
+
+      // ✅ UPDATE STATUS → s7
+      const statusFd = new FormData();
+      statusFd.append("approval_status", "s7");
+
+      await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+        method: "PATCH",
+        body: statusFd,
+      });
+
+      onSuccess("2nd Notice sent successfully");
+    } catch {
+      onSuccess("2nd Notice mail failed", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="unreg-modal-backdrop">
+      <div className="unreg-modal">
+        <div className="unreg-modal-head">
+          <div className="unreg-modal-title">Send 2nd Notice</div>
+          <button onClick={onClose}>✕</button>
+        </div>
+
+        <div className="unreg-modal-body">
+          <a
+            href={`${BASE_URL}/api/project-unregistered/view-file/${data.rera_personal_notice_doc_path}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            📄 View 2nd Notice
+          </a>
+
+          <textarea
+            rows={4}
+            placeholder="Enter remarks..."
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+          />
+         
+        </div>
+
+        <div className="unreg-modal-footer">
+          <button onClick={onClose}>Cancel</button>
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Sending..." : "Send 2nd Notice"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 /* ─────────────────────────────────────────────
    MAIN PAGE COMPONENT
 ───────────────────────────────────────────── */
 export default function UnregistrationProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const navigateToApplication = () => {
+  navigate(`/project-registration/${d.rera_registration_no}`);
+};
   const location = useLocation();
   const [data, setData] = useState(null);
+  const [authorityMap, setAuthorityMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/${id}`);
+      const json = await res.json();
+
+      console.log("API RESPONSE:", json);
+
+      if (json.success) {
+        setData(json.data);
+      } else {
+        setError("No data found");
+      }
+    } catch (err) {
+      console.error("API ERROR:", err);
+      setError("Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);
   const [modal, setModal] = useState(null); // "s1" | "s2" | null
   const [toast, setToast] = useState(null);
   const { admin } = useAdmin();
-
+  const role = admin?.role; 
   const user = location.state?.user;
   const record = location.state?.record;
 
@@ -602,26 +953,40 @@ export default function UnregistrationProjectDetails() {
     if (admin) { console.log("🔑 Role:", admin?.role); }
   }, [admin]);
 
-  useEffect(() => {
-    const fetchRecord = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${BASE_URL}/project-unregistered/${id}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status} — Record not found`);
-        const json = await res.json();
-        console.log("Full API Response:", json);
-        console.log("Actual Data:", json.data || json);
-        setData(json.data || json);
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRecord();
-  }, [id]);
+ useEffect(() => {
+  const fetchAuthorities = async () => {
+    if (!data) return;
 
+    const ids = [
+      data.s1_authority_id,
+      data.s2_authority_id,
+      data.s4_authority_id,
+      data.s5_authority_id,
+      data.s6_authority_id
+    ].filter(Boolean);
+
+    const uniqueIds = [...new Set(ids)];
+
+    let map = {};
+
+    for (let id of uniqueIds) {
+      try {
+        const res = await fetch(`${BASE_URL}/api/userDetails/${id}`);
+        const json = await res.json();
+
+        if (json.success) {
+          map[id] = json.admin;
+        }
+      } catch (err) {
+        console.error("Failed to fetch authority", id);
+      }
+    }
+
+    setAuthorityMap(map);
+  };
+
+  fetchAuthorities();
+}, [data]);
   const showToast = (msg, type = "success") => {
     setModal(null);
     setToast({ msg, type });
@@ -659,8 +1024,32 @@ export default function UnregistrationProjectDetails() {
     );
 
   const d = data;
-  const approvalStatus = d.approval_status;
+  const isLessThan15Days = () => {
+  if (!d.first_notice_sent_date) return false;
 
+  const firstNoticeDate = new Date(d.first_notice_sent_date);
+  const today = new Date();
+
+  const diffTime = today - firstNoticeDate;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays < 15;
+};
+  const isLessThan45Days = () => {
+  if (!d.approved_date) return false;
+
+  const approvedDate = new Date(d.approved_date);
+  const today = new Date();
+
+  const diffTime = today - approvedDate;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays < 45;
+};
+  const approvalStatus = d.approval_status;
+  const isRegistered = d.rera_registered === true;
+const hasRegNo = d.rera_registration_no !== null && d.rera_registration_no !== "";
+const hasExemption = d.exemption_id !== null;
   const documents = [
     { label: "First Notice", path: d.first_notice_doc_path },
     { label: "RERA Personal Notice", path: d.rera_personal_notice_doc_path },
@@ -827,53 +1216,130 @@ export default function UnregistrationProjectDetails() {
               <Row label="LDCC Approved On"><Val v={fmtDate(d.ldcc_approved_on)} /></Row>
             </div>
           </div>
-          <div className="unregDetails-section">
-            <div className="unregDetails-section-header">
-              <span className="unregDetails-section-icon">🔖</span>
-              <span className="unregDetails-section-title">Approval Status</span>
-            </div>
-            <div className="unregDetails-fields">
-              <Row label="Approval Status"><Val v={d.approval_status} /></Row>
-              <Row label="APRERA Status"><Val v={d.aprera_register_status} /></Row>
-              <Row label="S1 Remarks"><Val v={d.s1_remarks} /></Row>
-              <Row label="S2 Remarks"><Val v={d.s2_remarks} /></Row>
-            </div>
-          </div>
+         
         </div>
 
-        {/* RERA DETAILS */}
-        <div className="unregDetails-rera-section">
-          <div className="unregDetails-rera-title">🏛️ RERA Registration Details</div>
-          <div className="unregDetails-rera-grid">
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">RERA Registered</div>
-              <div className="unregDetails-rera-item-value"><BoolVal v={d.rera_registered} /></div>
-            </div>
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">RERA Registration No.</div>
-              <div className="unregDetails-rera-item-value"><Val v={d.rera_registration_no} mono /></div>
-            </div>
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">RERA Register No.</div>
-              <div className="unregDetails-rera-item-value"><Val v={d.rera_register_no} mono /></div>
-            </div>
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">Exemption ID</div>
-              <div className="unregDetails-rera-item-value"><Val v={d.exemption_id} mono /></div>
-            </div>
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">S1 Authority ID</div>
-              <div className="unregDetails-rera-item-value"><Val v={d.s1_authority_id} /></div>
-            </div>
-            <div className="unregDetails-rera-item">
-              <div className="unregDetails-rera-item-label">S2 Authority ID</div>
-              <div className="unregDetails-rera-item-value"><Val v={d.s2_authority_id} /></div>
-            </div>
-          </div>
+     {isRegistered && hasRegNo ? (
+
+  // ✅ PROJECT REGISTRATION CASE
+  <div className="unregDetails-rera-section">
+    <div className="unregDetails-rera-title">🏛️ RERA Registration Details</div>
+
+    <div className="unregDetails-rera-grid">
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Registered</div>
+        <div className="unregDetails-rera-item-value">
+          <BoolVal v={d.rera_registered} />
         </div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Registration No.</div>
+        <div className="unregDetails-rera-item-value">
+          <Val v={d.rera_registration_no} mono />
+        </div>
+      </div>
+
+    </div>
+
+    <p
+      style={{ color: "blue", cursor: "pointer", marginTop: "10px" }}
+     onClick={() =>
+  navigate("/preview", {
+    state: {
+      applicationNumber: d.rera_registration_no,
+      panNumber: d.pan_Number,
+    },
+  })
+}
+    >
+      👉 Click here to see the project RG application
+    </p>
+
+  </div>
+
+) : hasExemption ? (
+
+  // ✅ EXEMPTION CASE
+  <div className="unregDetails-rera-section">
+    <div className="unregDetails-rera-title">🏛️ RERA Registration Details</div>
+
+    <div className="unregDetails-rera-grid">
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Registered</div>
+        <div className="unregDetails-rera-item-value">
+          <BoolVal v={d.rera_registered} />
+        </div>
+      </div>
+
+      {/* ❌ REMOVE RERA REG NO */}
+
+      {/* ✅ SHOW EXEMPTION ID */}
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">Exemption ID</div>
+        <div className="unregDetails-rera-item-value">
+          <Val v={d.exemption_id} mono />
+        </div>
+      </div>
+
+    </div>
+
+    <p
+      style={{ color: "green", cursor: "pointer", marginTop: "10px" }}
+      onClick={() => navigate(`/project-exemption/${d.exemption_id}`)}
+    >
+      👉 Click here to see the exemption application
+    </p>
+
+  </div>
+
+) : (
+
+  // ✅ DEFAULT CASE
+  <div className="unregDetails-rera-section">
+    <div className="unregDetails-rera-title">🏛️ RERA Registration Details</div>
+
+    <div className="unregDetails-rera-grid">
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Registered</div>
+        <div className="unregDetails-rera-item-value"><BoolVal v={d.rera_registered} /></div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Registration No.</div>
+        <div className="unregDetails-rera-item-value"><Val v={d.rera_registration_no} mono /></div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">RERA Register No.</div>
+        <div className="unregDetails-rera-item-value"><Val v={d.rera_register_no} mono /></div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">Exemption ID</div>
+        <div className="unregDetails-rera-item-value"><Val v={d.exemption_id} mono /></div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">S1 Authority ID</div>
+        <div className="unregDetails-rera-item-value"><Val v={d.s1_authority_id} /></div>
+      </div>
+
+      <div className="unregDetails-rera-item">
+        <div className="unregDetails-rera-item-label">S2 Authority ID</div>
+        <div className="unregDetails-rera-item-value"><Val v={d.s2_authority_id} /></div>
+      </div>
+
+    </div>
+  </div>
+
+)}
 
         <div><div className="unregDetails-remarks-table" style={{ marginBottom: 24 }}> 
-        {(approvalStatus === "s2" || approvalStatus === "s3") && (
+        {(approvalStatus === "s2" || approvalStatus === "s3" || approvalStatus === "s4" || approvalStatus === "s5" || approvalStatus === "s6" || approvalStatus === "s7") && (
   <div className="unreg-history-section">
     <div className="unreg-history-title">📋 Authority Remarks</div>
     <table className="unreg-history-table">
@@ -885,27 +1351,77 @@ export default function UnregistrationProjectDetails() {
           <th>Approval Status</th>
         </tr>
       </thead>
-      <tbody>
+    <tbody>
 
-        {/* ✅ Row 1 — S1 हमेशा show */}
-        <tr>
-          <td>1</td>
-          <td>{d.s1_authority_id || "—"}</td>
-          <td>{d.s1_remarks || "—"}</td>
-          <td>{"s2"}</td>
-        </tr>
+  {/* ✅ Row 1 — Always show */}
+  <tr>
+    <td>1</td>
+    <td>
+  {authorityMap[d.s1_authority_id]
+    ? `${authorityMap[d.s1_authority_id].full_name} (${authorityMap[d.s1_authority_id].department})`
+    : d.s1_authority_id || "—"}
+</td>
+    <td>{d.s1_remarks || "—"}</td>
+    <td>s1</td>
+  </tr>
 
-        {/* ✅ Row 2 — Only when status = s3 */}
-        {approvalStatus === "s3" && (
-          <tr>
-            <td>2</td>
-            <td>{d.s2_authority_id || "—"}</td>
-            <td>{d.s2_remarks || "—"}</td>
-            <td>{d.approval_status || "—"}</td>
-          </tr>
-        )}
+  {/* ✅ Row 2 — show from s3 onwards */}
+  {(approvalStatus === "s3" || approvalStatus === "s4" || approvalStatus === "s5" || approvalStatus === "s6" || approvalStatus === "s7") && (
+    <tr>
+      <td>2</td>
+      <td>
+  {authorityMap[d.s2_authority_id]
+    ? `${authorityMap[d.s2_authority_id].full_name} (${authorityMap[d.s2_authority_id].department})`
+    : d.s2_authority_id || "—"}
+</td>
+      <td>{d.s2_remarks || "—"}</td>
+      <td>s2</td>
+    </tr>
+  )}
 
-      </tbody>
+  {/* ✅ Row 3 — show from s5 onwards */}
+  {(approvalStatus === "s5" || approvalStatus === "s6" || approvalStatus === "s7") && (
+    <tr>
+      <td>3</td>
+       <td>
+  {authorityMap[d.s4_authority_id]
+    ? `${authorityMap[d.s4_authority_id].full_name} (${authorityMap[d.s4_authority_id].department})`
+    : d.s4_authority_id || "—"}
+</td>
+      <td>{d.s4_remarks || "—"}</td>
+      <td>s4</td>
+    </tr>
+  )}
+
+  {/* ✅ Row 4 — show from s6 onwards */}
+  {(approvalStatus === "s6" || approvalStatus === "s7") && (
+    <tr>
+      <td>4</td>
+       <td>
+  {authorityMap[d.s5_authority_id]
+    ? `${authorityMap[d.s5_authority_id].full_name} (${authorityMap[d.s5_authority_id].department})`
+    : d.s5_authority_id || "—"}
+</td>
+      <td>{d.s5_remarks || "—"}</td>
+      <td>s5</td>
+    </tr>
+  )}
+
+  {/* ✅ Row 5 — show only at s7 */}
+  {approvalStatus === "s7" && (
+    <tr>
+      <td>5</td>
+      <td>
+  {authorityMap[d.s6_authority_id]
+    ? `${authorityMap[d.s6_authority_id].full_name} (${authorityMap[d.s6_authority_id].department})`
+    : d.s6_authority_id || "—"}
+</td>
+      <td>{d.s6_remarks || "—"}</td>
+      <td>s6</td>
+    </tr>
+  )}
+
+</tbody>
     </table>
   </div>
 )}</div>
@@ -937,49 +1453,123 @@ export default function UnregistrationProjectDetails() {
             ← Back to List
           </button>
 
-          {/* Button logic based on approval_status */}
-          {(approvalStatus === null || approvalStatus === "s1") ? (
-            <button
-              className="unregDetails_Send_Notice_button"
-              onClick={() => setModal("s1")}
-            >
-              📨 Inform the Authority →
-            </button>
-          ) : approvalStatus === "s2" ? (
-            <button
-              className="unregDetails_Send_Notice_button"
-              onClick={() => setModal("s2")}
-            >
-              📄 Generate &amp; Generate Notice →
-            </button>
-          ) : approvalStatus === "s3" ? (
+       
+    
+          
+{isRegistered && hasRegNo ? (
+
+  <p style={{ color: "green", fontWeight: "bold" }}>
+    Applicant is applied in Project Registration
+  </p>
+
+) : isRegistered && !hasRegNo && hasExemption ? (
+
+  <p style={{ color: "blue", fontWeight: "bold" }}>
+    Applicant is applied for Exemption
+  </p>
+
+) : (
+
+  role === "seniarAdit" ? (
+
+    <>
+      {(approvalStatus === null || approvalStatus === "s1") && (
+        <p style={{ color: "red" }}>
+          This application is not checked by Audit team
+        </p>
+      )}
+
+      {approvalStatus === "s2" && (
+        <button
+          className="unregDetails_Send_Notice_button"
+          onClick={() => setModal("s2")}
+        >
+          📄 Generate & Generate Notice →
+        </button>
+      )}
+
+      {(approvalStatus === "s3" ||
+        approvalStatus === "s1" ||
+        
+        approvalStatus === "s4" ||
+        approvalStatus === "s6" ||
+        approvalStatus === "s7") && (
+        <p style={{ color: "orange" }}>
+          This application is under process of Audit team
+        </p>
+      )}
+
+      {approvalStatus === "s5" && (
+        <button
+          className="unregDetails_Send_Notice_button"
+          onClick={() => setModal("s5")}
+        >
+          📄 Generate & Generate 2nd Notice →
+        </button>
+      )}
+    </>
+
+  ) : (
+
+    <>
+      {(approvalStatus === "s2" || approvalStatus === "s5") && (
+        <p style={{ color: "blue" }}>
+          This application is under process of seniarAdit
+        </p>
+      )}
+
+     {(!approvalStatus || approvalStatus === "s1") && (
   <button
-    className="unregDetails_Send_Notice_button"
-    onClick={() => setModal("s3")}
+    onClick={() => {
+      if (isLessThan45Days()) {
+        alert(
+          "Application is within 45 days from approval. Authority action can be taken only after completion of 45 days."
+        );
+        return;
+      }
+      setModal("s1");
+    }}
   >
-   📩 Send Notice →
+    📨 Inform the Authority →
   </button>
-): approvalStatus === "s4" ? (
-            <button
-              className="unregDetails_Send_Notice_button"
-              onClick={() => setModal("s2")}
-            >
-              📄 Generate &amp; Generate 2nd Notice →
-            </button>
-          ): approvalStatus === "s5" ? (
+)}
+      {approvalStatus === "s3" && (
+        <button onClick={() => setModal("s3")}>
+          📩 Send Notice →
+        </button>
+      )}
+
+   {approvalStatus === "s4" && (
   <button
-    className="unregDetails_Send_Notice_button"
-    onClick={() => setModal("s3")}
+    onClick={() => {
+      if (isLessThan15Days()) {
+        alert(
+          "First notice is within 15 days. Authority action can be taken only after completion of 15 days."
+        );
+        return;
+      }
+      setModal("s4");
+    }}
   >
-   📩 Send 2nd Notice →
+    📨 Inform Authority 2nd time →
   </button>
-):<button
-              className="unregDetails_Send_Notice_button"
-              disabled
-              style={{ opacity: 0.6, cursor: "not-allowed" }}
-            >
-              ✅ Notice Sent
-            </button>}
+)}
+      {approvalStatus === "s6" && (
+        <button onClick={() => setModal("s6")}>
+          📩 Send 2nd Notice →
+        </button>
+      )}
+
+      {approvalStatus === "s7" && (
+        <button disabled>
+          ✅ Notice Sent
+        </button>
+      )}
+    </>
+
+  )
+
+)}
         </div>
 
       </div>
@@ -1003,6 +1593,29 @@ export default function UnregistrationProjectDetails() {
 )}
 {modal === "s3" && (
   <S3Modal
+    data={d}
+    onClose={() => setModal(null)}
+    onSuccess={showToast}
+  />
+)}
+{modal === "s4" && (
+  <S4Modal
+    data={d}
+    user={user}
+    onClose={() => setModal(null)}
+    onSuccess={showToast}
+  />
+)}
+{modal === "s5" && (
+  <S5Modal
+    data={d}
+    user={user}
+    onClose={() => setModal(null)}
+    onSuccess={showToast}
+  />
+)}
+{modal === "s6" && (
+  <S6Modal
     data={d}
     onClose={() => setModal(null)}
     onSuccess={showToast}

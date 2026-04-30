@@ -126,3 +126,59 @@ export const submitChangeRequest = (formData) => {
   return apiPost("/api/change-request", formData);
 };
 
+
+// ================================
+// EXEMPTION MODULE APIs
+// ================================
+
+// Create exemption request (with file upload)
+export const createExemption = (formData) => {
+  return apiPost("/api/project_exemption/create", formData);
+};
+
+
+// ================================
+// EXEMPTION MODULE APIs
+// ================================
+
+// Get all exemption applications
+export const getExemptionList = () => {
+  return apiGet("/api/project_exemption/all");
+};
+
+// Get single exemption
+export const getExemptionById = (id) => {
+  return apiGet(`/api/project_exemption/${id}`);
+};
+
+// Stage 1 (Engineer remarks)
+export const submitStage1 = (id, data) => {
+  return apiFetch(`/api/project_exemption/${id}/stage1`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+};
+
+// Stage 2 (Approve/Reject)
+export const submitStage2 = (id, data) => {
+  return apiFetch(`/api/project_exemption/${id}/stage2`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+};
+
+// Stage 3 (Send certificate)
+export const submitStage3 = (id, data) => {
+  return apiFetch(`/api/project_exemption/${id}/stage3`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+};
+
+// Send rejection email
+export const sendRejectionEmail = (id, data) => {
+  return apiFetch(`/api/project_exemption/${id}/send-rejection-email`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+};

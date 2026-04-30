@@ -71,6 +71,25 @@ const normalizeScrutinyRow = (record) => {
 export default function ScrutinyProjectRegistration() {
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
+
+//pavan
+
+    const getAssignedTeam = (appNo) => {
+    const key = "assignmentMap";
+    let map = JSON.parse(localStorage.getItem(key) || "{}");
+
+    if (map[appNo]) return map[appNo];
+
+    let last = localStorage.getItem("lastAssigned") || "l2";
+    let next = last === "l1" ? "l2" : "l1";
+
+    map[appNo] = next;
+
+    localStorage.setItem(key, JSON.stringify(map));
+    localStorage.setItem("lastAssigned", next);
+
+    return next;
+  };
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,11 +105,20 @@ const dept = admin?.department?.toLowerCase();
   try {
     const base = await fetch(
       `${BASE_URL}/api/scrutiny/project-registrations?dept=${dept}`
+
     ).then(res => res.json());
+const data = (base || []).map((row) => {
+  const normalized = normalizeScrutinyRow(row);
 
-    const list = Array.isArray(base) ? base : base.data || [];
+  return {
+    ...normalized,
+    assignedTeam: getAssignedTeam(normalized.application_no),
+  };
+});
+    // const list = Array.isArray(base) ? base : base.data || [];
 
-    setRows(list.map((row) => normalizeScrutinyRow(row)));
+    // setRows(list.map((row) => normalizeScrutinyRow(row)));
+    setRows(data);
 
   } catch (error) {
       showBanner(error.message || "Unable to load scrutiny requests.", "err");
@@ -102,12 +130,35 @@ const dept = admin?.department?.toLowerCase();
   useEffect(() => { refresh(); }, []);
   useEffect(() => { setPage(1); }, [search, pageSize]);
 
-  const filtered = rows.filter((row) =>
-    [row.application_no, row.projectName, row.projectType, row.projectStatus, row.district, row.promoterDisplay, row.applicantName, row.email, row.mobile]
+  // const filtered = rows.filter((row) =>
+  //   [row.application_no, row.projectName, row.projectType, row.projectStatus, row.district, row.promoterDisplay, row.applicantName, row.email, row.mobile]
+  //     .join(" ")
+  //     .toLowerCase()
+  //     .includes(search.toLowerCase())
+  // );
+  //pavan
+  const filtered = rows
+  .filter((row) =>
+    [
+      row.application_no,
+      row.projectName,
+      row.projectType,
+      row.projectStatus,
+      row.district,
+      row.promoterDisplay,
+      row.applicantName,
+      row.email,
+      row.mobile,
+    ]
       .join(" ")
       .toLowerCase()
       .includes(search.toLowerCase())
-  );
+  )
+  .filter((row) => {
+  if (dept === "l1") return row.assignedTeam === "l1";
+  if (dept === "l2") return row.assignedTeam === "l2";
+  return true;
+});
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);

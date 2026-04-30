@@ -38,10 +38,10 @@ class ProjectUnregisteredDetails(db.Model):
     approval_status = db.Column(db.String(30))
     s1_remarks = db.Column(db.Text)
     s2_remarks = db.Column(db.Text)
-    s6_remorks = db.Column(db.Text)
-    s3_remorks = db.Column(db.Text)
-    s4_remorks = db.Column(db.Text)
-    s5_remorks = db.Column(db.Text)
+    s6_remarks = db.Column(db.Text)
+    s3_remarks = db.Column(db.Text)
+    s4_remarks = db.Column(db.Text)
+    s5_remarks = db.Column(db.Text)
     first_notice_doc_path = db.Column(db.Text)
     rera_personal_notice_doc_path = db.Column(db.Text)
     sh_document_path = db.Column(db.Text)
@@ -53,6 +53,9 @@ class ProjectUnregisteredDetails(db.Model):
     s5_authority_id = db.Column(db.String(100))
     s6_authority_id = db.Column(db.String(100))
     rera_register_no = db.Column(db.String(100))
+    pan_number = db.Column(db.String(10))
+    first_notice_sent_date = db.Column(db.Date)
+    secound_notice_sent_date = db.Column(db.Date)
     exemption_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -97,10 +100,10 @@ class ProjectUnregisteredDetails(db.Model):
             "approval_status": self.approval_status,
             "s1_remarks": self.s1_remarks,
             "s2_remarks": self.s2_remarks,
-            "s3_remarks": self.s3_remorks,
-            "s4_remarks": self.s4_remorks,
-            "s5_remarks": self.s5_remorks,
-            "s6_remarks": self.s6_remorks,
+            "s3_remarks": self.s3_remarks,
+            "s4_remarks": self.s4_remarks,
+            "s5_remarks": self.s5_remarks,
+            "s6_remarks": self.s6_remarks,
             "first_notice_doc_path": self.first_notice_doc_path,
             "rera_personal_notice_doc_path": self.rera_personal_notice_doc_path,
             "sh_document_path": self.sh_document_path,
@@ -111,6 +114,17 @@ class ProjectUnregisteredDetails(db.Model):
             "s4_authority_id": self.s4_authority_id,
             "s5_authority_id": self.s5_authority_id,
             "s6_authority_id": self.s6_authority_id,
+            "pan_Number": self.pan_number,
+            "secound_notice_sent_date": (
+                str(self.secound_notice_sent_date)
+                if self.secound_notice_sent_date
+                else None
+            ),
+            "first_notice_sent_date": (
+                str(self.first_notice_sent_date)
+                if self.first_notice_sent_date
+                else None
+            ),
             "rera_register_no": self.rera_register_no,
             "exemption_id": self.exemption_id,
             "created_at": str(self.created_at) if self.created_at else None,

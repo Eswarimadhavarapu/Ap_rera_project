@@ -152,8 +152,8 @@ def register_agent_step1():
     except Exception as e:
         logging.exception("Agent Step-1 failed")
         return jsonify({"success": False, "message": str(e)}), 500
-
-
+    
+    
 # ================= STEP 2 =================
 @agent_bp.route("/register-step2", methods=["POST"])
 def register_agent_step2():

@@ -166,15 +166,15 @@ function NewRowsTable({ rows, subSection, onDelete }) {
         <span>🆕</span> New Entries
       </div>
 
-      <div style={{ overflowX: "auto" }}>
+      <div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
           <thead>
             <tr style={{ background: "#1e4d8f", color: "#fff" }}>
               {subSection.fields.map((field) => (
                 <th key={field.name} style={thStyle}>{field.label}</th>
               ))}
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Document</th>
+              <th style={thStyle}>Remarks</th>
+              <th style={thStyle}>Supporting Document</th>
               <th style={{ ...thStyle, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -182,9 +182,35 @@ function NewRowsTable({ rows, subSection, onDelete }) {
             {rows.map(({ row, originalIndex }) => (
               <tr key={originalIndex} style={{ background: originalIndex % 2 === 0 ? "#fff" : "#f8fafd" }}>
                 {subSection.fields.map((field) => (
-                  <td key={field.name} style={tdStyle}>{row[field.name] || "-"}</td>
-                ))}
-                <td style={tdStyle}>{row.description || "-"}</td>
+  <td key={field.name} style={{ ...tdStyle, maxWidth: "200px" }}>
+    
+    {field.name.toLowerCase().includes("address") ? (
+      
+      <div
+        style={{
+          maxHeight: "80px",
+          overflowY: "auto",
+          wordBreak: "break-word"
+        }}
+      >
+        {row[field.name] || "-"}
+      </div>
+
+    ) : (
+      row[field.name] || "-"
+    )}
+
+  </td>
+))}
+                <td style={{ ...tdStyle, maxWidth: "250px" }}>
+  <div style={{
+    maxHeight: "80px",
+    overflowY: "auto",
+    wordBreak: "break-word"
+  }}>
+    {row.remarks || "-"}
+  </div>
+</td>
                 <td style={tdStyle}>
                   {row.fileURL
                     ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
@@ -226,10 +252,10 @@ function ExistingRowsTable({ rows, subSection, onDelete }) {
           <thead>
             <tr style={{ background: "#1e4d8f", color: "#fff" }}>
               <th style={thStyle}>Field Changed</th>
-              <th style={thStyle}>Old Value</th>
+              <th style={thStyle}>Existing Value</th>
               <th style={thStyle}>New Value</th>
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Document</th>
+              <th style={thStyle}>Remarks</th>
+              <th style={thStyle}>Supporting Document</th>
               <th style={{ ...thStyle, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -240,12 +266,20 @@ function ExistingRowsTable({ rows, subSection, onDelete }) {
                   {subSection.fields.find(f => f.name === row.__selField)?.label || row.__selField}
                 </td>
                 <td style={{ ...tdStyle, color: "#6b7c93" }}>
-                  {row[`old_${row.__selField}`] || "-"}
+                  {row[`existing_${row.__selField}`] || "-"}
                 </td>
                 <td style={{ ...tdStyle, color: "#1a7a3c", fontWeight: "600" }}>
                   {row[row.__selField] || "-"}
                 </td>
-                <td style={tdStyle}>{row.description || "-"}</td>
+                <td style={{ ...tdStyle, maxWidth: "250px" }}>
+  <div style={{
+    maxHeight: "80px",
+    overflowY: "auto",
+    wordBreak: "break-word"
+  }}>
+    {row.remarks || "-"}
+  </div>
+</td>
                 <td style={tdStyle}>
                   {row.fileURL
                     ? <a href={row.fileURL} target="_blank" rel="noopener noreferrer"
@@ -273,10 +307,10 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
   const [formValues, setFormValues] = useState({});
   const [errors, setErrors] = useState({});           // ← NEW: for inline errors
   const [selectedField, setSelectedField] = useState("");
-  const [description, setDescription] = useState("");
+  const [remarks, setRemarks] = useState("");
   const [file, setFile] = useState(null);
 
-  const getOldValuesList = (fieldName) => {
+  const getExistingValuesList = (fieldName) => {
     if (!previewData || !previewData.associate_details) return [];
     const ad = previewData.associate_details;
     let list = [];
@@ -464,20 +498,20 @@ if (name.toLowerCase().includes("pincode")) {
   });
 
   // OLD mode
-  if (mainMode === "old" && selectedField) {
-    const oldKey = `old_${selectedField}`;
-    if (formValues[oldKey]) {
-      newEntry[oldKey] = formValues[oldKey];
+  if (mainMode === "existing" && selectedField) {
+    const existingKey = `existing_${selectedField}`;
+    if (formValues[existingKey]) {
+      newEntry[existingKey] = formValues[existingKey];
       hasValue = true;
     }
-    newEntry.__mode = "old";
+    newEntry.__mode = "existing";
     newEntry.__selField = selectedField;
   } else {
     newEntry.__mode = "new";
   }
 
-  if (description && description.trim() !== "") {
-    newEntry.description = description;
+  if (remarks && remarks.trim() !== "") {
+    newEntry.remarks = remarks;
     hasValue = true;
   }
 
@@ -504,7 +538,7 @@ if (name.toLowerCase().includes("pincode")) {
 
   // Reset form
   setFormValues({});
-  setDescription("");
+  setRemarks("");
   setFile(null);
   setErrors({});
   setSelectedField("");
@@ -523,7 +557,7 @@ if (name.toLowerCase().includes("pincode")) {
 
   const existingRows = tableData
     .map((row, originalIndex) => ({ row, originalIndex }))
-    .filter(({ row }) => row.__mode === "old");
+    .filter(({ row }) => row.__mode === "existing");
 
   return (
 
@@ -539,7 +573,7 @@ if (name.toLowerCase().includes("pincode")) {
               setMainMode(e.target.value);
               setSelectedField("");
               setFormValues({});
-              setDescription("");
+              setRemarks("");
               setFile(null);
               setErrors({});
             }}
@@ -550,13 +584,13 @@ if (name.toLowerCase().includes("pincode")) {
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
           <input
             type="radio"
-            value="old"
-            checked={mainMode === "old"}
+            value="existing"
+            checked={mainMode === "existing"}
             onChange={(e) => {
               setMainMode(e.target.value);
               setSelectedField("");
               setFormValues({});
-              setDescription("");
+              setRemarks("");
               setFile(null);
               setErrors({});
             }}
@@ -584,52 +618,87 @@ if (name.toLowerCase().includes("pincode")) {
           {/* Description + Upload */}
           <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
             <div style={{ flex: 1 }}>
-              <label style={{ fontWeight: "600" }}>Description</label>
+              <label style={{ fontWeight: "600" }}>Remarks</label>
               <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
                 style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
               />
             </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ fontWeight: "600" }}>Upload Document</label>
-              <input
-  key={file ? file.name : "empty"}
-  type="file"
-  onChange={(e) => {
-  const selectedFile = e.target.files[0];
+            <div style={{ width: "48%", marginBottom: "10px" }}>
+  <div style={{ width: "100%" }}>
+  <label style={{ fontWeight: "600" }}>Supporting Document (optional)</label>
 
-  if (selectedFile) {
-    if (selectedFile.type !== "application/pdf") {
-      setErrors((prev) => ({
-        ...prev,
-        file: "Document should be in PDF format"
-      }));
-      setFile(null);
-      return;
-    }
+  {/* HIDDEN INPUT */}
+  <input
+    type="file"
+    id="fileUploadNew"
+    style={{ display: "none" }}
+    onChange={(e) => {
+      const selectedFile = e.target.files[0];
 
-    // valid PDF
-    setErrors((prev) => ({
-      ...prev,
-      file: ""
-    }));
+      if (selectedFile) {
+        if (selectedFile.type !== "application/pdf") {
+          setErrors((prev) => ({
+            ...prev,
+            file: "Document should be in PDF format"
+          }));
+          setFile(null);
+          return;
+        }
 
-    setFile(selectedFile);
-  }
-}} />
+        setErrors((prev) => ({ ...prev, file: "" }));
+        setFile(selectedFile);
+      }
+    }}
+  />
 
-{errors.file && (
-  <div style={{
-    color: "#e74c3c",
-    fontSize: "12px",
-    marginTop: "4px",
-    fontWeight: "500"
-  }}>
-    {errors.file}
+  {/* CUSTOM UI */}
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      border: "1px solid #ccc",
+      borderRadius: "6px",
+      overflow: "hidden"
+    }}
+  >
+    <label
+      htmlFor="fileUploadNew"
+      style={{
+        background: "#2f5fa7",
+        color: "#fff",
+        padding: "8px 14px",
+        cursor: "pointer"
+      }}
+    >
+      Choose File
+    </label>
+
+    <div
+      style={{
+        padding: "8px",
+        flex: 1,
+        fontSize: "14px",
+        color: file ? "#000" : "#777"
+      }}
+    >
+      {file ? file.name : "No file chosen"}
+    </div>
+    
+  </div>
+  {file && (
+  <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
+    📄 {file.name}
   </div>
 )}
-              {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
+
+  {errors.file && (
+    <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
+      {errors.file}
+    </div>
+  )}
+</div>
             </div>
           </div>
 
@@ -643,7 +712,7 @@ if (name.toLowerCase().includes("pincode")) {
       )}
 
       {/* ── OLD MODE ── */}
-      {mainMode === "old" && (
+      {mainMode === "existing" && (
         <>
           <div style={{ marginBottom: "15px" }}>
             <label style={{ fontWeight: "600" }}>Select Existing</label>
@@ -652,11 +721,11 @@ if (name.toLowerCase().includes("pincode")) {
               onChange={(e) => {
                 const val = e.target.value;
                 setSelectedField(val);
-                const opts = getOldValuesList(val);
+                const opts = getExistingValuesList(val);
                 if (opts.length === 1) {
-                  setFormValues(prev => ({ ...prev, [`old_${val}`]: opts[0] }));
+                  setFormValues(prev => ({ ...prev, [`existing_${val}`]: opts[0] }));
                 } else if (opts.length === 0 || opts.length > 1) {
-                  setFormValues(prev => ({ ...prev, [`old_${val}`]: "" }));
+                  setFormValues(prev => ({ ...prev, [`existing_${val}`]: "" }));
                 }
               }}
               style={{ width: "250px", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginLeft: "12px" }}
@@ -671,33 +740,33 @@ if (name.toLowerCase().includes("pincode")) {
           {selectedField && (
             <>
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>OLD {selectedFieldLabel}</label>
-                  {getOldValuesList(selectedField).length > 0 ? (
+                <div style={{ width: "48%", marginBottom: "15px" }}>
+                  <label style={{ fontWeight: "600" }}>Existing {selectedFieldLabel}</label>
+                  {getExistingValuesList(selectedField).length > 0 ? (
                     <select
-                      name={`old_${selectedField}`}
-                      value={formValues[`old_${selectedField}`] || ""}
+                      name={`existing_${selectedField}`}
+                      value={formValues[`existing_${selectedField}`] || ""}
                       onChange={handleChange}
                       style={{
                         display: "block",
                         padding: "8px",
                         borderRadius: "6px",
-                        border: errors[`old_${selectedField}`] ? "1px solid #e74c3c" : "1px solid #ccc",
+                        border: errors[`existing_${selectedField}`] ? "1px solid #e74c3c" : "1px solid #ccc",
                         width: "100%",
                         marginTop: "4px",
                         backgroundColor: "#fff"
                       }}
                     >
                       <option value="">-- Select Existing --</option>
-                      {getOldValuesList(selectedField).map((val, idx) => (
+                      {getExistingValuesList(selectedField).map((val, idx) => (
                         <option key={idx} value={val}>{val}</option>
                       ))}
                     </select>
                   ) : (
                     <input
                       type="text"
-                      name={`old_${selectedField}`}
-                      value={formValues[`old_${selectedField}`] || ""}
+                      name={`existing_${selectedField}`}
+                      value={formValues[`existing_${selectedField}`] || ""}
                       readOnly
                       placeholder="No existing data found"
                       style={{
@@ -711,15 +780,15 @@ if (name.toLowerCase().includes("pincode")) {
                       }}
                     />
                   )}
-                  {errors[`old_${selectedField}`] && (
+                  {errors[`existing_${selectedField}`] && (
                     <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "4px" }}>
-                      {errors[`old_${selectedField}`]}
+                      {errors[`existing_${selectedField}`]}
                     </div>
                   )}
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>NEW {selectedFieldLabel}</label>
+                  <label style={{ fontWeight: "600" }}>New {selectedFieldLabel}</label>
                   <input
                     type="text"
                     name={selectedField}
@@ -745,49 +814,96 @@ if (name.toLowerCase().includes("pincode")) {
               {/* Description + Upload */}
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>Description</label>
+                  <label style={{ fontWeight: "600" }}>Remarks</label>
                   <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={remarks}
+                    onChange={(e) => setRemarks(e.target.value)}
                     style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "6px", boxSizing: "border-box" }}
                   />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>Upload Document</label>
-                  <input type="file" onChange={(e) => {
-  const selectedFile = e.target.files[0];
+                  <label style={{ fontWeight: "600" }}>Supporting Document (optional)</label>
+                  <div style={{ flex: 1 }}>
+  {/* <label style={{ fontWeight: "600" }}>Upload Document</label> */}
 
-  if (selectedFile) {
-    if (selectedFile.type !== "application/pdf") {
-      setErrors((prev) => ({
-        ...prev,
-        file: "Document should be in PDF format"
-      }));
-      setFile(null);
-      return;
-    }
+  {/* HIDDEN FILE INPUT */}
+  <input
+    type="file"
+    id="fileUpload"
+    style={{ display: "none" }}
+    onChange={(e) => {
+      const selectedFile = e.target.files[0];
 
-    // valid PDF
-    setErrors((prev) => ({
-      ...prev,
-      file: ""
-    }));
+      if (selectedFile) {
+        if (selectedFile.type !== "application/pdf") {
+          setErrors((prev) => ({
+            ...prev,
+            file: "Document should be in PDF format"
+          }));
+          setFile(null);
+          return;
+        }
 
-    setFile(selectedFile);
-  }
-}} />
-{errors.file && (
-  <div style={{
-    color: "#e74c3c",
-    fontSize: "12px",
-    marginTop: "4px",
-    fontWeight: "500"
-  }}>
-    {errors.file}
+        setErrors((prev) => ({ ...prev, file: "" }));
+        setFile(selectedFile);
+      }
+    }}
+  />
+
+  {/* CUSTOM UI */}
+  <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    overflow: "hidden",
+    width: "100%"   // IMPORTANT
+  }}
+>
+    {/* BUTTON */}
+    <label
+      htmlFor="fileUpload"
+      style={{
+        background: "#2f5fa7",
+        color: "#fff",
+        padding: "8px 14px",
+        cursor: "pointer",
+        fontWeight: "500"
+      }}
+    >
+      Choose File
+    </label>
+
+    {/* FILE NAME INSIDE FIELD */}
+    <div
+      style={{
+        padding: "8px",
+        flex: 1,
+        fontSize: "14px",
+        color: file ? "#000" : "#777"
+      }}
+    >
+      {file ? file.name : "No file chosen"}
+    </div>
+  </div>
+  {file && (
+  <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
+    📄 {file.name}
   </div>
 )}
-                  {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
-                </div>
+
+  {/* ERROR */}
+  {errors.file && (
+    <div style={{
+      color: "#e74c3c",
+      fontSize: "12px",
+      marginTop: "4px"
+    }}>
+      {errors.file}
+    </div>
+  )}
+</div>                </div>
               </div>
 
               <button

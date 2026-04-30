@@ -389,3 +389,24 @@
     align-items: flex-start;
   }
 }
+
+/* ===== ADMIN TOP ICON ===== */
+.admin-top-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-top-icon span {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6b804b, #4a5e2c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(74, 94, 44, 0.35);
+}

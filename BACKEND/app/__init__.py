@@ -95,10 +95,24 @@ def create_app():
     # Serve Uploaded Files
     # ---------------------------------------------------------
 
+    # @app.route("/uploads/<path:filename>")
+    # def serve_uploaded_file(filename):
+
+    #     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
     @app.route("/uploads/<path:filename>")
     def serve_uploaded_file(filename):
+        legacy_upload_folder = os.path.abspath(
+            os.path.join(BASE_DIR, "..", "backend", "uploads")
+        )
+
+        if os.path.exists(os.path.join(app.config["UPLOAD_FOLDER"], filename)):
+            return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
+        if os.path.exists(os.path.join(legacy_upload_folder, filename)):
+            return send_from_directory(legacy_upload_folder, filename)
 
         return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    
 
 
     # ---------------------------------------------------------
@@ -205,7 +219,7 @@ def create_app():
     app.register_blueprint(faq_bp, url_prefix="/api")
     app.register_blueprint(verification_bp, url_prefix="/api")
     app.register_blueprint(project_unregistered_bp, url_prefix="/api")
-    app.register_blueprint(project_exemption_bp, url_prefix="/project-exemption")
+    app.register_blueprint(project_exemption_bp, url_prefix="/api")
 
 
     return app

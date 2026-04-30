@@ -13,7 +13,7 @@ export const PROJECT_DETAILS_SUBSECTIONS = [
         type: "select",
         options: [
           "Project Name",
-          "Project Description",
+          "Project Remarks",
           "Project Type",
           "Project Status",
           "Building Plan No",
@@ -59,7 +59,7 @@ const PROJECT_TYPE_OPTIONS = [
 // ─── MAP: Change Type Label → API response field key ─────────────────────────
 const CHANGE_TYPE_TO_API_KEY = {
   "Project Name":                               "project_name",
-  "Project Description":                        "project_description",
+  "Project Remarks":                        "project_remarks",
   "Project Type":                               "project_type",
   "Project Status":                             "project_status",
   "Building Plan No":                           "building_plan_no",
@@ -92,7 +92,7 @@ const PROJECT_STATUS_ID_MAP = {
 // ─── VALIDATION CONFIG ────────────────────────────────────────────────────────
 const FIELD_VALIDATIONS = {
   "Project Name":                               { type: "text",         maxLen: 100, msg: "Project Name should contain only letters and spaces." },
-  "Project Description":                        { type: "textarea",     maxLen: 500, msg: "Description should not exceed 500 characters." },
+  "Project Remarks":                        { type: "textarea",     maxLen: 500, msg: "Remarks should not exceed 500 characters." },
   "Project Status":                             { type: "text",         maxLen: 100, msg: "Project Status should contain only letters." },
   "Building Plan No":                           { type: "alphanumeric", maxLen: 50,  msg: "Building Plan No should contain only letters and numbers." },
   "Building Permission Validity From":          { type: "date",         msg: "Please enter a valid date." },
@@ -187,7 +187,8 @@ const thStyle = {
 };
 const tdStyle = {
   padding: "9px 12px", border: "1px solid #e2e8f2",
-  verticalAlign: "top", fontSize: "13px",
+  verticalAlign: "top", fontSize: "13px", wordBreak: "break-word",
+  whiteSpace: "normal"
 };
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
@@ -205,8 +206,8 @@ export default function ProjectDetailsForm({
   const [selectedField,  setSelectedField]  = useState("");
   const [oldValue,       setOldValue]       = useState("");
   const [newValue,       setNewValue]       = useState("");
-  const [description,    setDescription]    = useState("");
-  const [documentFile,   setDocumentFile]   = useState(null);
+  const [remarks,    setRemarks]    = useState("");
+  const [supportingdocumentsFile,   setSupportingDocumentsFile]   = useState(null);
   const [totalUnits,     setTotalUnits]     = useState("");
   const [unitFile,       setUnitFile]       = useState(null);
   const [hideFields,     setHideFields]     = useState(false);
@@ -312,8 +313,9 @@ console.log("📦 API Response →", json);
     return String(raw);
   };
 
-  const subSection = PROJECT_DETAILS_SUBSECTIONS.find((s) => s.id === subSectionId);
-  if (!subSection) return null;
+const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
+  (s) => s.id === subSectionId
+);
 
   const tableData    = tableStore[subSectionId] || [];
   const setTableData = (rows) => setTableStore((prev) => ({ ...prev, [subSectionId]: rows }));
@@ -334,8 +336,8 @@ console.log("📦 API Response →", json);
     setSelectedField(val);
     setChangeSelected(val !== "");
     setHideFields(false);
-    setNewValue(""); setDescription("");
-    setDocumentFile(null); setTotalUnits(""); setUnitFile(null);
+    setNewValue(""); setRemarks("");
+    setSupportingDocumentsFile(null); setTotalUnits(""); setUnitFile(null);
     setOldValueError(""); setNewValueError(""); setDescError(""); setTotalUnitsErr("");
     if (fileInputRef.current)     fileInputRef.current.value = "";
     if (unitFileInputRef.current) unitFileInputRef.current.value = "";
@@ -368,9 +370,9 @@ console.log("📦 API Response →", json);
       field:        selectedField,
       oldValue:     oldValue     || "-",
       newValue:     newValue,
-      description:  description  || "-",
-      document:     documentFile?.name || "-",
-      documentUrl:  documentFile ? URL.createObjectURL(documentFile) : "",
+     remarks:  remarks || "-",
+      supportingdocuments:     supportingdocumentsFile?.name || "-",
+      supportingdocumentsUrl:  supportingdocumentsFile ? URL.createObjectURL(supportingdocumentsFile) : "",
       totalUnits:   selectedField === "Project Type" ? (totalUnits    || "-") : "",
       unitFileName: selectedField === "Project Type" ? (unitFile?.name || "-") : "",
       unitFileUrl:  selectedField === "Project Type" && unitFile ? URL.createObjectURL(unitFile) : "",
@@ -382,8 +384,8 @@ console.log("📦 API Response →", json);
     setTableData(updated);
     notifyParent(updated);
 
-    setOldValue(""); setNewValue(""); setDescription("");
-    setDocumentFile(null); setTotalUnits(""); setUnitFile(null);
+    setOldValue(""); setNewValue(""); setRemarks("");
+    setSupportingDocumentsFile(null); setTotalUnits(""); setUnitFile(null);
     setOldValueError(""); setNewValueError(""); setDescError(""); setTotalUnitsErr("");
     if (fileInputRef.current)     fileInputRef.current.value = "";
     if (unitFileInputRef.current) unitFileInputRef.current.value = "";
@@ -416,20 +418,37 @@ console.log("📦 API Response →", json);
       )}
 
       {/* ── CHANGE TYPE DROPDOWN ── */}
-      <div style={{ marginBottom: "20px", maxWidth: "400px" }}>
-        <label style={labelStyle}>CHANGE TYPE</label>
-        <select
-          style={selectStyle}
-          name={subSection.fields[0].name}
-value={formValues[subSection.fields[0].name] || ""}
-          onChange={handleChangeType}
-        >
-          <option value="">-- Select --</option>
-          {subSection.fields[0].options.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
-      </div>
+     <div style={{ marginBottom: "20px", maxWidth: "400px" }}>
+
+  {/* Section Title */}
+  <h3 style={{
+    fontSize: "16px",
+    fontWeight: "700",
+    color: "#1e3a5f",
+    marginBottom: "10px"
+  }}>
+    {currentSection?.label}
+  </h3>
+
+  {/* Single Dropdown (based on sidebar click) */}
+  <label style={labelStyle}>Change Type</label>
+  <select
+    style={selectStyle}
+    name={currentSection?.fields[0].name}
+    value={formValues[currentSection?.fields[0].name] || ""}
+    onChange={handleChangeType}
+  >
+    <option value="">-- Select --</option>
+    {currentSection?.fields[0].options.map((o) => (
+      <option key={o} value={o}>{o}</option>
+    ))}
+  </select>
+
+</div>
+
+ 
+
+     
 
       {/* ── FORM FIELDS ── */}
       {changeSelected && !hideFields && (
@@ -441,7 +460,7 @@ value={formValues[subSection.fields[0].name] || ""}
             {/* EXISTING VALUE — read-only, auto-filled from API */}
             <div>
               <label style={labelStyle}>
-                EXISTING {selectedField}
+                Existing {selectedField}
                 {loadingApi && (
                   <span style={{ fontWeight: 400, color: "#888", marginLeft: "6px", fontSize: "11px" }}>
                     (loading…)
@@ -488,7 +507,7 @@ value={formValues[subSection.fields[0].name] || ""}
 
             {/* NEW VALUE — user editable */}
             <div>
-              <label style={labelStyle}>NEW {selectedField}</label>
+              <label style={labelStyle}>New {selectedField}</label>
 
               {isProjectTypeSelected ? (
                 <select
@@ -539,16 +558,16 @@ value={formValues[subSection.fields[0].name] || ""}
 
           {/* DESCRIPTION */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={labelStyle}>Description</label>
+            <label style={labelStyle}>Remarks</label>
             <textarea
               style={{ ...inputStyle, resize: "vertical", borderColor: descError ? "#c0200f" : "#ccd4e0" }}
               rows={3}
-              value={description}
+              value={remarks}
               onChange={(e) => {
-                setDescription(e.target.value);
+                setRemarks(e.target.value);
                 setDescError(
                   e.target.value.length > 500
-                    ? `Description must be under 500 characters. (${e.target.value.length}/500)`
+                    ? `Remarks must be under 500 characters. (${e.target.value.length}/500)`
                     : ""
                 );
               }}
@@ -558,15 +577,15 @@ value={formValues[subSection.fields[0].name] || ""}
               {descError
                 ? <span style={{ color: "#c0200f", fontSize: "11px" }}>⚠ {descError}</span>
                 : <span />}
-              <span style={{ fontSize: "11px", color: description.length > 450 ? "#c0200f" : "#999" }}>
-                {description.length}/500
+              <span style={{ fontSize: "11px", color: remarks.length > 450 ? "#c0200f" : "#999" }}>
+                {remarks.length}/500
               </span>
             </div>
           </div>
 
           {/* UPLOAD DOCUMENT */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={labelStyle}>Upload Document</label>
+            <label style={labelStyle}>Supporting Documents (optional)</label>
             <input
               ref={fileInputRef}
               type="file"
@@ -578,15 +597,15 @@ value={formValues[subSection.fields[0].name] || ""}
                 if (file.type !== "application/pdf") {
                   alert("Only PDF files are allowed.");
                   e.target.value = "";
-                  setDocumentFile(null);
+                  setSupportingDocumentsFile(null);
                   return;
                 }
-                setDocumentFile(file);
+                setSupportingDocumentsFile(file);
               }}
             />
-            {documentFile && (
+            {supportingdocumentsFile && (
               <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>
-                📄 {documentFile.name}
+                📄 {supportingdocumentsFile.name}
               </div>
             )}
           </div>
@@ -671,8 +690,8 @@ value={formValues[subSection.fields[0].name] || ""}
           }}
           onClick={() => {
             setHideFields(false);
-            setNewValue(""); setDescription("");
-            setDocumentFile(null); setTotalUnits(""); setUnitFile(null);
+            setNewValue(""); setRemarks("");
+            setSupportingDocumentsFile(null); setTotalUnits(""); setUnitFile(null);
             setOldValueError(""); setNewValueError(""); setDescError(""); setTotalUnitsErr("");
             if (fileInputRef.current)     fileInputRef.current.value = "";
             if (unitFileInputRef.current) unitFileInputRef.current.value = "";
@@ -690,14 +709,20 @@ value={formValues[subSection.fields[0].name] || ""}
       {/* ── TABLE ── */}
       {tableData.length > 0 && (
         <div style={{ overflowX: "auto", marginTop: "20px" }}>
-          <table style={{ minWidth: "800px", width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+          <table style={{
+  minWidth: "800px",
+  width: "100%",
+  borderCollapse: "collapse",
+  fontSize: "13px",
+  tableLayout: "fixed"   // ⭐ ADD THIS LINE
+}}>
             <thead>
               <tr>
                 <th style={thStyle}>Field</th>
-                <th style={thStyle}>Old Value</th>
+                <th style={thStyle}>Existing Value</th>
                 <th style={thStyle}>New Value</th>
-                <th style={{ ...thStyle, minWidth: "200px" }}>Description</th>
-                <th style={thStyle}>Document</th>
+                <th style={{ ...thStyle, minWidth: "200px" }}>Remarks</th>
+                <th style={thStyle}>SupportingDocuments</th>
                 {hasExtraColumns && (
                   <>
                     <th style={thStyle}>Total Units</th>
@@ -711,17 +736,33 @@ value={formValues[subSection.fields[0].name] || ""}
               {tableData.map((row, i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
                   <td style={{ ...tdStyle, fontWeight: "600", color: "#0f3460" }}>{row.field}</td>
-                  <td style={{ ...tdStyle, color: "#6b7c93" }}>{row.oldValue}</td>
-                  <td style={{ ...tdStyle, color: "#1a7a3c", fontWeight: "600" }}>{row.newValue}</td>
+                  <td style={{ ...tdStyle, maxWidth: "150px" }}>
+  <div style={{
+    color: "#6b7c93",
+    wordBreak: "break-all"
+  }}>
+    {row.oldValue}
+  </div>
+</td>
+                  <td style={{ ...tdStyle, maxWidth: "200px" }}>
+  <div style={{
+    color: "#1a7a3c",
+    fontWeight: "600",
+    wordBreak: "break-all",
+    whiteSpace: "pre-wrap"
+  }}>
+    {row.newValue}
+  </div>
+</td>
                   <td style={{ ...tdStyle, maxWidth: "260px" }}>
                     <div style={{ wordBreak: "break-word", overflowWrap: "break-word", whiteSpace: "pre-wrap", maxHeight: "80px", overflowY: "auto" }}>
-                      {row.description}
+                      {row.remarks}
                     </div>
                   </td>
                   <td style={tdStyle}>
-                    {row.documentUrl
-                      ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                          style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
+                    {row.supportingdocumentsUrl
+                      ? <a href={row.supportingdocumentsUrl} target="_blank" rel="noopener noreferrer"
+                          style={{ color: "#0f3460", fontWeight: "600" }}>{row.supportingdocuments}</a>
                       : "-"}
                   </td>
                   {hasExtraColumns && (

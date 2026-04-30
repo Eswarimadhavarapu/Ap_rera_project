@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../styles/scrutiny/unregisterList.css';
 import { useAdmin } from "../../context/AdminContext";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const BASE_URL = "https://7zgjxth4-5056.inc1.devtunnels.ms/api";
 
@@ -303,6 +305,58 @@ export default function UnregisterList() {
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState(null);
   const [page, setPage]                 = useState(1);
+  const handleDownloadExcel = async () => {
+  console.log("Download clicked");
+
+  try {
+    let allData = [];
+    let currentPage = 1;
+    let totalPages = 1;
+
+    while (currentPage <= totalPages) {
+      const params = new URLSearchParams({
+        page: currentPage,
+        per_page: 50,
+      });
+
+      const res = await fetch(`${BASE_URL}/project-unregistered?${params}`);
+      if (!res.ok) throw new Error("API failed");
+
+      const json = await res.json();
+
+      console.log("Page data:", json); // DEBUG
+
+      allData = [...allData, ...(json.data || [])];
+      totalPages = json.total_pages || 1;
+
+      currentPage++;
+    }
+
+    if (allData.length === 0) {
+      alert("No data found");
+      return;
+    }
+
+    const formatted = allData.map((r) => ({
+      "S.No": r.s_no ?? r.id,
+      "Owner Name": r.owner_name || "-",
+      "Mobile": r.owner_mobile_no || "-",
+      "Application ID": r.fileno || r.lp_no || "-",
+      "Approved Date": fmtDate(r.approved_date),
+      "RERA Status": r.rera_registered ? "Registered" : "Not Registered",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(formatted);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Records");
+
+    XLSX.writeFile(wb, "Application_Records.xlsx"); // ✅ SIMPLER METHOD
+
+  } catch (err) {
+    console.error("Download error:", err);
+    alert("Download failed. Check console.");
+  }
+};
   const [perPage]                       = useState(10);
   const [totalPages, setTotalPages]     = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -665,9 +719,18 @@ export default function UnregisterList() {
 
         {/* ── TABLE ── */}
         <div className="unregList-table-wrapper">
-          <div className="unregList-table-header">
-            <div className="unregList-table-title">Application Records</div>
-          </div>
+        <div className="unregList-table-header">
+  <div className="unregList-table-title">Application Records</div>
+
+  <div className="unregList-header-actions">
+    <button
+      className="unregList-download-btn"
+      onClick={handleDownloadExcel}
+    >
+      ⬇ Download Excel
+    </button>
+  </div>
+</div>
 
           {loading ? (
             <div className="unregList-loading">

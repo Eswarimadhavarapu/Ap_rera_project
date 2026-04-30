@@ -85,9 +85,12 @@ class AgentModel:
 
                 # ✅ IMPORTANT
                 "self_declared_affidavit": json.dumps(data["self_declared_affidavit"]) if data.get("self_declared_affidavit") else None,
-                "last_five_years_project_details": data.get("last_five_years_project_details"),
-                "any_civil_criminal_cases": data.get("any_civil_criminal_cases"),
-                "registration_other_states": data.get("registration_other_states"),
+                "last_five_years_project_details": json.dumps({"value": True if data.get("last_five_years_project_details") == "Yes" else False}),
+                "any_civil_criminal_cases": True if data.get("any_civil_criminal_cases") == "Yes" else False,
+                # "last_five_years_project_details": data.get("last_five_years_project_details"),
+                # "any_civil_criminal_cases": data.get("any_civil_criminal_cases"),
+                # "registration_other_states": data.get("registration_other_states"),
+                "registration_other_states": True if data.get("registration_other_states") == "Yes" else False,
             }
 
             result = db.session.execute(query, params)
@@ -103,128 +106,6 @@ class AgentModel:
         except Exception as e:
             db.session.rollback()
             return {"success": False, "message": str(e)}
-
-
-    # ================= INSERT PROJECTS =================
-    @staticmethod
-    def insert_agent_projects(agent_id, projects):
-        try:
-            query = text("""
-                INSERT INTO agent_projects_t (agent_id, project_name)
-                VALUES (:agent_id, :project_name)
-            """)
-
-            for p in projects:
-                db.session.execute(query, {
-                    "agent_id": agent_id,
-                    "project_name": p.get("name")
-                })
-
-            db.session.commit()
-            return {"success": True}
-
-        except Exception as e:
-            db.session.rollback()
-            return {"success": False, "message": str(e)}
-
-    @staticmethod
-    def insert_agent_litigations(agent_id, litigations):
-        try:
-            query = text("""
-                INSERT INTO agent_litigations_t
-                (
-                    agent_id,
-                    case_no,
-                    tribunal_place,
-                    petitioner_name,
-                    respondent_name,
-                    case_facts,
-                    present_status,
-                    interim_order,
-                    final_order,
-                    interim_order_certificate,
-                    disposed_certificate
-                )
-                VALUES
-                (
-                    :agent_id,
-                    :case_no,
-                    :tribunal_place,
-                    :petitioner_name,
-                    :respondent_name,
-                    :case_facts,
-                    :present_status,
-                    :interim_order,
-                    :final_order,
-                    CAST(:interim_order_certificate AS jsonb),
-                    CAST(:disposed_certificate AS jsonb)
-                )
-            """)
-
-            for l in litigations:
-                db.session.execute(query, {
-                    "agent_id": agent_id,
-                    "case_no": l.get("caseNo"),
-                    "tribunal_place": l.get("namePlace"),
-                    "petitioner_name": l.get("petitioner"),
-                    "respondent_name": l.get("respondent"),
-                    "case_facts": l.get("facts"),
-                    "present_status": l.get("presentStatus"),
-                    "interim_order": l.get("interimOrder"),
-                    "final_order": l.get("finalOrder"),
-
-                    # must be JSON string or None
-                    "interim_order_certificate": json.dumps(l.get("interim_order_certificate")) if l.get("interim_order_certificate") else None,
-                    "disposed_certificate": json.dumps(l.get("disposed_certificate")) if l.get("disposed_certificate") else None,
-                })
-
-            db.session.commit()
-            return {"success": True}
-
-        except Exception as e:
-            db.session.rollback()
-            return {"success": False, "message": str(e)}
-
-
-  
-    @staticmethod
-    def insert_agent_other_state_rera(agent_id, other_rera_list):
-        try:
-            query = text("""
-                INSERT INTO agent_other_state_rera_t
-                (
-                    agent_id,
-                    registration_number,
-                    state_id,
-                    state_name,
-                    district
-                )
-                VALUES
-                (
-                    :agent_id,
-                    :registration_number,
-                    :state_id,
-                    :state_name,
-                    :district
-                )
-            """)
-
-            for r in other_rera_list:
-                db.session.execute(query, {
-                    "agent_id": agent_id,
-                    "registration_number": r.get("regNo"),
-                    "state_id": r.get("stateId"),
-                    "state_name": r.get("stateName"),
-                    "district": r.get("districtName")   # or r.get("district")
-                })
-
-            db.session.commit()
-            return {"success": True}
-
-        except Exception as e:
-            return {"success": False, "message": str(e)}
-
-
 
     # ================= STEP 2 =================
     @staticmethod
@@ -701,6 +582,106 @@ AP RERA
             db.session.rollback()
             return {"success": False, "message": str(e)}
         
+
+    
+@staticmethod
+def insert_agent_projects(agent_id, projects_list):
+    try:
+        query = text("""
+            INSERT INTO agent_projects_t (agent_id, project_name)
+            VALUES (:agent_id, :project_name)
+        """)
+
+        for project in projects_list:
+            db.session.execute(query, {
+                "agent_id": agent_id,
+                "project_name": project.get("name")
+            })
+
+        db.session.commit()
+        return {"success": True}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"success": False, "message": str(e)}
+    
+
+
+
+@staticmethod
+def insert_agent_litigations(agent_id, litigations_list):
+    try:
+        query = text("""
+            INSERT INTO agent_litigations_t (
+                agent_id, case_no, tribunal_place,
+                petitioner_name, respondent_name,
+                case_facts, present_status,
+                interim_order, final_order,
+                interim_order_certificate, disposed_certificate
+            )
+            VALUES (
+                :agent_id, :case_no, :tribunal_place,
+                :petitioner_name, :respondent_name,
+                :case_facts, :present_status,
+                :interim_order, :final_order,
+                CAST(:interim_order_certificate AS jsonb),
+                CAST(:disposed_certificate AS jsonb)
+            )
+        """)
+
+        for l in litigations_list:
+            db.session.execute(query, {
+                "agent_id": agent_id,
+                "case_no": l.get("caseNo"),
+                "tribunal_place": l.get("namePlace"),
+                "petitioner_name": l.get("petitioner"),
+                "respondent_name": l.get("respondent"),
+                "case_facts": l.get("facts"),
+                "present_status": l.get("presentStatus"),
+                "interim_order": l.get("interimOrder"),
+                "final_order": l.get("finalOrder"),
+                "interim_order_certificate": json.dumps(l.get("interim_order_certificate")),
+                "disposed_certificate": json.dumps(l.get("disposed_certificate"))
+            })
+
+        db.session.commit()
+        return {"success": True}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"success": False, "message": str(e)}
+    
+
+
+@staticmethod
+def insert_agent_other_state_rera(agent_id, other_list):
+    try:
+        query = text("""
+            INSERT INTO agent_other_state_rera_t (
+                agent_id, registration_number,
+                state_id, state_name, district
+            )
+            VALUES (
+                :agent_id, :registration_number,
+                :state_id, :state_name, :district
+            )
+        """)
+
+        for o in other_list:
+            db.session.execute(query, {
+                "agent_id": agent_id,
+                "registration_number": o.get("regNo"),
+                "state_id": o.get("stateId"),
+                "state_name": o.get("stateName"),
+                "district": o.get("districtName")
+            })
+
+        db.session.commit()
+        return {"success": True}
+
+    except Exception as e:
+        db.session.rollback()
+        return {"success": False, "message": str(e)}
 @staticmethod
 def approve_agent_renewal(agent_id):
     try:

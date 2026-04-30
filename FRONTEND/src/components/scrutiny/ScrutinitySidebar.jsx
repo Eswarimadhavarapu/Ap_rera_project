@@ -18,7 +18,8 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
   verification: "VERIFICATION PANEL",
   ad: "ASSISTANT DIRECTOR PANEL",
   dd: "DEPUTY DIRECTOR PANEL",
-  it: "IT PANEL",
+  l1: "LEGAL 1 PANEL",
+  l2: "LEGAL 2 PANEL",
 };
 
   // ✅ Dropdown state
@@ -64,6 +65,10 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
               <button onClick={() => navigate("/fpms/view-files")}>
                 📁 View Files
               </button>
+                  {/* ✅ ADD THIS */}
+    <button onClick={() => navigate("/scrutiny/exemption")}>
+      📑 Exemption
+    </button>
             </div>
           )}
         </>

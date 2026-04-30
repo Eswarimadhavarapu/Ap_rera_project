@@ -70,7 +70,7 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
   const [docType,     setDocType]     = useState("");
   const [oldFile,     setOldFile]     = useState(null);
   const [newFile,     setNewFile]     = useState(null);
-  const [description, setDescription] = useState("");
+  const [remarks, setRemarks] = useState("");
   const [oldFileError, setOldFileError] = useState("");   // ← NEW
   const [newFileError, setNewFileError] = useState("");   // ← NEW
 
@@ -133,7 +133,7 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
       oldFileUrl:  oldFile ? URL.createObjectURL(oldFile) : "",
       newFileName: newFile?.name    || "-",
       newFileUrl:  newFile ? URL.createObjectURL(newFile) : "",
-      description: description || "-",
+      remarks: remarks|| "-",
     };
 
     const updated = [...tableData, newRow];
@@ -143,7 +143,7 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
     setDocType(""); 
     setOldFile(null); 
     setNewFile(null); 
-    setDescription("");
+    setRemarks("");
     setOldFileError("");
     setNewFileError("");
   };
@@ -168,7 +168,7 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
 
       {/* Old + New Files */}
       <div style={S.grid2}>
-        <FW label="EXISTING Document">
+        <FW label="Existing Document">
           <input style={S.input} type="file" onChange={handleOldFileChange} />
           {oldFile && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {oldFile.name}</div>}
           {oldFileError && (
@@ -178,7 +178,7 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
           )}
         </FW>
 
-        <FW label="NEW Document">
+        <FW label="New Document">
           <input style={S.input} type="file" onChange={handleNewFileChange} />
           {newFile && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {newFile.name}</div>}
           {newFileError && (
@@ -191,10 +191,10 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
 
       {/* Description + Add */}
       <div style={{ marginBottom: "16px" }}>
-        <FW label="Description">
-          <textarea style={S.textarea} rows={2} value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description..." />
+        <FW label="Remarks">
+          <textarea style={S.textarea} rows={2} value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            placeholder="Enter remarks..." />
         </FW>
       </div>
 
@@ -206,9 +206,9 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
           <thead>
             <tr>
               <th style={S.th}>Document Type</th>
-              <th style={S.th}>Old File</th>
+              <th style={S.th}>Existing File</th>
               <th style={S.th}>New File</th>
-              <th style={S.th}>Description</th>
+              <th style={S.th}>Remarks</th>
               <th style={{ ...S.th, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -226,7 +226,17 @@ function UploadDocSection({ onChange, tableData, setTableData }) {
                     ? <a href={r.newFileUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#1a7a3c", fontWeight: "600" }}>{r.newFileName}</a>
                     : "-"}
                 </td>
-                <td style={S.td}>{r.description}</td>
+                <td style={{ ...S.td, maxWidth: "250px" }}>
+  <div
+    style={{
+      maxHeight: "80px",
+      overflowY: "auto",
+      wordBreak: "break-word"
+    }}
+  >
+    {r.remarks}
+  </div>
+</td>
                 <td style={{ ...S.td, textAlign: "center" }}>
                   <button style={S.btnDel} onClick={() => handleDelete(i)}>✕</button>
                 </td>
@@ -244,7 +254,7 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
   const [selectedField, setSelectedField] = useState("");
   const [oldValue,      setOldValue]      = useState("");
   const [newValue,      setNewValue]      = useState("");
-  const [description,   setDescription]   = useState("");
+  const [remarks,   setRemarks]   = useState("");
   const [file,          setFile]          = useState(null);
   const [fileError,     setFileError]     = useState("");     // ← NEW
 
@@ -290,7 +300,7 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
       field:       selectedField,
       oldValue:    oldValue.trim()  || "-",
       newValue:    newValue.trim(),
-      description: description.trim() || "-",
+      remarks: remarks.trim() || "-",
       fileName:    file?.name    || "-",
       fileUrl:     file ? URL.createObjectURL(file) : "",
     };
@@ -302,7 +312,7 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
     setSelectedField(""); 
     setOldValue(""); 
     setNewValue("");
-    setDescription(""); 
+    setRemarks(""); 
     setFile(null);
     setFileError("");
   };
@@ -344,12 +354,12 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
 
           {/* Description + Upload */}
           <div style={S.grid2}>
-            <FW label="Description">
-              <textarea style={S.textarea} rows={2} value={description}
-                onChange={(e) => setDescription(e.target.value)}
+            <FW label="Remarks">
+              <textarea style={S.textarea} rows={2} value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
                 placeholder="Enter reason for this change..." />
             </FW>
-            <FW label="Upload Document">
+            <FW label="Supporting Documents">
               <input style={S.input} type="file" onChange={handleFileChange} />
               {file && <div style={{ fontSize: "12px", marginTop: "4px", color: "#1a7a3c" }}>📄 {file.name}</div>}
               {fileError && (
@@ -378,7 +388,7 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
               <th style={S.th}>Field</th>
               <th style={S.th}>Old Value</th>
               <th style={S.th}>New Value</th>
-              <th style={S.th}>Description</th>
+              <th style={S.th}>Remarks</th>
               <th style={S.th}>Document</th>
               <th style={{ ...S.th, width: "60px" }}>Action</th>
             </tr>
@@ -389,7 +399,17 @@ function ConsultancySection({ onChange, tableData, setTableData }) {
                 <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{r.field}</td>
                 <td style={{ ...S.td, color: "#6b7c93" }}>{r.oldValue}</td>
                 <td style={{ ...S.td, color: "#1a7a3c", fontWeight: "600" }}>{r.newValue}</td>
-                <td style={S.td}>{r.description}</td>
+                <td style={{ ...S.td, maxWidth: "250px" }}>
+  <div
+    style={{
+      maxHeight: "80px",
+      overflowY: "auto",
+      wordBreak: "break-word"
+    }}
+  >
+    {r.description}
+  </div>
+</td>
                 <td style={S.td}>
                   {r.fileUrl
                     ? <a href={r.fileUrl} target="_blank" rel="noopener noreferrer"

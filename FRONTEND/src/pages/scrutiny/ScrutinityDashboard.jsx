@@ -19,7 +19,8 @@ const ScrutinyDashboard = () => {
   verification: "Verification Dashboard",
   ad: "Assistant Director Dashboard",
   dd: "Deputy Director Dashboard",
-  it: "IT Dashboard",
+  l1: "Legal 1 Dashboard",
+  l2: "Legal 2 Dashboard",
 };
 
   const toggleSidebar = () => {

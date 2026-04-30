@@ -356,7 +356,9 @@ useEffect(() => {
 
           <p className="agentpreview-preview-value">
             Last five years project details :{" "}
-            <b>{agent.last_five_years_project_details || "No"}</b>
+           <b>
+  {agent.last_five_years_project_details?.value ? "Yes" : "No"}
+</b>
           </p>
 
           {agent.last_five_years_project_details === "Yes" && (
@@ -392,7 +394,9 @@ useEffect(() => {
 
           <p className="agentpreview-preview-value">
             Any Civil/Criminal Cases :{" "}
-            <b>{agent.any_civil_criminal_cases || "No"}</b>
+            <b>
+ {agent.any_civil_criminal_cases === "true" ? "Yes" : "No"}
+</b>
           </p>
 
           {agent.any_civil_criminal_cases === "Yes" && (

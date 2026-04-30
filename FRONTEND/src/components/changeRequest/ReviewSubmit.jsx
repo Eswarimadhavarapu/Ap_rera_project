@@ -88,8 +88,8 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                         {(rows[0]?.fieldHeaders || []).map((fh) => (
                           <th key={fh.label} style={S.th}>{fh.label}</th>
                         ))}
-                        <th style={S.th}>Description</th>
-                        <th style={S.th}>Document</th>
+                        <th style={S.th}>Remarks</th>
+                        <th style={S.th}>SupportingDocuments</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -116,10 +116,10 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                     <thead>
                       <tr>
                         <th style={{ ...S.th, width: "20%" }}>Field</th>
-                        <th style={{ ...S.th, width: "18%" }}>Old Value</th>
+                        <th style={{ ...S.th, width: "18%" }}>Existing Value</th>
                         <th style={{ ...S.th, width: "18%" }}>New Value</th>
-                        <th style={{ ...S.th, width: "22%" }}>Description</th>
-                        <th style={S.th}>Document</th>
+                        <th style={{ ...S.th, width: "22%" }}>Remarks</th>
+                        <th style={S.th}>SupportingDocuments</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -146,10 +146,10 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                     <thead>
                       <tr>
                         <th style={{ ...S.th, width: "20%" }}>Field</th>
-                        <th style={{ ...S.th, width: "18%" }}>Old Value</th>
+                        <th style={{ ...S.th, width: "18%" }}>Existing  Value</th>
                         <th style={{ ...S.th, width: "18%" }}>New Value</th>
-                        <th style={{ ...S.th, width: "22%" }}>Description</th>
-                        <th style={S.th}>Document</th>
+                        <th style={{ ...S.th, width: "22%" }}>Remarks</th>
+                        <th style={S.th}>SupportingDocuments</th>
                       </tr>
                     </thead>
                     <tbody>

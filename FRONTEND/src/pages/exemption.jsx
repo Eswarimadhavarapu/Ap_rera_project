@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createExemption } from "../api/api";
 
 function ExemptionFileUpload() {
   const [form, setForm] = useState({
@@ -8,6 +10,8 @@ function ExemptionFileUpload() {
     address: "",
     baNumber: "",
   });
+
+  const navigate = useNavigate();
 
   const [files, setFiles] = useState({
     plan: null,
@@ -27,9 +31,9 @@ function ExemptionFileUpload() {
       err.name = "Name should contain only alphabets";
     }
 
-   if (!/^[6-9]\d{9}$/.test(form.mobile)) {
-  err.mobile = "Mobile must start with 6, 7, 8, or 9 and be exactly 10 digits";
-}
+    if (!/^[6-9]\d{9}$/.test(form.mobile)) {
+      err.mobile = "Mobile must start with 6, 7, 8, or 9 and be exactly 10 digits";
+    }
 
     // Email
     if (!/^\S+@\S+\.\S+$/.test(form.email)) {
@@ -41,7 +45,7 @@ function ExemptionFileUpload() {
       err.address = "Address is required";
     }
 
-   
+
     // ✅ File validations (PDF only)
     Object.keys(files).forEach((key) => {
       if (!files[key]) {
@@ -59,31 +63,31 @@ function ExemptionFileUpload() {
     const { name, value } = e.target;
 
     if (name === "name") {
-  if (!/^[A-Za-z ]*$/.test(value)) {
-    setErrors({ ...errors, name: "Name should contain only alphabets" });
-    return;
-  } else {
-    setErrors({ ...errors, name: "" });
-  }
-}if (name === "mobile") {
+      if (!/^[A-Za-z ]*$/.test(value)) {
+        setErrors({ ...errors, name: "Name should contain only alphabets" });
+        return;
+      } else {
+        setErrors({ ...errors, name: "" });
+      }
+    } if (name === "mobile") {
 
-  // allow only digits
-  if (!/^\d*$/.test(value)) return;
+      // allow only digits
+      if (!/^\d*$/.test(value)) return;
 
-  // max 10 digits
-  if (value.length > 10) return;
+      // max 10 digits
+      if (value.length > 10) return;
 
-  // 🚨 FIRST DIGIT MUST BE 6-9
-  if (value.length === 1 && !/[6-9]/.test(value)) {
-    setErrors({ ...errors, mobile: "Mobile must start with 6, 7, 8, or 9" });
-    return; // ❌ block typing
-  }
+      // 🚨 FIRST DIGIT MUST BE 6-9
+      if (value.length === 1 && !/[6-9]/.test(value)) {
+        setErrors({ ...errors, mobile: "Mobile must start with 6, 7, 8, or 9" });
+        return; // ❌ block typing
+      }
 
-  // ✅ valid input → clear error
-  if (/^[6-9]\d*$/.test(value)) {
-    setErrors({ ...errors, mobile: "" });
-  }
-}
+      // ✅ valid input → clear error
+      if (/^[6-9]\d*$/.test(value)) {
+        setErrors({ ...errors, mobile: "" });
+      }
+    }
 
     setForm({ ...form, [name]: value });
     setErrors({ ...errors, [name]: "" });
@@ -104,35 +108,28 @@ function ExemptionFileUpload() {
     setFiles({ ...files, [field]: file });
     setErrors({ ...errors, [field]: "" });
   };
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    // 🔹 Match backend field names
-    formData.append("name", form.name);
-    formData.append("mobile_no", form.mobile);
-    formData.append("email", form.email);
-    formData.append("address", form.address);
-    formData.append("ba_number", form.baNumber);
+      // 🔹 Match backend field names
+      formData.append("name", form.name);
+      formData.append("mobile_no", form.mobile);
+      formData.append("email", form.email);
+      formData.append("address", form.address);
+      formData.append("ba_number", form.baNumber);
 
-    // 🔹 FILE KEYS MUST MATCH BACKEND
-    formData.append("plan_proceedings", files.plan);
-    formData.append("request_letter", files.requestLetter);
-    formData.append("land_document", files.landDocument);
-    formData.append("advocate_document", files.advocateDoc);
+      // 🔹 FILE KEYS MUST MATCH BACKEND
+      formData.append("plan_proceedings", files.plan);
+      formData.append("request_letter", files.requestLetter);
+      formData.append("land_document", files.landDocument);
+      formData.append("advocate_document", files.advocateDoc);
 
-    const response = await fetch("https://7zgjxth4-5056.inc1.devtunnels.ms/project-exemption/create", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
+      const result = await createExemption(formData);
       alert("Data inserted successfully ✅");
 
       // Reset form
@@ -153,143 +150,140 @@ const handleSubmit = async (e) => {
 
       setErrors({});
       setResetKey(prev => prev + 1);
+      navigate("/scrutiny/exemption");
 
-    } else {
-      alert("Error: " + result.error);
+    } catch (error) {
+      console.error(error);
+      alert("API Error ❌: " + (error.message || "Unknown error"));
     }
-
-  } catch (error) {
-    console.error(error);
-    alert("API Error ❌");
-  }
-};
+  };
   return (
-    <div className="container">
+    <div className="ex-container">
       <h2>Registration Form</h2>
 
       <form onSubmit={handleSubmit}>
-        
+
         {/* Existing Fields */}
- <div className="form-row">
-  <label>Name</label>
+        <div className="form-row">
+          <label>Name</label>
 
-  <div className="input-group">
-    <input
-      type="text"
-      name="name"
-      placeholder="Enter Name"
-      value={form.name}
-      onChange={handleChange}
-    />
-    <span className="error">{errors.name}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter Name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            <span className="error">{errors.name}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>Mobile</label>
+        <div className="form-row">
+          <label>Mobile</label>
 
-  <div className="input-group">
-    <input
-      type="text"
-      name="mobile"
-      value={form.mobile}
-      placeholder="Enter Mobile number"
-      onChange={handleChange}
-    />
-    <span className="error">{errors.mobile}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              type="text"
+              name="mobile"
+              value={form.mobile}
+              placeholder="Enter Mobile number"
+              onChange={handleChange}
+            />
+            <span className="error">{errors.mobile}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>EMail</label>
+        <div className="form-row">
+          <label>EMail</label>
 
-  <div className="input-group">
-    <input
-      type="text"
-      name="email"
-      value={form.email}
-      placeholder="Enter Email"
-      onChange={handleChange}
-    />
-    <span className="error">{errors.email}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              type="text"
+              name="email"
+              value={form.email}
+              placeholder="Enter Email"
+              onChange={handleChange}
+            />
+            <span className="error">{errors.email}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>Address</label>
+        <div className="form-row">
+          <label>Address</label>
 
-  <div className="input-group">
-    <input
-      type="text"
-      name="address"
-      value={form.address}
-      placeholder="Enter Address"
-      onChange={handleChange}
-    />
-    <span className="error">{errors.address}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              type="text"
+              name="address"
+              value={form.address}
+              placeholder="Enter Address"
+              onChange={handleChange}
+            />
+            <span className="error">{errors.address}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>BA Number</label>
+        <div className="form-row">
+          <label>BA Number</label>
 
-  <div className="input-group">
-    <input
-      type="text"
-      name="baNumber"
-      value={form.baNumber}
-      placeholder="Enter BA-Number"
-      onChange={handleChange}
-    />
-    <span className="error">{errors.baNumber}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              type="text"
+              name="baNumber"
+              value={form.baNumber}
+              placeholder="Enter BA-Number"
+              onChange={handleChange}
+            />
+            <span className="error">{errors.baNumber}</span>
+          </div>
+        </div>
 
         {/* ✅ File Uploads */}
 
         <div className="form-row">
-  <label>Plan & Proceedings</label>
+          <label>Plan & Proceedings</label>
 
-  <div className="input-group">
-    <input
-      key={resetKey}
-      type="file"
-      onChange={(e) => handleFileChange(e, "plan")}
-    />
-    <span className="error">{errors.plan}</span>
-  </div>
-</div>
+          <div className="input-group">
+            <input
+              key={resetKey}
+              type="file"
+              onChange={(e) => handleFileChange(e, "plan")}
+            />
+            <span className="error">{errors.plan}</span>
+          </div>
+        </div>
 
         <div className="form-row">
-  <label>Request Letter</label>
-  <div className="input-group">
-    <input key={resetKey} type="file"
-      onChange={(e) => handleFileChange(e, "requestLetter")} />
-    <span className="error">{errors.requestLetter}</span>
-  </div>
-</div>
+          <label>Request Letter</label>
+          <div className="input-group">
+            <input key={resetKey} type="file"
+              onChange={(e) => handleFileChange(e, "requestLetter")} />
+            <span className="error">{errors.requestLetter}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>Land Document</label>
-  <div className="input-group">
-    <input key={resetKey} type="file"
-      onChange={(e) => handleFileChange(e, "landDocument")} />
-    <span className="error">{errors.landDocument}</span>
-  </div>
-</div>
+        <div className="form-row">
+          <label>Land Document</label>
+          <div className="input-group">
+            <input key={resetKey} type="file"
+              onChange={(e) => handleFileChange(e, "landDocument")} />
+            <span className="error">{errors.landDocument}</span>
+          </div>
+        </div>
 
-<div className="form-row">
-  <label>Advocate (₹100 Stamp Paper)</label>
-  <div className="input-group">
-    <input key={resetKey} type="file"
-      onChange={(e) => handleFileChange(e, "advocateDoc")} />
-    <span className="error">{errors.advocateDoc}</span>
-  </div>
-</div>
+        <div className="form-row">
+          <label>Advocate (₹100 Stamp Paper)</label>
+          <div className="input-group">
+            <input key={resetKey} type="file"
+              onChange={(e) => handleFileChange(e, "advocateDoc")} />
+            <span className="error">{errors.advocateDoc}</span>
+          </div>
+        </div>
 
-       <div className="button-group">
-  <button type="submit">Submit</button>
-</div>
+        <div className="button-group">
+          <button type="submit">Submit</button>
+        </div>
       </form>
 
       <style>{`
@@ -297,7 +291,7 @@ const handleSubmit = async (e) => {
     background: linear-gradient(135deg, #74ebd5, #9face6);
     font-family: 'Segoe UI', sans-serif;
   }
-.container {
+.ex-container {
   width: 700px;
   max-width: 90%;
   margin: 60px auto;
@@ -308,7 +302,7 @@ const handleSubmit = async (e) => {
   transition: 0.3s;
 }
 
-  .container:hover {
+  .ex-container:hover {
     transform: translateY(-5px);
   }
 

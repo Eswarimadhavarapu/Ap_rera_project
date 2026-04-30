@@ -1602,3 +1602,42 @@ AP RERA Authority
     server.login(smtp_user, smtp_password)
     server.sendmail(from_email, email, msg.as_string())
     server.quit()
+    
+def send_email_with_attachment(to_email, subject, body, attachments=None):
+    try:
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(os.getenv("SMTP_PORT"))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_password = os.getenv("SMTP_PASSWORD")
+        from_email = os.getenv("FROM_EMAIL")
+
+        msg = MIMEMultipart()
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(body, "plain"))
+
+        # ✅ Attach files
+        if attachments:
+            for file_path in attachments:
+                with open(file_path, "rb") as f:
+                    part = MIMEApplication(f.read(), Name=os.path.basename(file_path))
+                    part["Content-Disposition"] = f'attachment; filename="{os.path.basename(file_path)}"'
+                    msg.attach(part)
+
+        print("Sending email with attachment...")
+
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+
+        print("✅ Email with attachment sent")
+
+        return True
+
+    except Exception as e:
+        print("❌ Email attachment error:", str(e))
+        return False

@@ -75,7 +75,7 @@ function ExternalDevelopmentSection({
   const [workType,        setWorkType]        = useState("");
   const [previousPercent, setPreviousPercent] = useState("");
   const [changePercent,   setChangePercent]   = useState("");
-  const [description,     setDescription]     = useState("");
+  const [remarks,     setRemarks]     = useState("");
   const [docFile,         setDocFile]         = useState(null);
   const [fileInputKey,    setFileInputKey]    = useState(0); // ← used to reset file input
 
@@ -163,8 +163,8 @@ const newRow = {
   workType,
   previousPercent: previousPercent || "-",
   changePercent:   changePercent   || "-",
-  description:     description     || "-",
-  documentName:    docFile ? docFile.name : "-",
+  remarks:     remarks     || "-",
+  supportingdocumentsName:    docFile ? docFile.name : "-",
   _docFile:        docFile || null,          // ← save actual File object
 };
 
@@ -172,7 +172,7 @@ const newRow = {
     setTableData(updated);
     notifyParent(updated);
 
-    setWorkType(""); setPreviousPercent(""); setChangePercent(""); setDescription(""); setDocFile(null);
+    setWorkType(""); setPreviousPercent(""); setChangePercent(""); setRemarks(""); setDocFile(null);
     setFileInputKey((k) => k + 1); // ← reset file input field
   };
 
@@ -240,17 +240,17 @@ const newRow = {
             placeholder="Enter change %"
           />
         </FW>
-        <FW label="Description">
+        <FW label="Remarks">
           <textarea
             style={{ ...S.textarea, minHeight: "42px", overflow: "hidden" }}
             rows={1}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
             onInput={(e) => {
               e.target.style.height = "auto";
               e.target.style.height = e.target.scrollHeight + "px";
             }}
-            placeholder="Enter description…"
+            placeholder="Enter remarks…"
           />
         </FW>
       </div>
@@ -258,7 +258,7 @@ const newRow = {
       {/* ADD BUTTON */}
     {/* Row 3: Document Upload */}
 <div style={{ marginBottom: "16px" }}>
-  <FW label="Upload Document">
+  <FW label="Supporting Documents (optional)">  
    <input
   key={fileInputKey}
   type="file"
@@ -311,8 +311,8 @@ const newRow = {
               <th style={S.th}>Work Type</th>
               <th style={S.th}>Previous %</th>
               <th style={S.th}>Change %</th>
-              <th style={{ ...S.th, minWidth: "200px" }}>Description</th>
-              <th style={S.th}>Document</th>
+              <th style={{ ...S.th, minWidth: "200px" }}>Remarks</th>
+              <th style={S.th}>SupportingDocuments</th>
               <th style={{ ...S.th, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -322,9 +322,9 @@ const newRow = {
                 <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{row.workType}</td>
                 <td style={{ ...S.td, color: "#6b7c93" }}>{row.previousPercent}</td>
                 <td style={{ ...S.td, color: "#1a7a3c", fontWeight: "600" }}>{row.changePercent}</td>
-                <td style={{ ...S.td, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "260px" }}>{row.description}</td>
-                <td style={{ ...S.td, color: row.documentName !== "-" ? "#1a7a3c" : "#999" }}>
-                  {row.documentName !== "-" ? `📎 ${row.documentName}` : "-"}
+                <td style={{ ...S.td, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "260px" }}>{row.remarks}</td>
+                <td style={{ ...S.td, color: row.supportingdocumentsName !== "-" ? "#1a7a3c" : "#999" }}>
+                  {row.supportingdocumentsName !== "-" ? `📎 ${row.supportingdocumentsName}` : "-"}
                 </td>
                 <td style={{ ...S.td, textAlign: "center" }}>
                   <button style={S.btnDel} onClick={() => handleDelete(i)}>✕</button>
