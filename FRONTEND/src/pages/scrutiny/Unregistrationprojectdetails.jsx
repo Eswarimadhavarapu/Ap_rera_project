@@ -178,13 +178,13 @@ const S2Modal = ({ data, onClose, onSuccess, user }) => {
     mailFd.append("notice1", noticePdfBlob, `notice_${data.id}.pdf`);
   }
 
-  await fetch(
-    `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
-    {
-      method: "POST",
-      body: mailFd,
-    }
-  );
+  // await fetch(
+  //   `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
+  //   {
+  //     method: "POST",
+  //     body: mailFd,
+  //   }
+  // );
 }
       if (!res.ok) throw new Error("Server error");
       onSuccess("Notice generated and sent successfully.");
@@ -546,13 +546,13 @@ const S3Modal = ({ data, onClose, onSuccess }) => {
 
         <div className="unreg-modal-body">
           {/* 🔥 FIXED LINK */}
-          <a
-            href={`https://7zgjxth4-5056.inc1.devtunnels.ms/api/project-unregistered/view-file/${data.first_notice_doc_path}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            📄 View Notice
-          </a>
+         <a
+  href={`${BASE_URL}/${data.first_notice_doc_path?.replace("backend/", "")}`}
+  target="_blank"
+  rel="noreferrer"
+>
+  📄 View Notice
+</a>
 
           <textarea
             rows={4}
@@ -873,7 +873,7 @@ const S6Modal = ({ data, onClose, onSuccess }) => {
 
         <div className="unreg-modal-body">
           <a
-            href={`${BASE_URL}/api/project-unregistered/view-file/${data.rera_personal_notice_doc_path}`}
+           href={`${BASE_URL}/${docPath.replace("backend/", "")}`}
             target="_blank"
             rel="noreferrer"
           >
@@ -1437,7 +1437,9 @@ const hasExemption = d.exemption_id !== null;
     <div className="unregDetails-doc-grid">
       {documents.map((doc) =>
         doc.path ? (
-          <a key={doc.label} href={doc.path} className="unregDetails-doc-pill available"
+         <a
+  key={doc.label}
+  href={`${BASE_URL}/${doc.path.replace("backend/", "")}`} className="unregDetails-doc-pill available"
             target="_blank" rel="noreferrer">
             📄 {doc.label}
           </a>
@@ -1533,11 +1535,11 @@ const hasExemption = d.exemption_id !== null;
     📨 Inform the Authority →
   </button>
 )}
-      {approvalStatus === "s3" && (
-        <button onClick={() => setModal("s3")}>
-          📩 Send Notice →
-        </button>
-      )}
+      {approvalStatus === "s3" && role !== "seniarAdit" && (
+  <button onClick={() => setModal("s3")}>
+    📩 Send Notice →
+  </button>
+)}
 
    {approvalStatus === "s4" && (
   <button
@@ -1582,7 +1584,7 @@ const hasExemption = d.exemption_id !== null;
     onClose={() => setModal(null)} 
     onSuccess={showToast} 
   />
-  )}
+)}
       {modal === "s2" && (
   <S2Modal 
     data={d} 

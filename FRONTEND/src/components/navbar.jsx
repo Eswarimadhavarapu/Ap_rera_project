@@ -20,7 +20,8 @@ const Navbar = ({ setHideNotice }) => {
   if (
     isScrutinyRoute ||
     location.pathname.startsWith("/admin") ||
-    location.pathname === "/admin-login"
+    location.pathname === "/admin-login" ||
+    location.pathname === "/apreatapplication"
   ) {
     return null;
   }
@@ -225,9 +226,9 @@ const Navbar = ({ setHideNotice }) => {
             </ul>
           </li>
 
-          <li onClick={() => navigate("/apreat")}>APREAT</li>
-
-
+          <li onClick={() =>
+    window.open("/apreatapplication", "_blank")
+  }>APREAT</li>
 {/* ABOUT US DROPDOWN */}
           <li className="dropdown">ABOUT US <span className="arrow"></span>
 
@@ -263,7 +264,11 @@ const Navbar = ({ setHideNotice }) => {
               </li>
             </ul>
           </li>
-
+<li onClick={() => navigate("/dbbase")}>
+  <span className="dbbase-menu">
+    DB BASE
+  </span>
+</li>
           <li className="dropdown dropdown-right">LOGIN <span className="arrow"></span>
             <ul className="dropdown-menu">
               <li onClick={() => navigate("/admin-login")}>

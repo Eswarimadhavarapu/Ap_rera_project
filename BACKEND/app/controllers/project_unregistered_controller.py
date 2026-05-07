@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import func
 from datetime import date
 
-UPLOAD_FOLDER = "backend/uploads/ReraUnRegister_Documents"
+UPLOAD_FOLDER = "uploads/ReraUnRegister_Documents"
 from flask import Blueprint, request, jsonify
 from app.models.database import db
 from app.models.project_unregistered_model import ProjectUnregisteredDetails
@@ -253,8 +253,7 @@ def upload_excel():
 # Get single record by ID
 # ----------------------------------------------------------
 
-
-UPLOAD_FOLDER = "backend/uploads/ReraUnRegister_Documents"
+UPLOAD_FOLDER = "uploads/ReraUnRegister_Documents"
 
 
 @project_unregistered_bp.route(
@@ -267,41 +266,79 @@ def update_status(record_id):
         if not record:
             return jsonify({"success": False, "message": "Record not found"}), 404
 
-        # 🔥 Use form-data instead of JSON
+        # ✅ FORM DATA
         body = request.form
 
+        # ✅ FILES
         first_notice_file = request.files.get("first_notice")
         second_notice_file = request.files.get("second_notice")
         rera_notice_file = request.files.get("rera_notice")
         sh_file = request.files.get("sh_document")
 
+        # ✅ CREATE FOLDER
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        # 🔥 SAVE FILES
+        # =====================================================
+        # ✅ SAVE FIRST NOTICE
+        # =====================================================
         if first_notice_file:
             filename = secure_filename(first_notice_file.filename)
-            path = os.path.join(UPLOAD_FOLDER, filename)
-            first_notice_file.save(path)
-            record.first_notice_doc_path = path
+
+            save_path = os.path.join(UPLOAD_FOLDER, filename)
+
+            first_notice_file.save(save_path)
+
+            # ✅ SAVE URL PATH
+            record.first_notice_doc_path = (
+                f"uploads/ReraUnRegister_Documents/{filename}"
+            )
+
+        # =====================================================
+        # ✅ SAVE SECOND NOTICE
+        # =====================================================
         if second_notice_file:
             filename = secure_filename(second_notice_file.filename)
-            path = os.path.join(UPLOAD_FOLDER, filename)
-            second_notice_file.save(path)
-            record.second_notice_doc_path = path
 
+            save_path = os.path.join(UPLOAD_FOLDER, filename)
+
+            second_notice_file.save(save_path)
+
+            # ✅ SAVE URL PATH
+            record.second_notice_doc_path = (
+                f"uploads/ReraUnRegister_Documents/{filename}"
+            )
+
+        # =====================================================
+        # ✅ SAVE RERA NOTICE
+        # =====================================================
         if rera_notice_file:
             filename = secure_filename(rera_notice_file.filename)
-            path = os.path.join(UPLOAD_FOLDER, filename)
-            rera_notice_file.save(path)
-            record.rera_personal_notice_doc_path = path
 
+            save_path = os.path.join(UPLOAD_FOLDER, filename)
+
+            rera_notice_file.save(save_path)
+
+            # ✅ SAVE URL PATH
+            record.rera_personal_notice_doc_path = (
+                f"uploads/ReraUnRegister_Documents/{filename}"
+            )
+
+        # =====================================================
+        # ✅ SAVE SH DOCUMENT
+        # =====================================================
         if sh_file:
             filename = secure_filename(sh_file.filename)
-            path = os.path.join(UPLOAD_FOLDER, filename)
-            sh_file.save(path)
-            record.sh_document_path = path
 
-        # 🔥 NORMAL FIELDS
+            save_path = os.path.join(UPLOAD_FOLDER, filename)
+
+            sh_file.save(save_path)
+
+            # ✅ SAVE URL PATH
+            record.sh_document_path = f"uploads/ReraUnRegister_Documents/{filename}"
+
+        # =====================================================
+        # ✅ NORMAL PATCH FIELDS
+        # =====================================================
         patch_fields = [
             "approval_status",
             "s1_remarks",
@@ -326,6 +363,7 @@ def update_status(record_id):
             if field in body:
                 setattr(record, field, body.get(field))
 
+        # ✅ COMMIT
         db.session.commit()
 
         return (
@@ -341,6 +379,9 @@ def update_status(record_id):
 
     except Exception as e:
         db.session.rollback()
+
+        print("ERROR:", str(e))
+
         return jsonify({"success": False, "message": str(e)}), 500
 
 
@@ -475,10 +516,15 @@ def send_notice_mail(record_id):
             print("✅ notice1 received")
 
             filename = secure_filename(notice1.filename)
+
             file_path = os.path.join(UPLOAD_FOLDER, filename)
+
             notice1.save(file_path)
+
             record.first_notice_sent_date = date.today()
-            record.first_notice_doc_path = file_path
+            record.first_notice_doc_path = (
+                f"uploads/ReraUnRegister_Documents/{filename}"
+            )
             record.s2_remarks = remarks
 
             # 🔥 STATUS UPDATE (S3 → S4)
@@ -487,12 +533,17 @@ def send_notice_mail(record_id):
         # ================= SECOND NOTICE =================
         elif notice2:
             print("✅ notice2 received")
-
             filename = secure_filename(notice2.filename)
+
             file_path = os.path.join(UPLOAD_FOLDER, filename)
+
             notice2.save(file_path)
+
             record.secound_notice_sent_date = date.today()
-            record.rera_personal_notice_doc_path = file_path
+
+            record.rera_personal_notice_doc_path = (
+                f"uploads/ReraUnRegister_Documents/{filename}"
+            )
             record.s5_remarks = remarks
 
             # 🔥 STATUS UPDATE (S6 → S7)

@@ -87,7 +87,7 @@ const RemarkRow = ({ level, remark, authorityId, checkedDate, decision }) => {
           <span className="remark-date">
             {new Date(checkedDate).toLocaleString("en-IN", {
               day: "2-digit", month: "short", year: "numeric",
-              hour: "2-digit", minute: "2-digit",
+              
             })}
           </span>
         )}
@@ -366,7 +366,7 @@ const UserDetails = () => {
             <InfoRow label="Submitted On">
               {new Date(user.created_at).toLocaleString("en-IN", {
                 day: "2-digit", month: "short", year: "numeric",
-                hour: "2-digit", minute: "2-digit",
+                
               })}
             </InfoRow>
           )}

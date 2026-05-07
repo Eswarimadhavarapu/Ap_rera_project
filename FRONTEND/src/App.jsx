@@ -981,6 +981,7 @@ import R19_1 from "./pages/R19_1";
 import FPMSLayout from "./pages/scrutiny/FPMSLayout.jsx";
 import AdminExemptionPage from "./pages/scrutiny/admin_exemption.jsx";
 import UserDetails from "./pages/exemptionUserDetails.jsx";
+import ApreatApplication from "./pages/ApreatApplication.jsx";
 
 
 function App() {
@@ -1286,7 +1287,8 @@ function App() {
    <Route path="/exemption" element={<ExemptionFileUpload />} />
    <Route path="/scrutiny/L1/L1-dashboard" element={<ScrutinyDashboard />} />
  <Route path="/scrutiny/L2/L2-dashboard" element={<ScrutinyDashboard />} />
-
+ <Route path="/apreatapplication" element={<ApreatApplication />} />
+ 
             <Route path="/mis-reports" element={<MisReports />} />
              <Route path="/reports/R1.1" element={<R1_1_Report />} />
              <Route path="/reports/R1.2" element={<AgentStatusReport />} />
