@@ -22,7 +22,7 @@
 
 .admin-project-details__status-badge {
   background: #dbeafe;
-  color: #1d4ed8;
+  color: #5A2D0C;
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: bold;
@@ -31,7 +31,7 @@
 /* Title */
 .admin-project-details__title {
   margin: 15px 0;
-  color: #1e3a8a;
+  color: #5A2D0C;
 }
 
 /* Card */
@@ -44,7 +44,7 @@
 }
 
 .admin-project-details__card-header {
-  background: linear-gradient(to right, #1e3a8a, #2563eb);
+  background: linear-gradient(to right, #5A2D0C, #5A2D0C);
   color: white;
   padding: 12px 16px;
   font-weight: bold;
@@ -232,7 +232,7 @@
 
 /* ✅ CONFIRM APPROVE BUTTON */
 .admin-project-details__confirm-approve-btn {
-  background: #1d4ed8; /* blue button like your screenshot */
+  background: #5A2D0C; /* blue button like your screenshot */
   color: #fff;
   border: none;
   padding: 8px 16px;

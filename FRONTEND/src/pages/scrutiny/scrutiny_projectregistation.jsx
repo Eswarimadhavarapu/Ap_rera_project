@@ -70,7 +70,22 @@ const normalizeScrutinyRow = (record) => {
 
 export default function ScrutinyProjectRegistration() {
   const { admin } = useAdmin();
-const dept = admin?.department?.toLowerCase();
+const normalizeDept = (value) => {
+  const deptName = String(value || "").toLowerCase();
+  if (deptName.includes("assistant director")) return "ad";
+  if (deptName.includes("deputy director")) return "dd";
+  if (deptName.includes("director")) return "director";
+  if (deptName.includes("verification")) return "verification";
+  if (deptName.includes("planning")) return "planning";
+  if (deptName.includes("legal")) return "legal";
+  if (deptName.includes("audit")) return "audit";
+  if (deptName.includes("engineer")) return "engineer";
+  if (deptName.includes("l1")) return "l1";
+  if (deptName.includes("l2")) return "l2";
+  return deptName;
+};
+
+const dept = normalizeDept(admin?.department);
 
 //pavan
 
@@ -103,6 +118,11 @@ const dept = admin?.department?.toLowerCase();
   const refresh = async () => {
   setLoading(true);
   try {
+    if (!dept) {
+      setRows([]);
+      return;
+    }
+
     const base = await fetch(
       `${BASE_URL}/api/scrutiny/project-registrations?dept=${dept}`
 
@@ -127,7 +147,7 @@ const data = (base || []).map((row) => {
     }
   };
 
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => { refresh(); }, [dept]);
   useEffect(() => { setPage(1); }, [search, pageSize]);
 
   // const filtered = rows.filter((row) =>

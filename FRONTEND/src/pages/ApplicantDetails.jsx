@@ -198,6 +198,7 @@ useEffect(() => {
       if (!res.success) return;
 
       const { agent_details, projects, litigations, other_state_rera } = res.data;
+      
 
       /* ================= BASIC FORM ================= */
       setForm({
@@ -237,18 +238,40 @@ useEffect(() => {
 
 
       /* ================= PROJECTS ================= */
-      setShowProjects(
-        agent_details.last_five_years_project_details === "Yes"
-      );
-      setProjects(
-        projects.map((p) => ({
-          id: p.id,
-          name: p.project_name,
-        }))
-      );
+ /* ================= PROJECTS ================= */
+
+// create project list
+const projectList = projects.map((p) => ({
+  id: p.id,
+  name: p.project_name,
+}));
+
+// set table data
+setProjects(projectList);
+
+// if projects exist => Yes
+// if no projects => No
+setShowProjects(projectList.length > 0);
 
       /* ================= LITIGATIONS ================= */
-      setLitigationStatus(agent_details.any_civil_criminal_cases);
+ const litigationList = litigations.map((l) => ({
+  id: l.id,
+  caseNo: l.case_no,
+  namePlace: l.tribunal_place,
+  petitioner: l.petitioner_name,
+  respondent: l.respondent_name,
+  facts: l.case_facts,
+  presentStatus: l.present_status,
+  interimOrder: l.interim_order,
+  finalOrder: l.final_order,
+  interimCert: l.interim_order_certificate,
+  disposedCert: l.disposed_certificate,
+}));
+
+setLitigations(litigationList);
+
+// if rows exist => Yes else No
+setLitigationStatus(litigationList.length > 0 ? "Yes" : "No");
       setLitigations(
         litigations.map((l) => ({
           id: l.id,
@@ -272,7 +295,18 @@ if (litigations && litigations.length > 0) {
 
 
       /* ================= OTHER STATE RERA ================= */
-      setOtherStateReg(agent_details.registration_other_states === "Yes");
+   const otherReraRows = other_state_rera.map((r) => ({
+  id: r.id,
+  regNo: r.registration_number,
+  stateId: r.state_id,
+  stateName: r.state_name,
+  districtName: r.district,
+}));
+
+setOtherReraList(otherReraRows);
+
+// if rows exist => Yes else No
+setOtherStateReg(otherReraRows.length > 0);
       setOtherReraList(
         other_state_rera.map((r) => ({
           id: r.id,
@@ -551,6 +585,7 @@ const handleDeleteLitigation = (id) => {
 
 // Add Other State RERA
 const handleAddOtherRera = () => {
+  
   if (
     !otherReraForm.regNo ||
     !otherReraForm.stateId ||
@@ -559,6 +594,16 @@ const handleAddOtherRera = () => {
     alert("Please fill all fields");
     return;
   }
+
+// Registration Number validation (9 to 13 characters)
+if (
+  !/^[A-Za-z0-9\/-]{9,13}$/.test(otherReraForm.regNo.trim())
+) {
+  alert(
+    "Registration Number must be 9 to 13 characters and contain only letters, numbers, / or -"
+  );
+  return;
+}
 
   const newRow = {
     id: Date.now(),
@@ -612,16 +657,55 @@ const handleDeleteOtherRera = (id) => {
   const handleSaveContinue = async () => {
 
   if (!form.agentName) return alert("Please Enter Agent Name");
+   if (!form.agentName.trim())
+    return alert("Please Enter Agent Name");
+  // Agent Name : only letters and spaces
+  if (!/^[A-Za-z ]+$/.test(form.agentName.trim()))
+    return alert("Agent Name should contain only letters");
+
+
   if (!form.photograph && !uploadedFiles.photograph)
   return alert("Please Upload Photograph");
-  if (!form.fatherName) return alert("Please Enter Father Name");
-  if (!form.occupation) return alert("Please Select Occupation");
+if (!form.fatherName.trim())
+  return alert("Please Enter Father Name");
+
+// Father's Name validation
+if (!/^[A-Za-z ]{3,50}$/.test(form.fatherName.trim())) {
+  return alert(
+    "Father Name must be 3 to 50 letters and contain only alphabets"
+  );
+}  if (!form.occupation) return alert("Please Select Occupation");
   if (!form.email) return alert("Please Enter Email");
+    // Email Validation
+  if (
+    !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(form.email)
+  )
+    return alert("Please Enter Valid Email Id");
+
+
   if (form.aadhaar.length !== 12) return alert("Aadhaar Number must be 12 digits");
   if (!form.panProof && !uploadedFiles.panProof)
   return alert("Please Upload PAN Card");
   if (form.pan.length !== 10) return alert("PAN Card must be 10 digits");
   if (!form.mobile) return alert("Please Enter Mobile Number");
+
+    // Landline Validation (optional field)
+  if (
+    form.landline &&
+    !/^[0-9-]{8,15}$/.test(form.landline)
+  )
+    return alert("Please Enter Valid Land Line Number");
+
+
+  // License Number Validation (optional field)
+if (
+  form.licenseNumber &&
+  !/^[A-Za-z0-9/-]{9,13}$/.test(form.licenseNumber.trim())
+) {
+  return alert(
+    "License Number must be 9 to 13 characters and contain only letters, numbers, / or -"
+  );
+}
   if (!form.address1) return alert("Please Enter Address Line 1");
   if (!form.state) return alert("Please Select State");
   if (!form.district) return alert("Please Select District");
@@ -1159,22 +1243,20 @@ else {
       <span>Last five years project details <span style={{ color: "red" }}>*</span></span>
 
       <label>
-        <input
-          type="radio"
-          name="projectsLastFiveYears"
-          checked={showProjects === true}
-          onChange={() => setShowProjects(true)}
-        />
+       <input
+  type="radio"
+  checked={showProjects === true}
+  onChange={() => setShowProjects(true)}
+/>
         Yes
       </label>
 
       <label>
-        <input
-          type="radio"
-          name="projectsLastFiveYears"
-          checked={showProjects === false}
-          onChange={() => setShowProjects(false)}
-        />
+      <input
+  type="radio"
+  checked={showProjects === false}
+  onChange={() => setShowProjects(false)}
+/>
         No
       </label>
     </div>

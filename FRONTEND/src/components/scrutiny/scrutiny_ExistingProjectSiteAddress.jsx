@@ -103,40 +103,40 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
   /* ================= RENDER ================= */
 
   return (
-    <div className="form-section">
+    <div className="form-section-scrutiny">
 
-      <h3 className="subheading">Project Site Address</h3>
+      <h3 className="subheading-scrutiny">Project Site Address</h3>
 
       {/* ===== ROW 1 ===== */}
-      <div className="row innerdivrow">
+      <div className="row-scrutiny innerdivrow-scrutiny">
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Door No</span>
-            <span className="display-field">{safe(mappedData.projectAddress1)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Door No</span>
+            <span className="display-field-scrutiny">{safe(mappedData.projectAddress1)}</span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Area</span>
-            <span className="display-field">{safe(mappedData.projectAddress2)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Area</span>
+            <span className="display-field-scrutiny">{safe(mappedData.projectAddress2)}</span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">District</span>
-            <span className="display-field">
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">District</span>
+            <span className="display-field-scrutiny">
               {getName(districts, mappedData.projectDistrict)}
             </span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Mandal</span>
-            <span className="display-field">
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Mandal</span>
+            <span className="display-field-scrutiny">
               {getName(mandals, mappedData.projectMandal)}
             </span>
           </div>
@@ -145,47 +145,47 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
       </div>
 
       {/* ===== ROW 2 ===== */}
-      <div className="row innerdivrow">
+      <div className="row-scrutiny innerdivrow-scrutiny">
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Village</span>
-            <span className="display-field">
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Village</span>
+            <span className="display-field-scrutiny">
               {getName(villages, mappedData.projectVillage)}
             </span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Pincode</span>
-            <span className="display-field">{safe(mappedData.projectPincode)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Pincode</span>
+            <span className="display-field-scrutiny">{safe(mappedData.projectPincode)}</span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Latitude</span>
-            <span className="display-field">{safe(mappedData.projectLatitude)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Latitude</span>
+            <span className="display-field-scrutiny">{safe(mappedData.projectLatitude)}</span>
           </div>
         </div>
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Longitude</span>
-            <span className="display-field">{safe(mappedData.projectLongitude)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Longitude</span>
+            <span className="display-field-scrutiny">{safe(mappedData.projectLongitude)}</span>
           </div>
         </div>
 
       </div>
 
       {/* ===== ROW 3 ===== */}
-      <div className="row innerdivrow">
+      <div className="row-scrutiny innerdivrow-scrutiny">
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Authority</span>
-            <span className="display-field">
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Authority</span>
+            <span className="display-field-scrutiny">
               {mappedData.planApprovingAuthority === "4" && "Vice Chairman, UDA"}
               {mappedData.planApprovingAuthority === "5" && "APCRDA"}
               {mappedData.planApprovingAuthority === "6" && "ULB"}
@@ -196,12 +196,12 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
         </div>
 
         {!isRestrictedDept && (
-  <div className="col-sm-3">
-    <div className="display-group">
-      <span className="display-label">Address Proof</span>
+  <div className="col-sm-3-scrutiny">
+    <div className="display-group-scrutiny">
+      <span className="display-label-scrutiny">Address Proof</span>
       {getFileUrl(mappedData.addressProofPath) ? (
         <a
-          className="display-field"
+          className="display-field-scrutiny"
           href={getFileUrl(mappedData.addressProofPath)}
           target="_blank"
           rel="noreferrer"
@@ -209,16 +209,16 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
           {getFileName(mappedData.addressProofPath)}
         </a>
       ) : (
-        <span className="display-field">NA</span>
+        <span className="display-field-scrutiny">NA</span>
       )}
     </div>
   </div>
 )}
 
-        <div className="col-sm-3">
-          <div className="display-group">
-            <span className="display-label">Survey No</span>
-            <span className="display-field">{safe(mappedData.surveyNo)}</span>
+        <div className="col-sm-3-scrutiny">
+          <div className="display-group-scrutiny">
+            <span className="display-label-scrutiny">Survey No</span>
+            <span className="display-field-scrutiny">{safe(mappedData.surveyNo)}</span>
           </div>
         </div>
 

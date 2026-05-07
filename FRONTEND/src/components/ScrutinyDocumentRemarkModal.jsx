@@ -134,7 +134,7 @@ export default function ScrutinyDocumentRemarkModal({
   const viewerSrc = useMemo(
     () =>
       documentItem?.url
-        ? getViewerSrc(documentItem.url, documentItem.fileName)
+        ? getViewerSrc(documentItem?.url, documentItem.fileName)
         : "",
     [documentItem]
   );
@@ -186,9 +186,9 @@ export default function ScrutinyDocumentRemarkModal({
   documentItem?.title ||   // ✅ THIS IS IMPORTANT
   row.document_name ||
   documentName,
-      documentUrl: row.document_path || documentItem.url || "",
+      documentUrl: row.document_path || documentItem?.url || "",
     }),
-    [activeAuthorityLabel, documentItem.url, documentName]
+    [activeAuthorityLabel, documentItem?.url, documentName]
   );
 
   const loadHistory = useCallback(async ({ showLoader = true } = {}) => {
@@ -302,7 +302,7 @@ setHistory(combined.map(mapRemarkRow));
         is_shortfall: shortfall === "yes",
         status: "pending",
         remarks: trimmedRemark,
-        document_path: documentItem.url || "",
+        document_path: documentItem?.url || "",
         verified_by: activeAuthorityLabel,
       });
       setShortfall("");
@@ -351,12 +351,12 @@ setHistory(combined.map(mapRemarkRow));
         </div>
 
         <div className="sdrm-viewer-wrap">
-          {documentItem.url ? (
+          {documentItem?.url ? (
             <>
               <div className="sdrm-viewer-toolbar">
                 <span>{documentItem.fileName || "Preview"}</span>
                 <a
-                  href={documentItem.url}
+                  href={documentItem?.url}
                   target="_blank"
                   rel="noreferrer"
                   className="sdrm-open-tab"
@@ -368,7 +368,7 @@ setHistory(combined.map(mapRemarkRow));
               {isImageDocument ? (
                 <div className="sdrm-image-stage">
                   <img
-                    src={documentItem.url}
+                    src={documentItem?.url}
                     alt={documentItem.title || documentItem.fileName || "Document preview"}
                     className="sdrm-image-preview"
                   />

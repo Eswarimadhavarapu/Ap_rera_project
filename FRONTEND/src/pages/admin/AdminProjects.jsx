@@ -164,7 +164,7 @@ useEffect(() => {
 </p>
 
           {/* ✅ CARDS */}
-  <div className="ap-stat-cards">
+  {/* <div className="ap-stat-cards">
 
   <div
     className={`ap-stat-card blue ${selectedType === "ALL" ? "active" : ""}`}
@@ -190,7 +190,7 @@ useEffect(() => {
     <p>Other</p>
   </div>
 
-</div>
+</div> */}
 
 
 
@@ -268,13 +268,13 @@ useEffect(() => {
   View
 </button>
 
-          <button className="ap-btn ap-approve-btn" onClick={() => updateStatus(p.id, "APPROVED")}>
+          {/* <button className="ap-btn ap-approve-btn" onClick={() => updateStatus(p.id, "APPROVED")}>
             Approve
           </button>
 
           <button className="ap-btn ap-reject-btn" onClick={() => updateStatus(p.id, "REJECTED")}>
             Reject
-          </button>
+          </button> */}
         </td>
 
         <td className={`ap-status ${

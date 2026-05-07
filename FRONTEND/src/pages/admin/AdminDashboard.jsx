@@ -18,9 +18,9 @@ const AdminDashboard = () => {
 
       <AdminSidebar sidebarOpen={sidebarOpen} />
 
-      <div className={`admin-main ${sidebarOpen ? "" : "admin-main-full"}`}>
+      <div className={`admin-main ${!sidebarOpen ? "full" : ""}`}>
 
-        <TopHeader toggleSidebar={toggleSidebar} />
+        <TopHeader toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
 
         <div className="admin-dashboard-content">
 

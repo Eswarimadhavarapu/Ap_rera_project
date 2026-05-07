@@ -7,15 +7,15 @@ const FpmsSidebar = () => {
     <div className="scrutiny-sidebar">
       <h2>FPMS PANEL</h2>
 
-      <button onClick={() => navigate("/fpms/dashboard")}>
+      <button onClick={() => navigate("/scrutiny/fpms/dashboard")}>
         📊 FPMS Dashboard
       </button>
 
-      <button onClick={() => navigate("/fpms/create-files")}>
+      <button onClick={() => navigate("/scrutiny/fpms/create-files")}>
         📄 Create Files
       </button>
 
-      <button onClick={() => navigate("/fpms/view-files")}>
+      <button onClick={() => navigate("/scrutiny/fpms/view-files")}>
         📁 View Files
       </button>
 

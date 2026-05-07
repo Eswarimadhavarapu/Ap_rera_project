@@ -8,7 +8,7 @@ const GoogleTranslate = () => {
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "en",
-          includedLanguages: "en,hi,te,ta,kn,ml",
+          includedLanguages: "en,hi,te",
           autoDisplay: false,
         },
         "google_translate_element"

@@ -39,7 +39,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
   }, []);
 
   return (
-    <div className={`admin-sidebar ${sidebarOpen ? "admin-sidebar-open" : "admin-sidebar-closed"}`}>
+    <div className={`admin-sidebar ${!sidebarOpen ? "closed" : ""}`}>
 
       <h2 className="admin-sidebar-title">ADMIN DASHBOARD</h2>
 

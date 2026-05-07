@@ -9,7 +9,7 @@
 .ad-page .breadcrumb {
   max-width: 1100px;
   margin: 0 auto;
-  background: #1683e2;
+  background: #5C3317;
   color: #fff;
   padding: 6px 14px;     /* reduced height */
   font-size: 13px;
@@ -67,7 +67,7 @@
   display: block;
   width: 32px;
   height: 2px;
-  background: #0a7bbd;
+  background: #5C3317;
   margin-top: 3px;      /* FIX */
 }
 
@@ -133,6 +133,6 @@
   display: block;
   width: 28px;
   height: 2px;
-  background: #0a7bbd;
+  background: #5C3317;
   margin-top: 4px;
 }

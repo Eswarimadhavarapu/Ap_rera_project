@@ -4,18 +4,40 @@ import '../../styles/scrutiny/unregisterList.css';
 import { useAdmin } from "../../context/AdminContext";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
-const BASE_URL = "https://7zgjxth4-5056.inc1.devtunnels.ms/api";
+import { BASE_URL } from "../../api/api";
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+const ReraStatusBadge = ({ registered, exemption_id }) => {
 
-const ReraStatusBadge = ({ registered }) => {
-  if (registered)
-    return <span className="unregList-badge unregList-badge-registered"><span className="unregList-badge-dot" />RERA Registered</span>;
-  return <span className="unregList-badge unregList-badge-unregistered"><span className="unregList-badge-dot" />Not Registered</span>;
+  // ✅ 1. Registered
+  if (registered) {
+    return (
+      <span className="unregList-badge unregList-badge-registered">
+        <span className="unregList-badge-dot" />
+        RERA Registered
+      </span>
+    );
+  }
+
+  // ✅ 2. Exemption Applied
+  if (exemption_id) {
+    return (
+      <span className="unregList-badge unregList-badge-exemption">
+        <span className="unregList-badge-dot" />
+        Apply for Exemption
+      </span>
+    );
+  }
+
+  // ✅ 3. Not Registered
+  return (
+    <span className="unregList-badge unregList-badge-unregistered">
+      <span className="unregList-badge-dot" />
+      Not Registered
+    </span>
+  );
 };
-
 function buildPages(current, total) {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages = [];
@@ -45,6 +67,7 @@ const MONTHS = [
 ];
 const SHORT_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth() + 1; // 1-based
 const YEARS = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
 // ── Upload Modal Component ────────────────────────────────────
@@ -52,7 +75,7 @@ function UploadModal({ onClose, onSuccess }) {
   const [projectType, setProjectType] = useState("");
   const [file, setFile]               = useState(null);
   const [uploading, setUploading]     = useState(false);
-  const [result, setResult]           = useState(null);   // { inserted, skipped, sheet_used }
+  const [result, setResult]           = useState(null);
   const [error, setError]             = useState(null);
   const fileInputRef                  = useRef(null);
 
@@ -67,29 +90,32 @@ function UploadModal({ onClose, onSuccess }) {
     if (f) setFile(f);
   };
 
-  const handleSubmit = async () => {
-    if (!projectType) { setError("Please select a project type."); return; }
-    if (!file)        { setError("Please upload an Excel file.");   return; }
-
-    setError(null);
+  const handleSubmit = async (e) => {
+    e?.preventDefault();
+    if (!projectType || !file) return;
     setUploading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("project_type", projectType);
       formData.append("file", file);
 
-      const res = await fetch(`${BASE_URL}/project-unregistered/upload-excel`, {
+      const res = await fetch(`${BASE_URL}/api/project-unregistered/upload-excel`, {
         method: "POST",
         body: formData,
       });
 
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+      if (!res.ok) throw new Error(json?.message || "Upload failed");
 
-      setResult(json);
-      onSuccess && onSuccess();
-    } catch (e) {
-      setError(e.message);
+      setResult({
+        inserted: json.inserted ?? 0,
+        skipped: json.skipped ?? 0,
+        sheet_used: json.sheet_used ?? "Sheet1",
+      });
+      onSuccess?.();
+    } catch (err) {
+      setError(err.message || "Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -100,10 +126,11 @@ function UploadModal({ onClose, onSuccess }) {
     setFile(null);
     setResult(null);
     setError(null);
+    setNoticeFilterActive(false);
+setAllNoticeRecords([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // Close on backdrop click
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -126,9 +153,7 @@ function UploadModal({ onClose, onSuccess }) {
 
         {/* BODY */}
         <div className="unreg-modal-body">
-
           {result ? (
-            /* ── SUCCESS STATE ── */
             <div style={{ textAlign: "center", padding: "10px 0" }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
               <div style={{ fontFamily: "var(--unreg-font-display)", fontSize: 17, fontWeight: 700, color: "var(--unreg-green)", marginBottom: 8 }}>
@@ -189,7 +214,6 @@ function UploadModal({ onClose, onSuccess }) {
               {/* File Upload */}
               <div className="unreg-modal-field">
                 <label className="unreg-modal-label">Excel File (.xlsx / .xls) <span style={{ color: "var(--unreg-red)" }}>*</span></label>
-
                 <div
                   onDrop={handleDrop}
                   onDragOver={(e) => e.preventDefault()}
@@ -305,58 +329,8 @@ export default function UnregisterList() {
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState(null);
   const [page, setPage]                 = useState(1);
-  const handleDownloadExcel = async () => {
-  console.log("Download clicked");
-
-  try {
-    let allData = [];
-    let currentPage = 1;
-    let totalPages = 1;
-
-    while (currentPage <= totalPages) {
-      const params = new URLSearchParams({
-        page: currentPage,
-        per_page: 50,
-      });
-
-      const res = await fetch(`${BASE_URL}/project-unregistered?${params}`);
-      if (!res.ok) throw new Error("API failed");
-
-      const json = await res.json();
-
-      console.log("Page data:", json); // DEBUG
-
-      allData = [...allData, ...(json.data || [])];
-      totalPages = json.total_pages || 1;
-
-      currentPage++;
-    }
-
-    if (allData.length === 0) {
-      alert("No data found");
-      return;
-    }
-
-    const formatted = allData.map((r) => ({
-      "S.No": r.s_no ?? r.id,
-      "Owner Name": r.owner_name || "-",
-      "Mobile": r.owner_mobile_no || "-",
-      "Application ID": r.fileno || r.lp_no || "-",
-      "Approved Date": fmtDate(r.approved_date),
-      "RERA Status": r.rera_registered ? "Registered" : "Not Registered",
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(formatted);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Records");
-
-    XLSX.writeFile(wb, "Application_Records.xlsx"); // ✅ SIMPLER METHOD
-
-  } catch (err) {
-    console.error("Download error:", err);
-    alert("Download failed. Check console.");
-  }
-};
+  const [noticeFilterActive, setNoticeFilterActive] = useState(false);
+const [allNoticeRecords, setAllNoticeRecords] = useState([]);
   const [perPage]                       = useState(10);
   const [totalPages, setTotalPages]     = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -372,6 +346,10 @@ export default function UnregisterList() {
   const [filterType, setFilterType]     = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterSno, setFilterSno]       = useState("");
+
+  // ── Validation error state ──
+  const [validationError, setValidationError] = useState("");
+
   const { admin } = useAdmin();
 
   useEffect(() => {
@@ -395,6 +373,7 @@ export default function UnregisterList() {
     setFilterType("");
     setFilterStatus("");
     setFilterSno("");
+    setValidationError("");
     setPage(1);
   };
 
@@ -406,8 +385,148 @@ export default function UnregisterList() {
     setFilterType("");
     setFilterStatus("");
     setFilterSno("");
+    setValidationError("");
     setPage(1);
   };
+
+  // ── BUG FIX #2: S.No validation — max 10 digits ──
+  const handleSnoChange = (val) => {
+    const digits = val.replace(/\D/g, "");
+    if (digits.length > 10) {
+      setValidationError("S.No should not exceed 10 digits");
+      setFilterSno(digits.slice(0, 10));
+    } else {
+      setValidationError("");
+      setFilterSno(digits);
+    }
+  };
+
+  // ── BUG FIX #3 & #4: Application ID validation — alphanumeric only, max 20 chars ──
+  const handleFilenoChange = (val) => {
+    const specialCharPattern = /[^a-zA-Z0-9\-\/]/;
+    if (specialCharPattern.test(val)) {
+      setValidationError("Special characters are not allowed in Application ID");
+      return;
+    }
+    if (val.length > 20) {
+      setValidationError("Application ID should not exceed the allowed limit");
+      return;
+    }
+    setValidationError("");
+    setFilterValue(val);
+  };
+
+  // ── BUG FIX #5 & #6: District validation — letters and spaces only ──
+  const handleDistrictChange = (val) => {
+    const invalidPattern = /[^a-zA-Z\s]/;
+    if (invalidPattern.test(val)) {
+      setValidationError("District name should contain only letters");
+      return;
+    }
+    setValidationError("");
+    setFilterValue(val);
+  };
+
+  // ── BUG FIX #8: Future month filtering — build allowed months ──
+  const getAvailableMonths = () => {
+    const selectedYear = parseInt(filterYear);
+    if (!selectedYear) return MONTHS.map((m, i) => ({ label: m, value: i + 1, disabled: false }));
+    return MONTHS.map((m, i) => {
+      const monthVal = i + 1;
+      const isFuture = selectedYear === currentYear && monthVal > currentMonth;
+      return { label: m, value: monthVal, disabled: isFuture };
+    });
+  };
+
+  // ── BUG FIX #8: When year changes, clear month if it becomes invalid ──
+  const handleYearChange = (val) => {
+    setFilterYear(val);
+    if (val && parseInt(val) === currentYear && parseInt(filterMonth) > currentMonth) {
+      setFilterMonth("");
+      setValidationError("Future dates are not allowed");
+    } else {
+      setValidationError("");
+    }
+  };
+
+  const handleMonthChange = (val) => {
+    if (filterYear && parseInt(filterYear) === currentYear && parseInt(val) > currentMonth) {
+      setValidationError("Future dates are not allowed");
+      return;
+    }
+    setValidationError("");
+    setFilterMonth(val);
+  };
+
+  // ── Download Excel ──
+  const handleDownloadExcel = async () => {
+    try {
+      let allData = [];
+      let currentPage = 1;
+      let totalPagesLocal = 1;
+
+      while (currentPage <= totalPagesLocal) {
+        const params = new URLSearchParams({ page: currentPage, per_page: 50 });
+        const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
+        if (!res.ok) throw new Error("API failed");
+        const json = await res.json();
+        allData = [...allData, ...(json.data || [])];
+        totalPagesLocal = json.total_pages || 1;
+        currentPage++;
+      }
+
+      if (allData.length === 0) { alert("No data found"); return; }
+
+      const formatted = allData.map((r) => ({
+        "S.No": r.s_no ?? r.id,
+        "Owner Name": r.owner_name || "-",
+        "Mobile": r.owner_mobile_no || "-",
+        "Application ID": r.fileno || r.lp_no || "-",
+        "Approved Date": fmtDate(r.approved_date),
+        "RERA Status": r.rera_registered ? "Registered" : "Not Registered",
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(formatted);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Records");
+      XLSX.writeFile(wb, "Application_Records.xlsx");
+    } catch (err) {
+      console.error("Download error:", err);
+      alert("Download failed. Check console.");
+    }
+  };
+  const getAllNoticeRecords = async () => {
+  let allData = [];
+  let currentPage = 1;
+  let totalPages = 1;
+
+  while (currentPage <= totalPages) {
+    const res = await fetch(`${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`);
+    const json = await res.json();
+
+    allData = [...allData, ...(json.data || [])];
+    totalPages = json.total_pages || 1;
+
+    currentPage++;
+  }
+
+  const today = new Date();
+
+  const filtered = allData.filter((r) => {
+    if (!r.approved_date) return false;
+
+    const approvedDate = new Date(r.approved_date);
+    approvedDate.setDate(approvedDate.getDate() + 45);
+
+    return (
+      today >= approvedDate &&
+      r.rera_registered === false &&
+      !r.exemption_applied
+    );
+  });
+
+  setAllNoticeRecords(filtered);
+};
 
   // ── Fetch ──
   const fetchData = useCallback(async () => {
@@ -426,15 +545,17 @@ export default function UnregisterList() {
       if (filterBy === "type"     && filterType) params.append("project_type", filterType);
       if (filterBy === "fileno"   && debounced)  params.append("search", debounced);
 
-      const res = await fetch(`${BASE_URL}/project-unregistered?${params}`);
+      const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       let data = json.data || [];
 
+      // BUG FIX #2: S.No filter — client-side exact match
       if (filterBy === "sno" && filterSno) {
         data = data.filter((r) => String(r.s_no ?? r.id) === filterSno.trim());
       }
 
+      // BUG FIX #8: Date filter with future month guard
       if (filterBy === "date") {
         if (filterYear) {
           data = data.filter((r) => {
@@ -450,6 +571,7 @@ export default function UnregisterList() {
         }
       }
 
+      // BUG FIX #9: RERA status filter — properly applied
       if (filterBy === "status" && filterStatus) {
         const sv = filterStatus.toLowerCase();
         data = data.filter((r) =>
@@ -468,7 +590,6 @@ export default function UnregisterList() {
   }, [page, perPage, debounced, filterBy, filterType, filterYear, filterMonth, filterStatus, filterSno]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
-
   useEffect(() => { setPage(1); }, [debounced, filterBy, filterType, filterYear, filterMonth, filterStatus, filterSno]);
 
   const pages = buildPages(page, totalPages);
@@ -476,7 +597,28 @@ export default function UnregisterList() {
   const unregisteredCount = records.filter((r) => !r.rera_registered).length;
   const layoutCount       = records.filter((r) => r.project_type === "LAYOUT").length;
   const buildingCount     = records.filter((r) => r.project_type === "BUILDING").length;
+  const getTodayNoticeApplications = (records) => {
+  const today = new Date();
 
+  return records.filter((r) => {
+    if (!r.approved_date) return false;
+
+    const approvedDate = new Date(r.approved_date);
+
+    // add 45 days
+    approvedDate.setDate(approvedDate.getDate() + 45);
+
+    return (
+      today >= approvedDate &&
+      r.rera_registered === false &&
+      !r.exemption_applied // change if your field name is different
+    );
+  });
+};
+
+const todayNoticeList = getTodayNoticeApplications(records);
+const todayNoticeCount = todayNoticeList.length;  
+const displayData = noticeFilterActive ? allNoticeRecords : records;
   const activeTag = (() => {
     if (filterBy === "date" && (filterYear || filterMonth)) {
       const m = filterMonth ? SHORT_MONTHS[parseInt(filterMonth) - 1] : null;
@@ -496,14 +638,11 @@ export default function UnregisterList() {
       {showUploadModal && (
         <UploadModal
           onClose={() => setShowUploadModal(false)}
-          onSuccess={() => {
-            // Refresh data after successful upload
-            setTimeout(() => fetchData(), 500);
-          }}
+          onSuccess={() => { setTimeout(() => fetchData(), 500); }}
         />
       )}
 
-          <div className="unregList-header-title">Unregistered Projects</div>
+      <div className="unregList-header-title">Unregistered Projects</div>
 
       <div className="unregList-main">
 
@@ -536,19 +675,27 @@ export default function UnregisterList() {
               <div className="unregList-stat-label">Building Projects (page)</div>
             </div>
           </div>
+          <div
+  className="unregList-stat-card"
+  style={{ "--stat-color": "#8e44ad", "--stat-bg": "rgba(142,68,173,0.1)", cursor: "pointer" }}
+  onClick={async () => {
+    setNoticeFilterActive(true);
+    await getAllNoticeRecords();
+  }}
+>
+  <div className="unregList-stat-icon">📢</div>
+  <div>
+    <div className="unregList-stat-value">{todayNoticeCount}</div>
+    <div className="unregList-stat-label">Today Notice</div>
+  </div>
+</div>
         </div>
 
         {/* ── FILTERS ── */}
         <div className="unregList-filters">
           <div className="unregList-filters-title">
             🔍 Filter &amp; Search
-            {activeTag && (
-              <span className="unregList-active-tag">
-                {activeTag}
-                <button className="unregList-tag-close" onClick={handleReset}>✕</button>
-              </span>
-            )}
-            {/* ── ADD NEW DATA BUTTON (right side of filter title row) ── */}
+           
             <button
               onClick={() => setShowUploadModal(true)}
               style={{
@@ -600,31 +747,26 @@ export default function UnregisterList() {
                 className="unregList-select"
               >
                 {FILTER_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
             </div>
 
             <div className="unregList-filter-inputs">
 
-              {["owner", "mobile", "fileno", "district"].includes(filterBy) && (
+              {/* Owner / Mobile input */}
+              {["owner", "mobile"].includes(filterBy) && (
                 <div className="unregList-filter-input-wrapper">
                   <span className="unregList-input-icon">
-                    {filterBy === "owner"    && "👤"}
-                    {filterBy === "mobile"   && "📞"}
-                    {filterBy === "fileno"   && "🗂️"}
-                    {filterBy === "district" && "📍"}
+                    {filterBy === "owner"  && "👤"}
+                    {filterBy === "mobile" && "📞"}
                   </span>
                   <input
                     type={filterBy === "mobile" ? "tel" : "text"}
                     className="unregList-filter-input"
                     placeholder={
-                      filterBy === "owner"    ? "Enter owner name..."    :
-                      filterBy === "mobile"   ? "Enter mobile number..."  :
-                      filterBy === "fileno"   ? "Enter application ID..."  :
-                      "Enter district name..."
+                      filterBy === "owner"  ? "Enter owner name..."   :
+                      "Enter mobile number..."
                     }
                     value={filterValue}
                     onChange={(e) => setFilterValue(e.target.value)}
@@ -635,22 +777,74 @@ export default function UnregisterList() {
                 </div>
               )}
 
-              {filterBy === "sno" && (
-                <div className="unregList-filter-input-wrapper">
-                  <span className="unregList-input-icon">#</span>
-                  <input
-                    type="number"
-                    className="unregList-filter-input"
-                    placeholder="Enter S.No"
-                    value={filterSno}
-                    onChange={(e) => setFilterSno(e.target.value)}
-                  />
-                  {filterSno && (
-                    <button className="unregList-input-clear" onClick={() => setFilterSno("")}>✕</button>
+              {/* BUG FIX #3 & #4: Application ID — alphanumeric only, max 20 chars */}
+              {filterBy === "fileno" && (
+                <div className="unregList-filter-input-wrapper" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+                  <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
+                    <span className="unregList-input-icon">🗂️</span>
+                    <input
+                      type="text"
+                      className="unregList-filter-input"
+                      placeholder="Enter application ID..."
+                      value={filterValue}
+                      maxLength={20}
+                      onChange={(e) => handleFilenoChange(e.target.value)}
+                    />
+                    {filterValue && (
+                      <button className="unregList-input-clear" onClick={() => { setFilterValue(""); setValidationError(""); }}>✕</button>
+                    )}
+                  </div>
+                  {validationError && filterBy === "fileno" && (
+                    <span style={{ fontSize: 11.5, color: "#c0392b", marginTop: 4, paddingLeft: 4 }}>⚠️ {validationError}</span>
                   )}
                 </div>
               )}
 
+              {/* BUG FIX #5 & #6: District — letters and spaces only */}
+              {filterBy === "district" && (
+                <div className="unregList-filter-input-wrapper" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+                  <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
+                    <span className="unregList-input-icon">📍</span>
+                    <input
+                      type="text"
+                      className="unregList-filter-input"
+                      placeholder="Enter district name..."
+                      value={filterValue}
+                      onChange={(e) => handleDistrictChange(e.target.value)}
+                    />
+                    {filterValue && (
+                      <button className="unregList-input-clear" onClick={() => { setFilterValue(""); setValidationError(""); }}>✕</button>
+                    )}
+                  </div>
+                  {validationError && filterBy === "district" && (
+                    <span style={{ fontSize: 11.5, color: "#c0392b", marginTop: 4, paddingLeft: 4 }}>⚠️ {validationError}</span>
+                  )}
+                </div>
+              )}
+
+              {/* BUG FIX #2: S.No — max 10 digits */}
+              {filterBy === "sno" && (
+                <div className="unregList-filter-input-wrapper" style={{ flexDirection: "column", alignItems: "flex-start" }}>
+                  <div style={{ display: "flex", width: "100%", alignItems: "center" }}>
+                    
+                    <input
+                      type="number"
+                      className="unregList-filter-input"
+                      placeholder="Enter S.No (max 10 digits)"
+                      value={filterSno}
+                      onChange={(e) => handleSnoChange(e.target.value)}
+                    />
+                    {filterSno && (
+                      <button className="unregList-input-clear" onClick={() => { setFilterSno(""); setValidationError(""); }}>✕</button>
+                    )}
+                  </div>
+                  {validationError && filterBy === "sno" && (
+                    <span style={{ fontSize: 11.5, color: "#c0392b", marginTop: 4, paddingLeft: 4 }}>⚠️ {validationError}</span>
+                  )}
+                </div>
+              )}
+
+              {/* BUG FIX #7: Project Type chips — active state properly wired */}
               {filterBy === "type" && (
                 <div className="unregList-filter-chips">
                   <button
@@ -668,6 +862,7 @@ export default function UnregisterList() {
                 </div>
               )}
 
+              {/* BUG FIX #9: RERA status chips — active state properly wired */}
               {filterBy === "status" && (
                 <div className="unregList-filter-chips">
                   <button
@@ -685,11 +880,12 @@ export default function UnregisterList() {
                 </div>
               )}
 
+              {/* BUG FIX #8: Date filter — future months disabled */}
               {filterBy === "date" && (
                 <div className="unregList-date-filters">
                   <div className="unregList-year-select">
                     <label>Year</label>
-                    <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
+                    <select value={filterYear} onChange={(e) => handleYearChange(e.target.value)}>
                       <option value="">All</option>
                       {YEARS.map((y) => (
                         <option key={y} value={y}>{y}</option>
@@ -699,12 +895,17 @@ export default function UnregisterList() {
                   {filterYear && (
                     <div className="unregList-month-select">
                       <label>Month</label>
-                      <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}>
+                      <select value={filterMonth} onChange={(e) => handleMonthChange(e.target.value)}>
                         <option value="">All</option>
-                        {MONTHS.map((m, i) => (
-                          <option key={i} value={i + 1}>{m}</option>
+                        {getAvailableMonths().map(({ label, value, disabled }) => (
+                          <option key={value} value={value} disabled={disabled}>
+                            {label}{disabled ? " (future)" : ""}
+                          </option>
                         ))}
                       </select>
+                      {validationError && filterBy === "date" && (
+                        <span style={{ fontSize: 11.5, color: "#c0392b", marginTop: 4, display: "block" }}>⚠️ {validationError}</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -719,18 +920,14 @@ export default function UnregisterList() {
 
         {/* ── TABLE ── */}
         <div className="unregList-table-wrapper">
-        <div className="unregList-table-header">
-  <div className="unregList-table-title">Application Records</div>
-
-  <div className="unregList-header-actions">
-    <button
-      className="unregList-download-btn"
-      onClick={handleDownloadExcel}
-    >
-      ⬇ Download Excel
-    </button>
-  </div>
-</div>
+          <div className="unregList-table-header">
+            <div className="unregList-table-title">Application Records</div>
+            <div className="unregList-header-actions">
+              <button className="unregList-download-btn" onClick={handleDownloadExcel}>
+                ⬇ Download Excel
+              </button>
+            </div>
+          </div>
 
           {loading ? (
             <div className="unregList-loading">
@@ -754,16 +951,17 @@ export default function UnregisterList() {
                   <tr>
                     <th>S.No</th>
                     <th>Owner Name</th>
-                    <th>Application ID</th>
+                    <th>LB No/BA No</th>
                     <th>Approved Date</th>
                     <th>RERA Status</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {records.map((r) => (
+                  {displayData.map((r) => (
+                  
                     <tr key={r.id}>
-                      <td className="unregList-sno">#{r.s_no ?? r.id}</td>
+                      <td className="unregList-sno">{r.s_no ?? r.id}</td>
                       <td className="unregList-owner">
                         <span className="unregList-owner-name" title={r.owner_name}>
                           {r.owner_name || "—"}
@@ -773,11 +971,14 @@ export default function UnregisterList() {
                         )}
                       </td>
                       <td>
-                        <span className="unregList-project-id">{r.fileno || r.lp_no || "—"}</span>
+                        <span className="unregList-project-id">{r.ba_no || r.lp_no || "—"}</span>
                       </td>
                       <td className="unregList-date">{fmtDate(r.approved_date)}</td>
                       <td>
-                        <ReraStatusBadge registered={r.rera_registered} />
+                       <ReraStatusBadge 
+  registered={r.rera_registered} 
+  exemption_id={r.exemption_id} 
+/>
                       </td>
                       <td>
                         <button
@@ -805,7 +1006,13 @@ export default function UnregisterList() {
           {!loading && records.length > 0 && (
             <div className="unregList-pagination">
               <div className="unregList-page-info">
-                <button className="unregList-page-btn"> -Back </button>
+                {/* BUG FIX #1: Back button now navigates to previous page or list */}
+                <button
+                  className="unregList-page-btn"
+                  onClick={() => navigate(-1)}
+                >
+                  ← Back
+                </button>
               </div>
               <div className="unregList-page-controls">
                 <button className="unregList-page-btn" onClick={() => setPage(1)} disabled={page === 1} title="First">«</button>

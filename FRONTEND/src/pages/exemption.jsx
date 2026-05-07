@@ -150,7 +150,7 @@ function ExemptionFileUpload() {
 
       setErrors({});
       setResetKey(prev => prev + 1);
-      navigate("/scrutiny/exemption");
+      navigate("/exemption");
 
     } catch (error) {
       console.error(error);

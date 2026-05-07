@@ -1,211 +1,20 @@
-// import React, { useState } from "react";
-    // import { useLocation } from "react-router-dom";
-    // import "../styles/ProjectClosure.css";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import "../styles/ProjectClosure.css";
 
-    // export default function ProjectClosure() {
+export default function ProjectClosure() {
+    const location = useLocation();
 
-    //   const location = useLocation();
+    const [projectDetails, setProjectDetails] = useState({
+        applicationNumber: location.state?.projectData?.application_number || localStorage.getItem("application_no"),
+        projectName: location.state?.projectData?.project_name || localStorage.getItem("project_name"),
+        promoterName: location.state?.projectData?.name || localStorage.getItem("promoter_name")
+    });
 
-    //   const applicationNo = location.state?.applicationNo;
-    //   const projectName = location.state?.projectName;
-    //   const promoterName = location.state?.promoterName;
-
-    //   const [occupancy, setOccupancy] = useState("");
-    //   const [showPopup, setShowPopup] = useState(false);
-
-    //   const handleSubmit = () => {
-    //   setShowPopup(true);
-    // };
-
-    //   return (
-    //     <div className="project-closure-wrapper">
-
-    //       <div className="project-closure-heading">
-    //         Closure Details
-    //         <div className="project-closure-line"></div>
-    //       </div>
-
-    //       <div className="project-closure-box">
-
-    //         {/* Basic Details */}
-
-    //         <div className="project-closure-form-section">
-
-    //           <div className="project-closure-form-row">
-    //             <label>Application No</label>
-    //             <input
-    //               type="text"
-    //               value={applicationNo || ""}
-    //               readOnly
-    //             />
-    //           </div>
-
-    //           <div className="project-closure-form-row">
-    //             <label>Project Name</label>
-    //             <input
-    //               type="text"
-    //               value={projectName || ""}
-    //               readOnly
-    //             />
-    //           </div>
-
-    //           <div className="project-closure-form-row">
-    //             <label>Promoter Name</label>
-    //             <input
-    //               type="text"
-    //               value={promoterName || ""}
-    //               readOnly
-    //             />
-    //           </div>
-
-    //         </div>
-
-    //         {/* Supporting Documents */}
-
-    //         <h4 className="project-closure-support-title">Supporting Documents</h4>
-
-    //         {/* Occupancy Certificate */}
-
-    //         <div className="project-closure-occupancy-section">
-
-    //           <div className="project-closure-occupancy-row">
-
-    //             <label className="project-closure-occupancy-label">
-    //               Do you have Occupancy Certificate:
-    //               <span style={{ color: "red" }}>*</span>
-    //             </label>
-
-    //             <div className="project-closure-radio-group">
-
-    //               <label>
-    //                 <input
-    //                   type="radio"
-    //                   value="YES"
-    //                   checked={occupancy === "YES"}
-    //                   onChange={(e) => setOccupancy(e.target.value)}
-    //                 />
-    //                 YES
-    //               </label>
-
-    //               <label>
-    //                 <input
-    //                   type="radio"
-    //                   value="NO"
-    //                   checked={occupancy === "NO"}
-    //                   onChange={(e) => setOccupancy(e.target.value)}
-    //                 />
-    //                 NO
-    //               </label>
-
-    //             </div>
-
-    //           </div>
-
-    //         </div>
-
-    //         {/* Upload OC */}
-
-    //         {occupancy === "YES" && (
-
-    //   <div className="project-closure-upload-row">
-
-    //     <label className="project-closure-upload-label">
-    //       Upload Occupancy Certificate:
-    //       <span style={{color:"red"}}>*</span>
-    //     </label>
-
-    //     <input
-    //       type="file"
-    //       className="project-closure-file-input"
-    //     />
-
-    //   </div>
-
-    // )}
-
-    // <div className="project-closure-doc-row">
-    //   <label>2. All Sale Deed Copies</label>
-    //   <input type="file" multiple />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>3. Association of Allottees Formation Proof</label>
-    //   <input type="file" />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>4. Common Areas / Amenities Handover Proof</label>
-    //   <input type="file" />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>5. Structural Liability Affidavit (Form F6)</label>
-    //   <input type="file" />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>6. Unsold Units Affidavit (Form F7)</label>
-    //   <input type="file" />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>7. Consolidated Bank Statement of RERA Designated Bank Account</label>
-    //   <input type="file" />
-    // </div>
-
-    // <div className="project-closure-doc-row">
-    //   <label>8. Latest Photographs of the Project</label>
-    //   <input type="file" multiple />
-    // </div>
-
-    // <div className="project-closure-submit-row">
-    //   <button
-    //     className="project-closure-submit-btn"
-    //     onClick={handleSubmit}
-    //   >
-    //     Submit Closure Request
-    //   </button>
-    // </div>
-
-    //       </div>
-    //      {showPopup && (
-    //   <div className="project-closure-popup-overlay">
-    //     <div className="project-closure-popup-box">
-    //       <h3>Success</h3>
-    //       <p>Your Closure Request has been submitted successfully.</p>
-
-    //       <button
-    //         className="project-closure-popup-btn"
-    //         onClick={() => setShowPopup(false)}
-    //       >
-    //         OK
-    //       </button>
-    //     </div>
-    //   </div>
-    // )} 
-    //     </div>
-        
-    //   );
-    // }
-
-
-    import React, { useEffect, useState } from "react";
-    import { useLocation } from "react-router-dom";
-    import "../styles/ProjectClosure.css";
-
-    export default function ProjectClosure() {
-        const location = useLocation();
-
-        const [projectDetails, setProjectDetails] = useState({
-            applicationNumber: location.state?.projectData?.application_number || localStorage.getItem("application_no"),
-            projectName: location.state?.projectData?.project_name || localStorage.getItem("project_name"),
-            promoterName: location.state?.projectData?.name || localStorage.getItem("promoter_name")
-        });
-
-        const [success, setSuccess] = useState(false);
-        const [hasOccupancy, setHasOccupancy] = useState("");
-        const RequiredStar = () => <span style={{ color: "red" }}> *</span>;
-        const handlePdfValidation = (e) => {
+ const [success, setSuccess] = useState(false);
+ const [hasOccupancy, setHasOccupancy] = useState("");
+ const RequiredStar = () => <span style={{ color: "red" }}> *</span>;
+ const handlePdfValidation = (e) => {
   const file = e.target.files[0];
   if (file && file.type !== "application/pdf") {
     alert("Only PDF files are allowed");
@@ -270,14 +79,14 @@ const handleImageValidation = (e) => {
 
                     <div className="projectclosure-project-box">
 
-                        <label>Application No</label>
-                        <input value={projectDetails.applicationNumber || ""} readOnly />
+                        <label className="projectclosure-label">Application No</label>
+                        <input className="projectclosure-input" value={projectDetails.applicationNumber || ""} readOnly />
 
-                        <label>Project Name</label>
-                        <input value={projectDetails.projectName || ""} readOnly />
+                        <label className="projectclosure-label">Project Name</label>
+                        <input className="projectclosure-input" value={projectDetails.projectName || ""} readOnly />
 
-                        <label>Promoter Name</label>
-                        <input value={projectDetails.promoterName || ""} readOnly />
+                        <label className="projectclosure-label">Promoter Name</label>
+                        <input className="projectclosure-input" value={projectDetails.promoterName || ""} readOnly />
 
                     </div>
 
@@ -286,28 +95,30 @@ const handleImageValidation = (e) => {
                     <form className="projectclosure-closure-form" onSubmit={handleSubmit}>
 
                     <div className="projectclosure-occupancy-row">
-        <label>
+        <label className="projectclosure-input">
     1. Do you have Occupancy Certificate:
     <RequiredStar />
     </label>
 
         <div className="projectclosure-radio-group">
-            <label>
+            <label className="projectclosure-label">
                 <input
                     type="radio"
                     name="occupancyCertificateStatus"
                     value="Yes"
                     onChange={(e) => setHasOccupancy(e.target.value)}
+                    className="projectclosure-input"
                 />
                 YES
             </label>
 
-            <label>
+            <label className="projectclosure-label">
                 <input
                     type="radio"
                     name="occupancyCertificateStatus"
                     value="No"
                     onChange={(e) => setHasOccupancy(e.target.value)}
+                    className="projectclosure-input"
                 />
                 NO
             </label>
@@ -318,19 +129,20 @@ const handleImageValidation = (e) => {
 
     {hasOccupancy === "Yes" && (
         <div className="projectclosure-form-row">
-            <label>Upload Occupancy Certificate: *</label>
+            <label className="projectclosure-label">Upload Occupancy Certificate: *</label>
             <input
   type="file"
   name="occupancyCertificateDoc"
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
         </div>
     )}
 
                         <div className="projectclosure-form-row">
-        <label>
+        <label className="projectclosure-label">
             2. All the Sale Deed Copies shall be uploaded
             <RequiredStar />
         </label>
@@ -340,11 +152,12 @@ const handleImageValidation = (e) => {
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                            <label>
+                            <label className="projectclosure-label">
     3. The Promoter has to form an Association of Allottee
     <RequiredStar />
     </label>
@@ -354,11 +167,12 @@ const handleImageValidation = (e) => {
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                        <label>
+                        <label className="projectclosure-label">
     4. The Common Areas/Amenities as completed and the same shall be handed over
     <RequiredStar />
     </label>
@@ -368,44 +182,48 @@ const handleImageValidation = (e) => {
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                            <label>5.An Affidavit regarding the Structural Liability Has to be submittedas per RERA format(F6) <RequiredStar /></label>
+                            <label className="projectclosure-label">5.An Affidavit regarding the Structural Liability Has to be submittedas per RERA format(F6) <RequiredStar /></label>
                             <input
   type="file"
   name="structuralLiabilityDoc"
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                            <label>6. An Affidavit regarding the structural liability has to be submitted as per RERA format(F7) <RequiredStar /></label>
+                            <label className="projectclosure-label">6. An Affidavit regarding the structural liability has to be submitted as per RERA format(F7) <RequiredStar /></label>
                             <input
   type="file"
   name="unsoldUnitsDoc"
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                            <label>7. Consolidated Bank Statement of RERA designated bank account <RequiredStar /></label>
+                            <label className="projectclosure-label">7. Consolidated Bank Statement of RERA designated bank account <RequiredStar /></label>
                             <input
   type="file"
   name="reraBankStatementDoc"
   accept=".pdf"
   required
   onChange={handlePdfValidation}
+  className="projectclosure-input"
 />
                         </div>
 
                         <div className="projectclosure-form-row">
-                            <label>8. Latest Photographs of the project <RequiredStar /></label>
+                            <label className="projectclosure-label">8. Latest Photographs of the project <RequiredStar /></label>
                             <input
   type="file"
   name="projectPhotosDoc"
@@ -413,6 +231,7 @@ const handleImageValidation = (e) => {
   multiple
   required
   onChange={handleImageValidation}
+  className="projectclosure-input"
 />
                         </div>
 

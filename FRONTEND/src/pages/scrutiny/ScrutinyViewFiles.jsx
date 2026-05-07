@@ -3,6 +3,7 @@ import "../../styles/scrutiny/ScrutinyViewFiles.css";
 import { apiGet, BASE_URL } from "../../api/api";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
+
 const formatDate = (value) => {
   if (!value) return "N/A";
   const date = new Date(value);
@@ -106,7 +107,6 @@ const ScrutinyViewFiles = () => {
 
   return (
 
-    <ScrutinyLayout>
 <div className="Svff-svf-main">
 
       {/* HEADER */}
@@ -262,7 +262,7 @@ const ScrutinyViewFiles = () => {
         </div>
       </div>
     </div>
-    </ScrutinyLayout>
+
     
   );
 };

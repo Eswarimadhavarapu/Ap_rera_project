@@ -134,6 +134,7 @@ else if (dept?.includes("audit")) dept = "audit";
 else if (dept?.includes("engineer")) dept = "engineer";
 else if (dept?.includes("assistant director")) dept = "ad";
 else if (dept?.includes("deputy director")) dept = "dd";
+else if (dept?.includes("director")) dept = "director";
 else if (dept?.includes("verification")) dept = "verification";
 
 console.log("FINAL DEPT:", dept);

@@ -340,11 +340,11 @@ function AdminAgentChangeRequest() {
   }, [selectedRequest]);
 
   return (
-    <div className="admin-layout">
+    <div className="admin-agent-layout">
       <AdminSidebar sidebarOpen={sidebarOpen} />
-      <div className={`admin-main ${sidebarOpen ? "" : "admin-main-full"}`}>
+      <div className={`admin-agent-main ${sidebarOpen ? "" : "full"}`}>
         <TopHeader toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <div className="admin-dashboard-content">
+        <div className="admin-agent-content">
           <div className="admin-change-request-page">
             <header className="admin-change-request-header">
               <div>
@@ -364,7 +364,7 @@ function AdminAgentChangeRequest() {
               </div>
             </header>
 
-      <section className="admin-status-cards">
+      {/* <section className="admin-status-cards">
         {STATUS_FILTERS.slice(1).map((status) => (
           <button
             key={status}
@@ -384,24 +384,27 @@ function AdminAgentChangeRequest() {
           <span className="status-card-label">All Requests</span>
           <span className="status-card-value">{requests.length}</span>
         </button>
-      </section>
+      </section> */}
 
       <section className="admin-filter-row">
-        <span>Filter by status:</span>
-        <div className="filter-buttons">
-          {STATUS_FILTERS.map((status) => (
-            <button
-              key={status}
-              className={`filter-pill ${
-                statusFilter === status ? "filter-pill-active" : ""
-              }`}
-              onClick={() => setStatusFilter(status)}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
-      </section>
+  <span>Filter by status:</span>
+  <div className="filter-buttons">
+    {STATUS_FILTERS.map((status) => (
+      <button
+        key={status}
+        className={`filter-pill ${
+          statusFilter === status ? "filter-pill-active" : ""
+        }`}
+        onClick={() => setStatusFilter(status)}
+      >
+        <span className="tab-label">{status}</span>
+  <span className="tab-count">
+    {status === "All" ? requests.length : stats[status] || 0}
+  </span>
+      </button>
+    ))}
+  </div>
+</section>
 
       {error && <p className="error-message">{error}</p>}
       {actionError && <p className="error-message">{actionError}</p>}
@@ -458,7 +461,7 @@ function AdminAgentChangeRequest() {
                         >
                           View
                         </button>
-                        <button
+                        {/* <button
                           type="button"
                           className="success"
                           onClick={() => handleAction(request.id, "Approved")}
@@ -471,7 +474,7 @@ function AdminAgentChangeRequest() {
                           onClick={() => handleAction(request.id, "Rejected")}
                         >
                           Reject
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   );
@@ -663,6 +666,22 @@ function AdminAgentChangeRequest() {
                 "No reason provided."}
             </p>
           </section>
+          {/* ✅ ADD HERE */}
+<div className="modal-action-buttons">
+  <button
+    className="approve-btn"
+    onClick={() => handleAction(selectedRequest.id, "Approved")}
+  >
+    Approve
+  </button>
+
+  <button
+    className="reject-btn"
+    onClick={() => handleAction(selectedRequest.id, "Rejected")}
+  >
+    Reject
+  </button>
+</div>
           </div>
         </div>
       )}

@@ -44,7 +44,7 @@ const Navbar = ({ setHideNotice }) => {
       </div>
 
       {/* Main Navbar */}
-      <nav className="navbar">
+      <nav className="main-navbar">
         <ul className="nav-list">
           <li onClick={() => navigate("/")}>
             HOME
@@ -269,9 +269,9 @@ const Navbar = ({ setHideNotice }) => {
               <li onClick={() => navigate("/admin-login")}>
                 ADMIN LOGIN
               </li>
-               <li onClick={() => navigate("scrutinity/scrutiny-engineer")}>
+               {/* <li onClick={() => navigate("scrutinity/scrutiny-engineer")}>
       Scrutiny Engineer
-    </li>
+    </li> */}
               <li onClick={() => navigate("/department")}>
                 DEPARTMENT LOGIN
               </li>

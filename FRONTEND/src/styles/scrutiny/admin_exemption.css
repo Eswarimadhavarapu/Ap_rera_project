@@ -39,7 +39,7 @@
 .aep-card h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #1e3a5f;   /* SAME for all cards */
+  color: #5C3317;   /* SAME for all cards */
 }
 
 /* =========================
@@ -48,7 +48,7 @@
 
 /* 🔵 TOTAL */
 .aep-card.total {
-  border-top: 5px solid #2563eb;
+  border-top: 5px solid #5C3317;
 }
 
 /* 🟡 PENDING */
@@ -80,7 +80,7 @@
 }
 
 .aep-search-input:focus {
-  border-color: #1e3a5f;
+  border-color: #5C3317;
   box-shadow: 0 0 0 2px rgba(30,58,95,0.1);
 }
 
@@ -97,7 +97,7 @@
 }
 
 .aep-table thead {
-  background: #1e3a5f;
+  background: #5C3317;
 }
 
 .aep-table th {
@@ -146,7 +146,7 @@
    VIEW BUTTON
 ========================= */
 .aep-view-btn {
-  background: #1e3a5f;
+  background: #5C3317;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -156,7 +156,7 @@
 }
 
 .aep-view-btn:hover {
-  background: #0f2a44;
+  background: #5C3317;
   transform: scale(1.05);
 }
 
@@ -166,7 +166,7 @@
 .aep-count {
   font-size: 18px;
   font-weight: 600;
-  color: #1e3a5f;   /* SAME color for all */
+  color: #5C3317;   /* SAME color for all */
   margin-top: 5px;
   display: block;
 }

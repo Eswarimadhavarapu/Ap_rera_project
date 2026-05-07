@@ -170,11 +170,11 @@ function Hero() {
           {/* LEFT CONTENT */}
           <div className="ap-home-about-left">
            
-         <h2 style={{ fontSize: "32px", fontWeight: "700" }}>
-          About AP RERA
+         <h2 style={{ fontSize: "32px", fontWeight: "700" }} className="aboutrera">
+          ABOUT AP RERA
           </h2>
 
-            <p style={{ fontSize: "18px", fontWeight: "500" }}>
+            <p style={{ fontSize: "16px", fontWeight: "500" }}>
               The Real Estate (Regulation & Development) Act, 2016 has been established on 25th March,
               2016 and considered as one of the landmark legislations passed by the Government of India.
               Its objective is to reform the real estate sector in India, encouraging greater transparency,
@@ -183,13 +183,13 @@ function Hero() {
               sector.
             </p>
 
-           <p style={{ fontSize: "18px", fontWeight: "400" }}>
+           <p style={{ fontSize: "16px", fontWeight: "400" }}>
               All sections of the Real Estate (Regulation & Development) Act, 2016 came into force
               with effect from 1st May, 2017. The Andhra Pradesh Real Estate (Regulation & Development)
               Rules, 2017 was approved by Government of Andhra Pradesh and notified on March 27, 2017.
             </p>
 
-            <p style={{ fontSize: "18px", fontWeight: "400" }}>
+            <p style={{ fontSize: "16px", fontWeight: "400" }}>
               For Buildings where the area of land proposed to be developed does not exceed five hundred
               square meters or the number of apartments proposed to be developed does not exceed eight
               inclusive of all phases.
@@ -408,7 +408,7 @@ const registrationLinks = [
   return (
   <section className="homequick-links-overlap">
     <div className="homequick-services-card">
-      <h2 className="homequick-main-title">Services</h2>
+      <h2 className="homequick-main-title">SERVICES</h2>
 
      <div className="homequick-registration-grid">
   {registrationLinks.map((link, index) => {

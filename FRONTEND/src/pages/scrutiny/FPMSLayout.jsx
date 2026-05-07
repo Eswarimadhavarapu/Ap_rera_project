@@ -13,7 +13,7 @@ const FPMSLayout = () => {
       <div className={`scrutiny-main ${sidebarOpen ? "" : "scrutiny-main-full"}`}>
         <TopHeader toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        <div style={{ padding: "20px" }}>
+        <div>
           <Outlet />
         </div>
       </div>

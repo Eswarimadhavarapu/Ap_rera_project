@@ -20,6 +20,7 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
   dd: "DEPUTY DIRECTOR PANEL",
   l1: "LEGAL 1 PANEL",
   l2: "LEGAL 2 PANEL",
+  directory: "DIRECTOR DASHBOARD",
 };
 
   // ✅ Dropdown state
@@ -44,12 +45,16 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
       <button onClick={() => navigate("/scrutiny/project-registration")}>
         Project Registration
       </button>
+       {/* Agent Registration */}
+      <button onClick={() => navigate("/scrutiny/agent-scrutiny/registrations")}>
+        Agent Registration
+      </button>
 
       {/* ✅ FPMS only for engineer */}
         <>
           <button
             onClick={() => {
-              window.open("/fpms/dashboard", "_blank");
+  window.open(`${window.location.origin}/scrutiny/fpms/dashboard`, "_blank");
          setFpmsOpen(false);
             }}
           >
@@ -58,11 +63,11 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
 
           {fpmsOpen && (
             <div style={{ paddingLeft: "20px" }}>
-              <button onClick={() => navigate("/fpms/create-files")}>
+              <button onClick={() => navigate("/scrutiny/fpms/create-files")}>
                 📄 Create Files
               </button>
 
-              <button onClick={() => navigate("/fpms/view-files")}>
+              <button onClick={() => navigate("/scrutiny/fpms/view-files")}>
                 📁 View Files
               </button>
                   {/* ✅ ADD THIS */}
@@ -72,7 +77,7 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
             </div>
           )}
         </>
-      <button onClick={() => navigate("/UnregisterList")}>
+      <button onClick={() => navigate("/scrutiny/UnregisterList")}>
         Rera unregistration
       </button>
       {/* Logout */}

@@ -585,13 +585,18 @@ def get_scrutiny_project_registrations(dept=None):
     ]
     ad_districts_str = ", ".join([f"UPPER('{d}')" for d in ad_districts])
 
-    if dept and dept.lower() != "verification":
-        required_verification = "'verification'"
-        is_ad = dept.lower() in ["ad", "assistant director"]
-        is_dd = dept.lower() in ["dd", "deputy director"]
+    dept_key = str(dept or "").strip().lower()
+
+    if dept_key and dept_key != "verification":
+        required_verification_condition = "LOWER(v.verified_by) = 'verification'"
+        is_ad = dept_key in ["ad", "assistant director"]
+        is_dd = dept_key in ["dd", "deputy director"]
+        is_director = dept_key in ["director", "dir"]
 
         if is_ad or is_dd:
-            required_verification = "'planning'"
+            required_verification_condition = "LOWER(v.verified_by) = 'planning'"
+        elif is_director:
+            required_verification_condition = "LOWER(v.verified_by) IN ('ad', 'dd', 'assistant director', 'deputy director')"
 
         condition1 = f"""
         AND EXISTS (
@@ -599,7 +604,7 @@ def get_scrutiny_project_registrations(dept=None):
             FROM verification_final_status v
             WHERE TRIM(v.application_no) = TRIM(preg.application_no)
             AND v.status = 'verified'
-            AND LOWER(v.verified_by) = {required_verification}
+            AND {required_verification_condition}
         )
         """
         
@@ -609,7 +614,7 @@ def get_scrutiny_project_registrations(dept=None):
             FROM verification_final_status v
             WHERE TRIM(v.application_no) = TRIM(ppo.application_no)
             AND v.status = 'verified'
-            AND LOWER(v.verified_by) = {required_verification}
+            AND {required_verification_condition}
         )
         """
 

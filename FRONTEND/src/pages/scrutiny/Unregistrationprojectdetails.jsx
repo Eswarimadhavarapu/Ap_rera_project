@@ -1462,7 +1462,7 @@ const hasExemption = d.exemption_id !== null;
     Applicant is applied in Project Registration
   </p>
 
-) : isRegistered && !hasRegNo && hasExemption ? (
+) : !hasRegNo && hasExemption ? (
 
   <p style={{ color: "blue", fontWeight: "bold" }}>
     Applicant is applied for Exemption

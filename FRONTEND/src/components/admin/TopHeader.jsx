@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.jpg";
 // import "../../styles/admin/adminsidebar.css"
 
-const TopHeader = ({ toggleSidebar, showHamburger = true }) => {
+const TopHeader = ({ toggleSidebar, sidebarOpen, showHamburger = true }) => {
 
   const [showProfile, setShowProfile] = useState(false);
   const [admin, setAdmin] = useState(null);
@@ -20,18 +20,22 @@ const TopHeader = ({ toggleSidebar, showHamburger = true }) => {
   }, []);
 
   return (
-    <div className="admin-top-header">
+    <div className={`admin-top-header ${!sidebarOpen ? "full" : ""}`}>
 
       <div className="admin-header-left">
-        {showHamburger && (
-          <button className="admin-hamburger" onClick={toggleSidebar}>
-            ☰
-          </button>
-        )}
+  <button className="admin-hamburger" onClick={toggleSidebar}>
+    ☰
+  </button>
 
-        <img src={logo} alt="AP RERA" className="admin-header-logo" />
-        <h2 className="admin-header-heading">ANDHRA PRADESH REAL ESTATE REGULATORY AUTHORITY</h2>
-      </div>
+  <div className="admin-logo-box">
+    <img src={logo} alt="AP RERA" />
+  </div>
+
+ <div className="admin-header-text">
+    <h2>ANDHRA PRADESH</h2>
+    <h3>REAL ESTATE REGULATORY AUTHORITY</h3>
+  </div>
+</div>
 
       <div className="admin-header-right">
 

@@ -4,6 +4,7 @@ import { apiPost } from "../../api/api";
 import "../../styles/scrutiny/ScrutinyCreateFile.css";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 
+
 const TYPE_OPTIONS = [
   "Memo",
   "Letter",
@@ -182,7 +183,7 @@ const ScrutinyCreateFile = () => {
   };
 
   return (
-    <ScrutinyLayout>
+   
 <div className="scf-scf-main">
       <div className="scf-scf-body">
         <div className="scf-scf-content">
@@ -387,7 +388,6 @@ const ScrutinyCreateFile = () => {
         </div>
       </div>
     </div>
-    </ScrutinyLayout>
     
   );
 };

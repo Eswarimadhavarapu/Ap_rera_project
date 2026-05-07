@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "../../api/api";
-import ScrutinySidebar from "../../components/scrutiny/ScrutinitySidebar";
+import FpmsSidebar from "../../pages/scrutiny/FpmsSidebar";
 import TopHeader from "../../components/scrutiny/TopHeader";
 import "../../styles/scrutiny/fpms.css";
 
@@ -88,7 +88,7 @@ const ScrutinyFpmsDashboard = () => {
 
   return (
     <div className="scrutiny-layout">
-      <ScrutinySidebar sidebarOpen={sidebarOpen} />
+<div className="scrutiny-layout"></div>
 
       <div className={`scrutiny-main ${sidebarOpen ? "" : "scrutiny-main-full"}`}>
         <TopHeader toggleSidebar={toggleSidebar} />

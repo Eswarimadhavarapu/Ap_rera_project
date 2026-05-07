@@ -43,7 +43,7 @@
 .homeservices-section-title {
   font-size: 22px;
   font-weight: 600;
-  margin: 40px 0 30px;
+  margin: 30px 0 25px;
 }
 
 /* SERVICES GRID */
@@ -51,7 +51,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px 30px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 /* SERVICE CARD */

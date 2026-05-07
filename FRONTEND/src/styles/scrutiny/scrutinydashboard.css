@@ -13,7 +13,7 @@ min-height:100vh;
     left: 0;
     width: 250px;
     height: calc(100vh - 70px);
-    background: #0f3556;
+    background: #5C3317;
     color: white;
     display: flex;
     flex-direction: column;
@@ -71,16 +71,16 @@ min-height:100vh;
 
 /* Hover effect */
 .scrutiny-sidebar button:hover{
-    background: #174a75;
+    background: #5C3317;
     color: #ffffff;
     border-left: 4px solid #ffffff;
 }
 
 /* Active button */
 .scrutiny-sidebar button.active{
-    background: #1f5d8b;
+    background: #5C3317;
     color: #ffffff;
-    border-left: 4px solid #00c3ff;
+    border-left: 4px solid #5C3317;
     font-weight: 600;
 }
 
@@ -136,14 +136,14 @@ height:52px;
 border-radius:50%;          /* makes circle */
 object-fit:contain;
 background:#ffffff;
-border:2px solid #0b4ea2;   /* blue ring */
+border:2px solid #5C3317;   /* blue ring */
 padding:6px;
 }
 
 .scrutiny-header-left h2{
 font-size:22px;
 font-weight:600;
-color: #0b4ea2;
+color: #5C3317;
 }
 
 .scrutiny-header-right{
@@ -237,12 +237,12 @@ text-align:center;
 }
 
 .scrutiny-table th{
-background:#0f3556;
+background:#5C3317;
 color:white;
 }
 
 .scrutiny-view-btn{
-background:#0f3556;
+background:#5C3317;
 color:white;
 border:none;
 padding:6px 12px;
@@ -251,7 +251,7 @@ border-radius:4px;
 }
 
 .scrutiny-view-btn:hover{
-background:#174a75;
+background:#5C3317;
 }
 
 .scrutiny-profile-img{
@@ -260,7 +260,7 @@ height:38px;
 border-radius:50%;
 object-fit:cover;
 cursor:pointer;
-border:2px solid #0f3556;
+border:2px solid #5C3317;
 margin-left:10px;
 }
 
@@ -276,7 +276,7 @@ width:40px;
 height:40px;
 border-radius:50%;
 cursor:pointer;
-border:2px solid #0f3556;
+border:2px solid #5C3317;
 }
 
 /* Profile popup card */
@@ -321,7 +321,7 @@ width:90%;
 margin:15px auto;
 display:block;
 padding:10px;
-background:#0f3556;
+background:#5C3317;
 color:white;
 border:none;
 border-radius:6px;

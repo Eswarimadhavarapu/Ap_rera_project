@@ -165,6 +165,7 @@ def create_app():
     from app.controllers.verification_controller import verification_bp
     from app.controllers.project_unregistered_controller import project_unregistered_bp 
     from app.controllers.project_exemption_controller import project_exemption_bp
+    from app.controllers.agent_scrutiny_controller import agent_scrutiny_bp
     
 
 
@@ -220,6 +221,7 @@ def create_app():
     app.register_blueprint(verification_bp, url_prefix="/api")
     app.register_blueprint(project_unregistered_bp, url_prefix="/api")
     app.register_blueprint(project_exemption_bp, url_prefix="/api")
+    app.register_blueprint(agent_scrutiny_bp)
 
 
     return app

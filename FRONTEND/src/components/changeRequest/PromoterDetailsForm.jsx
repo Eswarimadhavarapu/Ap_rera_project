@@ -95,8 +95,11 @@ const handleValidatedChange = (e, onChange) => {
 };
 
 // ─── SUB-SECTION CONFIGS ─────────────────────────────────────────────────────
+
 export const PROMOTER_DETAILS_SUBSECTIONS = [
+ 
   {
+    
     id: "bank_account",
     label: "Bank Account Details",
     fields: [
@@ -589,6 +592,7 @@ function Promoter2Section({ fields, formValues, onChange }) {
 
 // ─── MAIN EXPORT ──────────────────────────────────────────────────────────────
 export default function PromoterDetailsForm({
+   
   subSectionId,
   formValues = {},
   onChange = () => { },
@@ -596,53 +600,51 @@ export default function PromoterDetailsForm({
   setTableStore = () => { },
   previewData
 }) {
+  
   const subSections = PROMOTER_DETAILS_SUBSECTIONS;
 
   const tableData = tableStore[subSectionId] || [];
   const setTableData = (rows) => setTableStore((prev) => ({ ...prev, [subSectionId]: rows }));
 
-  return (
+return (
   <>
-    {subSections.map((section) => {
-      const tableData = tableStore[section.id] || [];
-      const setTableData = (rows) =>
-        setTableStore((prev) => ({ ...prev, [section.id]: rows }));
+   
 
-      return (
-        <div key={section.id} style={{ marginBottom: "30px" }}>
+    {/* ✅ EXISTING CODE */}
+    {subSections
+      .filter((section) => section.id === subSectionId)
+      .map((section) => {
+        const tableData = tableStore[section.id] || [];
 
-          {/* SECTION TITLE */}
-          <h3 style={{
-            fontSize: "16px",
-            fontWeight: "700",
-            color: "#1e3a5f",
-            marginBottom: "10px"
-          }}>
-            {section.label}
-          </h3>
+        return (
+          <div key={section.id} style={{ marginBottom: "30px" }}>
+            <h3>{section.label}</h3>
 
-          {/* SECTION RENDER */}
-          {section.id === "bank_account" && (
-            <BankAccountSection
-              fields={section.fields}
-              formValues={formValues}
-              onChange={onChange}
-            />
-          )}
+            {section.id === "bank_account" && (
+              <BankAccountSection
+                fields={section.fields}
+                formValues={formValues}
+                onChange={onChange}
+              />
+            )}
 
-          {section.id === "promoter_personal" && (
-            <PromoterPersonalSection
-              fields={section.fields}
-              onChange={onChange}
-              tableData={tableData}
-              setTableData={setTableData}
-              previewData={previewData}
-            />
-          )}
-
-        </div>
-      );
-    })}
+            {section.id === "promoter_personal" && (
+              <PromoterPersonalSection
+                fields={section.fields}
+                onChange={onChange}
+                tableData={tableData}
+                setTableData={(rows) =>
+                  setTableStore((prev) => ({
+                    ...prev,
+                    [section.id]: rows,
+                  }))
+                }
+                previewData={previewData}
+              />
+            )}
+          </div>
+        );
+      })}
   </>
 );
 }

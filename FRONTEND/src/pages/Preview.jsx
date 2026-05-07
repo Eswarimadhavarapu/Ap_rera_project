@@ -361,8 +361,11 @@ useEffect(() => {
 </b>
           </p>
 
-          {agent.last_five_years_project_details === "Yes" && (
-            <table className="agentpreview-doc-table">
+{(agent.last_five_years_project_details === true ||
+  agent.last_five_years_project_details === "true" ||
+  agent.last_five_years_project_details === "Yes" ||
+  agent.last_five_years_project_details?.value === true) && (
+                <table className="agentpreview-doc-table">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -399,8 +402,10 @@ useEffect(() => {
 </b>
           </p>
 
-          {agent.any_civil_criminal_cases === "Yes" && (
-            <table className="agentpreview-doc-table">
+{(agent.any_civil_criminal_cases === true ||
+  agent.any_civil_criminal_cases === "true" ||
+  agent.any_civil_criminal_cases === "Yes") && (
+                <table className="agentpreview-doc-table">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -452,8 +457,10 @@ useEffect(() => {
             <b>{agent.registration_other_states || "No"}</b>
           </p>
 
-          {agent.registration_other_states === "Yes" && (
-            <table className="agentpreview-doc-table">
+{(agent.registration_other_states === true ||
+  agent.registration_other_states === "true" ||
+  agent.registration_other_states === "Yes") && (
+                <table className="agentpreview-doc-table">
               <thead>
                 <tr>
                   <th>S.No</th>

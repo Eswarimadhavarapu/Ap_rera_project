@@ -2,7 +2,7 @@
    SUCCESS / ALERT MESSAGES (FETCH + UPDATE)
 ===================================================== */
 
-.alert {
+.alert-scrutiny {
   width: 100%;
   padding: 14px 18px;
   margin: 10px 0 18px;
@@ -14,21 +14,21 @@
 }
 
 /* GREEN SUCCESS BANNER (LIKE GOVERNMENT PORTAL) */
-.alert-success {
+.alert-success-scrutiny {
   background-color: #e8f5e9;
   border-color: #c8e6c9;
   color: #2e7d32;
 }
 
 /* OPTIONAL ERROR STYLE (future ready) */
-.alert-error {
+.alert-error-scrutiny {
   background-color: #fdecea;
   border-color: #f5c6cb;
   color: #c62828;
 }
 
 /* SMALL LEFT ICON EFFECT */
-.alert-success::before {
+.alert-success-scrutiny::before {
   content: "✔";
   margin-right: 10px;
   font-weight: bold;
@@ -68,7 +68,7 @@ body {
 /* =====================================================
    PAGE CONTAINER
 ===================================================== */
-.project-details-container {
+.project-details-container-scrutiny {
   max-width: 1200px;
   margin: 12px auto 80px;
   padding: 10px 12px;
@@ -76,21 +76,21 @@ body {
   width: 100%;
 }
 
-.project-form {
+.project-form-scrutiny {
   width: 100%;
 }
 
 /* =====================================================
    PAGE TITLE
 ===================================================== */
-.page-title {
+.page-title-scrutiny {
   font-size: 22px;
   font-weight: 600;
   color: #000;
   margin: 10px 0 14px;
 }
 
-.page-title::after {
+.page-title-scrutiny::after {
   content: "";
   display: block;
   width: 70px;
@@ -102,7 +102,7 @@ body {
 /* =====================================================
    WIZARD / PROGRESS HEADER
 ===================================================== */
-.progress-steps {
+.progress-steps-scrutiny {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -113,7 +113,7 @@ body {
   counter-reset: step;
 }
 
-.progress-steps::before {
+.progress-steps-scrutiny::before {
   content: "";
   position: absolute;
   top: 46px;
@@ -123,7 +123,7 @@ body {
   background: #cfcfcf;
 }
 
-.step {
+.step-scrutiny {
   position: relative;
   width: 12.5%;
   text-align: center;
@@ -132,7 +132,7 @@ body {
   padding-top: 52px;
 }
 
-.step::before {
+.step-scrutiny::before {
   counter-increment: step;
   content: counter(step);
   width: 38px;
@@ -148,7 +148,7 @@ body {
   border: 1px solid #cfcfcf;
 }
 
-.step.active::before {
+.step-scrutiny.active-scrutiny::before {
   background: #4caf50;
   color: #fff;
   border-color: #43a047;
@@ -157,7 +157,7 @@ body {
 /* =====================================================
    FORM SECTION
 ===================================================== */
-.form-section {
+.form-section-scrutiny {
   border: 1px solid #dcdcdc;
   padding: 12px 10px;
   margin-bottom: 14px;
@@ -166,7 +166,7 @@ body {
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
-.subheading {
+.subheading-scrutiny {
   font-size: 18px;
   font-weight: 600;
   color: #00838f;
@@ -174,7 +174,7 @@ body {
   position: relative;
 }
 
-.subheading::after {
+.subheading-scrutiny::after {
   content: "";
   display: block;
   width: 50px;
@@ -186,14 +186,14 @@ body {
 /* =====================================================
    GRID SYSTEM (FINAL – NO DUPLICATES)
 ===================================================== */
-.innerdivrow {
+.innerdivrow-scrutiny {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   margin-bottom: 12px;
 }
 
-.col-sm-3 {
+.col-sm-3-scrutiny {
   flex: 0 0 25%;
   max-width: 25%;
   padding: 6px 10px;
@@ -204,7 +204,7 @@ body {
 }
 
 /* ===== GRID WIDTHS FOR CONSTRUCTION STATUS ===== */
-.col-sm-6 {
+.col-sm-6-scrutiny {
   flex: 0 0 50%;
   max-width: 50%;
   padding: 6px 10px;
@@ -214,7 +214,7 @@ body {
   min-width: 0;
 }
 
-.col-sm-4 {
+.col-sm-4-scrutiny {
   flex: 0 0 33.3333%;
   max-width: 33.3333%;
   padding: 6px 10px;
@@ -224,7 +224,7 @@ body {
   min-width: 0;
 }
 
-.col-sm-12 {
+.col-sm-12-scrutiny {
   flex: 0 0 100%;
   max-width: 100%;
   padding: 6px 10px;
@@ -234,13 +234,13 @@ body {
   min-width: 0;
 }
 
-.radio-group {
+.radio-group-scrutiny {
   display: flex;
   gap: 20px;
   margin-top: 6px;
 }
 
-.radio-group label {
+.radio-group-scrutiny label {
   font-weight: normal;
 }
 
@@ -248,7 +248,7 @@ body {
 /* =====================================================
    FORM GROUP
 ===================================================== */
-.form-group {
+.form-group-scrutiny {
   display: flex;
   flex-direction: column;
 }
@@ -256,7 +256,7 @@ body {
 /* =====================================================
    LABELS
 ===================================================== */
-.label {
+.label-scrutiny {
   font-size: 13px;
   font-weight: 600;
   color: #000;
@@ -271,7 +271,7 @@ font[color="red"] {
    INPUTS & SELECTS
 ===================================================== */
 
-.inputbox {
+.inputbox-scrutiny {
   width: 100%;
   height: 38px;                 /* 🔑 taller like site */
   padding: 8px 10px;
@@ -281,27 +281,27 @@ font[color="red"] {
   background-color:#f9f7f7;    /* 🔑 site color */
 }
 
-.inputbox:focus {
+.inputbox-scrutiny:focus {
   border-color: #1e88e5;
   outline: none;
 }
 
-.inputbox[readonly],
-.disabled-look {
+.inputbox-scrutiny[readonly],
+.disabled-look-scrutiny {
   background-color: #f2f2f2;
   color: #9e9e9e;
 
 }
 
-input[type="file"].inputbox {
+input[type="file"].inputbox-scrutiny {
   height: auto;
   padding: 4px;
 }
-select.inputbox {
+select.inputbox-scrutiny {
   height: 38px;
   background-color: #faf7f6;
 }
-input[type="file"].inputbox {
+input[type="file"].inputbox-scrutiny {
   height: 38px;
   padding: 6px;
   background-color: #faf7f6;
@@ -318,39 +318,39 @@ input[type="file"].inputbox {
 /* =====================================================
    NOTES
 ===================================================== */
-.note,
-.note-text {
+.note-scrutiny,
+.note-text-scrutiny {
   margin-top: 6px;
   font-size: 13px;
   color: #d32f2f;
   line-height: 1.4;
 }
 
-.note-text a {
+.note-text-scrutiny a {
   color: #0066cc;
   font-weight: 600;
   text-decoration: none;
 }
 
-.note-text a:hover {
+.note-text-scrutiny a:hover {
   text-decoration: underline;
 }
 
 /* =====================================================
    LEGAL DECLARATION
 ===================================================== */
-.legal-declaration {
+.legal-declaration-scrutiny {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   padding: 10px 8px;
 }
 
-.legal-declaration input[type="checkbox"] {
+.legal-declaration-scrutiny input[type="checkbox"] {
   margin-top: 3px;
 }
 
-.legal-declaration label {
+.legal-declaration-scrutiny label {
   font-size: 13px;
   line-height: 1.5;
 }
@@ -358,7 +358,7 @@ input[type="file"].inputbox {
 /* =====================================================
    BUTTONS
 ===================================================== */
-.btn {
+.btn-scrutiny {
   font-size: 13px;
   padding: 8px 24px;
   border-radius: 3px;
@@ -366,12 +366,12 @@ input[type="file"].inputbox {
   cursor: pointer;
 }
 
-.btn-primary {
+.btn-primary-scrutiny {
   background: #1e88e5;
   color: #ffffff;
 }
 
-.btn-primary:hover {
+.btn-primary-scrutiny:hover {
   background: #1565c0;
 }
 
@@ -388,7 +388,7 @@ a:hover {
 }
 
 /* ===== MATERIAL FACTS TEXT ===== */
-.material-text {
+.material-text-scrutiny {
   font-size: 13px;
   font-weight: 600;
   color: #000;
@@ -397,25 +397,25 @@ a:hover {
 }
 
 /* ===== LEGAL DECLARATION BOX ===== */
-.legal-box {
+.legal-box-scrutiny {
   background: #ffffff;
   border: 1px solid #dcdcdc;
 }
 
-.legal-declaration {
+.legal-declaration-scrutiny {
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 
-.legal-declaration label {
+.legal-declaration-scrutiny label {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
 }
 
 /* ===== LEGAL CHECKBOX INLINE FIX ===== */
-.legal-inline {
+.legal-inline-scrutiny {
   display: flex;
   align-items: flex-start;   /* aligns checkbox with text top */
   gap: 10px;
@@ -426,12 +426,12 @@ a:hover {
   
 }
 
-.legal-inline input[type="checkbox"] {
+.legal-inline-scrutiny input[type="checkbox"] {
   margin-top: 3px;           /* vertical fine-tune */
   cursor: pointer;
 }
 /* ===== FORM FOOTER (SAVE BUTTON) ===== */
-.form-footer {
+.form-footer-scrutiny {
   display: flex;
   justify-content: flex-end;
   padding: 14px 16px;
@@ -440,7 +440,7 @@ a:hover {
   margin-top: 12px;
 }
 
-.form-footer .btn {
+.form-footer-scrutiny .btn {
   min-width: 160px;
   font-size: 14px;
   padding: 10px 22px;
@@ -505,7 +505,7 @@ a:hover {
 ===================================================== */
 
 /* AUTHORIZED SIGNATORY HEADING INSIDE BOX */
-.other-signatory-section .subheading {
+.other-signatory-section-scrutiny .subheading-scrutiny {
   font-size: 22px;
   font-weight: 600;
   color: #00838f;     /* GREEN COLOR */
@@ -513,7 +513,7 @@ a:hover {
   position: relative;
 }
 
-.other-signatory-section .subheading::after {
+.other-signatory-section-scrutiny .subheading-scrutiny::after {
   content: "";
   display: block;
   width: 160px;
@@ -523,7 +523,7 @@ a:hover {
 }
 
 
-.other-signatory-section {
+.other-signatory-section-scrutiny {
   background: #ffffff !important;
   border: 1px solid #dcdcdc;
   padding: 14px 12px;
@@ -531,14 +531,14 @@ a:hover {
   border-radius: 6px;
 }
 
-.other-signatory-title {
+.other-signatory-title-scrutiny {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 18px;
   position: relative;
 }
 
-.other-signatory-title::after {
+.other-signatory-title-scrutiny::after {
   content: "";
   display: block;
   width: 180px;
@@ -551,7 +551,7 @@ a:hover {
    READ ONLY DISPLAY (LIKE SCREENSHOT)
 ===================================================== */
 
-.display-group {
+.display-group-scrutiny {
   display: flex;
   flex-direction: column;
   margin-bottom: 14px;
@@ -559,7 +559,7 @@ a:hover {
   height: 100%;
 }
 
-.display-label {
+.display-label-scrutiny {
   font-size: 13px;
   font-weight: 600;
   color: #8e24aa;   /* purple */
@@ -568,7 +568,7 @@ a:hover {
   overflow-wrap: anywhere;
 }
 
-.display-field {
+.display-field-scrutiny {
   font-size: 14px;
   font-weight: 600;
   color: #222;
@@ -577,7 +577,7 @@ a:hover {
   word-break: break-word;
 }
 
-.display-group a {
+.display-group-scrutiny a {
   margin-top: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -585,7 +585,7 @@ a:hover {
 }
 
 /* remove input look completely (fallback if used anywhere) */
-.inputbox {
+.inputbox-scrutiny {
   border: none !important;
   background: transparent !important;
   padding: 0 !important;

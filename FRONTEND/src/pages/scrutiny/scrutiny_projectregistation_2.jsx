@@ -517,27 +517,27 @@ const handleSubmit = async (e) => {
 
   return (
     <ScrutinyLayout>
-      <div className="project-details-container">
+      <div className="project-details-container-scrutiny">
 
         <ScrutinyPageHeader />
 
         <ProjectWizard currentStep={2} />
         
          {fetchSuccessMsg && (
-    <div className="alert alert-success">
+    <div className="alert-scrutiny alert-success-scrutiny">
       {fetchSuccessMsg}
     </div>
   )}
 
   {saveSuccessMsg && (
-    <div className="alert alert-success">
+    <div className="alert-scrutiny alert-success-scrutiny">
       {saveSuccessMsg}
     </div>
   )}
 
         
 
-        <form onSubmit={handleSubmit} className="project-form">
+        <form onSubmit={handleSubmit} className="project-form-scrutiny">
 
          <ScrutinyProjectRegistrationSection
     formData={{ ...formData, totalOpenArea, totalProjectCost }}
@@ -581,9 +581,9 @@ const handleSubmit = async (e) => {
             onChange={setRemarks}
           />
 
-          <div className="form-section">
+          <div className="form-section-scrutiny">
 
-            <button type="submit" className="btn btn-primary pull-right">
+            <button type="submit" className="btn-scrutiny btn-primary-scrutiny pull-right-scrutiny">
 
               {isExistingProject ? "Next Page" : "Save And Continue"}
 

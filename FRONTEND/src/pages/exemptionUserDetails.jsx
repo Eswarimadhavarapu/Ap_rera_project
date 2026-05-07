@@ -37,7 +37,7 @@ const ICONS = {
 /* ── Read role from AdminContext ── */
 /* ── Status badge ── */
 const StatusBadge = ({ status }) => {
-  const s = (status || "").toLowerCase();
+  const s = (status || "");
   const map = {
     s1_accepted: { cls: "s1", label: "S1 Reviewed" },
     s2_approved: { cls: "approved", label: "Approved" },
@@ -134,7 +134,7 @@ const UserDetails = () => {
   const defaultId = Number(id) || 1;
 
   const { admin } = useAdmin();
-  const role = admin?.role?.toLowerCase() || "staff";
+  const role = admin?.role || "staff";
   const userId = admin?.id || 1;
 
   const [user, setUser] = useState(null);
@@ -155,7 +155,7 @@ const UserDetails = () => {
     if (/^https?:\/\//i.test(path)) return path;
 
     const normalizedPath = path.replace(/\\/g, "/").replace(/^\/+/, "");
-    const uploadsIndex = normalizedPath.toLowerCase().indexOf("uploads/");
+    const uploadsIndex = normalizedPath.indexOf("uploads/");
     const relativePath = uploadsIndex >= 0
       ? normalizedPath.slice(uploadsIndex)
       : normalizedPath;
@@ -195,16 +195,15 @@ const UserDetails = () => {
 
     try {
       setSending(true);
-      const res = await submitStage1(defaultId, {
+      await submitStage1(defaultId, {
         remark_s1: remarks.trim(),
-        
+        remark_s1_optional: remarks2.trim(),
         authority_id: userId
       });
-      if (!res.ok) throw new Error("Stage 1 failed");
       await refreshUser();
       setSendSuccess("✔ Remarks submitted. Application moved to S2 review.");
       setRemarks("");
-     
+      setRemarks2("");
     } catch (err) {
       console.error(err);
       setSendError("Failed to submit. Please try again.");
@@ -223,13 +222,12 @@ const UserDetails = () => {
 
     try {
       setSending(true);
-      const res = await submitStage2(defaultId, {
+      await submitStage2(defaultId, {
         decision,
         remark_s2: remarks.trim(),
         remark_s2_optional: remarks2.trim(),
         authority_id: userId,
       });
-      if (!res.ok) throw new Error("Stage 2 failed");
       await fetchUser();
       setSendSuccess(decision === "approved"
         ? "✔ Application approved. Certificate generated and forwarded to S1 for dispatch."
@@ -251,10 +249,9 @@ const UserDetails = () => {
     setSendError("");
     try {
       setSending(true);
-      const res = await submitStage3(defaultId, {
+      await submitStage3(defaultId, {
         authority_id: userId
       });
-      if (!res.ok) throw new Error("Stage 3 failed");
       await refreshUser();
       setSendSuccess("✔ Certificate email sent to applicant successfully.");
     } catch (err) {
@@ -274,19 +271,11 @@ const UserDetails = () => {
 
     try {
       setSending(true);
-      // Send rejection email (using a simple fetch or you can create a dedicated endpoint)
-      const emailBody = `Dear ${user.name},\n\nWe regret to inform you that your application for Project Exemption (BA Number: ${user.ba_number}) has been rejected.\n\nReason for Rejection:\n${rejectionReason}\n\nIf you have any questions, please contact the Exemption Portal helpdesk.\n\nRegards,\nExemption Portal Team`;
-
-      const res = await sendRejectionEmail(defaultId, {
+      await sendRejectionEmail(defaultId, {
         email: user.email,
         reason: rejectionReason,
         authority_id: userId,
       });
-
-      if (!res.ok) {
-        // Fallback: if endpoint doesn't exist, show success anyway but log error
-        console.error("Rejection email endpoint not found, but marking as sent");
-      }
 
       await refreshUser();
       setSendSuccess("✔ Rejection email sent to applicant successfully.");
@@ -316,15 +305,15 @@ const UserDetails = () => {
 ══════════════════════════════════ */
 
   // STAFF handles S1 & S3
-  const isStaff = role === "staff";
-  const isSuperAdmin = role === "super_admin" || role === "admin";
+  const isStaff = role === "Engineer";
+  const isSuperAdmin = role === "seniarAdit" || role === "admin";
 
   // S1 → STAFF
   const canActS1 = isStaff && !user.remark_s1;
 
-  // S2 → SUPER_ADMIN
+  // S2 → seniarAdit
   const canActS2 =
-    (role === "super_admin" || role === "admin") &&
+    (role === "seniarAdit" || role === "admin") &&
     user.approver_status === "s1_accepted";
 
   // S3 → STAFF only after approval
@@ -343,8 +332,8 @@ const UserDetails = () => {
               ? "S3 — Final Dispatch (STAFF)"
               : "S1 — Engineer Review (STAFF)")
             : (user.approver_status === "s2_approved"
-              ? "S3 — Final Dispatch (SUPER_ADMIN)"
-              : "S2 — Planning Authority (SUPER_ADMIN)")}
+              ? "S3 — Final Dispatch (seniarAdit)"
+              : "S2 — Planning Authority (seniarAdit)")}
         </div>
       </div>
 
@@ -422,18 +411,27 @@ const UserDetails = () => {
             <div className="card-body">
               <RemarkRow
                 level="s1"
-                remark={user.remark_s1}
+                remark={
+                  user.remark_s1 +
+                  (user.remark_s1_optional ? `\n\nAdditional: ${user.remark_s1_optional}` : "")
+                }
                 authorityId={user.s1_authority_id}
                 checkedDate={user.s1_authority_checked_date}
               />
+
               <RemarkRow
                 level="s2"
-                remark={user.remark_s2}
+                remark={
+                  user.remark_s2 +
+                  (user.remark_s2_optional ? `\n\nAdditional: ${user.remark_s2_optional}` : "")
+                }
                 authorityId={user.s2_authority_id}
                 checkedDate={user.s2_authority_checked_date}
                 decision={
-                  user.approver_status === "s2_approved" ? "approved"
-                    : user.approver_status === "s2_rejected" ? "rejected"
+                  user.approver_status === "s2_approved"
+                    ? "approved"
+                    : user.approver_status === "s2_rejected"
+                      ? "rejected"
                       : null
                 }
               />
@@ -462,7 +460,13 @@ const UserDetails = () => {
               onChange={(e) => setRemarks(e.target.value)}
             />
 
-           
+            <textarea
+              className="remarks-textarea"
+              placeholder="Additional Remarks (Optional)"
+              value={remarks2}
+              rows={3}
+              onChange={(e) => setRemarks2(e.target.value)}
+            />
             <div className="char-count">{remarks.length} characters</div>
 
             {sendError && <p className="send-error">⚠ {sendError}</p>}
@@ -628,7 +632,7 @@ const UserDetails = () => {
           <div className="waiting-body">
 
             {isStaff && user.remark_s1 && user.approver_status !== "s2_approved" && (
-              <p>✔ You have submitted S1 remarks. Waiting for SUPER_ADMIN decision.</p>
+              <p>✔ You have submitted S1 remarks. Waiting for seniarAdit decision.</p>
             )}
 
             {isSuperAdmin && !user.remark_s1 && (
@@ -640,7 +644,7 @@ const UserDetails = () => {
             )}
 
             {isStaff && user.approver_status !== "s2_approved" && user.remark_s1 && (
-              <p>⏳ Waiting for SUPER_ADMIN approval before dispatch.</p>
+              <p>⏳ Waiting for seniarAdit approval before dispatch.</p>
             )}
 
           </div>

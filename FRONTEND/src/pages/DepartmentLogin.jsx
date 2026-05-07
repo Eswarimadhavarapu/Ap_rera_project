@@ -39,16 +39,32 @@ const DepartmentLogin = () => {
     try {
       const data = await apiPost("/api/admin/verify-otp", { username, otp });
       saveAdmin(data.admin); // ✅ saves to context + localStorage in one call
-      const dept = data.admin.department?.toLowerCase();
+      const normalizeDept = (value) => {
+        const deptName = String(value || "").toLowerCase();
+        if (deptName.includes("assistant director")) return "ad";
+        if (deptName.includes("deputy director")) return "dd";
+        if (deptName.includes("director")) return "director";
+        if (deptName.includes("verification")) return "verification";
+        if (deptName.includes("planning")) return "planning";
+        if (deptName.includes("legal")) return "legal";
+        if (deptName.includes("audit")) return "audit";
+        if (deptName.includes("engineer")) return "engineer";
+        if (deptName.includes("l1")) return "l1";
+        if (deptName.includes("l2")) return "l2";
+        return deptName;
+      };
+
+      const dept = normalizeDept(data.admin.department);
 
 const deptRoutes = {
   planning: "/planning/planning-dashboard",
-  legal: "/legal/legal-dashboard",
-  audit: "/audit/audit-dashboard",
+  legal: "/scrutiny/legal/legal-dashboard",
+  audit: "/scrutiny/audit/audit-dashboard",
   engineer: "/scrutiny/scrutiny-engineer",
-  verification: "/verification/verification-dashboard",
-  ad: "/ad/ad-dashboard",
-  dd: "/dd/dd-dashboard",
+  verification: "/scrutiny/verification/verification-dashboard",
+  ad: "/scrutiny/ad/ad-dashboard",
+  dd: "/scrutiny/dd/dd-dashboard",
+  director: "/scrutiny/directory/directory-dashboard",
   l1: "/scrutiny/L1/L1-dashboard",
   l2: "/scrutiny/L2/L2-dashboard",
 };
