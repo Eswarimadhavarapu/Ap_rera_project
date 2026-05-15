@@ -1,13 +1,5 @@
 
 
-/* ================= GLOBAL ================= */
-body {
-  background: #e6edf3;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  color: #000;
-}
-
 /* ================= MAIN CONTAINER ================= */
 .cr-container {
   width: 100%;
@@ -35,7 +27,7 @@ body {
 }
 
 /* ================= LABEL ================= */
-.cr-container label {
+.cr-container .cr-complaint-label {
   font-weight: 600;
   font-size: 14px;
   margin-bottom: 6px;
@@ -43,7 +35,7 @@ body {
 }
 
 /* ================= FORM CONTROLS (UNIFORM) ================= */
-.cr-container input,
+.cr-container .cr-container-input,
 .cr-container select,
 .cr-container textarea {
   width: 100%;
@@ -62,14 +54,14 @@ body {
 }
 
 /* ================= FILE INPUT ================= */
-.cr-container input[type="file"] {
+.cr-container .cr-container-input[type="file"] {
   height: 42px;
   padding: 6px 8px;
 }
 
 /* ================= RADIO & CHECKBOX ================= */
-.cr-container input[type="radio"],
-.cr-container input[type="checkbox"] {
+.cr-container .cr-container-input[type="radio"],
+.cr-container .cr-container-input[type="checkbox"] {
   width: 14px;
   height: 14px;
 }
@@ -77,8 +69,8 @@ body {
 /* ================= GRID LAYOUT ================= */
 
 /* Two fields per row */
-.cr-row,
-.cr-row-2 {
+.cr-container-cr-row,
+.cr-container-cr-row-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(320px, 0.3fr));
   gap: 24px;
@@ -86,7 +78,7 @@ body {
 }
 
 /* Three fields per row */
-.cr-row-3 {
+.cr-container-cr-row-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(320px, 0.3fr));
   gap: 20px;
@@ -108,8 +100,8 @@ body {
   height: 42px;
 }
 
-.cr-radio-line label,
-.cr-radio-inline label {
+.cr-radio-line .cr-complaint-label,
+.cr-radio-inline .cr-complaint-label {
   font-weight: normal;
   display: flex;
   align-items: center;
@@ -228,15 +220,15 @@ body {
 }
 
 /* ================= REQUIRED STAR ================= */
-label span {
+.cr-complaint-label span {
   color: red;
 }
 
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
-  .cr-row,
-  .cr-row-2,
-  .cr-row-3 {
+  .cr-container-cr-row,
+  .cr-container-cr-row-2,
+  .cr-container-cr-row-3 {
     grid-template-columns: 1fr;
   }
 }
@@ -247,7 +239,7 @@ label span {
 /* ===================================================== */
 
 /* -------- TEXT / SELECT / FILE / TEXTAREA -------- */
-.cr-container input:not([type="radio"]):not([type="checkbox"]),
+.cr-container .cr-container-input:not([type="radio"]):not([type="checkbox"]),
 .cr-container select,
 .cr-container textarea {
   width: 320px !important;
@@ -261,14 +253,14 @@ label span {
 }
 
 /* File input exact match */
-.cr-container input[type="file"] {
+.cr-container .cr-container-input[type="file"] {
   padding: 6px 8px !important;
   line-height: 28px;
 }
 
 /* -------- RADIO & CHECKBOX (SAME VISUAL SIZE) -------- */
-.cr-container input[type="radio"],
-.cr-container input[type="checkbox"] {
+.cr-container .cr-container-input[type="radio"],
+.cr-container .cr-container-input[type="checkbox"] {
   width: 16px !important;
   height: 16px !important;
   margin: 0;
@@ -285,8 +277,8 @@ label span {
 }
 
 /* -------- LABEL ALIGNMENT -------- */
-.cr-radio-line label,
-.cr-radio-inline label {
+.cr-radio-line .cr-complaint-label,
+.cr-radio-inline .cr-complaint-label {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -303,9 +295,9 @@ label span {
 }
 
 /* -------- REMOVE STRETCH ISSUES IN GRIDS -------- */
-.cr-row,
-.cr-row-2,
-.cr-row-3 {
+.cr-container-cr-row,
+.cr-container-cr-row-2,
+.cr-container-cr-row-3 {
   align-items: flex-start;
 }
 
@@ -319,7 +311,7 @@ label span {
 }
 
 /* Grid limited INSIDE white box */
-.cr-complaint-desc-section .cr-row-3 {
+.cr-complaint-desc-section .cr-container-cr-row-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: 16px;
@@ -329,7 +321,7 @@ label span {
 }
 
 /* Inputs never overflow */
-.cr-complaint-desc-section input {
+.cr-complaint-desc-section .cr-container-input {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;

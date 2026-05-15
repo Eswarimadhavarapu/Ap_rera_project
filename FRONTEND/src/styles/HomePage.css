@@ -156,7 +156,7 @@ body {
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 15px;
-  color: #5C3317;
+  color: #1b1d1d;
 }
 
 /* wrapper safety */
@@ -258,7 +258,7 @@ body {
   align-items: center;
   justify-content: center;
 
-  background: #2563eb;
+  background: #2665ec;
 }
 
 /* icon */
@@ -984,7 +984,7 @@ z-index: 1;
 
 /* highlight number + mail */
 .home-new-highlight {
-  color: #ffe500;
+  color: #ffffff;
   font-weight: 800;
 }
 

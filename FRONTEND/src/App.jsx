@@ -982,6 +982,8 @@ import FPMSLayout from "./pages/scrutiny/FPMSLayout.jsx";
 import AdminExemptionPage from "./pages/scrutiny/admin_exemption.jsx";
 import UserDetails from "./pages/exemptionUserDetails.jsx";
 import ApreatApplication from "./pages/ApreatApplication.jsx";
+import LegalDashboard from "./pages/LegalSideComplaint/LegalDashboard.jsx";
+import ComplaintList from "./pages/LegalSideComplaint/ComplaintList.jsx";
 
 
 function App() {
@@ -1288,6 +1290,11 @@ function App() {
    <Route path="/scrutiny/L1/L1-dashboard" element={<ScrutinyDashboard />} />
  <Route path="/scrutiny/L2/L2-dashboard" element={<ScrutinyDashboard />} />
  <Route path="/apreatapplication" element={<ApreatApplication />} />
+
+<Route path="/scrutiny/legaldashboard" element={<LegalDashboard />} />
+<Route path="/legalcomplaintlist" element={<ComplaintList />} />
+
+ 
  
             <Route path="/mis-reports" element={<MisReports />} />
              <Route path="/reports/R1.1" element={<R1_1_Report />} />

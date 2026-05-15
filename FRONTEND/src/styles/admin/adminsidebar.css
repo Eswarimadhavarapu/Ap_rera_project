@@ -2,7 +2,7 @@
    ROOT THEME (AP RERA)
 ========================= */
 :root {
-  --primary: #5A2D0C;
+  --primary: #a0d4f1;
   --secondary: #C68A2D;
   --bg: #F5EFE6;
   --card: #FFFFFF;
@@ -33,7 +33,8 @@ body {
   width: 240px;
   height: 100vh;
 
-  background: linear-gradient(180deg, #5A2D0C, #3E1F07);
+  background: linear-gradient(180deg, #a0d4f1,
+    #858484);
   color: #fff;
 
   padding: 20px 15px;
@@ -96,7 +97,8 @@ body {
 
 /* Active */
 .admin-sidebar button.active {
-  background: linear-gradient(90deg, #C68A2D, #A16207);
+  background: linear-gradient(90deg, #029cef,
+    #858484);
   color: #fff;
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -249,7 +251,8 @@ body {
   width: 100%;
   padding: 12px;
 
-  background: linear-gradient(135deg, #1E3A5F, #274c77);
+  background: linear-gradient(135deg, #029cef,
+    #858484);
   color: #fff;
 
   border: none;

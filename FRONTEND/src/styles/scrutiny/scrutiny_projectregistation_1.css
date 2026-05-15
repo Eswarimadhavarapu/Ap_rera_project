@@ -135,7 +135,7 @@
 }
 
 .spr-step.active .spr-step-circle {
-  background: #3c87bd;
+  background: #029cef;
   border-color: #3c87bd;
   color: #fff;
 }
@@ -187,7 +187,7 @@
 }
 
 .spr-table th {
-  background: #244f78;
+  background: #029cef;
   color: #fff;
   text-align: center;
   font-weight: 700;

@@ -107,7 +107,7 @@
 }
 
 .sr-within {
-  background: #3148d7;
+  background: #029cef;
 }
 
 .sr-forward {
@@ -197,7 +197,7 @@
 }
 
 .sr-table th {
-  background: #214d77;
+  background: #029cef;
   color: #fff;
   font-size: 13px;
   text-align: left;
@@ -207,7 +207,7 @@
 .sr-table td {
   padding: 14px 12px;
   font-size: 13px;
-  border-bottom: 1px solid #e0e8f0;
+  border-bottom: 1px solid #e0e8f0;  
   vertical-align: top;
 }
 

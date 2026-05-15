@@ -99,20 +99,40 @@ def create_app():
     # def serve_uploaded_file(filename):
 
     #     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+   # ---------------------------------------------------------
+    # Serve Uploaded Files
+    # ---------------------------------------------------------
+
     @app.route("/uploads/<path:filename>")
     def serve_uploaded_file(filename):
-        legacy_upload_folder = os.path.abspath(
-            os.path.join(BASE_DIR, "..", "backend", "uploads")
+
+        print("🔥 FILE ROUTE HIT")
+        print("🔥 Requested filename:", filename)
+
+        project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..")
         )
 
-        if os.path.exists(os.path.join(app.config["UPLOAD_FOLDER"], filename)):
-            return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+        uploads_folder = os.path.join(project_root, "uploads")
 
-        if os.path.exists(os.path.join(legacy_upload_folder, filename)):
-            return send_from_directory(legacy_upload_folder, filename)
+        print("🔥 Uploads Folder:", uploads_folder)
 
-        return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-    
+        full_path = os.path.join(uploads_folder, filename)
+
+        print("🔥 Full Path:", full_path)
+
+        print("🔥 Exists:", os.path.exists(full_path))
+
+        if os.path.exists(full_path):
+            print("✅ FILE FOUND")
+            return send_from_directory(uploads_folder, filename)
+
+        print("❌ FILE NOT FOUND")
+
+        return {
+            "error": "File not found",
+            "path": full_path
+        }, 404
 
 
     # ---------------------------------------------------------

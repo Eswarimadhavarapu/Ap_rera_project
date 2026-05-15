@@ -289,9 +289,18 @@
    SECTION GRID
 ════════════════════════════════ */
 .AdminComplaintDetail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.AdminComplaintDetail-card {
+  width: 100%;
+}
+
+.AdminComplaintDetail-card-wide {
+  width: 100%;
 }
 
 /* ════════════════════════════════
@@ -1679,4 +1688,96 @@
   border-color: var(--acd-red) !important;
   color: var(--acd-red) !important;
   background: var(--acd-red-light) !important;
+}
+
+
+/* MAIN SECTION */
+.AdminComplaintDetail-card {
+  border: 1px solid #d6d6d6;
+  background: #fff;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* BLUE HEADER */
+.AdminComplaintDetail-card-head {
+  background: #6f93b2 !important;
+  color: #fff;
+  padding: 10px 15px;
+  border-bottom: none;
+  justify-content: center;
+}
+
+.AdminComplaintDetail-card-htitle {
+  color: #fff !important;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: none;
+}
+
+/* HIDE ICON/BADGE */
+.AdminComplaintDetail-card-icon,
+.AdminComplaintDetail-card-hbadge {
+  display: none;
+}
+
+.AdminComplaintDetail-card-body{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  width: 100%;
+}
+
+.AdminComplaintDetail-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  border: 1px solid #dcdcdc;
+  padding: 0;
+  background: #fff;
+}
+
+/* LEFT LABEL */
+.AdminComplaintDetail-label {
+  background: #f5f5f5;
+  padding: 18px 16px;
+  border-right: 1px solid #dcdcdc;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2f2f2f;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* RIGHT VALUE */
+.AdminComplaintDetail-value {
+  padding: 18px 16px;
+  font-size: 15px;
+  color: #333;
+  background: #fff;
+  font-weight: 400;
+}
+
+/* REMOVE HOVER EFFECTS */
+.AdminComplaintDetail-row:hover {
+  background: #fff;
+}
+
+.AdminComplaintDetail-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.AdminComplaintDetail-btn-warning{
+  background:#f59e0b;
+  color:#fff;
+  border:none;
+  padding:10px 18px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.AdminComplaintDetail-btn-warning:hover{
+  background:#d97706;
 }

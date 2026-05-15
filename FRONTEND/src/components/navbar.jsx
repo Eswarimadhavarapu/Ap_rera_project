@@ -266,7 +266,7 @@ const Navbar = ({ setHideNotice }) => {
           </li>
 <li onClick={() => navigate("/dbbase")}>
   <span className="dbbase-menu">
-    DB BASE
+    DPMS
   </span>
 </li>
           <li className="dropdown dropdown-right">LOGIN <span className="arrow"></span>

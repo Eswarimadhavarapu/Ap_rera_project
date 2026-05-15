@@ -968,7 +968,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
         </div>
       )}
 
-      <div className="cr-row">
+      <div className="cr-container-cr-row">
         <div>
           <label>Complaint Against <span>*</span></label>
           <select
@@ -986,7 +986,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           </select>
         </div>
         <div>
-          <label>Complaint By <span>*</span></label>
+          <label className="cr-complaint-label">Complaint By <span>*</span></label>
           <select
             name="complaintBy"
             value={form.complaintBy}
@@ -1006,19 +1006,20 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
       {(showAllotteeComplainantOnly || isPromoterByOthers) && (
         <>
           <h4>Details Of The Complainant</h4>
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Name of the Complainant <span>*</span></label>
+              <label className="cr-complaint-label">Name of the Complainant <span>*</span></label>
               <input
                 name="complainantName"
                 placeholder="Name of the Complainant"
                 value={form.complainantName}
                 onChange={handleChange}
                 maxLength={50}
+                className="cr-container-input"
               />
             </div>
             <div>
-              <label>Mobile No <span>*</span></label>
+              <label className="cr-complaint-label">Mobile No <span>*</span></label>
               <input
                 name="complainantMobile"
                 placeholder="Mobile No"
@@ -1026,25 +1027,27 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 onChange={handleChange}
                 maxLength={10}
                 inputMode="numeric"
+                className="cr-container-input"
               />
             </div>
             <div>
-              <label>Email ID <span>*</span></label>
+              <label className="cr-complaint-label">Email ID <span>*</span></label>
               <input
                 name="complainantEmail"
                 placeholder="Email ID"
                 value={form.complainantEmail}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
 
           <h4>Complainant Communication Address</h4>
 
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             {/* Address Line 1 */}
             <div className="cr-field">
-              <label>
+              <label className="cr-complaint-label">
                 Address Line 1 <span>*</span>
               </label>
               <input
@@ -1052,23 +1055,25 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 placeholder="Address Line 1"
                 value={form.cAddress1}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
 
             {/* Address Line 2 */}
             <div className="cr-field">
-              <label>Address Line 2</label>
+              <label className="cr-complaint-label">Address Line 2</label>
               <input
                 name="cAddress2"
                 placeholder="Address Line 2"
                 value={form.cAddress2}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
 
             {/* State / UT */}
             <div className="cr-field">
-              <label>
+              <label className="cr-complaint-label">
                 State / UT <span>*</span>
               </label>
               <select
@@ -1090,7 +1095,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
             {/* District */}
             <div className="cr-field">
-              <label>
+              <label className="cr-complaint-label">
                 District <span>*</span>
               </label>
               <select
@@ -1109,7 +1114,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
             {/* PIN Code */}
             <div className="cr-field">
-              <label>
+              <label className="cr-complaint-label">
                 PIN Code <span>*</span>
               </label>
               <input
@@ -1119,6 +1124,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 onChange={handleChange}
                 maxLength={6}
                 inputMode="numeric"
+                className="cr-container-input"
               />
             </div>
           </div>
@@ -1130,34 +1136,36 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
         <>
           <h4>Details of the Complainant</h4>
           <div className="cr-rera-block">
-            <label className="cr-rera-label">
+            <label className="cr-rera-label cr-complaint-label" >
               Is He/She Registered with AP RERA:
             </label>
             <div className="cr-radio-line">
-              <label>
+              <label className="cr-complaint-label">
                 <input
                   type="radio"
                   name="complainantRERA"
                   value="Yes"
                   checked={form.complainantRERA === "Yes"}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
                 Yes
               </label>
-              <label>
+              <label className="cr-complaint-label">
                 <input
                   type="radio"
                   name="complainantRERA"
                   value="No"
                   checked={form.complainantRERA === "No"}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
                 No
               </label>
             </div>
           </div>
 
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             {complainantRERA_Yes && (
               <input
                 name="agentId"
@@ -1165,6 +1173,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 value={form.agentId}
                 onChange={handleChange}
                 maxLength={20}
+                className="cr-container-input"
               />
 
 
@@ -1174,34 +1183,37 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           {complainantRERA_No && (
             <>
               {/* ---------- BASIC DETAILS (3 FIELDS) ---------- */}
-              <div className="cr-row-3">
+              <div className="cr-container-cr-row-3">
                 <div className="cr-field">
-                  <label>Name of the Complainant <span>*</span></label>
+                  <label className="cr-complaint-label">Name of the Complainant <span>*</span></label>
                   <input
                     name="complainantName"
                     placeholder="Name of the Complainant"
                     value={form.complainantName}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
 
                 <div className="cr-field">
-                  <label>Mobile No <span>*</span></label>
+                  <label className="cr-complaint-label">Mobile No <span>*</span></label>
                   <input
                     name="complainantMobile"
                     placeholder="Mobile No"
                     value={form.complainantMobile}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
 
                 <div className="cr-field">
-                  <label>Email ID <span>*</span></label>
+                  <label className="cr-complaint-label">Email ID <span>*</span></label>
                   <input
                     name="complainantEmail"
                     placeholder="Email ID"
                     value={form.complainantEmail}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
               </div>
@@ -1210,24 +1222,26 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
               <h4>Complainant Communication Address</h4>
 
               {/* ---------- ADDRESS LINE 1 & 2 ---------- */}
-              <div className="cr-row-3">
+              <div className="cr-container-cr-row-3">
                 <div className="cr-field">
-                  <label>Address Line 1 <span>*</span></label>
+                  <label className="cr-complaint-label">Address Line 1 <span>*</span></label>
                   <input
                     name="cAddress1"
                     placeholder="Address Line 1"
                     value={form.cAddress1}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
 
                 <div className="cr-field">
-                  <label>Address Line 2</label>
+                  <label className="cr-complaint-label">Address Line 2</label>
                   <input
                     name="cAddress2"
                     placeholder="Address Line 2"
                     value={form.cAddress2}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
 
@@ -1235,7 +1249,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 {/* ---------- STATE / DISTRICT / PIN ---------- */}
 
                 <div className="cr-field">
-                  <label>State / UT <span>*</span></label>
+                  <label className="cr-complaint-label">State / UT <span>*</span></label>
                   <select
                     name="cState"
                     value={form.cState}
@@ -1252,7 +1266,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 </div>
 
                 <div className="cr-field">
-                  <label>District <span>*</span></label>
+                  <label className="cr-complaint-label">District <span>*</span></label>
                   <select
                     name="cDistrict"
                     value={form.cDistrict}
@@ -1266,12 +1280,13 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 </div>
 
                 <div className="cr-field">
-                  <label>PIN Code <span>*</span></label>
+                  <label  className="cr-complaint-label">PIN Code <span>*</span></label>
                   <input
                     name="cPincode"
                     placeholder="PIN Code"
                     value={form.cPincode}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                 </div>
               </div>
@@ -1286,25 +1301,27 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           <h4>Details of the Respondent</h4>
           {(isAgent || isPromoter) && (
             <>
-              <label>Is He/She Registered with AP RERA:</label>
+              <label className="cr-complaint-label">Is He/She Registered with AP RERA:</label>
               <div className="cr-radio-line">
-                <label>
+                <label className="cr-complaint-label">
                   <input
                     type="radio"
                     name="respondentRERA"
                     value="Yes"
                     checked={form.respondentRERA === "Yes"}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                   Yes
                 </label>
-                <label>
+                <label  className="cr-complaint-label">
                   <input
                     type="radio"
                     name="respondentRERA"
                     value="No"
                     checked={form.respondentRERA === "No"}
                     onChange={handleChange}
+                    className="cr-container-input"
                   />
                   No
                 </label>
@@ -1312,31 +1329,33 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
             </>
           )}
 
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             {respondentRERA_Yes && (isPromoter || isAgent) && (
               <input
                 name="promoterRegId"
                 placeholder={isAgent ? "Agent ID *" : "Promoter / Project Reg. ID *"}
                 value={form.promoterRegId}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             )}
           </div>
 
           {(isAllottee || (isAgent && respondentRERA_No) || (isPromoter && respondentRERA_No)) && (
-            <div className="cr-row-3">
+            <div className="cr-container-cr-row-3">
               <div className="cr-field">
-                <label>Project Name <span><span>*</span></span></label>
+                <label className="cr-complaint-label">Project Name <span><span>*</span></span></label>
                 <input
                   name="projectName"
                   placeholder="Project Name *"
                   value={form.projectName}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div className="cr-field">
-                <label>
+                <label className="cr-complaint-label">
                   {isPromoter
                     ? "Promoter Name (Preferably Company Name)"
                     : "Name"}{" "}
@@ -1351,26 +1370,29 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                   }
                   value={form.respondentName}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div className="cr-field">
-                <label>Mobile No <span>*</span></label>
+                <label className="cr-complaint-label">Mobile No <span>*</span></label>
                 <input
                   name="respondentMobile"
                   placeholder="Mobile *"
                   value={form.respondentMobile}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div className="cr-field">
-                <label>Email ID <span>*</span></label>
+                <label className="cr-complaint-label">Email ID <span>*</span></label>
                 <input
                   name="respondentEmail"
                   placeholder="Email *"
                   value={form.respondentEmail}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
             </div>
@@ -1387,29 +1409,31 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
           <>
             <h4>Respondent Communication Address</h4>
-            <div className="cr-row-3">
+            <div className="cr-container-cr-row-3">
               <div className="cr-field">
-                <label>Address Line 1 <span>*</span></label>
+                <label className="cr-complaint-label">Address Line 1 <span>*</span></label>
                 <input
                   name="rAddress1"
                   placeholder="Address Line 1"
                   value={form.rAddress1}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div className="cr-field">
-                <label>Address Line 2</label>
+                <label className="cr-complaint-label">Address Line 2</label>
                 <input
                   name="rAddress2"
                   placeholder="Address Line 2"
                   value={form.rAddress2}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div className="cr-field">
-                <label>State / UT <span>*</span></label>
+                <label className="cr-complaint-label">State / UT <span>*</span></label>
                 <select
                   name="rState"
                   value={form.rState}
@@ -1426,7 +1450,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
               </div>
 
               <div className="cr-field">
-                <label>District <span>*</span></label>
+                <label className="cr-complaint-label">District <span>*</span></label>
                 <select
                   name="rDistrict"
                   value={form.rDistrict}
@@ -1440,12 +1464,13 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
               </div>
 
               <div className="cr-field">
-                <label>PIN Code <span>*</span></label>
+                <label  className="cr-complaint-label">PIN Code <span>*</span></label>
                 <input
                   name="rPincode"
                   placeholder="PIN Code"
                   value={form.rPincode}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
             </div>
@@ -1454,7 +1479,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
         )}
 
       <h4>Details Of The Complaint</h4>
-      <div className="cr-row-3">
+      <div className="cr-container-cr-row-3">
         {/* ================= SUBJECT & RELIEF ================= */}
 
         {/* 🔴 ONLY FOR Promoter BY Allottee → DROPDOWNS */}
@@ -1462,7 +1487,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           <>
             {/* Subject of Complaint */}
             <div className="cr-field">
-              <label>Subject of Complaint <span>*</span></label>
+              <label  className="cr-complaint-label">Subject of Complaint <span>*</span></label>
               <select
                 name="subject"
                 value={form.subject}
@@ -1482,19 +1507,20 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
             {/* Any Other – Subject */}
             {form.subject === "Any Other" && (
               <div className="cr-field">
-                <label>Any Other <span>*</span></label>
+                <label className="cr-complaint-label">Any Other <span>*</span></label>
                 <input
                   name="subjectOther"
                   placeholder="Subject of Complaint"
                   value={form.subjectOther || ""}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
             )}
 
             {/* Relief Sought */}
             <div className="cr-field">
-              <label>Relief Sought from APRERA <span>*</span></label>
+              <label className="cr-complaint-label">Relief Sought from APRERA <span>*</span></label>
               <select
                 name="relief"
                 value={form.relief}
@@ -1513,12 +1539,13 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
             {/* Any Other – Relief */}
             {form.relief === "Any Other" && (
               <div className="cr-field">
-                <label>Any Other <span>*</span></label>
+                <label className="cr-complaint-label">Any Other <span>*</span></label>
                 <input
                   name="reliefOther"
                   placeholder="Relief Sought from APRERA"
                   value={form.reliefOther || ""}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
             )}
@@ -1527,22 +1554,24 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           <>
             {/* 🟢 ALL OTHER CONDITIONS → NORMAL INPUTS */}
             <div className="cr-field">
-              <label>Subject of Complaint <span>*</span></label>
+              <label className="cr-complaint-label">Subject of Complaint <span>*</span></label>
               <input
                 name="subject"
                 placeholder="Subject of Complaint"
                 value={form.subject}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
 
             <div className="cr-field">
-              <label>Relief Sought from APRERA <span>*</span></label>
+              <label className="cr-complaint-label">Relief Sought from APRERA <span>*</span></label>
               <input
                 name="relief"
                 placeholder="Relief Sought from APRERA"
                 value={form.relief}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </>
@@ -1551,25 +1580,27 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
         {form.complaintAgainst === "Promoter" && (
           <div className="cr-field">
-            <label>Interim Order <span>*</span></label>
+            <label className="cr-complaint-label">Interim Order <span>*</span></label>
             <div className="cr-radio-inline">
-              <label>
+              <label className="cr-complaint-label">
                 <input
                   type="radio"
                   name="interimOrder"
                   value="Yes"
                   checked={form.interimOrder === "Yes"}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
                 Yes
               </label>
-              <label>
+              <label className="cr-complaint-label">
                 <input
                   type="radio"
                   name="interimOrder"
                   value="No"
                   checked={form.interimOrder === "No"}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
                 No
               </label>
@@ -1582,12 +1613,13 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
         {(isComplaintByOthers || byPromoter) && (
           <div className="cr-field">
             <div>
-              <label>Description of Complaint <span>*</span></label>
+              <label className="cr-complaint-label">Description of Complaint <span>*</span></label>
               <input
                 name="description"
                 placeholder="Description of Complaint"
                 value={form.description}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
@@ -1597,12 +1629,13 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
         {isAgentAgainstPromoter && (
           <div>
             <div className="cr-field">
-              <label>Description of Complaint <span>*</span></label>
+              <label className="cr-complaint-label">Description of Complaint <span>*</span></label>
               <input
                 name="description"
                 placeholder="Description of Complaint"
                 value={form.description}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
@@ -1611,14 +1644,15 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
         {/* Upload Fee Receipt → ONLY when Against Allottee AND NOT By Promoter */}
         {isAgainstAllottee && (byAgent || !isAllotteeByPromoter) && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Upload Fee Receipt <span>*</span></label>
+              <label className="cr-complaint-label">Upload Fee Receipt <span>*</span></label>
               <input
                 type="file"
                 name="feeReceiptFile"
                 accept="application/pdf"
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
@@ -1626,28 +1660,30 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
 
         {/* {isAgainstAllottee && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Description of Complaint *</label>
+              <label className="cr-complaint-label">Description of Complaint *</label>
               <input
                 name="description"
                 placeholder="Description of Complaint"
                 value={form.description}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )} */}
 
         {/* {isAgainstAllottee && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Upload Fee Receipt *</label>
+              <label className="cr-complaint-label">Upload Fee Receipt *</label>
               <input
                 type="file"
                 name="feeReceiptFile"
                 accept="application/pdf"
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
@@ -1657,62 +1693,66 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
         {/* Description → NOT for Promoter by Allottee */}
         {isComplaintByAllottee && !isPromoterByAllottee && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Description of Complaint *</label>
+              <label className="cr-complaint-label">Description of Complaint *</label>
               <input
                 name="description"
                 placeholder="Description of Complaint"
                 value={form.description}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
 
         {isAgainstAllottee && !byAgent && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Upload Agreement for Sale <span>*</span></label>
+              <label className="cr-complaint-label">Upload Agreement for Sale <span>*</span></label>
               <input
                 type="file"
                 name="agreementFile"
                 accept="application/pdf"
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
         {isAgainstAllottee && byAgent && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Description of Complaint <span>*</span></label>
+              <label className="cr-complaint-label">Description of Complaint <span>*</span></label>
               <input
                 name="description"
                 placeholder="Description of Complaint"
                 value={form.description}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
         {isPromoterByAllottee && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Upload Agreement for Sale <span>*</span></label>
+              <label className="cr-complaint-label">Upload Agreement for Sale <span>*</span></label>
               <input
                 type="file"
                 name="agreementFile"
                 accept="application/pdf"
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
         {isComplaintByAllottee && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>
+              <label  className="cr-complaint-label">
                 Complaint Regarding <span>*</span>
                 <span style={{ color: "red" }}>
                   {" "}(Ex: House/Flat/Block/Floor No.)
@@ -1723,42 +1763,46 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 placeholder="Complaint Regarding"
                 value={form.complaintRegarding}
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
         {isComplaintByAllottee && !isPromoterByAllottee && !isAllotteeByPromoter && (
-          <div className="cr-row-3">
+          <div className="cr-container-cr-row-3">
             <div>
-              <label>Upload Fee Receipt <span>*</span></label>
+              <label className="cr-complaint-label">Upload Fee Receipt <span>*</span></label>
               <input
                 type="file"
                 name="feeReceiptFile"
                 onChange={handleChange}
+                className="cr-container-input"
               />
             </div>
           </div>
         )}
 
-        {/* <div className="cr-row-3">
+        {/* <div className="cr-container-cr-row-3">
         {showAgreementUpload && (
           <input
             type="file"
             name="agreementFile"
             onChange={handleChange}
+            className="cr-container-input"
           />
         )}
       </div> */}
 
-        <div className="cr-row-3">
+        <div className="cr-container-cr-row-3">
           {showInterimUpload && (
             <div>
-              <label>Upload Relavant Document <span>*</span></label>
+              <label  className="cr-complaint-label">Upload Relavant Document <span>*</span></label>
               <input
                 type="file"
                 name="interimFile"
                 accept="application/pdf"
                 onChange={handleChange}
+                className="cr-container-input"
 
 
               />
@@ -1778,34 +1822,37 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
             {/* ===== Scoped container ===== */}
 
-            <div className="cr-row-3">
+            <div className="cr-container-cr-row-3">
               <div>
-                <label>Agreed / Committed <span>*</span></label>
+                <label className="cr-complaint-label">Agreed / Committed <span>*</span></label>
                 <input
                   name="agreed"
                   placeholder="Agreed / Committed"
                   value={form.agreed || ""}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div>
-                <label>Delivered <span>*</span></label>
+                <label className="cr-complaint-label">Delivered <span>*</span></label>
                 <input
                   name="delivered"
                   placeholder="Delivered"
                   value={form.delivered || ""}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
               <div>
-                <label>Deviation <span>*</span></label>
+                <label className="cr-complaint-label">Deviation <span>*</span></label>
                 <input
                   name="deviation"
                   placeholder="Deviation"
                   value={form.deviation || ""}
                   onChange={handleChange}
+                  className="cr-container-input"
                 />
               </div>
 
@@ -1859,31 +1906,33 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
       )}
       <h4>Project Details</h4>
 
-<div className="cr-row-3">
+<div className="cr-container-cr-row-3">
   
   {/* Left Side → Radio */}
   <div className="cr-field">
-    <label>Is project registered with AP RERA:</label>
+    <label className="cr-complaint-label">Is project registered with AP RERA:</label>
 
     <div className="cr-radio-line">
-      <label>
+      <label className="cr-complaint-label">
         <input
           type="radio"
           name="projectRegistered"
           value="Yes"
           checked={form.projectRegistered === "Yes"}
           onChange={handleChange}
+          className="cr-container-input"
         />
         Yes
       </label>
 
-      <label>
+      <label className="cr-complaint-label">
         <input
           type="radio"
           name="projectRegistered"
           value="No"
           checked={form.projectRegistered === "No"}
           onChange={handleChange}
+          className="cr-container-input"
         />
         No
       </label>
@@ -1893,48 +1942,52 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
   {/* Right Side → Dynamic Field */}
   {form.projectRegistered === "Yes" && (
     <div className="cr-field">
-      <label>Project Registration Number <span>*</span></label>
+      <label className="cr-complaint-label">Project Registration Number <span>*</span></label>
       <input
         name="projectRegNumber"
         placeholder="Enter Project Registration Number"
         value={form.projectRegNumber}
         onChange={handleChange}
+        className="cr-container-input"
       />
     </div>
   )}
 
   {form.projectRegistered === "No" && (
     <div className="cr-field">
-      <label>B.A / L.P Number <span>*</span></label>
+      <label className="cr-complaint-label">B.A / L.P Number <span>*</span></label>
       <input
         name="projectLpNumber"
         placeholder="Enter B.A / L.P Number"
         value={form.projectLpNumber}
         onChange={handleChange}
+        className="cr-container-input"
       />
     </div>
   )}
 
 </div>
       <h4>Supporting Documents</h4>
-      <div className="cr-row-3">
+      <div className="cr-container-cr-row-3">
         <div>
-          <label>Document Description</label>
+          <label className="cr-complaint-label">Document Description</label>
           <input
             name="docDesc"
             placeholder="Document Description"
             value={form.docDesc}
             onChange={handleChange}
+            className="cr-container-input"
           />
         </div>
         <div>
-          <label>Upload Document</label>
+          <label className="cr-complaint-label">Upload Document</label>
           <input
             type="file"
             name="docFile"
             accept="application/pdf"
             ref={docFileRef}
             onChange={handleChange}
+            className="cr-container-input"
           />
 
         </div>
@@ -1995,6 +2048,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           name="declaration1"
           checked={form.declaration1 || false}
           onChange={handleChange}
+          className="cr-container-input"
         />
         <span>
           I hereby declare that the complaint mentioned above is not pending before any
@@ -2007,6 +2061,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           name="declaration2"
           checked={form.declaration2 || false}
           onChange={handleChange}
+          className="cr-container-input"
         />
         <span>
           I,&nbsp;

@@ -328,6 +328,9 @@ if (selectedField === "panNumber") {
       newValue: newValue.trim(),
       remarks: remarks.trim() || "-",
       supportingdocuments: supportingdocumentsFile?.name || "-",
+      supportingdocumentsUrl: supportingdocumentsFile
+  ? URL.createObjectURL(supportingdocumentsFile)
+  : "",
       supportingdocumentsUrl: supportingdocumentsFile ? URL.createObjectURL(supportingdocumentsFile) : "",
     };
 
@@ -511,7 +514,7 @@ if (selectedField === "panNumber") {
       </div>
 
       {/* ── TABLE ── */}
-      {tableData.length > 0 && (
+     {tableData.length > 0 && (
         <table style={S.table}>
           <thead>
             <tr>

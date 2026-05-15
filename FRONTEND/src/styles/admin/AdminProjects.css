@@ -6,7 +6,7 @@
 .admin-dashboard-content h2 {
   font-size: 22px;
   font-weight: 800;
-  color: #5A2D0C;
+  color: #029cef;
   margin-bottom: 20px;
 }
 
@@ -107,12 +107,12 @@
 }
 
 .ap-view-btn {
-  background: #0f3460;
+  background: #029cef;
   color: #fff;
 }
 
 .ap-view-btn:hover {
-  background: #1e6bbf;
+  background: #029cef;
 }
 
 .ap-approve-btn {
@@ -256,7 +256,7 @@
 }
 
 .ap-badge {
-  background: #2f6db3;
+  background: #029cef;
   color: #fff;
   padding: 2px 8px;
   border-radius: 20px;
@@ -335,7 +335,7 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  border-color: #2f6db3;
+  border-color: #029cef;
   box-shadow: 0 0 0 2px rgba(47,109,179,0.12);
   outline: none;
 }
@@ -351,7 +351,7 @@ table {
 }
 
 thead {
-  background: #163a5f !important;
+  background: #029cef !important;
   color: #fff !important;
 }
 
@@ -381,7 +381,7 @@ td button {
 
 /* View */
 td button:nth-child(1) {
-  background: #163a5f !important;
+  background: #029cef !important;
   color: white !important;
 }
 
@@ -593,12 +593,12 @@ button:disabled {
 }
 
 .ap-refresh:hover {
-  background: #1e6bbf;
+  background: #029cef;
 }
 
 /* TABLE HEADER */
 .ap-table thead {
-  background: #163a5f;
+  background: #029cef;
   color: white;
 }
 
@@ -619,7 +619,7 @@ button:disabled {
 }
 
 .ap-table thead {
-  background: #163a5f;
+  background: #029cef;
   color: white;
 }
 
@@ -665,7 +665,7 @@ button:disabled {
 }
 
 .ap-badge {
-  background: #2f6db3;
+  background: #029cef;
   color: #fff;
   padding: 2px 8px;
   border-radius: 20px;

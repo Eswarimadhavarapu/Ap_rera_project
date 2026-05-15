@@ -15,12 +15,28 @@ const QuarterlyUpdate = () => {
   const [additionalList, setAdditionalList] = useState([]);
   const [quarterId, setQuarterId] = useState("");
 
-  const handleFileChange = (e, name) => {
+const handleFileChange = (e, name) => {
+
+  const file = e.target.files[0];
+
+  if (file) {
+
+    // ONLY PDF ALLOWED
+    if (file.type !== "application/pdf") {
+
+      alert("Only PDF files are allowed");
+
+      e.target.value = "";
+
+      return;
+    }
+
     setDocuments({
       ...documents,
-      [name]: e.target.files[0],
+      [name]: file,
     });
-  };
+  }
+};
 
   const handleAddAdditional = () => {
     if (additionalDoc.description && additionalDoc.file) {
@@ -81,14 +97,17 @@ const handleSave = async () => {
     );
   }
 
-  const confirmNavigate = window.confirm("Details Saved Successfully");
-
-  if (confirmNavigate) {
-    navigate("/project-blockvilla-details");
-  }
+alert("Details Saved Successfully");
+navigate("/project-blockvilla-details");
 } else {
-      alert(data.error);
-    }
+
+  if (data.error === "Q4-2025 already submitted") {
+    navigate("/project-blockvilla-details");
+  } else {
+    alert(data.error);
+  }
+
+}
 
   } catch (error) {
     console.error(error);
@@ -208,9 +227,26 @@ useEffect(() => {
       </label>
 
       <input
-        type="file"
-        className="quartdocup-file-input"
-      />
+  type="file"
+  accept=".pdf"
+  className="quartdocup-file-input"
+  onChange={(e) => {
+
+    const file = e.target.files[0];
+
+    if (file) {
+
+      if (file.type !== "application/pdf") {
+
+        alert("Only PDF files are allowed");
+
+        e.target.value = "";
+
+        return;
+      }
+    }
+  }}
+/>
     </div>
   )}
 
@@ -253,6 +289,7 @@ useEffect(() => {
         <td>
           <input
             type="file"
+             accept=".pdf"
             className="quartdocup-file-input"
             onChange={(e) => handleFileChange(e, doc)}
           />
@@ -308,16 +345,32 @@ useEffect(() => {
         <span className="quartdocup-required-star">*</span>
       </label>
 
-      <input
-        type="file"
-        className="quartdocup-input"
-        onChange={(e) =>
-          setAdditionalDoc({
-            ...additionalDoc,
-            file: e.target.files[0],
-          })
-        }
-      />
+  <input
+  type="file"
+  accept=".pdf"
+  className="quartdocup-input"
+  onChange={(e) => {
+
+    const file = e.target.files[0];
+
+    if (file) {
+
+      if (file.type !== "application/pdf") {
+
+        alert("Only PDF files are allowed");
+
+        e.target.value = "";
+
+        return;
+      }
+
+      setAdditionalDoc({
+        ...additionalDoc,
+        file: file,
+      });
+    }
+  }}
+/>
     </div>
 
     {/* Add Button */}
@@ -336,7 +389,7 @@ useEffect(() => {
 
           {/* BUTTONS */}
           <div className="d-flex justify-content-end mt-4">
-            <button className="btn btn-secondary me-3" onClick={handleSave}>
+            <button className="btn btn-primary me-3" onClick={handleSave}>
               Save
             </button>
             {/* <button className="btn btn-primary" onClick={handleFinalSubmit}>

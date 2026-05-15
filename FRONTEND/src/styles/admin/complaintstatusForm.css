@@ -51,7 +51,7 @@
 
 /* Input focus */
 .complaint-status__input:focus {
-  border-color: #007bff;
+  border-color: #029cef;
 }
 
 /* CAPTCHA Wrapper (column inside row) */
@@ -96,7 +96,7 @@
 .complaint-status__submit-btn {
   margin-top: 10px;
   padding: 10px;
-  background: #007bff;
+  background: #029cef;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -105,7 +105,7 @@
 }
 
 .complaint-status__submit-btn:hover {
-  background: #0056b3;
+  background: #029cef;
 }
 
 /* Error Message */

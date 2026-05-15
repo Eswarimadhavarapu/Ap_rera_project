@@ -226,7 +226,7 @@ export default function ChangeRequest() {
             });
           } else if (r.field !== undefined && r.newValue !== undefined) {
             rows.push({
-              subLabel: panel.subLabel, field: r.field, existingValue: r.existingValue || "-",
+              subLabel: panel.subLabel, field: r.field,existingValue: r.oldValue || r.existingValue || "-",
               newValue: r.newValue, description: r.remarks|| "-", document: r.supportingdocuments || "-",
               documentUrl: r.supportingdocumentsUrl || "", type: "field", _proofFile: r._proofFile
             });
@@ -483,10 +483,10 @@ export default function ChangeRequest() {
 
   // ── RENDER ──────────────────────────────────────────────────────────────
   return (
-    <div className="cr-page" style={{ width: "100%", margin: 0, padding: 0 }}>
+    <div className="changerequest-page" style={{ width: "100%", margin: 0, padding: 0 }}>
 
   {/* ✅ PAGE TITLE */}
-  <div className="cr-title">
+  <div className="changerequest-title">
     Change Request
   </div>
 
@@ -496,19 +496,19 @@ export default function ChangeRequest() {
 
       {/* <div className="cr-container"> */}
 {step === 1 && (
- <div className="cr-container">
+ <div className="changerequest-container">
 
   {/* LEFT SIDEBAR */}
-<div className="cr-sidebar">
+<div className="changerequest-sidebar">
   {/* ✅ PROJECT INFO */}
-<div className="cr-sidebar-header">
-  <div className="cr-sidebar-label">Project Name</div>
-  <div className="cr-sidebar-value">{APP_INFO.projectName}</div>
+<div className="changerequest-sidebar-header">
+  <div className="changerequest-sidebar-label">Project Name</div>
+  <div className="changerequest-sidebar-value">{APP_INFO.projectName}</div>
 
-  <div className="cr-sidebar-label" style={{ marginTop: "10px" }}>
+  <div className="changerequest-sidebar-label" style={{ marginTop: "10px" }}>
     Promoter Name
   </div>
-  <div className="cr-sidebar-value">{APP_INFO.applicantName}</div>
+  <div className="changerequest-sidebar-value">{APP_INFO.applicantName}</div>
 </div>
     {SECTIONS_CONFIG.map((section) => (
       <div key={section.id}>
@@ -550,7 +550,7 @@ export default function ChangeRequest() {
   </div>
 
   {/* RIGHT PANEL */}
- <div className="cr-right-panel">
+ <div className="changerequest-right-panel">
   {activeSection.includes("__") && (() => {
     const [sectionId, subId] = activeSection.split("__");
 
@@ -594,7 +594,7 @@ export default function ChangeRequest() {
   </button> */}
 
   <button
-  className="cr-btn-primary"
+  className="changerequest-btn-primary"
   onClick={() => {
     if (!activeSection || !activeSection.includes("__")) {
       alert("Please select a subsection");
@@ -612,7 +612,7 @@ export default function ChangeRequest() {
       }
     }));
 
-    setStep(2); // ✅ Step 2
+    setStep(3); // ✅ Step 2
   }}
 >
   Submit
@@ -770,7 +770,7 @@ export default function ChangeRequest() {
         )} */}
 
         {/* ══ STEP 2 ══════════════════════════════════════════════════════ */}
-        {step === 2 && (
+        {/* {step === 2 && (
           <div className="cr-main-card">
             <div className="cr-main-card-header">
               <span>②</span> Make Your Changes
@@ -839,13 +839,13 @@ export default function ChangeRequest() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* ══ STEP 3 — REVIEW & SUBMIT ════════════════════════════════════ */}
         {step === 3 && (
           <ReviewSubmit
             reviewRows={reviewRows}
-            onBack={() => setStep(2)}
+            onBack={() => setStep(1)}
             onSubmit={() => setStep(4)}
           />
         )}
@@ -868,24 +868,24 @@ export default function ChangeRequest() {
 
         {/* ══ STEP 5 — SUCCESS ════════════════════════════════════════════ */}
         {step === 5 && (
-          <div className="cr-success-card">
-            <div className="cr-success-icon">✓</div>
-            <div className="cr-success-title">Change Request Submitted Successfully!</div>
-            <div className="cr-success-sub">
+          <div className="changerequest-success-card">
+            <div className="changerequest-success-icon">✓</div>
+            <div className="changerequest-success-title">Change Request Submitted Successfully!</div>
+            <div className="changerequest-success-sub">
               Your request has been sent to AP RERA admin for review.
               You will be notified once the admin approves or rejects the changes.
             </div>
-            <div className="cr-success-refno">{refNo}</div>
-            <div className="cr-success-refno-label">Reference Number</div>
-            <div className="cr-success-detail">
+            <div className="changerequest-success-refno">{refNo}</div>
+            <div className="changerequest-success-refno-label">Reference Number</div>
+            <div className="changerequest-success-detail">
               <strong>{reviewRows.length} change{reviewRows.length > 1 ? "s" : ""}</strong> submitted across{" "}
               <strong>{activePanels.length} section{activePanels.length > 1 ? "s" : ""}</strong><br />
               Application: <strong>{APP_INFO.applicationNumber}</strong> &nbsp;|&nbsp;
               PAN: <strong>{APP_INFO.panNumber}</strong>
             </div>
-            <div className="cr-success-actions">
-              <button className="cr-btn-secondary" onClick={resetAll}>+ Submit Another Request</button>
-              <button className="cr-btn-primary" onClick={() => window.location.href = "/"}>← Back to Home</button>
+            <div className="changerequest-success-actions">
+              <button className="changerequest-btn-secondary" onClick={resetAll}>+ Submit Another Request</button>
+              <button className="changerequest-btn-primary" onClick={() => window.location.href = "/"}>← Back to Home</button>
             </div>
           </div>
         )}

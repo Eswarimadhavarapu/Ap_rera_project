@@ -560,8 +560,14 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
           <div style={{ marginBottom: "16px" }}>
             <label style={labelStyle}>Remarks</label>
             <textarea
-              style={{ ...inputStyle, resize: "vertical", borderColor: descError ? "#c0200f" : "#ccd4e0" }}
-              rows={3}
+            style={{
+  ...inputStyle,
+  width: "350px",
+  height: "80px",
+  resize: "none",
+  borderColor: descError ? "#c0200f" : "#ccd4e0"
+}}
+              rows={2}
               value={remarks}
               onChange={(e) => {
                 setRemarks(e.target.value);
@@ -590,7 +596,10 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
               ref={fileInputRef}
               type="file"
               accept=".pdf,application/pdf"
-              style={inputStyle}
+              style={{
+  ...inputStyle,
+  width: "350px"
+}}
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -722,11 +731,11 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
                 <th style={thStyle}>Existing Value</th>
                 <th style={thStyle}>New Value</th>
                 <th style={{ ...thStyle, minWidth: "200px" }}>Remarks</th>
-                <th style={thStyle}>SupportingDocuments</th>
+                <th style={{ ...thStyle, width: "19%" }}>SupportingDocuments</th>
                 {hasExtraColumns && (
                   <>
-                    <th style={thStyle}>Total Units</th>
-                    <th style={thStyle}>Unit File</th>
+                   <th style={{ ...thStyle, width: "12%" }}>Total Units</th>
+<th style={{ ...thStyle, width: "15%" }}>Unit File</th>
                   </>
                 )}
                 <th style={{ ...thStyle, width: "70px", textAlign: "center" }}>Action</th>

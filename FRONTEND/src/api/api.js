@@ -182,3 +182,40 @@ export const sendRejectionEmail = (id, data) => {
     body: JSON.stringify(data),
   });
 };
+
+
+// ================================
+// COMPLAINT MODULE APIs
+// ================================
+
+// Get complaint list
+export const getComplaints = () => {
+  return apiGet("/api/complint/list");
+};
+// Get single complaint
+export const getComplaintById = (complaintId) => {
+  return apiGet(`/api/complint/${complaintId}`);
+};
+
+// Register official case number
+export const registerCase = (payload) => {
+  return apiPost(
+    "/api/complint/register-case",
+    payload
+  );
+};
+
+// Get hearings
+export const getHearings = (complaintId) => {
+  return apiGet(
+    `/api/complint/hearings/${complaintId}`
+  );
+};
+
+// Add hearing
+export const addHearing = (formData) => {
+  return apiPost(
+    "/api/complint/add-hearing",
+    formData
+  );
+};

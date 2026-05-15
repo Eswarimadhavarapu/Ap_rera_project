@@ -239,7 +239,7 @@ from app.models.database import db
 from sqlalchemy import text
 from werkzeug.security import check_password_hash
 from app.utils.mail_utils import send_otp_email
-
+from app.models.admin_model import Admin
 admin_bp = Blueprint("admin_bp", __name__)
 
 # Temporary OTP store
@@ -351,6 +351,47 @@ def verify_otp():
                         "mandal": result["mandal"],
                         "village": result["village"],
                         "pincode": result["pincode"],
+                    },
+                }
+            ),
+            200,
+        )
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
+
+@admin_bp.route("/userDetails/<int:id>", methods=["GET"])
+def get_admin_by_id(id):
+    try:
+        admin = Admin.query.get(id)
+
+        print("🔥 API HIT")
+        print("🔥 ID:", id)
+        if not admin:
+            return jsonify({"error": "Admin not found"}), 404
+
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "admin": {
+                        "id": admin.id,
+                        "username": admin.username,
+                        "full_name": admin.full_name,
+                        "first_name": admin.first_name,
+                        "last_name": admin.last_name,
+                        "email": admin.email,
+                        "phone": admin.phone,
+                        "role": admin.role,
+                        "department": admin.department,
+                        "employee_id": admin.employee_id,
+                        "photo": admin.photo,
+                        "state": admin.state,
+                        "district": admin.district,
+                        "mandal": admin.mandal,
+                        "village": admin.village,
+                        "pincode": admin.pincode,
                     },
                 }
             ),

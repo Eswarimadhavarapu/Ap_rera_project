@@ -263,7 +263,13 @@ const newRow = {
   key={fileInputKey}
   type="file"
   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-  style={{ ...S.input, padding: "6px 12px", cursor: "pointer" }}
+  style={{
+  ...S.input,
+  width: "350px",
+  height: "60px",
+  padding: "6px 12px",
+  cursor: "pointer"
+}}
   onChange={(e) => {
     const file = e.target.files[0];
     if (!file) return;

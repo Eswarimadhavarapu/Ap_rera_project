@@ -180,6 +180,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
   const [adminRemark, setAdminRemark] = useState("");
   const [hearingDate, setHearingDate] = useState("");
   const [hearingPlace, setHearingPlace] = useState("");
+  const [caseNo, setCaseNo] = useState("");
   const [stampImg, setStampImg] = useState(null);
   const [signImg, setSignImg] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -238,6 +239,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
       fd.append("description",       complaint?.description || "");
       fd.append("admin_remark",      adminRemark);
       fd.append("complaint_id",      complaint?.complaint_id || "");
+      fd.append("case_no", caseNo);
       fd.append("hearing_date",      hearingDate);
       fd.append("hearing_place",     hearingPlace);
       fd.append("status",            "Scheduled");
@@ -261,7 +263,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
             <span className="AdminComplaintDetail-modal-head-icon">{step === 1 ? "📝" : "📄"}</span>
             <div className="AdminComplaintDetail-modal-head-text">
               <div className="AdminComplaintDetail-modal-title">
-                {step === 1 ? "Approve — Enter Hearing Details" : "Legal Notice Preview"}
+                {step === 1 ? "Case Registration & First Hearing" : "Legal Notice Preview"}
               </div>
               <div className="AdminComplaintDetail-modal-sub">
                 {step === 1
@@ -288,7 +290,20 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
               </div>
               <div className="AdminComplaintDetail-field-row">
                 <div className="AdminComplaintDetail-field">
-                  <label className="AdminComplaintDetail-field-label">Hearing Date &amp; Time *</label>
+  <label className="AdminComplaintDetail-field-label">
+    Case Number *
+  </label>
+
+  <input
+    type="text"
+    className="AdminComplaintDetail-input"
+    placeholder="Enter Case Number"
+    value={caseNo}
+    onChange={(e) => setCaseNo(e.target.value)}
+  />
+</div>
+                <div className="AdminComplaintDetail-field">
+                  <label className="AdminComplaintDetail-field-label">FIRST HEARING DATE *</label>
                   <input
                     type="datetime-local"
                     className="AdminComplaintDetail-input"
@@ -315,7 +330,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
             <div className="AdminComplaintDetail-modal-footer">
               <button className="AdminComplaintDetail-btn-ghost" onClick={onClose}>Cancel</button>
               <button className="AdminComplaintDetail-btn-primary" onClick={() => setStep(2)} disabled={!step1Valid}>
-                Preview Notice →
+                Register & Send Notice
               </button>
             </div>
           </>
@@ -346,7 +361,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
                     <p>Email: {respondent.email || "—"} &nbsp;|&nbsp; Mobile: {respondent.mobile || "—"}</p>
                   </div>
                   <p className="AdminComplaintDetail-ln-subject-line">
-                    SUB: Complaint No. {complaint?.complaint_id} under AP RERA Act regarding{" "}
+                    SUB: Case No. {caseNo} under AP RERA Act regarding{" "}
                     {complaint?.subject || complaint?.complaint_regarding || "real estate violation"}
                   </p>
                   <p className="AdminComplaintDetail-ln-para">
@@ -356,7 +371,7 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
                     {addrStr(complainant?.address)}, bearing Mobile No. {complainant?.mobile}, Email: {complainant?.email}.
                   </p>
                   <p className="AdminComplaintDetail-ln-para">
-                    A formal complaint bearing Complaint ID <b>{complaint?.complaint_id}</b> (Application
+                    A formal case bearing Case No. <b>{caseNo}</b> (Application
                     Type: {complaint?.application_type}) has been duly registered against you with the AP RERA Authority.
                     The complaint pertains to:{" "}
                     <b>{complaint?.complaint_regarding || complaint?.subject || "violation of real estate regulations"}</b>.
@@ -437,6 +452,194 @@ const ApproveModal = ({ data, onClose, onSuccess }) => {
           </>
         )}
       </div>
+    </div>
+  );
+};
+
+
+const NoticeModal = ({ data, onClose, onSuccess }) => {
+
+  const [message, setMessage] = useState("");
+  const [noticeDate, setNoticeDate] = useState("");
+const [venue, setVenue] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { complainant } = data;
+
+  const respondent = data.respondent || {};
+
+  const sendNotice = async () => {
+
+    if (!message.trim()) return;
+
+    setLoading(true);
+
+    try {
+
+      await fetch(
+        "https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/send-notice",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+
+            complaint_id:
+              data.complaint?.complaint_id,
+
+            complainant_email:
+              complainant?.email,
+
+            complainant_name:
+              complainant?.name,
+
+            respondent_email:
+              respondent?.email,
+
+            respondent_name:
+              respondent?.name,
+
+            message,
+
+            notice_date: noticeDate,
+            venue: venue,
+          }),
+        }
+      );
+
+      onSuccess(
+        "Notice sent successfully"
+      );
+
+    } catch {
+
+      onSuccess(
+        "Failed to send notice",
+        "error"
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  return (
+
+    <div className="AdminComplaintDetail-modal-backdrop">
+
+      <div className="AdminComplaintDetail-modal">
+
+        <div className="AdminComplaintDetail-modal-head">
+
+          <div className="AdminComplaintDetail-modal-title">
+            Send Notice
+          </div>
+
+          <button
+            className="AdminComplaintDetail-modal-close"
+            onClick={onClose}
+          >
+            ✕
+          </button>
+
+        </div>
+
+        <div className="AdminComplaintDetail-modal-body">
+
+          <div className="AdminComplaintDetail-field">
+
+            <label className="AdminComplaintDetail-field-label">
+              Notice Message
+            </label>
+
+            <textarea
+              className="AdminComplaintDetail-textarea"
+              placeholder="Enter notice message..."
+              value={message}
+              onChange={(e) =>
+                setMessage(e.target.value)
+              }
+            />
+
+            <div className="AdminComplaintDetail-field-row">
+
+  <div className="AdminComplaintDetail-field">
+    <label className="AdminComplaintDetail-field-label">
+      Appearance Date & Time
+    </label>
+
+    <input
+      type="datetime-local"
+      className="AdminComplaintDetail-input"
+      value={noticeDate}
+      onChange={(e) => setNoticeDate(e.target.value)}
+    />
+  </div>
+
+  <div className="AdminComplaintDetail-field">
+    <label className="AdminComplaintDetail-field-label">
+      Venue
+    </label>
+
+    <input
+      type="text"
+      className="AdminComplaintDetail-input"
+      placeholder="AP RERA Office Vijayawada"
+      value={venue}
+      onChange={(e) => setVenue(e.target.value)}
+    />
+  </div>
+
+</div>
+
+          </div>
+
+          <div
+            style={{
+              background: "#fff7ed",
+              border: "1px solid #fdba74",
+              padding: "12px",
+              borderRadius: "8px",
+              fontSize: "13px",
+            }}
+          >
+            📩 Mail will be sent to:
+            <br />
+            <b>Complainant:</b> {complainant?.email}
+            <br />
+            <b>Respondent:</b> {respondent?.email}
+          </div>
+
+        </div>
+
+        <div className="AdminComplaintDetail-modal-footer">
+
+          <button
+            className="AdminComplaintDetail-btn-ghost"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="AdminComplaintDetail-btn-warning"
+            onClick={sendNotice}
+            disabled={loading}
+          >
+            {loading
+              ? "Sending..."
+              : "Send Notice"}
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };
@@ -863,6 +1066,29 @@ console.log("TYPE 👉", complaintType);
         {/* CARDS GRID */}
         <div className="AdminComplaintDetail-grid">
 
+          {/* Complaint Info */}
+          <div className="AdminComplaintDetail-card">
+            <div className="AdminComplaintDetail-card-head">
+              <div className="AdminComplaintDetail-card-icon AdminComplaintDetail-ci-blue">📄</div>
+              <span className="AdminComplaintDetail-card-htitle">Complaint Info</span>
+              <span className="AdminComplaintDetail-card-hbadge">FORM</span>
+            </div>
+            <div className="AdminComplaintDetail-card-body">
+              <Field label="Complaint ID"  value={complaint?.complaint_id} mono />
+              <Field label="App. Type"     value={complaint?.application_type} />
+              <Field label="Subject"       value={complaint?.subject} />
+              <Field label="Regarding"     value={complaint?.complaint_regarding} />
+              <Field label="Description"   value={complaint?.description} />
+              <Field label="Relief Sought" value={complaint?.relief_sought} />
+              <Field label="Filed On"      value={complaint?.created_at} />
+              {complaint?.project_details?.registration_number == null ? (
+                <Field label="LP Number" value={complaint?.project_details?.lp_number} mono />
+              ) : (
+                <Field label="Project Reg. Number" value={complaint?.project_details?.registration_number} mono />
+              )}
+            </div>
+          </div>
+
           {/* Complainant */}
           <div className="AdminComplaintDetail-card">
             <div className="AdminComplaintDetail-card-head">
@@ -912,28 +1138,7 @@ console.log("TYPE 👉", complaintType);
             </div>
           </div>
 
-          {/* Complaint Info */}
-          <div className="AdminComplaintDetail-card">
-            <div className="AdminComplaintDetail-card-head">
-              <div className="AdminComplaintDetail-card-icon AdminComplaintDetail-ci-blue">📄</div>
-              <span className="AdminComplaintDetail-card-htitle">Complaint Info</span>
-              <span className="AdminComplaintDetail-card-hbadge">FORM</span>
-            </div>
-            <div className="AdminComplaintDetail-card-body">
-              <Field label="Complaint ID"  value={complaint?.complaint_id} mono />
-              <Field label="App. Type"     value={complaint?.application_type} />
-              <Field label="Subject"       value={complaint?.subject} />
-              <Field label="Regarding"     value={complaint?.complaint_regarding} />
-              <Field label="Description"   value={complaint?.description} />
-              <Field label="Relief Sought" value={complaint?.relief_sought} />
-              <Field label="Filed On"      value={complaint?.created_at} />
-              {complaint?.project_details?.registration_number == null ? (
-                <Field label="LP Number" value={complaint?.project_details?.lp_number} mono />
-              ) : (
-                <Field label="Project Reg. Number" value={complaint?.project_details?.registration_number} mono />
-              )}
-            </div>
-          </div>
+          
 
           {/* Attached Documents */}
           <div className="AdminComplaintDetail-card AdminComplaintDetail-card-wide">
@@ -1083,6 +1288,7 @@ console.log("TYPE 👉", complaintType);
       fd.append("admin_remark", "Case closed by authority");
 
       fd.append("complaint_id", complaint?.complaint_id || "");
+      fd.append("case_no", caseNo);
       fd.append("status", "closed");
 
       await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/approve-mail", {
@@ -1119,12 +1325,27 @@ console.log("TYPE 👉", complaintType);
           Reject
         </button>
 
-        <button
+        {/* <button
           className="AdminComplaintDetail-btn-approve"
           onClick={() => setModal("approve")}
         >
           Approve
-        </button>
+        </button> */}
+        <button
+  className="AdminComplaintDetail-btn-warning"
+  onClick={() => setModal("notice")}
+>
+  Send Notice
+</button>
+
+{data?.complaint?.status !== "CASE_REGISTERED" && (
+  <button
+    className="btn btn-success"
+    onClick={() => setModal("approve")}
+  >
+    Register Case
+  </button>
+)}
       </>
     )}
      </>
@@ -1138,6 +1359,13 @@ console.log("TYPE 👉", complaintType);
       {/* ── MODALS ── */}
       {modal === "reject"       && <RejectModal       data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
       {modal === "approve"      && <ApproveModal      data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
+     {modal === "notice" && (
+  <NoticeModal
+    data={data}
+    onClose={() => setModal(null)}
+    onSuccess={showToast}
+  />
+)}
       {modal === "statusUpdate" && <StatusUpdateModal data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
 
       {modal === "reopen" && (

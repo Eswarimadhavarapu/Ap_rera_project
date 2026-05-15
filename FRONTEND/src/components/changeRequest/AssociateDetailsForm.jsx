@@ -103,19 +103,22 @@ function FormField({ field, value, onChange, error }) {
 
       {field.type === "textarea" ? (
         <textarea
-          name={field.name}
-          value={value || ""}
-          onChange={onChange}
-          rows={3}
-          placeholder={`Enter ${field.label.toLowerCase()}...`}
-          style={{
-            width: "100%",
-            padding: "8px",
-            border: error ? "1px solid #e74c3c" : "1px solid #ccc",
-            borderRadius: "6px",
-            boxSizing: "border-box"
-          }}
-        />
+  name={field.name}
+  value={value || ""}
+  onChange={onChange}
+  rows={1}
+  placeholder={`Enter ${field.label.toLowerCase()}...`}
+  style={{
+    width: "415px",
+    height: "60px",
+    minHeight: "60px",
+    padding: "8px",
+    border: error ? "1px solid #e74c3c" : "1px solid #ccc",
+    borderRadius: "6px",
+    boxSizing: "border-box",
+    resize: "none"
+  }}
+/>
       ) : (
         <input
           type={field.type}
@@ -855,21 +858,26 @@ if (name.toLowerCase().includes("pincode")) {
   style={{
     display: "flex",
     alignItems: "center",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
+    border: "2px solid #b8c2d1",
+    borderRadius: "12px",
     overflow: "hidden",
+    width: "100%",
+    background: "#f8fbff",
+    padding: "8px",
     width: "100%"   // IMPORTANT
   }}
 >
     {/* BUTTON */}
     <label
       htmlFor="fileUpload"
-      style={{
-        background: "#2f5fa7",
-        color: "#fff",
-        padding: "8px 14px",
-        cursor: "pointer",
-        fontWeight: "500"
+     style={{
+  background: "#28469b",
+  color: "#fff",
+  padding: "14px 24px",
+  cursor: "pointer",
+  borderRadius: "12px",
+  fontWeight: "600",
+  fontSize: "15px"
       }}
     >
       Choose File

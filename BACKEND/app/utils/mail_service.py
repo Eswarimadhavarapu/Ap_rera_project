@@ -777,6 +777,7 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+from datetime import datetime
 
 
 def send_email_otp(to_email, otp):
@@ -952,6 +953,7 @@ Please find your APPROVAL CERTIFICATE attached.
 Congratulations! Your project is now registered under AP RERA.
 
 Regards,
+
 AP RERA
 """
 
@@ -1641,3 +1643,287 @@ def send_email_with_attachment(to_email, subject, body, attachments=None):
     except Exception as e:
         print("❌ Email attachment error:", str(e))
         return False
+    
+# ================= SEND NOTICE - COMPLAINANT =================
+
+def send_notice_mail_complainant(
+    to_email,
+    complainant_name,
+    respondent_name,
+    complaint_id,
+    message,
+    notice_date,
+    venue
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    subject = f"AP RERA Notice - Complaint {complaint_id}"
+
+    formatted_date = datetime.fromisoformat(
+        notice_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    body = f"""
+To  
+{complainant_name}
+
+Subject: Notice Issued – Complaint No. {complaint_id}
+
+Sir/Madam,
+
+This is to inform you that your complaint has been taken up by the Andhra Pradesh Real Estate Regulatory Authority (AP RERA).
+
+Complaint Details:
+--------------------------------------------------
+
+Complaint No : {complaint_id}
+
+Respondent Name : {respondent_name}
+
+Notice / Remarks :
+{message}
+
+Date of Appearance :
+{formatted_date}
+
+Venue :
+{venue}
+
+--------------------------------------------------
+
+You are requested to appear before the Authority on the scheduled date along with all supporting documents related to the complaint.
+
+Regards,  
+AP RERA Authority  
+Government of Andhra Pradesh
+"""
+
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+    server.sendmail(from_email, to_email, msg.as_string())
+    server.quit()
+
+
+
+# ================= SEND NOTICE - RESPONDENT =================
+
+def send_notice_mail_respondent(
+    to_email,
+    respondent_name,
+    complainant_name,
+    complaint_id,
+    message,
+    notice_date,
+    venue
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    subject = f"AP RERA Legal Notice - Complaint {complaint_id}"
+
+    formatted_date = datetime.fromisoformat(
+        notice_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    body = f"""
+To  
+{respondent_name}
+
+Subject: Notice Regarding Complaint No. {complaint_id}
+
+Sir/Madam,
+
+This is to inform you that a complaint has been filed before the Andhra Pradesh Real Estate Regulatory Authority (AP RERA) against you.
+
+Complaint Details:
+--------------------------------------------------
+
+Complaint No : {complaint_id}
+
+Complainant Name : {complainant_name}
+
+Notice / Remarks :
+{message}
+
+Date of Appearance :
+{formatted_date}
+
+Venue :
+{venue}
+
+--------------------------------------------------
+
+You are hereby directed to appear before the Authority on the above mentioned date and venue along with all supporting documents relevant to the case.
+
+Failing to appear may result in further proceedings as per AP RERA regulations.
+
+Regards,  
+AP RERA Authority  
+Government of Andhra Pradesh
+"""
+    
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+    server.sendmail(from_email, to_email, msg.as_string())
+    server.quit()
+
+
+# ================= CASE REGISTERED - COMPLAINANT =================
+
+def send_case_registered_mail_complainant(
+    to_email,
+    complainant_name,
+    case_no,
+    hearing_date,
+    venue
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    formatted_date = datetime.fromisoformat(
+        hearing_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    subject = f"AP RERA Case Registered - {case_no}"
+
+    body = f"""
+To
+{complainant_name}
+
+Subject: Case Registered before AP RERA
+
+Sir/Madam,
+
+Your complaint has been officially registered before AP RERA Authority.
+
+--------------------------------------------------
+
+Case Number :
+{case_no}
+
+First Hearing Date :
+{formatted_date}
+
+Venue :
+{venue}
+
+--------------------------------------------------
+
+You are requested to attend the hearing along with supporting documents.
+
+Regards,
+AP RERA Authority
+Government of Andhra Pradesh
+"""
+
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+    server.sendmail(from_email, to_email, msg.as_string())
+    server.quit()
+
+
+# ================= CASE REGISTERED - RESPONDENT =================
+
+def send_case_registered_mail_respondent(
+    to_email,
+    respondent_name,
+    case_no,
+    hearing_date,
+    venue
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    formatted_date = datetime.fromisoformat(
+        hearing_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    subject = f"AP RERA Case Registered - {case_no}"
+
+    body = f"""
+To
+{respondent_name}
+
+Subject: Case Registered before AP RERA
+
+Sir/Madam,
+
+This is to inform you that the complaint has been officially registered before AP RERA Authority.
+
+--------------------------------------------------
+
+Case Number :
+{case_no}
+
+First Hearing Date :
+{formatted_date}
+
+Venue :
+{venue}
+
+--------------------------------------------------
+
+You are directed to attend the hearing along with supporting documents.
+
+Regards,
+AP RERA Authority
+Government of Andhra Pradesh
+"""
+
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+    server.sendmail(from_email, to_email, msg.as_string())
+    server.quit()

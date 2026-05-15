@@ -22,7 +22,7 @@
 
 .admin-project-details__status-badge {
   background: #dbeafe;
-  color: #5A2D0C;
+  color: #029cef;
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: bold;
@@ -31,7 +31,7 @@
 /* Title */
 .admin-project-details__title {
   margin: 15px 0;
-  color: #5A2D0C;
+  color: #029cef;
 }
 
 /* Card */
@@ -232,7 +232,7 @@
 
 /* ✅ CONFIRM APPROVE BUTTON */
 .admin-project-details__confirm-approve-btn {
-  background: #5A2D0C; /* blue button like your screenshot */
+  background: #029cef; /* blue button like your screenshot */
   color: #fff;
   border: none;
   padding: 8px 16px;

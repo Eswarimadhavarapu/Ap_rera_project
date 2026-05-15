@@ -5,7 +5,7 @@ const S = {
   table:  { width: "100%", borderCollapse: "collapse", fontSize: "13px" },
   th:     { background: "#0f3460", color: "#fff", padding: "10px 12px", border: "1px solid #ccd4e0", textAlign: "left", fontWeight: "600" },
   td:     { padding: "9px 12px", border: "1px solid #e2e8f2", verticalAlign: "top" },
-  oldVal: { color: "#6b7c93" },
+  existingVal: { color: "#6b7c93" },
   newVal: { color: "#1a7a3c", fontWeight: "600" },
   secHdr: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -18,29 +18,59 @@ const S = {
   group:    { border: "1px solid #e2e8f2", borderRadius: "8px", overflow: "hidden", marginBottom: "18px", boxShadow: "0 1px 4px rgba(15,52,96,0.07)" },
 };
 
-// ─── REVIEW & SUBMIT ─────────────────────────────────────────────────────────
+// Helper function to get remarks 
+ 
+const getRemarks = (row) => {
+  console.log("🔍 ROW DATA:", row);
+
+  return (
+    row.remarks || 
+    row.Remarks || 
+    row.remark || 
+    row.description || 
+    row.Description || 
+    row.comment || 
+    row.comments || 
+    "-"
+  );
+};
+
+// Helper function to get Supporting Document name
+// Helper function to get Supporting Document name  ←←← ఇది మార్చండి
+const getSupportingDoc = (row) => {
+  return (
+    row.fileName || 
+    row.supportingdocuments || 
+    row.supportingDocument || 
+    row.documentName || 
+    row.supportingDocs || 
+    row.document || 
+    row.newFileName ||
+    row.fileURLName ||   
+    "-"
+  );
+};
+
 export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
 
-  // Group rows by subLabel (subsection name)
   const grouped = reviewRows.reduce((acc, row) => {
-    const key = row.subLabel || row.section;
+    const key = row.subLabel || row.section || "General";
     if (!acc[key]) acc[key] = [];
     acc[key].push(row);
     return acc;
   }, {});
 
   return (
-    <div className="cr-main-card">
-      <div className="cr-main-card-header">
-        <span>③</span> Review Changes &amp; Submit
+    <div className="changerequest-main-card">
+      <div className="changerequest-main-card-header">
+        <span>②</span> Review Changes &amp; Submit
       </div>
-      <div className="cr-main-card-body">
+      <div className="changerequest-main-card-body">
 
-        {/* ── SUMMARY ───────────────────────────────────────────────────── */}
-        <div className="cr-section-divider">
-          <span className="cr-section-divider-dot"></span>
-          <span className="cr-section-divider-title">Summary of Changes</span>
-          <span className="cr-section-divider-line"></span>
+        <div className="changerequest-section-divider">
+          <span className="changerequest-section-divider-dot"></span>
+          <span className="changerequest-section-divider-title">Summary of Changes</span>
+          <span className="changerequest-section-divider-line"></span>
         </div>
 
         {reviewRows.length > 0 ? (
@@ -50,146 +80,203 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
               <strong style={{ color: "var(--primary)" }}>{Object.keys(grouped).length}</strong> section{Object.keys(grouped).length > 1 ? "s" : ""}
             </div>
 
-            {/* ── ONE GROUP PER SUBSECTION ── */}
-            {Object.entries(grouped).map(([subName, rows]) => (
-              <div key={subName} style={S.group}>
+            {Object.entries(grouped).map(([subName, rows]) => {
+              const newRows = rows.filter(r => r.type === "associate_new");
+              const existingRows = rows.filter(r => r.type === "associate_existing");
 
-                {/* Heading = subsection name */}
-                <div style={S.secHdr}>
-                  <span style={S.secName}>{subName}</span>
-                  <span style={S.secCount}>{rows.length} change{rows.length > 1 ? "s" : ""}</span>
-                </div>
-
-                {/* ── BANK ACCOUNT — label:value grid format ── */}
-                {rows[0]?.type === "bank" ? (
-                  <div style={{ padding: "16px 20px" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 32px" }}>
-                      {rows.map((row, i) => (
-                        <div key={i} style={{ fontSize: "13px", paddingBottom: "6px", borderBottom: "1px solid #f0f3f8" }}>
-                          <span style={{ fontWeight: "700", color: "#1a2535" }}>{row.field}:</span>{" "}
-                          <span style={{ color: "#333" }}>{row.newValue || "-"}</span>
-                          {row.documentUrl && (
-                            <span style={{ marginLeft: "8px" }}>
-                              <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                                style={{ color: "#0f3460", fontWeight: "600", fontSize: "12px" }}>View</a>
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+              return (
+                <div key={subName} style={S.group}>
+                  <div style={S.secHdr}>
+                    <span style={S.secName}>{subName}</span>
+                    <span style={S.secCount}>{rows.length} change{rows.length > 1 ? "s" : ""}</span>
                   </div>
 
-                ) : rows[0]?.type === "associate_new" ? (
-                  /* ── ASSOCIATE NEW MODE — exact same table as form (all field columns) ── */
-                  <table style={S.table}>
-                    <thead>
-                      <tr>
-                        {/* Dynamic headers from fieldHeaders of first row */}
-                        {(rows[0]?.fieldHeaders || []).map((fh) => (
-                          <th key={fh.label} style={S.th}>{fh.label}</th>
+                  {/* BANK ACCOUNT SECTION */}
+                  {rows[0]?.type === "bank" ? (
+                    // ... existing bank code (unchanged)
+                    <div style={{ padding: "16px 20px" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 32px" }}>
+                        {rows.map((row, i) => (
+                          <div key={i} style={{ fontSize: "13px", paddingBottom: "6px", borderBottom: "1px solid #f0f3f8" }}>
+                            <span style={{ fontWeight: "700", color: "#1a2535" }}>{row.field}:</span>{" "}
+                            <span style={{ color: "#333" }}>{row.newValue || "-"}</span>
+                          </div>
                         ))}
-                        <th style={S.th}>Remarks</th>
-                        <th style={S.th}>SupportingDocuments</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row, i) => (
-                        <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                          {(row.fieldHeaders || []).map((fh) => (
-                            <td key={fh.label} style={S.td}>{fh.value}</td>
-                          ))}
-                          <td style={{ ...S.td, color: "#555", fontSize: "12.5px" }}>{row.description || "-"}</td>
-                          <td style={S.td}>
-                            {row.documentUrl
-                              ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                                  style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* NEW ENTRIES */}
+                      {newRows.length > 0 && (
+                        <>
+                          <div style={{ padding: "10px 16px", fontWeight: "600" }}>New Entries</div>
+                          <table style={S.table}>
+                            <thead>
+                              <tr>
+                                {(newRows[0]?.fieldHeaders || []).map((fh) => (
+                                  <th key={fh.label} style={S.th}>{fh.label}</th>
+                                ))}
+                                <th style={S.th}>Remarks</th>
+                                <th style={S.th}>Supporting Documents</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {newRows.map((row, i) => (
+                                <tr key={i}>
+                                  {(row.fieldHeaders || []).map((fh) => (
+                                    <td key={fh.label} style={S.td}>{fh.value}</td>
+                                  ))}
+                                  <td style={S.td}>{getRemarks(row)}</td>
+                                  <td style={S.td}>{getSupportingDoc(row)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </>
+                      )}
 
-                ) : rows[0]?.type === "associate_old" ? (
-                  /* ── ASSOCIATE OLD MODE — Field | Old Value | New Value | Description | Document ── */
-                  <table style={S.table}>
-                    <thead>
-                      <tr>
-                        <th style={{ ...S.th, width: "20%" }}>Field</th>
-                        <th style={{ ...S.th, width: "18%" }}>Existing Value</th>
-                        <th style={{ ...S.th, width: "18%" }}>New Value</th>
-                        <th style={{ ...S.th, width: "22%" }}>Remarks</th>
-                        <th style={S.th}>SupportingDocuments</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row, i) => (
-                        <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                          <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{row.field}</td>
-                          <td style={{ ...S.td, ...S.oldVal }}>{row.oldValue || "-"}</td>
-                          <td style={{ ...S.td, ...S.newVal }}>{row.newValue || "-"}</td>
-                          <td style={{ ...S.td, color: "#555", fontSize: "12.5px" }}>{row.description || "-"}</td>
-                          <td style={S.td}>
-                            {row.documentUrl
-                              ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-                                  style={{ color: "#0f3460", fontWeight: "600" }}>{row.document}</a>
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      {/* EXISTING CHANGES */}
+{existingRows.length > 0 && (
+  <>
+    <div style={{ padding: "10px 16px", fontWeight: "600" }}>Existing Changes</div>
+    <table style={S.table}>
+      <thead>
+        <tr>
+          <th style={S.th}>Field</th>
+          <th style={S.th}>Existing Value</th>
+          <th style={S.th}>New Value</th>
+          <th style={S.th}>Remarks</th>
+          <th style={S.th}>Supporting Documents</th>
+        </tr>
+      </thead>
+      <tbody>
+        {existingRows.map((row, i) => (
+          <tr key={i}>
+            <td style={S.td}>{row.field}</td>
+            <td style={{ ...S.td, ...S.existingVal }}>{row.existingValue || "-"}</td>
+            <td style={{ ...S.td, ...S.newVal }}>{row.newValue}</td>
+            <td style={S.td}>{getRemarks(row)}</td>
+            <td style={S.td}>
+              {getSupportingDoc(row) !== "-" ? (
+                <a
+                  href={row.fileURL || row.documentUrl || row.newFileUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#1e4d8f", fontWeight: "600" }}
+                >
+                   {getSupportingDoc(row)}
+                </a>
+              ) : "-"}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </>
+)}
 
-                ) : (
-                  /* ── ALL OTHER SECTIONS — standard Field|Old|New|Description|Document table ── */
-                  <table style={S.table}>
-                    <thead>
-                      <tr>
-                        <th style={{ ...S.th, width: "20%" }}>Field</th>
-                        <th style={{ ...S.th, width: "18%" }}>Existing  Value</th>
-                        <th style={{ ...S.th, width: "18%" }}>New Value</th>
-                        <th style={{ ...S.th, width: "22%" }}>Remarks</th>
-                        <th style={S.th}>SupportingDocuments</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row, i) => (
-                        <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                          <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{row.field}</td>
-                          <td style={{ ...S.td, ...S.oldVal }}>{row.oldValue || "-"}</td>
-                          <td style={{ ...S.td, ...S.newVal }}>{row.newValue}</td>
-                          <td style={{ ...S.td, color: "#555", fontSize: "12.5px" }}>{row.description || "-"}</td>
-                         <td style={S.td}>
-  {row.documentUrl
-    ? <a href={row.documentUrl} target="_blank" rel="noopener noreferrer"
-        style={{ color: "#0f3460", fontWeight: "600" }}>📎 {row.document}</a>
-    : row.document && row.document !== "-"
-      ? <span style={{ color: "#1a7a3c" }}>📎 {row.document}</span>
-      : "-"}
+                      {/* UPLOAD DOCUMENTS TABLE - Fixed */}
+                      {newRows.length === 0 && existingRows.length === 0 && (
+                        subName === "Upload Documents" ? (
+                          <table style={S.table}>
+                            <thead>
+                              <tr>
+                                <th style={{ ...S.th, width: "28%" }}>Field</th>
+                                <th style={{ ...S.th, width: "20%" }}>Existing File</th>
+                                <th style={{ ...S.th, width: "20%" }}>New File</th>
+                                <th style={{ ...S.th, width: "17%" }}>Remarks</th>
+                                {/* <th style={{ ...S.th, width: "15%" }}>Supporting Documents</th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rows.map((row, i) => (
+                                <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
+                                  <td style={{ ...S.td, fontWeight: "600", color: "#0f3460", wordBreak: "break-word" }}>
+                                    {row.docType || row.field}
+                                  </td>
+                                  <td style={{ ...S.td, ...S.existingVal }}>
+                                    {row.oldFileName ? ` ${row.oldFileName}` : "-"}
+                                  </td>
+                                  <td style={{ ...S.td, ...S.newVal }}>
+  {row.newFileName || row.newValue || "-"}
 </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            ))}
+                                  <td style={{ ...S.td, color: "#555", fontSize: "12.5px", maxWidth: "180px", whiteSpace: "pre-wrap" }}>
+                                    {getRemarks(row)}
+                                  </td>
+                                  {/* <td style={S.td}>
+                                    {row.newFileName ? (
+                                      <a
+                                        href={row.newFileUrl || row.fileUrl || "#"}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: "#1e4d8f", fontWeight: "600" }}
+                                      >
+                                         {row.newFileName}
+                                      </a>
+                                    ) : "-"}
+                                  </td> */}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        ) : (
+                          /* Normal Fields Table */
+                          <table style={S.table}>
+                            <thead>
+                              <tr>
+                                <th style={{ ...S.th, width: "25%" }}>Field</th>
+                                <th style={{ ...S.th, width: "20%" }}>Existing Value</th>
+                                <th style={{ ...S.th, width: "20%" }}>New value</th>
+                                <th style={{ ...S.th, width: "35%" }}>Remarks</th>
+                                <th style={{ ...S.th, width: "20%" }}>Supporting Documents</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rows.map((row, i) => (
+                                <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
+                                  <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{row.field}</td>
+                                  <td style={{ ...S.td, ...S.existingVal }}>{row.existingValue || "-"}</td>
+                                  <td style={{ ...S.td, ...S.newVal }}>{row.newValue}</td>
+                                  <td style={{ ...S.td, color: "#555", fontSize: "12.5px" }}>
+                                    {getRemarks(row)}
+                                  </td>
+                                  <td style={S.td}>
+  {getSupportingDoc(row) !== "-" ? (
+    <a
+      href={row.fileURL || row.documentUrl || row.newFileUrl || "#"}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "#1e4d8f", fontWeight: "600" }}
+    >
+       {getSupportingDoc(row)}
+    </a>
+  ) : "-"}
+</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        )
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </>
         ) : (
-          <div className="cr-note" style={{ marginBottom: 20 }}>
-            <span className="cr-note-icon">⚠️</span>
-            <span>No changes entered. Please go back and fill at least one field.</span>
+          <div className="changerequest-note" style={{ marginBottom: 20 }}>
+            <span className="changerequest-note-icon">⚠️</span>
+            No changes entered.
           </div>
         )}
 
-        <div className="cr-btn-row">
-          <button className="cr-btn-secondary" onClick={onBack}>← Back</button>
-          <button className="cr-btn-primary accent"
-            disabled={reviewRows.length === 0} onClick={onSubmit}>
+        <div className="changerequest-btn-row">
+          <button className="changerequest-btn-secondary" onClick={onBack}>← Back</button>
+          <button className="changerequest-btn-primary accent" disabled={reviewRows.length === 0} onClick={onSubmit}>
             ✔ Submit Change Request
           </button>
         </div>
-
       </div>
     </div>
   );

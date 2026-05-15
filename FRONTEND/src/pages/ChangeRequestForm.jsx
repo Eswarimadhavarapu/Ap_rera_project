@@ -62,10 +62,10 @@ const projects = loginData?.projects || [];
 };
 
   return (
-    <div className="cr-form-container">
+    <div className="changerequest-form-container">
       <h2>Apply for Change Request</h2>
 
-      <form onSubmit={handleSubmit} className="cr-form-form-box">
+      <form onSubmit={handleSubmit} className="changerequest-form-form-box">
 
         <label>Application Number</label>
 
@@ -132,7 +132,7 @@ const projects = loginData?.projects || [];
           onChange={handleFileChange}
         />
 
-        <button className="cr-form-button" type="submit">Submit Request</button>
+        <button className="changerequest-form-button" type="submit">Submit Request</button>
 
       </form>
     </div>
