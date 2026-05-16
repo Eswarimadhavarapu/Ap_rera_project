@@ -15,7 +15,7 @@ body {
 
 /* BREADCRUMB */
 .zagentud-breadcrumb {
-  background: #1287e0;
+  background: #4d96a3;
   color: #ffffff;
   padding: 4px 10px;
   font-size: 15px;
@@ -56,7 +56,7 @@ body {
   bottom: 0;
   width: 45px;
   height: 3px;
-  background: #0b5ed7;
+  background: #4d96a3;
 }
 
 /* SECTION HEADING (Upload Documents) */
@@ -64,7 +64,7 @@ body {
   position: relative;
   font-size: 20px;
   font-weight: bold;
-  color: #0073aa;
+  color: #4d96a3;
   margin-bottom: 15px;
   padding-bottom: 8px;
 }
@@ -76,7 +76,7 @@ body {
   bottom: 0;
   width: 45px;
   height: 3px;
-  background: #0b5ed7;
+  background: #4d96a3;
 }
 
 
@@ -285,9 +285,9 @@ body {
 
 /* Save And Continue button */
 .zagentud-btn-primary {
-  background: #0d6efd;
+  background: #4d96a3;
   color: #ffffff;
-  border: 1px solid #0b5ed7;
+  border: 1px solid #4d96a3;
   border-radius: 4px;
   padding: 6px 14px;
   font-size: 14px;
@@ -297,7 +297,7 @@ body {
 
 /* Hover effect */
 .zagentud-btn-primary:hover {
-  background: #0b5ed7;
+  background: #4d96a3;
 }
 
 

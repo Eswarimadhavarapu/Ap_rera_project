@@ -52,20 +52,20 @@
 }
 
 .acr-step.active .acr-step-circle {
-  background: #1f73b7;
-  border-color: #1f73b7;
+  background: #4d96a3;
+  border-color: #4d96a3;
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(31, 115, 183, 0.4);
 }
 
 .acr-step.completed .acr-step-circle {
   background: #e5f2ff;
-  border-color: #1f73b7;
-  color: #1f73b7;
+  border-color: #4d96a3;
+  color: #4d96a3;
 }
 
 .acr-step.completed .acr-step-text .acr-step-title {
-  color: #1f73b7;
+  color: #4d96a3;
 }
 
 .acr-step.clickable {
@@ -74,7 +74,7 @@
 }
 
 .acr-step.clickable:hover .acr-step-circle {
-  border-color: #1f73b7;
+  border-color: #4d96a3;
 }
 
 .acr-step-connector {
@@ -103,4 +103,4 @@
   .acr-step-connector {
     margin: 0;
   }
-}
+} 

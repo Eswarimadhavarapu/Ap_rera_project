@@ -984,6 +984,9 @@ import UserDetails from "./pages/exemptionUserDetails.jsx";
 import ApreatApplication from "./pages/ApreatApplication.jsx";
 import LegalDashboard from "./pages/LegalSideComplaint/LegalDashboard.jsx";
 import ComplaintList from "./pages/LegalSideComplaint/ComplaintList.jsx";
+import CaseStatus from "./pages/CaseStatus.jsx";
+import RtiPage from "./pages/RtiPage.jsx";
+import HearingHistory from "./pages/LegalSideComplaint/HearingHistory.jsx";
 
 
 function App() {
@@ -1366,7 +1369,15 @@ function App() {
              <Route path="/reports/R15.1" element={<R15_1 />} />
              <Route path="/reports/R19.1" element={<R19_1 />} />
              <Route path="/exemptiondetails/:id" element={<ExemptionUserDetails />} />
-
+             <Route
+  path="/case-status"
+  element={<CaseStatus />}
+/>
+<Route path="/admin/rti" element={<RtiPage />} />
+<Route
+  path="/hearings"
+  element={<HearingHistory />}
+/>
           </Routes>
           <Chatbot />
         </Layout></AgentFormProvider>

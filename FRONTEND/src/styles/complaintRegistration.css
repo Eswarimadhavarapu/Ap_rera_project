@@ -19,7 +19,7 @@ complaintregistration.css---------------------
 
 /* ================= BREADCRUMB ================= */
 .complaintregistration-breadcrumb {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
   padding: 6px 12px;
   font-size: 13px;
@@ -32,7 +32,7 @@ complaintregistration.css---------------------
 }
 
 .comaplaintregistration-link-text{
-  color: #0072bc;
+  color: #4d96a3;
   text-decoration: underline;
 }
 
@@ -41,7 +41,7 @@ complaintregistration.css---------------------
   font-size: 18px;
   font-weight: bold;
   margin: 10px 0 15px;
-  border-bottom: 2px solid #1e88e5;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
 }
 
@@ -52,7 +52,7 @@ complaintregistration.css---------------------
 }
 
 .complaintregistration-link-heading {
-  color: #0072bc;
+  color: #4d96a3;
   text-decoration: underline;
 }
 
@@ -167,7 +167,7 @@ complaintregistration.css---------------------
 
 /* ================= TEXT ================= */
 .complaintregistartion-blue-text {
-  color: #0072bc;
+  color: #4d96a3;
   cursor: pointer;
 }
 
@@ -178,7 +178,7 @@ complaintregistration.css---------------------
 }
 
 .complaintregistration-proceed-btn {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 6px 16px;
@@ -188,7 +188,7 @@ complaintregistration.css---------------------
 }
 
 .complaintregistration-proceed-btn:hover {
-  background: #1565c0;
+  background: #4d96a3;
 }
 
 /* ================= REQUIRED ================= */
@@ -197,19 +197,19 @@ complaintregistration.css---------------------
 }
 
 .complaintregistration-section-title {
-  color: #0077b6;
+  color: #4d96a3;
   font-weight: bold;
   margin: 16px 0 8px;
 }
 
 .complaintregistration-link-text {
-  color: #0047ff;
+  color: #4d96a3;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .complaintregistration-link-text:hover {
-  color: #002fa7;
+  color: #4d96a3;
 }
 
 .complaintregistration-cr-footer.right {

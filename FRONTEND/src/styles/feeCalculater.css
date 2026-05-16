@@ -17,7 +17,7 @@
 
 /* ================= BREADCRUMB ================= */
 .fc-breadcrumb-bar {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #ffffff;
   padding: 8px 15px;
   font-size: 13px;
@@ -90,7 +90,7 @@
 
 /* ================= BUTTON ================= */
 .fc-calculate-btn {
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #ffffff;
   border: none;
   padding: 6px 20px;
@@ -103,7 +103,7 @@
 }
 
 .fc-calculate-btn:hover {
-  background: #084298;
+  background: #4d96a3;
 }
 
 

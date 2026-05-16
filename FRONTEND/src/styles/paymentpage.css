@@ -12,7 +12,7 @@
 
 /* ===== Payment Box ===== */
 .payment-box {
-  border: 3px solid #0b5394;
+  border: 3px solid #4d96a3;
   padding: 16px;
   background: #ffffff;
   margin-top: 10px;
@@ -20,7 +20,7 @@
 
 /* ===== Header ===== */
 .payment-header {
-  background: #0b5394;
+  background: #4d96a3;
   color: #ffffff;
   padding: 10px 14px;
   font-weight: bold;
@@ -76,7 +76,7 @@
 
 /* ===== Total Amount Box ===== */
 .payent-amount-box {
-  border: 2px solid #0b5394;
+  border: 2px solid #4d96a3;
   padding: 8px 14px;
   font-size: 14px;
   font-weight: bold;
@@ -94,7 +94,7 @@
 
 .make-payment-btn,
 .cancel-payment-btn {
-  background-color: #0b5394;
+  background-color: #4d96a3;
   color: #ffffff;
   border: none;
   padding: 10px 22px;
@@ -120,7 +120,7 @@
 
 .payment-back-btn {
   padding: 8px 18px;
-  background-color: #1e88e5;
+  background-color: #4d96a3;
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -129,7 +129,7 @@
 }
 
 .payment-back-btn:hover {
-  background-color: #1565c0;
+  background-color: #4d96a3;
 }
 
 .payment-right-actions {

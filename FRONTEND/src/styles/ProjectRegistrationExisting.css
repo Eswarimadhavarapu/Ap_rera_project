@@ -31,7 +31,7 @@ body {
 
 /* BREADCRUMB */
 .otplogin-breadcrumb-bar {
-  background: #1e88e5;
+  background: #4d96a3;
 }
 
 .otplogin-breadcrumb-inner {
@@ -81,7 +81,7 @@ body {
 
 /* BUTTON */
 .otplogin-otp-btn {
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 10px 22px;
@@ -91,7 +91,7 @@ body {
 }
 
 .otplogin-otp-btn:hover {
-  background: #084298;
+  background: #4d96a3;
 }
 
 /* OTP INFO */
@@ -126,7 +126,7 @@ body {
 }
 
 .otplogin-popup-box button {
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 18px;
@@ -158,7 +158,7 @@ body {
 }
 /* Top blue breadcrumb bar */
 .project-topbar {
-  background: #1e73be;
+  background: #4d96a3;
   color: white;
   padding: 10px 20px;
   font-size: 14px;
@@ -184,8 +184,6 @@ body {
 .title-underline {
   width: 60px;
   height: 3px;
-  background: #1e73be;
+  background: #4d96a3;
   margin-top: 8px;
 }
-
-

@@ -7,7 +7,7 @@
 
 /* Breadcrumb */
 .guidelines-breadcrumb {
-  background: #0c84e4;
+  background: #4d96a3;
   color: #fff;
   padding: 10px 18%;
   font-size: 13px;
@@ -72,7 +72,7 @@
   color: white;
 }
 .guidelines-pr-link{
-  color: #0c4da2;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
   margin-left: 3px;
@@ -84,7 +84,7 @@
 
 /* Links */
 .guidelines-link-text {
-  color: #0c4da2;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
 }

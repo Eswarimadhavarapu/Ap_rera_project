@@ -1,7 +1,7 @@
 /* Base Sidebar */
 .scrutiny-sidebar {
   height: 100vh;
-  background-color: #5C3317;
+  background-color: #4d96a3;
   color: white;
   position: fixed;
   top: 0;
@@ -25,7 +25,7 @@
   text-align: center;
   padding: 15px;
   font-size: 18px;
-  border-bottom: 1px solid #5C3317;
+  border-bottom: 1px solid #4d96a3;
   white-space: nowrap;
   transition: opacity 0.3s ease;
 }
@@ -44,14 +44,14 @@
   color: white;
   text-align: left;
   cursor: pointer;
-  border-bottom: 1px solid #5C3317;
+  border-bottom: 1px solid #4d96a3;
   white-space: nowrap;
   transition: all 0.3s ease;
 }
 
 /* Hover */
 .scrutiny-sidebar button:hover {
-  background-color: #5C3317;
+  background-color: #4d96a3;
 }
 
 /* Hide button text when closed */
@@ -70,11 +70,11 @@
   padding: 10px;
   cursor: pointer;
   font-size: 18px;
-  border-bottom: 1px solid #5C3317;
+  border-bottom: 1px solid #4d96a3;
 }
 
 .sidebar-toggle:hover {
-  background-color: #5C3317;
+  background-color: #4d96a3;
 }
 
 .scrutiny-sidebar-closed button {

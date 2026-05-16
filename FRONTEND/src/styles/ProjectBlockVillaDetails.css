@@ -16,7 +16,7 @@
 
 /* Breadcrumb */
 .projectblockvilla-breadcrumb {
-  background: #0b7dda;
+  background: #4d96a3;
   color: #fff;
   padding: 10px 15px;
   font-size: 14px;
@@ -44,13 +44,13 @@
   content: "";
   width: 60px;
   height: 4px;
-  background: #1976d2;
+  background: #4d96a3;
   display: block;
   margin-top: 6px;
 }
 
 .projectblockvilla-back-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   padding: 10px 14px;
   border: none;
@@ -59,7 +59,7 @@
   justify-content: flex-end;
 }
 .projectblockvilla-back-btn:hover {
-  background: #125ea2;
+  background: #4d96a3;
 }
 
 /* Stepper */
@@ -205,7 +205,7 @@
 
 .projectblockvilla-upload-btn,
 .projectblockvilla-view-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -221,7 +221,7 @@
 
 /* Hover effect like hyperlink */
 .projectblockvilla-upload-link:hover {
-  color: #1976d2;
+  color: #4d96a3;
   text-decoration: underline;
 }
 /* Overlay */
@@ -248,7 +248,7 @@
 
 /* Header */
 .projectblockvilla-modal-header {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   padding: 12px 16px;
   display: flex;
@@ -281,7 +281,7 @@
 /* Buttons */
 .projectblockvilla-add-btn,
 .projectblockvilla-close-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 14px;
@@ -305,7 +305,7 @@
 }
 
 .projectblockvilla-delete-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 6px 12px;
@@ -313,7 +313,7 @@
   cursor: pointer;
 }
 .projectblockvilla-download{
-  color: blue;
+  color: #4d96a3;
 }
 /* Before Save */
 .projectblockvilla-file-unsaved {
@@ -324,7 +324,7 @@
 
 /* After Save (AP-RERA blue) */
 .projectblockvilla-file-saved {
-  color: #1976d2;
+  color: #4d96a3;
   font-size: 14px;
   margin-left: 8px;
   cursor: pointer;
@@ -338,7 +338,7 @@
 
 .projectblockvilla-save-btn,
 .projectblockvilla-final-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 10px 18px;
@@ -364,7 +364,7 @@
 }
 
 .sale-doc-name.uploaded {
-  color: #0d6efd;           /* blue after upload */
+  color: #4d96a3;           /* blue after upload */
   font-weight: 500;
 }
 /* Dropdown */
@@ -438,7 +438,7 @@
 
 .projectblockvilla-upload-btn,
 .projectblockvilla-view-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -495,7 +495,7 @@
 
 /* Submit button styling (right side) */
 .projectblockvilla-submit-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 10px 18px;
@@ -544,7 +544,7 @@ input[type="file"]:disabled {
 
 /* File name blue link style */
 .projectblockvilla-file-name {
-  color: #1a0dab;
+  color: #4d96a3;
   font-size: 13px;
   font-weight: 500;
 }
@@ -644,12 +644,12 @@ input[type="file"]:disabled {
 }
 
 .upload-view-link:hover {
-  color: #0d6efd;
+  color: #4d96a3;
   text-decoration: underline;
 }
 /* Upload/View clickable text */
 .upload-view-link {
-  color: #0d6efd;
+  color: #4d96a3;
   cursor: pointer;
   font-weight: 500;
   text-decoration: underline;
@@ -680,7 +680,7 @@ input[type="file"]:disabled {
 
 /* Header */
 .upload-modal-header {
-  background: #0d6efd;
+  background: #4d96a3;
   color: white;
   padding: 12px 16px;
   display: flex;
@@ -705,7 +705,7 @@ input[type="file"]:disabled {
 }
 
 .add-btn {
-  background: #0d6efd;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 6px 14px;
@@ -720,7 +720,7 @@ input[type="file"]:disabled {
 }
 
 .close-btn {
-  background: #0d6efd;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 6px 16px;
@@ -752,7 +752,7 @@ input[type="file"]:disabled {
 
 /* Blue header (like first image) */
 .upload-modal-header {
-  background: #1f6fd6;
+  background: #4d96a3;
   color: white;
   padding: 14px 20px;
   font-size: 18px;
@@ -796,7 +796,7 @@ input[type="file"]:disabled {
 
 /* Add button (blue like image) */
 .upload-add-btn {
-  background-color: #1f6fd6;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 6px 16px;
@@ -805,7 +805,7 @@ input[type="file"]:disabled {
 }
 
 .upload-add-btn:hover {
-  background-color: #1557ad;
+  background-color: #4d96a3;
 }
 
 /* Footer */
@@ -817,7 +817,7 @@ input[type="file"]:disabled {
 
 /* Close button bottom */
 .upload-close-btn {
-  background-color: #1f6fd6;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 6px 18px;
@@ -834,7 +834,7 @@ input[type="file"]:disabled {
 
 /* Add button (blue like screenshot) */
 .upload-add-btn {
-  background-color: #1f6fd6;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 6px 16px;
@@ -843,7 +843,7 @@ input[type="file"]:disabled {
 }
 
 .upload-add-btn:hover {
-  background-color: #1557ad;
+  background-color: #4d96a3;
 }
 
 /* Table wrapper */
@@ -872,14 +872,14 @@ input[type="file"]:disabled {
 
 /* Download link */
 .download-link {
-  color: #1f6fd6;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
 }
 
 /* Delete button */
 .delete-btn {
-  background-color: #1f6fd6;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 5px 14px;
@@ -888,27 +888,27 @@ input[type="file"]:disabled {
 }
 
 .delete-btn:hover {
-  background-color: #1557ad;
+  background-color: #4d96a3;
 } 
 .upload-view-link {
-  color: #1f6fd6;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
   font-weight: 500;
 }
 
 .upload-view-link:hover {
-  color: #1557ad;
+  color: #4d96a3;
 }
 .upload-view-link {
-  color: #1f6fd6;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
   font-weight: 500;
 }
 
 .upload-view-link:hover {
-  color: #1557ad;
+  color: #4d96a3;
 }
 /* Sale Document Upload Style (Second Image) */
 .sale-doc-upload-box {
@@ -922,7 +922,7 @@ input[type="file"]:disabled {
 }
 
 .sale-doc-upload-btn {
-  background-color: #1e73be;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 6px 14px;
@@ -933,10 +933,10 @@ input[type="file"]:disabled {
 }
 
 .sale-doc-upload-btn:hover {
-  background-color: #155fa0;
+  background-color: #4d96a3;
 }
 .uploaded-file-name {
-  color: #1e73be;
+  color: #4d96a3;
   font-size: 13px;
   margin-left: 6px;
   font-weight: 500;
@@ -1035,7 +1035,7 @@ input[type="file"]:disabled {
 
 .projectblockvilla-upload-btn,
 .projectblockvilla-view-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -1066,7 +1066,7 @@ input[type="file"]:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   padding: 10px;
   margin: -20px -20px 20px -20px;
@@ -1090,7 +1090,7 @@ input[type="file"]:disabled {
 }
 
 .projectblockvilla-save-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 20px;
@@ -1099,7 +1099,7 @@ input[type="file"]:disabled {
 }
 
 .projectblockvilla-final-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 10px 30px;
@@ -1116,7 +1116,7 @@ input[type="file"]:disabled {
 
 /* Save button */
 .projectblockvilla-save-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 20px;
@@ -1126,7 +1126,7 @@ input[type="file"]:disabled {
 
 /* Final Submit button */
 .projectblockvilla-final-btn {
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 10px 30px;
@@ -1145,7 +1145,7 @@ input[type="file"]:disabled {
   display: block;
   width: 60px;
   height: 4px;
-  background-color: #1976d2;  /* blue underline */
+  background-color: #4d96a3;  /* blue underline */
   margin-top: 8px;
 }
 .row-checkbox {
@@ -1172,7 +1172,7 @@ input[type="file"]:disabled {
   accent-color: green;
 } 
 .projectblockvilla-back-btn-Dashboard{
-  background: #1976d2;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 10px 18px;
@@ -1199,7 +1199,7 @@ padding:0 40px 20px;
 .residential-section .res-prev-btn{
 position:absolute;
 left:40px;
-background:#1976d2;
+background:#4d96a3;
 color:white;
 padding:8px 18px;
 border:none;
@@ -1212,7 +1212,7 @@ cursor:pointer;
 position:absolute;
 left:50%;
 transform:translateX(-50%);
-background:#1976d2;
+background:#4d96a3;
 color:white;
 padding:8px 18px;
 border:none;
@@ -1241,7 +1241,7 @@ cursor:pointer;
 }
 
 .res-next-btn {
-  background-color: #1976d2;
+  background-color: #4d96a3;
   color: white;
   padding: 8px 18px;
   border: none;
@@ -1251,7 +1251,7 @@ cursor:pointer;
 
 /* Header Blue Background */
 .modal-header {
-  background-color: #1976d2;
+  background-color: #4d96a3;
   color: white;
   padding: 12px 15px;
   font-size: 16px;
@@ -1278,7 +1278,7 @@ cursor:pointer;
 
 /* Add Button */
 .modal-add-btn {
-  background-color: #1976d2;
+  background-color: #4d96a3;
   color: white;
   padding: 6px 15px;
   border: none;
@@ -1287,7 +1287,7 @@ cursor:pointer;
 }
 
 .modal-add-btn:hover {
-  background-color: #125aa3;
+  background-color: #4d96a3;
 }
 .projectblockvilla-table th:nth-child(2),
 .projectblockvilla-table td:nth-child(2){
@@ -1341,7 +1341,7 @@ background:#5a6268;
 position:absolute;
 left:50%;
 transform:translateX(-50%);
-background:#1976d2;   /* blue */
+background:#4d96a3;   /* blue */
 color:white;
 padding:8px 20px;
 border:none;
@@ -1391,7 +1391,7 @@ cursor:pointer;
 position:absolute;
 left:50%;
 transform:translateX(-50%);
-background:#1976d2;
+background:#4d96a3;
 color:white;
 padding:8px 18px;
 border:none;

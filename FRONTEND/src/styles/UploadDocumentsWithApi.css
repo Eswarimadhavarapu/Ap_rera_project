@@ -8,7 +8,7 @@
 /* ===== BREADCRUMB FIX ===== */
 
 .header-navigation {
-  background: #0b7cff;   /* single blue bar */
+  background: #4d96a3;   /* single blue bar */
   padding: 10px 20px;
   border-radius: 0;      /* remove extra rounded box */
   margin-bottom: 20px;
@@ -66,7 +66,7 @@
   content: "";
   width: 60px;
   height: 3px;
-  background: #0b7cff;
+  background: #4d96a3;
   display: block;
   margin-top: 6px;
 }
@@ -140,7 +140,7 @@
 }
 
 .file-input-label {
-  background: #0b7cff;
+  background: #4d96a3;
   color: white;
   padding: 6px 14px;
   border-radius: 6px;
@@ -165,7 +165,7 @@
 }
 
 .lnk-link {
-  color: #0b7cff;
+  color: #4d96a3;
   text-decoration: none;
   font-weight: 500;
 }
@@ -190,7 +190,7 @@
 }
 
 .progress-fill {
-  background: #0b7cff;
+  background: #4d96a3;
   height: 18px;
   text-align: center;
   font-size: 12px;
@@ -281,7 +281,7 @@ textarea.inputbox {
 
 .inputbox:focus {
   outline: none;
-  border-color: #0b7cff;
+  border-color: #4d96a3;
   background: #fff;
 }
 
@@ -359,7 +359,7 @@ textarea.inputbox {
   content: "";
   width: 60px;
   height: 3px;
-  background: #0b7cff;
+  background: #4d96a3;
   display: block;
   margin-top: 6px;
 }
@@ -409,6 +409,6 @@ textarea.inputbox {
 }
 
 .save-button:hover {
-  background-color: #1976d2 !important;
+  background-color: #4d96a3 !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
 }

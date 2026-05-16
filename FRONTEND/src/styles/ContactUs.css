@@ -10,7 +10,7 @@
 
 /* ================= BREADCRUMB ================= */
 .contactuss-breadcrumb-bar {
-  background: #1e88e5;
+  background: #4d96a3;
   color: white;
   padding: 8px 12px;
   font-size: 14px;
@@ -63,7 +63,7 @@
   align-items: center;
   gap: 10px;
   font-size: 26px;
-  color: #0b5fc2;
+  color: #4d96a3;
   white-space: nowrap;
   margin-left: auto;   /* 🔥 FINAL PUSH TO RIGHT */
 }
@@ -84,7 +84,7 @@
   content: "";
   width: 40px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   display: block;
   margin-top: 6px;
 }
@@ -142,7 +142,7 @@
 }
 
 .contactuss-office-help span {
-  color: #1e88e5;
+  color: #4d96a3;
   font-weight: bold;
 }
 
@@ -203,7 +203,7 @@
   align-items: center;
   gap: 10px;
   font-size: 26px;
-  color: #0b5fc2;
+  color: #4d96a3;
   white-space: nowrap;
 }
 

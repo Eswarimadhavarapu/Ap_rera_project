@@ -21,7 +21,7 @@ body {
 /* ================= BREADCRUMB ================= */
 
 .otplogin-breadcrumb-bar {
-  background: #2f80c1;
+  background: #4d96a3;
   padding: 14px 20px;
 }
 
@@ -77,7 +77,7 @@ body {
 }
 
 .otplogin-otp-btn {
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 10px 22px;
@@ -87,7 +87,7 @@ body {
 }
 
 .otplogin-otp-btn:hover {
-  background: #084298;
+  background: #4d96a3;
 }
 
 .otplogin-required {
@@ -125,7 +125,7 @@ body {
 }
 
 .otplogin-popup-box button {
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 18px;

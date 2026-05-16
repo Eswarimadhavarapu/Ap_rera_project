@@ -20,7 +20,7 @@ body {
 
 /* ===== BREADCRUMB ===== */
 .agent-reg-breadcrumb-box {
-  background: #0b7dda;
+  background: #4d96a3;
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
@@ -52,7 +52,7 @@ body {
     width: 50px;
     height: 4px;
     left: 4px;
-    background-color: #1e90ff;
+    background-color: #4d96a3;
     margin-left: 20px;
     position: absolute;
 }
@@ -105,7 +105,7 @@ body {
 /* ===== INSTRUCTIONS (MATCH 1st IMAGE STYLE) ===== */
 
 .agent-reg-instructions h3 {
-  color: #0073b1;
+  color: #4d96a3;
   margin-top: 25px;
   font-size: 16px;
   font-weight: bold;
@@ -168,7 +168,7 @@ body {
 
 /* ===== SUBMIT BUTTON ===== */
 .agent-reg-submit-btn {
-  background: #0b7dda;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 20px;
@@ -176,7 +176,7 @@ body {
 }
 
 .agent-reg-submit-btn:hover {
-  background: #095fa8;
+  background: #4d96a3;
 }
 
 /* ===== MODAL ===== */
@@ -202,4 +202,4 @@ body {
   top: 5px;
   cursor: pointer;
   font-size: 18px;
-} 
+}

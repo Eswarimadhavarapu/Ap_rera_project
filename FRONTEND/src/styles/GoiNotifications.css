@@ -19,7 +19,7 @@ body {
 
 /* Breadcrumb */
 .goi-notif-breadcrumb {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
   padding: 8px 15px;
   font-size: 14px;
@@ -48,7 +48,7 @@ body {
 .goi-notif-underline {
   width: 40px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-left: 15px;
 }
 
@@ -95,7 +95,7 @@ body {
 .goi-notif-download a{
   
   font-size: 18px;
-  color: #1e88e5;
+  color: #4d96a3;
   text-decoration: none;
   
 }

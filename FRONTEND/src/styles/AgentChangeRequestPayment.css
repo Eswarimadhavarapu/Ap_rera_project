@@ -192,7 +192,7 @@
 }
 
 .payment-option.selected .option-radio {
-  border-color: #0f62ff;
+  border-color: #4d96a3;
 }
 
 .option-radio-inner {
@@ -203,7 +203,7 @@
 }
 
 .payment-option.selected .option-radio-inner {
-  background: #0f62ff;
+  background: #4d96a3;
 }
 
 .method-details {
@@ -253,7 +253,7 @@
 }
 
 .upi-btn.active {
-  border-color: #0f62ff;
+  border-color: #4d96a3;
   box-shadow: 0 4px 12px rgba(15, 98, 255, 0.25);
 }
 
@@ -274,8 +274,8 @@
 }
 
 .type-btn.active {
-  border-color: #0f62ff;
-  color: #0f62ff;
+  border-color: #4d96a3;
+  color: #4d96a3;
   box-shadow: 0 8px 20px rgba(15, 98, 255, 0.15);
 }
 

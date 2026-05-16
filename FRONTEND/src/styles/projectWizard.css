@@ -16,7 +16,7 @@
 
 /* BREADCRUMB */
 .projwizard-breadcrumb {
-  background: #0c84e4;
+  background: #4d96a3;
   color: white;
   padding: 8px 12px;
   font-size: 13px;
@@ -36,7 +36,7 @@
 .projwizard-main-title {
   margin: 15px 18px 0;
   font-size: 22px;
-  border-bottom: 3px solid #0c84e4;
+  border-bottom: 3px solid #4d96a3;
   padding-bottom: 10px;
   width: fit-content;
 }
@@ -44,7 +44,7 @@
 .projwizard-header-line {
   width: 60px;
   height: 3px;
-  background: #0c84e4;
+  background: #4d96a3;
   margin: 6px 18px 14px;
 }
 
@@ -227,7 +227,7 @@
 
 /* BUTTON */
 .projwizard-btn {
-  background: #0c84e4;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 20px;
@@ -237,12 +237,12 @@
 }
 
 .projwizard-btn:hover {
-  background: #096ab5;
+  background: #4d96a3;
 }
 
 /* ADD BUTTON */
 .projwizard-add-btn {
-  background: #0c84e4;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 24px;
@@ -254,7 +254,7 @@
 }
 
 .projwizard-add-btn:hover {
-  background: #096ab5;
+  background: #4d96a3;
 }
 
 /* DELETE BUTTON */
@@ -269,7 +269,7 @@
 }
 
 .projwizard-delete-btn:hover {
-  background: #096ab5;
+  background: #4d96a3;
 }
 
 /* REQUIRED ASTERISK */
@@ -344,7 +344,7 @@
 }
 
 .projwizard-link {
-  color: #0c84e4;
+  color: #4d96a3;
   text-decoration: none;
 }
 
@@ -382,7 +382,7 @@
 }
 
 .projwizard-submit-btn {
-  background: #0c84e4;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 24px;
@@ -392,7 +392,7 @@
 }
 
 .projwizard-submit-btn:hover {
-  background: #096ab5;
+  background: #4d96a3;
 }
 
 /* DOCUMENT TABLE */
@@ -431,7 +431,7 @@
 }
 
 .projwizard-save-btn {
-  background: #0c84e4;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 10px 30px;
@@ -442,7 +442,7 @@
 }
 
 .projwizard-save-btn:hover {
-  background: #096ab5;
+  background: #4d96a3;
 }
 
 /* CONDITIONAL SECTIONS */

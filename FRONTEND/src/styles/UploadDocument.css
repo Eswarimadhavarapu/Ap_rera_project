@@ -15,7 +15,7 @@ body {
 
 /* Breadcrumb */
 .upload-breadcrumb-bar {
-  background: #1489f3;
+  background: #4d96a3;
   color: #fff;
   padding: 8px 20px;
   font-size: 14px;
@@ -82,7 +82,7 @@ body {
 }
 
 .upload-section-title {
-  color: #007bff;
+  color: #4d96a3;
   font-size: 16px;
   margin: 20px 0 10px;
 }

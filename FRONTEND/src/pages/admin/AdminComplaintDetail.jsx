@@ -175,12 +175,18 @@ const RejectModal = ({ data, onClose, onSuccess }) => {
 /* ─────────────────────────────────────────────
    APPROVE MODAL  — Legal Notice Document
 ───────────────────────────────────────────── */
-const ApproveModal = ({ data, onClose, onSuccess }) => {
+const ApproveModal = ({
+  data,
+  caseNo,
+  setCaseNo,
+  onClose,
+  onSuccess
+}) => {
   const [step, setStep] = useState(1);
   const [adminRemark, setAdminRemark] = useState("");
   const [hearingDate, setHearingDate] = useState("");
   const [hearingPlace, setHearingPlace] = useState("");
-  const [caseNo, setCaseNo] = useState("");
+
   const [stampImg, setStampImg] = useState(null);
   const [signImg, setSignImg] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -650,6 +656,7 @@ const [venue, setVenue] = useState("");
 const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
   const [hearingDate, setHearingDate] = useState("");
   const [status, setStatus]           = useState("");
+  const [remarks, setRemarks] = useState("");
   const [loading, setLoading]         = useState(false);
   const [hearingPlace, setHearingPlace] = useState("");
   const { complaint } = data;
@@ -700,29 +707,18 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
           <button className="AdminComplaintDetail-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="AdminComplaintDetail-modal-body">
-          <div className="AdminComplaintDetail-field">
-            <label className="AdminComplaintDetail-field-label">
-              Next Hearing Date &amp; Time <span style={{ color: "#e53e3e" }}>*</span>
-            </label>
-            <input
-              type="datetime-local"
-              className="AdminComplaintDetail-input"
-              value={hearingDate}
-              onChange={(e) => setHearingDate(e.target.value)}
-            />
-          </div>
-          <div className="AdminComplaintDetail-field">
-            <label className="AdminComplaintDetail-field-label">
-              Hearing Place / Address <span style={{ color: "#e53e3e" }}>*</span>
-            </label>
-            <input
-              type="text"
-              className="AdminComplaintDetail-input"
-              placeholder="Enter hearing location (e.g. AP RERA Office Vijayawada)"
-              value={hearingPlace}
-              onChange={(e) => setHearingPlace(e.target.value)}
-            />
-          </div>
+                    <div className="AdminComplaintDetail-form-group">
+
+  <label>HEARING REMARKS *</label>
+
+  <textarea
+    value={remarks}
+    onChange={(e) => setRemarks(e.target.value)}
+    placeholder="Enter what happened in this hearing..."
+    rows={4}
+  />
+
+</div>
 
           {/* SUBMISSION DOCUMENTS */}
           <div className="AdminComplaintDetail-field">
@@ -796,6 +792,30 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
               onChange={(e) => setStatus(e.target.value)}
             />
           </div>
+          <div className="AdminComplaintDetail-field">
+            <label className="AdminComplaintDetail-field-label">
+              Next Hearing Date &amp; Time <span style={{ color: "#e53e3e" }}>*</span>
+            </label>
+            <input
+              type="datetime-local"
+              className="AdminComplaintDetail-input"
+              value={hearingDate}
+              onChange={(e) => setHearingDate(e.target.value)}
+            />
+          </div>
+          <div className="AdminComplaintDetail-field">
+            <label className="AdminComplaintDetail-field-label">
+              Hearing Place / Address <span style={{ color: "#e53e3e" }}>*</span>
+            </label>
+            <input
+              type="text"
+              className="AdminComplaintDetail-input"
+              placeholder="Enter hearing location (e.g. AP RERA Office Vijayawada)"
+              value={hearingPlace}
+              onChange={(e) => setHearingPlace(e.target.value)}
+            />
+          </div>
+
 
           <div style={{ background: "#ebf8ff", border: "1px solid #bee3f8", borderRadius: 7, padding: "10px 14px", fontSize: 12, color: "#2c5282", lineHeight: 1.6 }}>
             ℹ️ Complaint <strong>{complaint?.complaint_id}</strong> — the status and documents will be saved
@@ -992,6 +1012,7 @@ console.log("NAVIGATION STATE 👉", location.state);
 console.log("ROLE 👉", role);
 console.log("TYPE 👉", complaintType);
   const [data, setData]       = useState(null);
+  const [caseNo, setCaseNo] = useState("");
   const [modal, setModal]     = useState(null);
   const [toast, setToast]     = useState(null);
   const [viewDoc, setViewDoc] = useState(null);
@@ -1024,11 +1045,30 @@ console.log("TYPE 👉", complaintType);
     );
 
   const { complaint, complainant } = data;
-  const status = complaint?.status?.toLowerCase();
-  const showHearings =status !== "open" && status !== "reject";
-  const isPending = complaint?.status?.toLowerCase() === "pending";
-  const isClosed  = complaint?.status?.toLowerCase() === "closed";
-  const isRejected = complaint?.status?.toLowerCase() === "reject";
+  const status =
+  complaint?.status?.toLowerCase();
+
+const showHearings =
+  status !== "open" &&
+  status !== "reject";
+
+const isOpen =
+  status === "open";
+
+const isNoticeSent =
+  status === "notice_sent";
+
+const isCaseRegistered =
+  status === "case_registered";
+
+const isUnderHearing =
+  status === "under_hearing";
+
+const isClosed =
+  status === "closed";
+
+const isRejected =
+  status === "rejected";
 
   const rawR = data.respondent || {};
   const respondent = {
@@ -1260,7 +1300,7 @@ console.log("TYPE 👉", complaintType);
       >
         🔓 Reopen Complaint
       </button>
-    ) : isPending ? (
+    ) : (isCaseRegistered || isUnderHearing) ? (
       <>
        <button
   className="AdminComplaintDetail-btn-ghost"
@@ -1318,12 +1358,14 @@ console.log("TYPE 👉", complaintType);
       </>
     ) : (
       <>
+      {isNoticeSent && (
         <button
           className="AdminComplaintDetail-btn-reject"
           onClick={() => setModal("reject")}
         >
           Reject
         </button>
+        )}
 
         {/* <button
           className="AdminComplaintDetail-btn-approve"
@@ -1331,19 +1373,28 @@ console.log("TYPE 👉", complaintType);
         >
           Approve
         </button> */}
+        {(isOpen || isNoticeSent) && (
         <button
   className="AdminComplaintDetail-btn-warning"
   onClick={() => setModal("notice")}
 >
   Send Notice
 </button>
-
-{data?.complaint?.status !== "CASE_REGISTERED" && (
+        )}
+{(isOpen || isNoticeSent) && (
   <button
     className="btn btn-success"
     onClick={() => setModal("approve")}
   >
     Register Case
+  </button>
+)}
+{complaint.status === "CASE_REGISTERED" && (
+  <button
+    className="AdminComplaintDetail-btn-primary"
+    onClick={() => setModal("statusUpdate")}
+  >
+    🔄 Update Hearing
   </button>
 )}
       </>
@@ -1358,7 +1409,15 @@ console.log("TYPE 👉", complaintType);
 
       {/* ── MODALS ── */}
       {modal === "reject"       && <RejectModal       data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
-      {modal === "approve"      && <ApproveModal      data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
+      {modal === "approve" && (
+  <ApproveModal
+    data={data}
+    caseNo={caseNo}
+    setCaseNo={setCaseNo}
+    onClose={() => setModal(null)}
+    onSuccess={showToast}
+  />
+)}
      {modal === "notice" && (
   <NoticeModal
     data={data}

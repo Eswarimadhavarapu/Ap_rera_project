@@ -6,13 +6,13 @@
 
 .projectapplicationdetails-form-title {
   font-size: 22px;
-  border-bottom: 2px solid #1e88e5;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
   margin-bottom: 20px;
 }
 
 .projectapplicationdetails-application-form {
-  border: 2px solid #1e88e5;
+  border: 2px solid #4d96a3;
   padding: 25px;
   background: #fff;
 }
@@ -55,7 +55,7 @@
 }
 
 .projectapplicationdetails-submit {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
 }
 
@@ -113,8 +113,8 @@
   margin: 25px 0 12px;
   font-size: 16px;
   font-weight: bold;
-  color: #1e88e5;
-  border-bottom: 1px solid #1e88e5;
+  color: #4d96a3;
+  border-bottom: 1px solid #4d96a3;
   padding-bottom: 4px;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .projectapplicationdetails-btn.submit {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
 }
 
@@ -410,6 +410,6 @@
   content: "";
   display: block;
   width: 180px;            /* 👈 underline length control (adjust here) */
-  border-bottom: 1px solid #1e88e5;
+  border-bottom: 1px solid #4d96a3;
   margin-top: 4px;
 }

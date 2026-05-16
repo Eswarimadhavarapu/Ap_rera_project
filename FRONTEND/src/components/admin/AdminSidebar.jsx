@@ -93,6 +93,9 @@ const AdminSidebar = ({ sidebarOpen }) => {
       <button onClick={() => navigate("/admin/renewal")}>
         Renewal
       </button>
+      <button onClick={() => navigate("/admin/rti")}>
+  RTI
+</button>
 
       {/* <button onClick={() => navigate("/")}>
         Logout

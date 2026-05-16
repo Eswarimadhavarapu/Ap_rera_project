@@ -8,7 +8,7 @@
 }
 
 .renewal-payments-breadcrumb-bar{
-  background:#2c73b3;
+  background:#4d96a3;
   color:white;
   padding:10px 20px;
   font-size:14px;
@@ -63,14 +63,14 @@
 
 /* Fee section */
 .payment-card h3{
-  color:#0a58ca;
+  color:#4d96a3;
   margin-bottom:10px;
 }
 
 .amount{
   font-size:28px;
   font-weight:bold;
-  color:#0d6efd;
+  color:#4d96a3;
   margin-bottom:20px;
 }
 
@@ -86,7 +86,7 @@
 
 /* Button */
 .pay-btn{
-  background:#0d6efd;
+  background:#4d96a3;
   color:white;
   padding:12px 25px;
   border:none;
@@ -97,7 +97,7 @@
 }
 
 .pay-btn:hover{
-  background:#0b5ed7;
+  background:#4d96a3;
 }
 
 .payment-container {

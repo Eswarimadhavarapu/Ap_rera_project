@@ -39,7 +39,7 @@
 .aep-card h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #029cef;   /* SAME for all cards */
+  color: #4d96a3;   /* SAME for all cards */
 }
 
 /* =========================
@@ -48,12 +48,12 @@
 
 /* 🔵 TOTAL */
 .aep-card.total {
-  border-top: 5px solid #029cef;
+  border-top: 5px solid #5C3317;
 }
 
 /* 🟡 PENDING */
 .aep-warning {
-  border-top: 5px solid #029cef;
+  border-top: 5px solid #f59e0b;
 }
 
 /* 🟢 APPROVED */
@@ -80,7 +80,7 @@
 }
 
 .aep-search-input:focus {
-  border-color: #029cef;
+  border-color: #4d96a3;
   box-shadow: 0 0 0 2px rgba(30,58,95,0.1);
 }
 
@@ -97,7 +97,7 @@
 }
 
 .aep-table thead {
-  background: #029cef;
+  background: #4d96a3;
 }
 
 .aep-table th {
@@ -129,7 +129,7 @@
 
 .aep-status.pending {
   background: #fde68a;
-  color: #029cef;
+  color: #4d96a3;
 }
 
 .aep-status.approved {
@@ -146,7 +146,7 @@
    VIEW BUTTON
 ========================= */
 .aep-view-btn {
-  background: #029cef;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -156,7 +156,7 @@
 }
 
 .aep-view-btn:hover {
-  background: #5C3317;
+  background: #4d96a3;
   transform: scale(1.05);
 }
 
@@ -166,7 +166,7 @@
 .aep-count {
   font-size: 18px;
   font-weight: 600;
-  color: #5C3317;   /* SAME color for all */
+  color: #4d96a3;   /* SAME color for all */
   margin-top: 5px;
   display: block;
 }

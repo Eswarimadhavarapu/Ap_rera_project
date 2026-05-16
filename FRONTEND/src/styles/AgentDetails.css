@@ -18,7 +18,7 @@ a{
   text-decoration: underline;
 }
 .yagentdetails-breadcrumb {
-  background: #0d86e7;
+  background: #4d96a3;
   color: #fff;
   padding: 10px 12px;
   display: block; 
@@ -44,7 +44,7 @@ a{
   bottom: -8px;
   width: 50px;          
   height: 3px;
-  background: #0d86e7; 
+  background: #4d96a3; 
 }
 
 /* ================= EXACT GOVT STEPPER ================= */
@@ -145,7 +145,7 @@ a{
 .yagentdetails-agent-type-title {
   font-size: 20px;
   font-weight: bold;
-  color: #0073aa;
+  color: #4d96a3;
   position: relative;
   margin-bottom: 14px;
 }
@@ -158,7 +158,7 @@ a{
   bottom: -14px;
   width: 50px;          /* 🔥 small line */
   height: 3px;
-  background: #0d86e7;
+  background: #4d96a3;
 }
 
 .yagentdetails-agent-type-options {
@@ -178,7 +178,7 @@ a{
 }
 
 .yagentdetails-section h3 {
-  color: #0d86e7;
+  color: #4d96a3;
   font-size: 20px;
   font-weight: bold;
   position: relative;
@@ -194,7 +194,7 @@ a{
   bottom: -12px;
   width: 50px;        /* small underline */
   height: 3px;
-  background: #0073aa;
+  background: #4d96a3;
 }
 
 
@@ -271,7 +271,7 @@ select {
 }
 
 .yagentdetails-action-btn button {
-  background: #0d86e7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 10px 18px;
@@ -280,7 +280,7 @@ select {
 }
 
 .yagentdetails-action-btn button:hover {
-  background: #0b6fc2;
+  background: #4d96a3;
 }
 .yagentdetails-page-content {
   padding: 20px;   /* normal spacing for form */
@@ -372,7 +372,7 @@ select {
 
 /* ADD button */
 .yagentdetails-add-btn {
-  background: #0d86e7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 16px;
@@ -381,7 +381,7 @@ select {
 }
 
 .yagentdetails-add-btn:hover {
-  background: #0b6fc2;
+  background: #4d96a3;
 }
 
 /* ===== LITIGATION ADD BUTTON (RIGHT SIDE) ===== */
@@ -393,7 +393,7 @@ select {
 }
 
 .yagentdetails-add-btn {
-  background: #0d86e7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 18px;
@@ -401,7 +401,7 @@ select {
   cursor: pointer;
 }
 .yagentdetails-add-btn:hover {
-  background-color: #0b6fc2;
+  background-color: #4d96a3;
 }
 /* ===== ADD BUTTON FIXED RIGHT ===== */
 .yagentdetails-add-btn-wrapper {
@@ -412,7 +412,7 @@ select {
 }
 
 .yagentdetails-add-btn {
-  background-color: #0d86e7; /* govt blue */
+  background-color: #4d96a3; /* govt blue */
   color: #fff;
   border: none;
   padding: 8px 18px;
@@ -431,7 +431,7 @@ select {
   cursor: pointer;
 }
 .yagentdetails-delete-btn {
-  background-color: #0784fa;   /* blue */
+  background-color: #4d96a3;   /* blue */
   color: #ffffff;
   border: none;
   padding: 6px 14px;
@@ -441,7 +441,7 @@ select {
 }
 
 .yagentdetails-delete-btn:hover {
-  background-color: #0570db;
+  background-color: #4d96a3;
 }
 /* Projects single row layout */
 .yagentdetails-project-row {
@@ -552,7 +552,7 @@ select {
 
 /* Director add button (if needed later) */
 .yagentdetails-director-add-btn {
-  background-color: #0d86e7;
+  background-color: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 18px;
@@ -562,7 +562,7 @@ select {
 }
 
 .yagentdetails-director-add-btn:hover {
-  background-color: #0b6fc2;
+  background-color: #4d96a3;
 }
 /* ===== ADD BUTTON FORCE RIGHT ===== */
 .yagentdetails-add-btn-row {
@@ -656,7 +656,7 @@ select {
   white-space: nowrap;   /* 🔥 keeps content in one line */
 }
 .yagentdetails-view-link {
-  color: #0a58ff;
+  color: #4d96a3;
   text-decoration: underline;
   cursor: pointer;
   font-weight: 500;
@@ -679,7 +679,7 @@ html, body {
 }
 
 .yagentdetails-table a {
-  color: #0a58ff;
+  color: #4d96a3;
   text-decoration: underline;
 }
 /* SCROLL AREA */
@@ -731,7 +731,7 @@ html, body {
 }
 
 .yagentdetails-add-btn {
-  background: #0d86e7;
+  background: #4d96a3;
   color: #fff;
   border: none;
   padding: 8px 18px;
@@ -770,14 +770,14 @@ html, body {
 
 /* LINKS */
 .yagentdetails-table a {
-  color: #0a58ff;
+  color: #4d96a3;
   text-decoration: underline;
 }
 
 /* NEXT SECTION TITLE */
 .next-section-title {
   margin-top: 20px;
-  color: #0a58ff;
+  color: #4d96a3;
   font-size: 18px;
 }
 /* ===== TABLE SCROLL FIX ===== */
@@ -796,7 +796,7 @@ html, body {
 }
 /* ===== PROJECT DELETE BUTTON (BLUE) ===== */
 .yagentdetails-project-delete-btn {
-  background-color: #007bff;   /* Same blue as Add */
+  background-color: #4d96a3;   /* Same blue as Add */
   color: #fff;
   border: none;
   padding: 6px 14px;
@@ -807,5 +807,5 @@ html, body {
 }
 
 .yagentdetails-project-delete-btn:hover {
-  background-color: #0056b3;
+  background-color: #4d96a3;
 }

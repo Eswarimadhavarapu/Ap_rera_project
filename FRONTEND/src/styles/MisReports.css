@@ -6,7 +6,7 @@
 }
 
 .breadcrumb-bar {
-  background-color: #0056b3;
+  background-color: #4d96a3;
   color: white;
   padding: 12px 20px;
   font-size: 14px;
@@ -28,7 +28,7 @@
 
 .page-title {
   color: #333;
-  border-bottom: 3px solid #0056b3;
+  border-bottom: 3px solid #4d96a3;
   display: inline-block;
   margin-bottom: 35px;
   padding-bottom: 8px;
@@ -61,7 +61,7 @@
 
 /* Specific styling for the active/opened blue section shown in your image */
 .report-card.active-card {
-  background-color: #4169e1; /* Royal Blue */
+  background-color: #4d96a3; /* Royal Blue */
   color: white;
 }
 

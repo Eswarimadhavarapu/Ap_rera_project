@@ -7,7 +7,7 @@
 
 /* BREADCRUMB */
 .gr-breadcrumb {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
   padding: 6px 14px;
   font-size: 13px;
@@ -34,7 +34,7 @@
   background: #e3f2fd;
   padding: 10px 12px;
   font-size: 13px;
-  border-left: 5px solid #1e88e5;
+  border-left: 5px solid #4d96a3;
   margin-bottom: 20px;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .gr-step-blue .gr-step-arrow {
-  background: #1565c0;
+  background: #4d96a3;
 }
 
 /* STEP NUMBER */
@@ -119,7 +119,7 @@
 }
 
 .gr-blue-icon {
-  background: #1976d2;
+  background: #4d96a3;
 }
 
 .gr-icon {
@@ -129,7 +129,7 @@
 
 /* LINKS */
 .gr-link {
-  color: #1976d2;
+  color: #4d96a3;
   font-weight: bold;
   text-decoration: underline;
   margin-left: 4px;

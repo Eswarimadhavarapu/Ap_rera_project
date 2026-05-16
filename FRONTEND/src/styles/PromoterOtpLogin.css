@@ -15,7 +15,7 @@
 
 /* BLUE HEADER BAR */
 .promoterotplogin-otp-breadcrumb {
-  background: #2f75a8;
+  background: #4d96a3;
   color: white;
   padding: 10px 15px;
   font-size: 14px;
@@ -107,7 +107,7 @@
 
 /* BUTTON */
 .promoterotplogin-button {
-  background: #2e6eb5;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 18px;
@@ -116,7 +116,7 @@
 }
 
 .promoterotplogin-button:hover {
-  background: #245d99;
+  background: #4d96a3;
 }
 
 .promoterotplogin-required {

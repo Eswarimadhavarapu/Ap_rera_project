@@ -27,19 +27,19 @@
 .hero-title-wrapper h2{
   font-size:32px;
   margin:0;
-  color:#1f73b7;
+  color:#4d96a3;
 }
 
 .hero-caption{
   margin:12px 0 0;
   font-size:16px;
-  color:#2b80d4;
+  color:#4d96a3;
   font-weight:600;
 }
 
 .hero-label{
   font-size:14px;
-  color:#1f73b7;
+  color:#4d96a3;
   font-weight:600;
   margin-top:8px;
   text-transform: uppercase;
@@ -165,7 +165,7 @@
   display:block;
   width:70px;
   height:4px;
-  background:#2b80d4;
+  background:#4d96a3;
   margin-top:8px;
 }
 
@@ -324,7 +324,7 @@
 }
 
 .issue-type-option input{
-  accent-color:#1f73b7;
+  accent-color:#4d96a3;
 }
 
 .issue-selector{
@@ -356,7 +356,7 @@
   margin:0 0 10px 0;
   font-size:16px;
   font-weight:600;
-  color:#1f73b7;
+  color:#4d96a3;
 }
 
 .field-change-card{
@@ -422,7 +422,7 @@
 .change-request-form button{
   margin-top:25px;
   padding:10px 25px;
-  background:#1f73b7;
+  background:#4d96a3;
   color:#fff;
   border:none;
   font-size:16px;
@@ -430,7 +430,7 @@
 }
 
 .change-request-form button:hover{
-  background:#155d94;
+  background:#4d96a3;
 }
 
 

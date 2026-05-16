@@ -69,15 +69,22 @@ const LegalSidebar = () => {
 
         {/* Hearings */}
 
-        <div className="legal-menu-item">
+        {/* Hearings */}
 
-          <Scale size={26} />
+<div
+  className="legal-menu-item"
+  onClick={() =>
+    navigate("/hearings")
+  }
+>
 
-          <span>
-            Hearings
-          </span>
+  <Scale size={26} />
 
-        </div>
+  <span>
+    Hearings
+  </span>
+
+</div>
 
         {/* Approved */}
 

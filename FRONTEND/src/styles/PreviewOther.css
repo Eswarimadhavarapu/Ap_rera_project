@@ -10,7 +10,7 @@
 
 .mpreview-title {
   font-size: 22px;
-  border-bottom: 2px solid #1b6bd1;
+  border-bottom: 2px solid #4d96a3;
   padding-bottom: 8px;
 }
 
@@ -53,8 +53,8 @@
 }
 
 .mpreview-section h3 {
-  color: #0073aa;
-  border-bottom: 2px solid #0073aa;
+  color: #4d96a3;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
   padding-bottom: 5px;
 }
@@ -98,7 +98,7 @@
 /* LINKS */
 
 .mpreview-container a {
-  color: #0b66ff;
+  color: #4d96a3;
   text-decoration: none;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .mpreview-otp-row button {
-  background: #0b66ff;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -136,8 +136,8 @@
 /* ================= DIRECTOR DETAILS ================= */
 
 .mpreview-heading {
-  color: #0073aa;
-  border-bottom: 2px solid #0073aa;
+  color: #4d96a3;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
   margin-bottom: 15px;
   font-size: 18px;
@@ -185,7 +185,7 @@
 /* Links */
 
 .mpreview-director-table a {
-  color: #0066ff;
+  color: #4d96a3;
   text-decoration: none;
   font-weight: 500;
 }
@@ -227,13 +227,13 @@
 .mpreview-btn {
   padding: 8px 20px;
   border: none;
-  background: #0d6efd;
+  background: #4d96a3;
   cursor: pointer;
   color: #fff;
 }
 
 .mpreview-btn.primary {
-  background: #0d6efd;
+  background: #4d96a3;
   color: #fff;
 }
 /* Authorized Signatory Photo */
@@ -275,7 +275,7 @@
 /* OTP BUTTON */
 
 .mpreview-otp-btn {
-  background: #0d6efd;
+  background: #4d96a3;
   color: white;
   border: none;
   padding: 7px 16px;

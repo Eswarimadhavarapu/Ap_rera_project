@@ -11,7 +11,7 @@
 
 /* Breadcrumb */
 .rtc-breadcrumb {
-  background: #0b8ef2;
+  background: #4d96a3;
   padding: 10px 35px;
   color: #fff;
   font-size: 14px;
@@ -68,7 +68,7 @@
 .rtc-line {
   width: 70px;
   height: 3px;
-  background: #005bb5;
+  background: #4d96a3;
   margin: 10px 0 22px;
 }
 
@@ -88,7 +88,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #0b8ef2;
+  background: #4d96a3;
   color: #fff;
   border: none;
   font-size: 20px;
@@ -97,7 +97,7 @@
 }
 
 .rtc-scroll-btn:hover {
-  background: #005bb5;
+  background: #4d96a3;
   transform: translateY(-3px);
 }
 

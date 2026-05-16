@@ -46,13 +46,13 @@
 }
 
 .spr-breadcrumb span:not(:first-child) {
-  color: #2472be;
+  color: #4d96a3;
 }
 
 .spr-brand {
   gap: 12px;
   font-weight: 800;
-  color: #2472be;
+  color: #4d96a3;
 }
 
 .spr-icon-btn,
@@ -135,8 +135,8 @@
 }
 
 .spr-step.active .spr-step-circle {
-  background: #029cef;
-  border-color: #3c87bd;
+  background: #4d96a3;
+  border-color: #4d96a3;
   color: #fff;
 }
 
@@ -187,7 +187,7 @@
 }
 
 .spr-table th {
-  background: #029cef;
+  background: #244f78;
   color: #fff;
   text-align: center;
   font-weight: 700;

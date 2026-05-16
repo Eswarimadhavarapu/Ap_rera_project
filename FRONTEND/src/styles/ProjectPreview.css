@@ -20,7 +20,7 @@
 }
 
 .breadcrumb a {
-  color: #0066cc;
+  color: #4d96a3;
   text-decoration: none;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .pdf-header {
-  border-bottom: 4px solid #0066cc;
+  border-bottom: 4px solid #4d96a3;
   padding-bottom: 20px;
   margin-bottom: 30px;
   text-align: center;
@@ -85,7 +85,7 @@
 .pdf-title {
   font-size: 28px;
   font-weight: bold;
-  color: #0066cc;
+  color: #4d96a3;
   margin: 0;
 }
 
@@ -123,7 +123,7 @@
 .detail-heading {
   font-size: 16px;
   font-weight: bold;
-  color: #0066cc;
+  color: #4d96a3;
   margin: 15px 0 8px 0;
 }
 
@@ -225,7 +225,7 @@
 
 /* Declaration */
 .declaration-box {
-  border: 2px solid #0066cc;
+  border: 2px solid #4d96a3;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 5px;
@@ -271,7 +271,7 @@
 
 .loading-spinner {
   font-size: 20px;
-  color: #0066cc;
+  color: #4d96a3;
   padding: 20px;
 }
 

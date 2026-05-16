@@ -10,7 +10,7 @@ border:1px solid #ccc;
 /* ===== BREADCRUMB ===== */
 
 .breadcrumb-bar{
-background:#2c73b3;
+background:#4d96a3;
 color:white;
 padding:8px 20px;
 font-size:14px;
@@ -55,7 +55,7 @@ bottom:-10px;
 width:50px;
 height:4px;
 left:0;
-background-color:#1e90ff;
+background-color:#4d96a3;
 position:absolute;
 }
 
@@ -87,7 +87,7 @@ margin-top:10px;
 
 .continue-btn{
 margin-top:30px;
-background:#1976d2;
+background:#4d96a3;
 color:white;
 padding:12px 25px;
 border:none;
@@ -97,7 +97,7 @@ cursor:pointer;
 }
 
 .continue-btn:hover{
-background:#125ca1;
+background:#4d96a3;
 }
 
 /* ===== RESPONSIVE ===== */

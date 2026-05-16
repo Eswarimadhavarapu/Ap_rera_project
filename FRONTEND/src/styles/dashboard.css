@@ -7,7 +7,7 @@
 
 /* COMMON */
 .dashboard-box-header {
-  background: #1f73b7;
+  background: #4d96a3;
   color: #fff;
   text-align: center;
   font-size: 22px;
@@ -66,7 +66,7 @@
 /* RIGHT */
 .dashboard-box {
   flex: 1;
-  background: #0a5ca8;
+  background: #4d96a3;
   color: #fff;
 }
 
@@ -77,7 +77,7 @@
 
 .dashboard-dash-icon {
   width: 120px;
-  background: #084a87;
+  background: #4d96a3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,7 +115,7 @@
 
 /* COMMON HEADER */
 .dashboard-box-header {
-  background: #1f73b7;
+  background: #4d96a3;
   color: #fff;
   text-align: center;
   font-size: 22px;
@@ -151,7 +151,7 @@
 /* RIGHT */
 .dashboard-box {
   flex: 1;
-  background: #0a5ca8;
+  background: #4d96a3;
   color: #fff;
 }
 
@@ -162,7 +162,7 @@
 
 .dashboard-dash-icon {
   width: 120px;
-  background: #084a87;
+  background: #4d96a3;
   display: flex;
   align-items: center;
   justify-content: center;

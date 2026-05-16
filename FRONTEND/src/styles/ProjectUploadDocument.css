@@ -13,7 +13,7 @@ body {
 
 /* Breadcrumb */
 .uploaddoc-breadcrumb {
-  background: #1489f3;
+  background: #4d96a3;
   color: #ffffff;
   padding: 8px 20px;
   font-size: 15px;
@@ -33,7 +33,7 @@ body {
 .uploaddoc-title-line {
   width: 60px;
   height: 3px;
-  background: #1489f3;
+  background: #4d96a3;
   margin-left: 20px;
 }
 
@@ -117,7 +117,7 @@ body {
 
 /* ================= Section Title ================= */
 .uploaddoc-section-title {
-  color: #007bff;
+  color: #4d96a3;
   font-size: 20px;
   margin: 20px 15px 6px;
 }
@@ -125,7 +125,7 @@ body {
 .uploaddoc-section-underline {
   width: 60px;
   height: 3px;
-  background: #007bff;
+  background: #4d96a3;
   margin: 0 15px 15px;
 }
 
@@ -166,7 +166,7 @@ body {
 .uploaddoc-form-grid textarea:focus {
   outline: none;
   background-color: #ffffff;
-  border-color: #66afe9;
+  border-color: #4d96a3;
   box-shadow: 0 0 6px rgba(102, 175, 233, 0.6);
 }
 
@@ -237,7 +237,7 @@ body {
 /* Focus effect (govt style) */
 .uploaddoc-inline-input:focus {
   outline: none;
-  border-color: #66afe9;
+  border-color: #4d96a3;
   box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
 }
 
@@ -274,7 +274,7 @@ body {
   font-size: 15px;
   font-family: Arial, Helvetica, sans-serif;
 
-  background-color: #0d6efd;
+  background-color: #4d96a3;
   color: #ffffff;
 
   border: none;
@@ -283,7 +283,7 @@ body {
 }
 
 .uploaddoc-save-btn:hover {
-  background-color: #0b5ed7;
+  background-color: #4d96a3;
 }
 /* Popup box */
 .uploaddoc-popup {

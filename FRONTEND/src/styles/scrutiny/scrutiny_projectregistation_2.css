@@ -95,7 +95,7 @@ body {
   display: block;
   width: 70px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }
 
@@ -179,7 +179,7 @@ body {
   display: block;
   width: 50px;
   height: 3px;
-  background-color: #1e88e5;
+  background-color: #4d96a3;
   margin-top: 6px;
 }
 
@@ -282,7 +282,7 @@ font[color="red"] {
 }
 
 .inputbox-scrutiny:focus {
-  border-color: #1e88e5;
+  border-color: #4d96a3;
   outline: none;
 }
 
@@ -327,7 +327,7 @@ input[type="file"].inputbox-scrutiny {
 }
 
 .note-text-scrutiny a {
-  color: #0066cc;
+  color: #4d96a3;
   font-weight: 600;
   text-decoration: none;
 }
@@ -367,19 +367,19 @@ input[type="file"].inputbox-scrutiny {
 }
 
 .btn-primary-scrutiny {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #ffffff;
 }
 
 .btn-primary-scrutiny:hover {
-  background: #1565c0;
+  background: #4d96a3;
 }
 
 /* =====================================================
    LINKS
 ===================================================== */
 a {
-  color: #1e88e5;
+  color: #4d96a3;
   text-decoration: none;
 }
 
@@ -518,7 +518,7 @@ a:hover {
   display: block;
   width: 160px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }
 
@@ -543,7 +543,7 @@ a:hover {
   display: block;
   width: 180px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }
 

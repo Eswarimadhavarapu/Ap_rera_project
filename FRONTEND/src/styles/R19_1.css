@@ -5,7 +5,7 @@
 }
 
 .breadcrumb-bar {
-  background-color: #007bff;
+  background-color: #4d96a3;
   color: white;
   padding: 12px 20px;
   font-size: 14px;
@@ -27,7 +27,7 @@
 
 .page-title {
   color: #333;
-  border-bottom: 3px solid #0056b3;
+  border-bottom: 3px solid #4d96a3;
   display: inline-block;
   margin-bottom: 30px;
   padding-bottom: 8px;
@@ -68,7 +68,7 @@
 }
 
 .details-btn {
-  background-color: #007bff;
+  background-color: #4d96a3;
   color: white;
   border: none;
   padding: 10px 25px;
@@ -79,7 +79,7 @@
   margin-top: 25px;
 }
 
-.details-btn:hover { background-color: #0056b3; }
+.details-btn:hover { background-color: #4d96a3; }
 
 /* Calendar Mockup */
 .custom-calendar {
@@ -134,7 +134,7 @@
 }
 
 .custom-dropdown li:hover { background: #f8f9fa; }
-.selected-opt { background: #007bff !important; color: white; }
+.selected-opt { background: #4d96a3 !important; color: white; }
 
 .no-details-area {
   text-align: center;

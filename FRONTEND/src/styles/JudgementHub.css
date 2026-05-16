@@ -14,7 +14,7 @@
 
 /* Breadcrumb bar */
 .judgement-breadcrumb {
-  background: #1e90ff;
+  background: #4d96a3;
   color: #ffffff;
   padding: 8px 12px;
   font-size: 13px;
@@ -49,7 +49,7 @@
   bottom: -8px;
   width: 30px;
   height: 3px;
-  background-color: #1e90ff;
+  background-color: #4d96a3;
 }
 
 /* Table styling */
@@ -83,10 +83,10 @@
 /* Download icon */
 .judgement-download-link {
   font-size: 18px;
-  color: #1e90ff;
+  color: #4d96a3;
   cursor: pointer;
 }
 
 .judgement-download-link:hover {
-  color: #0056b3;
+  color: #4d96a3;
 }

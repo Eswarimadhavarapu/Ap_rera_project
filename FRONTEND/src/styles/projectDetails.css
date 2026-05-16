@@ -90,7 +90,7 @@ body {
   display: block;
   width: 70px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }
 
@@ -172,7 +172,7 @@ body {
   display: block;
   width: 50px;
   height: 3px;
-  background-color: #1e88e5;
+  background-color: #4d96a3;
   margin-top: 6px;
 }
 
@@ -267,7 +267,7 @@ font[color="red"] {
 }
 
 .inputbox:focus {
-  border-color: #1e88e5;
+  border-color: #4d96a3;
   outline: none;
 }
 
@@ -319,7 +319,7 @@ select.inputbox {
 .project-details-container input[type="date"].inputbox:focus,
 .project-details-container input[type="text"].inputbox:focus,
 .project-details-container input[type="number"].inputbox:focus {
-  border-color: #1e88e5 !important;
+  border-color: #4d96a3 !important;
   outline: none;
   background-color: #ffffff !important;
 }
@@ -350,7 +350,7 @@ input[type="file"].inputbox {
 }
 
 .note-text a {
-  color: #0066cc;
+  color: #4d96a3;
   font-weight: 600;
   text-decoration: none;
 }
@@ -390,19 +390,19 @@ input[type="file"].inputbox {
 }
 
 .btn-primary {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #1565c0;
+  background: #4d96a3;
 }
 
 /* =====================================================
    LINKS
 ===================================================== */
 a {
-  color: #1e88e5;
+  color: #4d96a3;
   text-decoration: none;
 }
 
@@ -525,7 +525,7 @@ a:hover {
   display: block;
   width: 160px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }
 
@@ -550,6 +550,6 @@ a:hover {
   display: block;
   width: 180px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-top: 6px;
 }

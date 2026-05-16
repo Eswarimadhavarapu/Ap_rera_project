@@ -799,6 +799,8 @@ from app.utils.mail_service import (
     send_notice_mail_respondent,
     send_case_registered_mail_complainant,
     send_case_registered_mail_respondent,
+    send_hearing_update_mail_complainant,
+    send_hearing_update_mail_respondent,
 )
 from app.models.complaint_hearing import ComplaintHearing
 from flask import request, jsonify
@@ -1242,6 +1244,69 @@ def list_complaints():
         }), 500
     
 
+from sqlalchemy import or_, cast, String
+
+@complint_bp.route("/complint/search/<case_no>", methods=["GET"])
+def search_case(case_no):
+
+    complaints = ComplintComplaint.query.filter(
+
+        or_(
+
+            ComplintComplaint.complaint_register_no.ilike(
+                f"%{case_no}%"
+            ),
+
+            cast(
+                ComplintComplaint.complaint_id,
+                String
+            ).ilike(
+                f"%{case_no}%"
+            )
+
+        )
+
+    ).all()
+
+    data = []
+
+    for c in complaints:
+
+        complainant = ComplintComplainant.query.get(
+            c.complainant_id
+        )
+
+        respondent = ComplintRespondent.query.get(
+            c.respondent_id
+        )
+
+        data.append({
+
+            "complaint_id": c.complaint_id,
+
+            "complaint_register_no":
+                c.complaint_register_no,
+
+            "complainant_name":
+                complainant.name if complainant else "",
+
+            "respondent_name":
+                respondent.name if respondent else "",
+
+            "created_at":
+                c.created_at.strftime("%d-%m-%Y")
+                if c.created_at else ""
+
+        })
+
+    return jsonify({
+
+        "status": "success",
+
+        "data": data
+
+    })
+
 @complint_bp.route("/complint/document/<filename>", methods=["GET"])
 def view_complaint_document(filename):
     try:
@@ -1323,6 +1388,7 @@ def send_complaint_approval_mail():
         admin_remark = request.form.get("admin_remark")
 
         complaint_id = request.form.get("complaint_id")
+        case_no = request.form.get("case_no")
         hearing_date = request.form.get("hearing_date")
         next_hearing_date = request.form.get("next_hearing_date")
         hearing_place = request.form.get("hearing_place")
@@ -1434,6 +1500,7 @@ def send_complaint_approval_mail():
 
             # ✅ Update complaint status to pending
             complaint.status = "CASE_REGISTERED"
+            complaint.case_no = case_no
 
             db.session.commit()
 
@@ -1542,11 +1609,65 @@ def add_hearing():
         )
 
         db.session.add(hearing)
+
+        # ================= GET COMPLAINT =================
+
         complaint = ComplintComplaint.query.get(
             complaint_id
         )
-        if complaint:
-            complaint.status = "UNDER_HEARING"
+
+# ================= UPDATE COMPLAINT STATUS =================
+
+        complaint.status = "UNDER_HEARING"
+
+# ================= GET USERS =================
+
+        complainant = ComplintComplainant.query.get(
+            complaint.complainant_id
+        )
+
+        respondent = ComplintRespondent.query.get(
+            complaint.respondent_id
+        )
+
+# ================= SEND MAIL TO COMPLAINANT =================
+
+        send_hearing_update_mail_complainant(
+            complainant.email,
+
+            complainant.name,
+
+            complaint.case_no,
+
+            status,
+
+            remarks,
+
+            next_hearing_date.isoformat(),
+
+            hearing_place
+        )
+# ================= SEND MAIL TO RESPONDENT =================
+
+        send_hearing_update_mail_respondent(
+            respondent.email,
+
+            respondent.name,
+
+            complaint.case_no,
+
+            status,
+
+            remarks,
+
+            next_hearing_date.isoformat(),
+
+            hearing_place
+        )
+        complaint = ComplintComplaint.query.get(
+            complaint_id
+        )
+       
         db.session.commit()
 
         logger.info(f"✅ Hearing inserted successfully → hearing_no={hearing_no}")
@@ -1641,6 +1762,7 @@ def register_case():
         # ================= UPDATE CASE =================
 
         complaint.case_no = case_no
+        print("SAVING CASE NUMBER =", case_no)
 
         complaint.status = "CASE_REGISTERED"
 
@@ -1668,6 +1790,8 @@ def register_case():
         db.session.add(
             hearing
         )
+        db.session.commit()
+        print("DB CASE NUMBER =", complaint.case_no)
 
 # ================= GET USERS =================
 
@@ -1707,6 +1831,7 @@ def register_case():
         )
         
         db.session.commit()
+        print("DB CASE NUMBER =", complaint.case_no)
 
         return jsonify({
 

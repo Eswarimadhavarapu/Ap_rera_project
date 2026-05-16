@@ -1927,3 +1927,144 @@ Government of Andhra Pradesh
     server.login(smtp_user, smtp_password)
     server.sendmail(from_email, to_email, msg.as_string())
     server.quit()
+
+
+
+# ================= HEARING UPDATE - COMPLAINANT =================
+
+def send_hearing_update_mail_complainant(
+    to_email,
+    complainant_name,
+    case_no,
+    status,
+    remarks,
+    next_hearing_date,
+    hearing_place
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    formatted_date = datetime.fromisoformat(
+        next_hearing_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    subject = f"AP RERA Hearing Update - {case_no}"
+
+    body = f"""
+Dear {complainant_name},
+
+Your hearing details have been updated.
+
+Case Number:
+{case_no}
+
+Current Hearing Status:
+{status}
+
+Hearing Remarks:
+{remarks}
+
+Next Hearing Date:
+{formatted_date}
+
+Venue:
+{hearing_place}
+
+Regards,
+AP RERA Authority
+"""
+
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+
+    server.login(smtp_user, smtp_password)
+
+    server.sendmail(
+        from_email,
+        to_email,
+        msg.as_string()
+    )
+
+    server.quit()
+
+
+# ================= HEARING UPDATE - RESPONDENT =================
+
+def send_hearing_update_mail_respondent(
+    to_email,
+    respondent_name,
+    case_no,
+    status,
+    remarks,
+    next_hearing_date,
+    hearing_place
+):
+
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    from_email = os.getenv("FROM_EMAIL")
+
+    formatted_date = datetime.fromisoformat(
+        next_hearing_date
+    ).strftime("%d-%b-%Y at %I:%M %p")
+
+    subject = f"AP RERA Hearing Update - {case_no}"
+
+    body = f"""
+Dear {respondent_name},
+
+Your hearing details have been updated.
+
+Case Number:
+{case_no}
+
+Current Hearing Status:
+{status}
+
+Hearing Remarks:
+{remarks}
+
+Next Hearing Date:
+{formatted_date}
+
+Venue:
+{hearing_place}
+
+Regards,
+AP RERA Authority
+"""
+
+    msg = MIMEMultipart()
+
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP(smtp_host, smtp_port)
+    server.starttls()
+
+    server.login(smtp_user, smtp_password)
+
+    server.sendmail(
+        from_email,
+        to_email,
+        msg.as_string()
+    )
+
+    server.quit()

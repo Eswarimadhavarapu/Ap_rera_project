@@ -16,7 +16,7 @@
 
 /* Breadcrumb */
 .acf-breadcrumb {
-  background: #5C3317;
+  background: #4d96a3;
   color: #fff;
   padding: 6px 10px;
   font-size: 13px;
@@ -40,7 +40,7 @@
 .acf-title-underline {
   width: 40px;
   height: 2px;
-  background: #5C3317;
+  background: #3aa9bd;
   margin-bottom: 15px;
 }
 
@@ -55,7 +55,7 @@
 .acf-section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #5C3317;
+  color: #30bcd4;
   margin-top: 20px;
   margin-bottom: 10px;
 }

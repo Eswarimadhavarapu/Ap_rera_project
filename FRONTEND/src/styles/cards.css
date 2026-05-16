@@ -185,7 +185,7 @@
 }
 
 .expertise-section-title {
-  color: #0a5ca8;
+  color: #4d96a3;
   font-size: 32px;
   font-weight: bold;
 }
@@ -193,7 +193,7 @@
 .expertise-title-line {
   width: 35px;
   height: 3px;
-  background: #0a5ca8;
+  background: #4d96a3;
   margin: 10px auto 20px;
 }
 
@@ -228,7 +228,7 @@
 .expertise-icon {
   width: 70px;
   height: 70px;
-  background: #0a5ca8;
+  background: #4d96a3;
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -273,12 +273,12 @@
   transition: 0.3s ease;    /* smooth animation */
 }
 .expertise-card:hover {
-  border: 1px solid #0a5ca8;   /* BLUE BORDER ON HOVER */
+  border: 1px solid #4d96a3;   /* BLUE BORDER ON HOVER */
   box-shadow: 0 8px 20px rgba(10, 92, 168, 0.25);
   transform: translateY(-4px); /* slight lift (optional but looks good) */
 }
 .expertise-card:hover .expertise-icon {
-  background: #084a87;
+  background: #4d96a3;
 }
 
 /* ===== LEARNING SECTION ===== */
@@ -289,7 +289,7 @@
 }
 
 .learning .learning-section-title {
-  color: #0a5ca8;
+  color: #4d96a3;
   font-size: 32px;
   font-weight: bold;
 }
@@ -297,7 +297,7 @@
 .learning .learning-title-line {
   width: 35px;
   height: 3px;
-  background: #0a5ca8;
+  background: #4d96a3;
   margin: 10px auto 20px;
 }
 
@@ -345,7 +345,7 @@
 /* BUTTON */
 .learning-card button {
   padding: 10px 30px;
-  background: #0a5ca8;
+  background: #4d96a3;
   color: #fff;
   border: none;
   font-size: 14px;
@@ -355,7 +355,7 @@
 }
 
 .learning-card button:hover {
-  background: #084a87;
+  background: #4d96a3;
 }
 
 /* RESPONSIVE */

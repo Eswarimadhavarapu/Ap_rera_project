@@ -9,7 +9,7 @@
 .ad-page .breadcrumb {
   max-width: 1100px;
   margin: 0 auto;
-  background: #5C3317;
+  background: #4d96a3;
   color: #fff;
   padding: 6px 14px;     /* reduced height */
   font-size: 13px;
@@ -67,7 +67,7 @@
   display: block;
   width: 32px;
   height: 2px;
-  background: #5C3317;
+  background: #4d96a3;
   margin-top: 3px;      /* FIX */
 }
 
@@ -121,7 +121,7 @@
 .section-title {
   margin-top: 16px;
   margin-bottom: 2px;
-  color: #0a7bbd;
+  color: #4d96a3;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none !important;
@@ -133,6 +133,6 @@
   display: block;
   width: 28px;
   height: 2px;
-  background: #5C3317;
+  background: #4d96a3;
   margin-top: 4px;
 }

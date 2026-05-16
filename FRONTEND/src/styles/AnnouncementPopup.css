@@ -30,7 +30,7 @@
 ========================= */
 .announcement-popup-header {
   height: 36px;                  /* ⬇ reduced height */
-  background: #5C3317;
+  background: #6fd4e6;
   color: #ffffff;
   font-weight: bold;
   font-size: 17px;
@@ -103,7 +103,7 @@
 }
 
 .announcement-card:hover p {
-  color: #5C3317;
+  color: #85e6f7;
   font-size: 17px;
 }
 

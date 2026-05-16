@@ -135,11 +135,11 @@ body {
 
 /* DOWNLOAD – Govt Blue */
 .c-download-btn {
-  background-color: #0b5ed7;
+  background-color: #4d96a3;
 }
 
 .c-download-btn:hover {
-  background-color: #084298;
+  background-color: #4d96a3;
 }
 @media print {
   body {

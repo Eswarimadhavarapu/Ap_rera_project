@@ -22,7 +22,7 @@
 
 .ud-link {
   color: #ffeb3b;
-  text-decoration: underline;
+  text-decoration: underline;                                
   margin: 0 4px;
 }
 
@@ -128,7 +128,7 @@
 /* STEP CIRCLE */
 .ud-stepper-circle {
   width: 38px;
-  height: 38px;
+  height: 38px; 
   border-radius: 50%;
   border: 2px solid #bdbdbd;
   background: #ffffff;

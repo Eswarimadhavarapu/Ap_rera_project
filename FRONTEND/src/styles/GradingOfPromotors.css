@@ -16,7 +16,7 @@
 
 /* Breadcrumb */
 .breadcrumb {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #fff;
   font-size: 13px;
   padding: 6px 10px;
@@ -40,7 +40,7 @@
 .title-underline {
   width: 30px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
   margin-bottom: 18px;
 }
 
@@ -56,7 +56,7 @@
 .sub-title {
   font-size: 14px;
   font-weight: 600;
-  color: #0074b8;
+  color: #4d96a3;
   margin: 12px 0 6px;
 }
 

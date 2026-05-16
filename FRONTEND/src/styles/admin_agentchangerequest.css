@@ -41,7 +41,7 @@
 .admin-change-request-header h1 {
   font-size: 22px;
   font-weight: 600;
-  color: #029cef;
+  color: #4d96a3;
 }
 
 .placeholder-text {
@@ -103,7 +103,7 @@
 }
 
 .status-card-active {
-  border: 2px solid #029cef;
+  border: 2px solid #4d96a3;
 }
 
 .status-card-label {
@@ -114,7 +114,7 @@
 .status-card-value {
   font-size: 22px;
   font-weight: bold;
-  color: #5A2D0C;
+  color: #4d96a3;
 }
 
 /* ===============================
@@ -164,7 +164,7 @@
 
 /* active tab */
 .filter-pill-active {
-  color: #029cef;
+  color: #4d96a3;
   font-weight: 600;
 }
 
@@ -176,7 +176,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: #029cef;
+  background: #4d96a3;
   border-radius: 2px;
 }
 
@@ -197,7 +197,7 @@
 }
 
 .admin-request-table th {
-  background: #029cef;
+  background: #4d96a3;
   color: white;
   padding: 12px;
   text-align: left;
@@ -224,7 +224,7 @@
 
 .status-pending {
   background: #fff4e5;
-  color: #029cef;
+  color: #b45309;
 }
 
 .status-completed,
@@ -255,7 +255,7 @@
 }
 
 .subtle-secondary {
-  background: #029cef;
+  background: #4d96a3;
   color: white;
 }
 
@@ -397,24 +397,24 @@
 
 /* Main title */
 .full-details-panel h2 {
-  color: #029cef;
+  color: #4d96a3;
   font-weight: 600;
 }
 
 /* Section headings */
 .full-details-panel h3 {
-  color: #029cef;
+  color: #4d96a3;
   font-weight: 600;
 }
 
 /* Field labels (Application No, PAN etc.) */
 .details-grid strong {
-  color: #029cef;
+  color: #4d96a3;
 }
 
 /* Optional: sub text headings */
 .field-label {
-  color: #029cef;
+  color: #4d96a3;
 }
 
 /* ===============================
@@ -432,5 +432,3 @@
     gap: 10px;
   }
 }
-
-

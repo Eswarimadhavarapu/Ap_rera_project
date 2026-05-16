@@ -15,7 +15,7 @@
 
 /* ===== BREADCRUMB ===== */
 .agentexisting-breadcrumb-box {
-  background: #1e88e5;
+  background: #4d96a3;
   color: #ffffff;
   padding: 8px 15px;
   font-size: 14px;
@@ -43,7 +43,7 @@
   bottom: 5px;
   width: 60px;
   height: 3px;
-  background: #1e88e5;
+  background: #4d96a3;
 }
 
 /* ===== STEPPER ===== */
@@ -145,5 +145,5 @@
 }
 
 .agentexisting-btn-primary:hover {
-  background: #1565c0;
+  background: #4d96a3;
 }

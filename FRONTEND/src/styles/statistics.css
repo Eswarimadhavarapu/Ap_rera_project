@@ -35,21 +35,21 @@
 
 /* ===== HOVER EFFECT (SOFT, PROFESSIONAL) ===== */
 .stats-tabs button:hover {
-  color: #0d6efd;              /* blue text only */
+  color: #4d96a3;              /* blue text only */
   background-color: #f8f9fa;   /* very light gray bg */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 /* ===== ACTIVE TAB (CLICKED) ===== */
 .stats-tabs button.active {
-  background-color: #0d6efd;   /* full blue background */
+  background-color: #4d96a3;   /* full blue background */
   color: #ffffff;              /* white text */
   border-color: #cfcfcf;       /* keep neutral border */
 }
 
 /* ===== ACTIVE TAB HOVER (NO CHANGE) ===== */
 .stats-tabs button.active:hover {
-  background-color: #0d6efd;
+  background-color: #4d96a3;
   color: #ffffff;
   box-shadow: none;
 }

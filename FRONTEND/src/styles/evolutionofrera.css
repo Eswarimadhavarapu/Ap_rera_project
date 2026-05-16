@@ -15,7 +15,7 @@ body {
 
 /* BREADCRUMB */
 .evofrera-breadcrumb {
-  background: #1e90ff;
+  background: #4d96a3;
   color: #fff;
   padding: 8px 12px;
   font-size: 13px;
@@ -47,7 +47,7 @@ body {
 .evofrera-underline {
   width: 30px;
   height: 3px;
-  background: #0b5aa3;
+  background: #4d96a3;
   margin: 8px 0 15px;
 }
 
@@ -59,7 +59,7 @@ body {
 
 .evofrera-intro-right {
   flex: 1;
-  border: 1px solid #1e90ff;
+  border: 1px solid #4d96a3;
   padding: 10px;
 }
 

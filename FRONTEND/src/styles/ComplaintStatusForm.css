@@ -96,7 +96,7 @@
 .complaint-status__submit-btn {
   margin-top: 10px;
   padding: 10px;
-  background: #007bff;
+  background: #4d96a3;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -105,7 +105,7 @@
 }
 
 .complaint-status__submit-btn:hover {
-  background: #0056b3;
+  background: #4d96a3;
 }
 
 /* Error Message */

@@ -23,7 +23,7 @@ body {
 
 /* ================= BREADCRUMB ================= */
 .pr-nur-breadcrumb {
-  background: #0d6efd;
+  background: #4d96a3;
   color: #ffffff;
   padding: 8px 14px;
   font-size: 13px;
@@ -44,7 +44,7 @@ body {
   font-size: 20px;
   padding: 14px 18px 6px;
   margin-bottom: 12px;
-  border-bottom: 2px solid #0d6efd;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
 }
 
@@ -96,7 +96,7 @@ body {
 /* ================= GET DETAILS BUTTON ================= */
 .pr-nur-btn {
   height: 32px;
-  background: #0b5ed7;
+  background: #4d96a3;
   color: #ffffff;
   border: none;
   padding: 6px 18px;
@@ -106,7 +106,7 @@ body {
 }
 
 .pr-nur-btn:hover {
-  background: #084298;
+  background: #4d96a3;
 }
 
 /* ================= GRID ROWS ================= */
@@ -162,7 +162,7 @@ body {
 .pr-nur-field input:focus,
 .pr-nur-field select:focus {
   outline: none;
-  border-color: #0d6efd;
+  border-color: #4d96a3;
   box-shadow: 0 0 0 1px rgba(13,110,253,0.25);
 }
 
@@ -214,7 +214,7 @@ body {
 }
 
 .pr-nur-register-btn {
-  background: #0d6efd;
+  background: #4d96a3;
   color: #ffffff;
   padding: 6px 18px;
   font-size: 12px;
@@ -224,5 +224,5 @@ body {
 }
 
 .pr-nur-register-btn:hover {
-  background: #084298;
+  background: #4d96a3;
 }

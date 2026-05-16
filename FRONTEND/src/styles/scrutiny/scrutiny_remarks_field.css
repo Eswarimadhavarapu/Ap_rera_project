@@ -28,7 +28,7 @@
   min-width: 52px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #1f5fbf;
+  background: #4d96a3;
   color: #ffffff;
   font-size: 12px;
   font-weight: 700;
@@ -51,7 +51,7 @@
 
 .scrutiny-remarks-box:focus {
   outline: none;
-  border-color: #1f5fbf;
+  border-color: #4d96a3;
   box-shadow: 0 0 0 3px rgba(31, 95, 191, 0.12);
 }
 

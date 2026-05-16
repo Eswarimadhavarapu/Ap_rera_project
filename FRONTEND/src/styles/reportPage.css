@@ -4,7 +4,7 @@
 }
 
 .breadcrumb-blue {
-  background-color: #007bff;
+  background-color: #4d96a3;
   color: white;
   padding: 10px 20px;
   font-size: 13px;
@@ -20,7 +20,7 @@
 
 .report-title {
   color: #333;
-  border-bottom: 2px solid #0056b3;
+  border-bottom: 2px solid #4d96a3;
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 20px;
@@ -65,7 +65,7 @@
 }
 
 .rera-report-table .sla-header {
-  background-color: #0056b3;
+  background-color: #4d96a3;
 }
 
 .rera-report-table td {
@@ -76,7 +76,7 @@
 }
 
 .text-left { text-align: left !important; }
-.blue-text { color: #0056b3; font-weight: 500; }
+.blue-text { color: #4d96a3; font-weight: 500; }
 
 /* Countdown Timer UI */
 .countdown-container {
@@ -89,7 +89,7 @@
 .time-block {
   display: flex;
   flex-direction: column;
-  background-color: #007bff;
+  background-color: #4d96a3;
   color: white;
   border-radius: 4px;
   width: 38px;
@@ -107,7 +107,7 @@
 }
 
 .separator {
-  color: #007bff;
+  color: #4d96a3;
   font-weight: bold;
 }
 
@@ -142,9 +142,9 @@
 }
 
 .page-num.active {
-    background-color: #007bff;
+    background-color: #4d96a3;
     color: white;
-    border-color: #007bff;
+    border-color: #4d96a3;
 }
 
 .page-num:hover:not(.active), .page-nav:hover:not(:disabled) {
@@ -161,7 +161,7 @@
 }
 
 .time-block {
-    background: #007bff;
+    background: #4d96a3;
     color: white;
     padding: 3px 5px;
     border-radius: 3px;
@@ -211,7 +211,7 @@
 }
 
 .get-details-btn {
-    background-color: #007bff;
+    background-color: #4d96a3;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -222,7 +222,7 @@
 }
 
 .get-details-btn:hover {
-    background-color: #0056b3;
+    background-color: #4d96a3;
 }
 
 
