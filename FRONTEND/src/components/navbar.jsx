@@ -17,14 +17,23 @@ const Navbar = ({ setHideNotice }) => {
     location.pathname.startsWith("/scrutiny") ||
     location.pathname.startsWith("/scrutinity");
 
-  if (
-    isScrutinyRoute ||
-    location.pathname.startsWith("/admin") ||
-    location.pathname === "/admin-login" ||
-    location.pathname === "/apreatapplication"
-  ) {
-    return null;
-  }
+ if (
+  isScrutinyRoute ||
+
+  location.pathname.startsWith("/admin") ||
+
+  location.pathname.startsWith("/legal") ||
+
+  location.pathname.startsWith("/hearings") ||
+
+  location.pathname === "/legalcomplaintlist" ||
+
+  location.pathname === "/admin-login" ||
+
+  location.pathname === "/apreatapplication"
+) {
+  return null;
+}
 
   return (
     <>

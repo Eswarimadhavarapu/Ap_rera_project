@@ -1922,3 +1922,98 @@ def send_notice():
             "message": str(e)
         }), 500
 
+
+
+@complint_bp.route(
+    "/complint/all-hearings",
+    methods=["GET"]
+)
+def get_all_hearings():
+
+    try:
+
+        hearings = (
+            db.session.query(
+                ComplaintHearing,
+                ComplintComplaint.case_no
+            )
+
+            .join(
+                ComplintComplaint,
+
+                ComplaintHearing.complaint_id
+                ==
+                ComplintComplaint.complaint_id
+            )
+
+            .order_by(
+                ComplaintHearing.hearing_date.desc()
+            )
+
+            .all()
+        )
+
+        data = []
+
+        for hearing, case_no in hearings:
+
+            data.append({
+
+                "hearing_id":
+                    hearing.hearing_id,
+
+                "case_no":
+                    case_no,
+
+                "status":
+                    hearing.status,
+
+                "hearing_no":
+                    hearing.hearing_no,
+
+                "hearing_date":
+                    (
+                        hearing.hearing_date.strftime(
+                            "%d-%m-%Y %H:%M:%S"
+                        )
+                        if hearing.hearing_date
+                        else None
+                    ),
+
+                "next_hearing_date":
+                    (
+                        hearing.next_hearing_date.strftime(
+                            "%d-%m-%Y %H:%M:%S"
+                        )
+                        if hearing.next_hearing_date
+                        else None
+                    ),
+
+                "hearing_place":
+                    hearing.hearing_place,
+
+                "remarks":
+                    hearing.remarks,
+
+                "documents":
+                    hearing.documents,
+            })
+
+        return jsonify({
+
+            "status": "success",
+
+            "total": len(data),
+
+            "data": data
+        })
+
+    except Exception as e:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": str(e)
+
+        }), 500

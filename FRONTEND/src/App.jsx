@@ -987,6 +987,7 @@ import ComplaintList from "./pages/LegalSideComplaint/ComplaintList.jsx";
 import CaseStatus from "./pages/CaseStatus.jsx";
 import RtiPage from "./pages/RtiPage.jsx";
 import HearingHistory from "./pages/LegalSideComplaint/HearingHistory.jsx";
+import Welcome from "./pages/Welcome";
 
 
 function App() {
@@ -1080,7 +1081,7 @@ function App() {
             <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
             <Route path="/agent-preview" element={<Preview />} />
             <Route path="/agent-payment" element={<Payment />} />
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/bim" element={<BuildingInformationModelling />} />
             <Route path="/vr" element={<VRInnovation />} />
             <Route path="/rtc" element={<RealTimeContextCapture />} />
@@ -1121,7 +1122,7 @@ function App() {
             <Route path="/promoterData" element={<PromoterData />} />
             <Route path="/closure" element={<ClosureTable />} />
 
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/agent-renewal" element={<AgentRenewal />} />
 
             <Route path="/renewal/upload/:renewalId" element={<RenewalUploadDocuments />} />
@@ -1245,8 +1246,7 @@ function App() {
             <Route path="/Changerequest1" element={<Changerequest />} />
             <Route path="/admin/project/:id" element={<AdminProjectDetails />} />
             <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
-
-
+            <Route path="/" element={<Welcome />} />
 
 {/* ---------------------------------------------------------------------------------------------------- */}
 
@@ -1294,7 +1294,7 @@ function App() {
  <Route path="/scrutiny/L2/L2-dashboard" element={<ScrutinyDashboard />} />
  <Route path="/apreatapplication" element={<ApreatApplication />} />
 
-<Route path="/scrutiny/legaldashboard" element={<LegalDashboard />} />
+<Route path="/legal/legaldashboard" element={<LegalDashboard />} />
 <Route path="/legalcomplaintlist" element={<ComplaintList />} />
 
  

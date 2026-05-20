@@ -73,16 +73,16 @@ const handleView = async (complaintId) => {
 
     <div className="case-page">
 
-      <div className="case-container">
+      <div className="case-page-container">
 
         <h1>Search Case Status</h1>
 
         {/* TABS */}
-        <div className="top-tabs">
+        <div className="case-page-top-tabs">
 
           <button>Party Name</button>
 
-          <button className="active-tab">
+          <button className="case-page-active-tab">
             Case Number
           </button>
 
@@ -94,9 +94,9 @@ const handleView = async (complaintId) => {
 
         {/* FORM */}
 
-        <div className="form-section">
+        <div className="case-page-form-section">
 
-          <div className="form-group">
+          <div className="case-page-form-group">
 
             <label>
               Case/ Complaint Number *
@@ -115,13 +115,13 @@ const handleView = async (complaintId) => {
 
           {/* CAPTCHA */}
 
-          <div className="captcha-row">
+          <div className="case-page-captcha-row">
 
-            <div className="captcha-box">
+            <div className="case-page-captcha-box">
               843622
             </div>
 
-            <button className="refresh-btn">
+            <button className="case-page-refresh-btn">
 
               <MdRefresh />
 
@@ -130,24 +130,24 @@ const handleView = async (complaintId) => {
             <input
               type="text"
               placeholder="Enter Captcha Text"
-              className="captcha-input"
+              className="case-page-captcha-input"
             />
 
           </div>
 
           {/* BUTTONS */}
 
-          <div className="btn-row">
+          <div className="case-page-btn-row">
 
          <button
-  className="search-btn"
+  className="case-page-search-btn"
   onClick={handleSearch}
 >
   Search
 </button>
 
             <button
-  className="clear-btn"
+  className="case-page-clear-btn"
   onClick={() => {
     setCaseNumber("");
     setComplaints([]);
@@ -162,7 +162,7 @@ const handleView = async (complaintId) => {
 
         {/* TABLE */}
 
-        <div className="table-section">
+        <div className="case-page-table-section">
 
           <table>
 
@@ -213,7 +213,7 @@ const handleView = async (complaintId) => {
         <td>
 
           <button
-            className="view-btn"
+            className="case-page-view-btn"
             onClick={() =>
   handleView(item.complaint_id)
 }
@@ -259,13 +259,13 @@ const handleView = async (complaintId) => {
       {
         showModal && (
 
-          <div className="modal-overlay">
+          <div className="case-page-modal-overlay">
 
-            <div className="modal-box">
+            <div className="case-page-modal-box">
 
               {/* HEADER */}
 
-              <div className="modal-header">
+              <div className="case-page-modal-header">
 
                 <h2>
                  Details of {
@@ -286,7 +286,7 @@ selectedComplaint?.complaint
                 </h2>
 
                 <button
-                  className="close-icon"
+                  className="case-page-close-icon"
                   onClick={() => setShowModal(false)}
                 >
                   ×
@@ -296,12 +296,12 @@ selectedComplaint?.complaint
 
               {/* MODAL TABS */}
 
-              <div className="modal-tabs">
+              <div className="case-page-modal-tabs">
 
                 <button
                   className={
-                    activeTab === "case"
-                      ? "active-tab"
+                    activeTab === "case-page-case"
+                      ? "case-page-active-tab"
                       : ""
                   }
                   onClick={() => setActiveTab("case")}
@@ -349,7 +349,7 @@ selectedComplaint?.complaint
               {
                 activeTab === "case" && (
 
-                  <div className="details-section">
+                  <div className="case-page-details-section">
 
                     <table>
 
@@ -505,7 +505,7 @@ selectedComplaint?.complaint
               {
                 activeTab === "history" && (
 
-                  <div className="details-section">
+                  <div className="case-page-details-section">
 
                     <table>
 
@@ -595,7 +595,7 @@ item.status || "--"
               {
                 activeTab === "orders" && (
 
-                  <div className="details-section">
+                  <div className="case-page-details-section">
 
                     <table>
 
@@ -654,7 +654,7 @@ target="_blank"
 rel="noreferrer"
 >
 
-<button className="pdf-btn">
+<button className="case-page-pdf-btn">
 
 View File
 
@@ -704,7 +704,7 @@ View File
               {
                 activeTab === "transfer" && (
 
-                  <div className="details-section">
+                  <div className="case-page-details-section">
 
                     <table>
 

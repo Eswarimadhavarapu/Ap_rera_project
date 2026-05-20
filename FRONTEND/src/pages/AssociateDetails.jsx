@@ -7,6 +7,8 @@ import StructuralEngineers from "../components/StructuralEngineers";
 import ProjectContractors from "../components/ProjectContractors";
 import CharteredAccountant from "../components/CharteredAccountant";
 import ProjectEngineers from "../components/ProjectEngineers";
+import ProjectWizard from "../components/ProjectWizard";
+
 
 import { apiGet } from "../api/api";
 import "../styles/AssociateDetails.css";
@@ -54,7 +56,7 @@ const AssociateDetails = () => {
       sessionStorage.setItem("applicationNumber", applicationNumber);
     }
     if (panNumber) {
-      sessionStorage.setItem("panNumber", panNumber);
+      sessionStorage.setItem("panNumber", panNumber) ;
     }
   }, [applicationNumber, panNumber]);
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";   // ✅ ADD THIS
-import buddha from "../assets/buddha.jpg";
+import buddha from "../assets/buddha.jpg.jpeg";
 import "../styles/Welcome.css";
 
 const Welcome = () => {
@@ -9,7 +9,7 @@ const Welcome = () => {
 useEffect(() => {
   const timer = setTimeout(() => {
     navigate("/home");
-  }, 10000);
+  },5000);
 
   return () => clearTimeout(timer);
 }, []);

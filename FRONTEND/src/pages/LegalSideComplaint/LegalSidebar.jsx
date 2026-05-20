@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -11,9 +11,12 @@ import {
 
 import "../../styles/legal.css";
 
-const LegalSidebar = () => {
+const LegalSidebar = ({
+  activeTab,
+  setActiveTab
+}) => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
 
@@ -42,7 +45,7 @@ const LegalSidebar = () => {
         <div
           className="legal-menu-item"
           onClick={() =>
-            navigate("/legaldashboard")
+            setActiveTab("dashboard")
           }
         >
           <LayoutDashboard size={26} />
@@ -57,8 +60,8 @@ const LegalSidebar = () => {
         <div
           className="legal-menu-item"
           onClick={() =>
-            navigate("/legalcomplaintlist")
-          }
+  setActiveTab("complaints")
+}
         >
           <FileText size={26} />
 
@@ -74,7 +77,7 @@ const LegalSidebar = () => {
 <div
   className="legal-menu-item"
   onClick={() =>
-    navigate("/hearings")
+    setActiveTab("hearings")
   }
 >
 

@@ -3,7 +3,7 @@ import "../styles/HomePage.css";
 
 import { useNavigate } from "react-router-dom";
 import "../styles/QuickLinks.css";
-import "../styles/publicnotice.css";
+// import "../styles/publicnotice.css";
 import "../styles/Homeservices.css";
 import "../styles/AboutAPRERA.css";
 
@@ -183,13 +183,13 @@ function Hero() {
               sector.
             </p>
 
-           <p style={{ fontSize: "16px", fontWeight: "400" }}>
+           <p style={{ fontSize: "16px", fontWeight: "500" }}>
               All sections of the Real Estate (Regulation & Development) Act, 2016 came into force
               with effect from 1st May, 2017. The Andhra Pradesh Real Estate (Regulation & Development)
               Rules, 2017 was approved by Government of Andhra Pradesh and notified on March 27, 2017.
             </p>
 
-            <p style={{ fontSize: "16px", fontWeight: "400" }}>
+            <p style={{ fontSize: "16px", fontWeight: "500" }}>
               For Buildings where the area of land proposed to be developed does not exceed five hundred
               square meters or the number of apartments proposed to be developed does not exceed eight
               inclusive of all phases.
@@ -209,7 +209,7 @@ function Hero() {
                 alt="Sri N. Chandrababu Naidu"
               />
               <h4>Sri N. Chandrababu Naidu</h4>
-              <p>Hon’ble Chief Minister of Andhra Pradesh</p> 
+              <p>Honourable Chief Minister of Andhra Pradesh</p> 
             </div>
 
             {/* Vertical Line */}
@@ -333,6 +333,7 @@ const registrationLinks = [
     title:
       "Documents to be submitted while applying for project on agent registration",
     icon: FaFileAlt,
+    path: "/guidelinesRegistration",
   },
   {
     title: "Project Registration",
@@ -368,14 +369,13 @@ const registrationLinks = [
   ];
 
   const agentServices = [
-    { title: "Apply for Renewal", icon: FaFileContract, path: "/agent-renewal"},
+    { title: "Agents Apply for Renewal", icon: FaUserCheck, path: "/agent-renewal"},
     { title: "Apply for Change Request", icon: FaExchangeAlt, path: "/agent_change_request_1" },
-    { title: "Agents Apply for Renewal", icon: FaUserCheck },
   ];
 
   const complaintServices = [
-    { title: "Conciliation", icon: FaHandshake },
-    { title: "Cause list", icon: FaListUl },
+    { title: "Conciliation", icon: FaHandshake  },
+    { title: "Cause list", icon: FaListUl, path: "/cause-list", },
     { title: "Judgements / Orders", icon: FaGavel },
   ];
 

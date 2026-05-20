@@ -67,7 +67,7 @@ const ComplaintList = () => {
                   <th>S.No</th>
 
                   <th>
-                    Complaint Number
+                    Suite Registration Number
                   </th>
 
                   <th>

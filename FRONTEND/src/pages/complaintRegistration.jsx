@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import "../styles/complaintRegistration.css";
 import { useNavigate } from "react-router-dom";
@@ -74,18 +73,15 @@ const complaintSteps = [
 
     /* ================= DOWNLOAD FORM (EDITABLE DOC) ================= */
     const downloadForm = (type) => {
-        const fileMap = {
-            M: "/docx/FORMM.docx",
-            N: "/docx/FORMN.docx",
-        };
+  const fileMap = {
+    M: "/assets/docx/FORMM.docx",
+    N: "/assets/docx/FORMN.docx",
+  };
 
-        const link = document.createElement("a");
-        link.href = fileMap[type];
-        link.setAttribute("download", "");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+  window.open(fileMap[type], "_blank");
+};
+
+        
 
 
 
@@ -235,12 +231,16 @@ const complaintSteps = [
         name="applicationType"
         value="FORM_M"
         checked={complaintData.applicationType === "FORM_M"}
-        onChange={(e) =>
-          setComplaintData((prev) => ({
-            ...prev,
-            applicationType: e.target.value,
-          }))
-        }
+       onChange={(e) => {
+  setComplaintData((prev) => ({
+    ...prev,
+    applicationType: e.target.value,
+  }));
+
+  alert(
+    "You have selected FORM M.\n\nFORM M is related to complaints before the Regulatory Authority.\n\nClick OK to continue with FORM M.\n\nIf you want to change the application type, please select FORM N."
+  );
+}}
       />
       <span>Form M</span>
     </label>
@@ -251,12 +251,16 @@ const complaintSteps = [
         name="applicationType"
         value="FORM_N"
         checked={complaintData.applicationType === "FORM_N"}
-        onChange={(e) =>
-          setComplaintData((prev) => ({
-            ...prev,
-            applicationType: e.target.value,
-          }))
-        }
+        onChange={(e) => {
+  setComplaintData((prev) => ({
+    ...prev,
+    applicationType: e.target.value,
+  }));
+
+  alert(
+    "You have selected FORM N.\n\nFORM N is related to compensation applications before the Adjudicating Officer.\n\nClick OK to continue with FORM N.\n\nIf you want to change the application type, please select FORM M."
+  );
+}}
       />
       <span>Form N</span>
     </label>
@@ -284,6 +288,8 @@ const complaintSteps = [
 
                     </div>
                 )}
+                
+
 
 
                 {/* STEP 2 */}

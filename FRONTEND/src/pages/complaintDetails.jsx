@@ -167,6 +167,7 @@ export default function ComplaintDetails({
   const docFileRef = useRef(null);
 
   const [rows, setRows] = useState([]);    
+ const [respondents, setRespondents] = useState([]);
 
   const handleAddRow = () => {
     if (!form.agreed || !form.delivered || !form.deviation) {
@@ -196,6 +197,73 @@ export default function ComplaintDetails({
     setRows(rows.filter((_, i) => i !== index));
   };
 
+  const handleAddRespondent = () => {
+  setRespondents([
+    ...respondents,
+    {
+      projectName: "",
+      respondentName: "",
+      respondentMobile: "",
+      respondentEmail: "",
+      rAddress1: "",
+      rAddress2: "",
+      rState: "",
+      rDistrict: "",
+      rPincode: "",
+    },
+  ]);
+};
+
+const handleRespondentChange = (index, e) => {
+  const { name, value } = e.target;
+
+  const updated = [...respondents];
+  updated[index][name] = value;
+
+  setRespondents(updated);
+};
+
+
+const handleAddRespondentToTable = () => {
+  if (
+    !form.projectName ||
+    !form.respondentName ||
+    !form.respondentMobile ||
+    !form.respondentEmail
+  ) {
+    alert("Please fill all respondent details");
+    return;
+  }
+
+  setRespondents([
+    ...respondents,
+    {
+      projectName: form.projectName,
+      respondentName: form.respondentName,
+      respondentMobile: form.respondentMobile,
+      respondentEmail: form.respondentEmail,
+      rAddress1: form.rAddress1,
+      rAddress2: form.rAddress2,
+      rState: form.rState,
+      rDistrict: form.rDistrict,
+      rPincode: form.rPincode,
+    },
+  ]);
+
+  // clear fields
+  setForm((p) => ({
+    ...p,
+    projectName: "",
+    respondentName: "",
+    respondentMobile: "",
+    respondentEmail: "",
+    rAddress1: "",
+    rAddress2: "",
+    rState: "",
+    rDistrict: "",
+    rPincode: "",
+  }));
+};
 
 
   useEffect(() => {
@@ -441,7 +509,7 @@ export default function ComplaintDetails({
         }
       }
 
-      if (respondentRERA_No) {
+      if (respondentRERA_No && respondents.length === 0) {
 
         if (form.complaintAgainst !== "Agent" && !form.projectName) {
           newErrors.projectName = "Please Enter Project Name";
@@ -510,7 +578,7 @@ export default function ComplaintDetails({
 
 
     // ✅ RESPONDENT ADDRESS VALIDATION
-    if (showRespondentAddress) {
+    if (showRespondentAddress && respondents.length === 0) {
       if (!form.rAddress1) {
         newErrors.rAddress1 = "Please enter Address Line 1";
       }
@@ -1396,6 +1464,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 />
               </div>
             </div>
+            
           )}
 
         </>
@@ -1473,8 +1542,52 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                   className="cr-container-input"
                 />
               </div>
-            </div>
 
+            </div>
+              <div style={{ marginTop: "15px" }}>
+  <button
+    type="button"
+    className="cr-btn-add"
+    onClick={handleAddRespondentToTable}
+  >
+    + Add Member
+  </button>
+</div>
+            {respondents.length > 0 && (
+  <table className="cr-data-table">
+    <thead>
+      <tr>
+        <th>S.No.</th>
+        <th>Project Name</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Address 1</th>
+        <th>Address 2</th>
+        <th>State</th>
+        <th>District</th>
+        <th>Pincode</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {respondents.map((resp, index) => (
+        <tr key={index}>
+          <td>{index + 1}</td>
+          <td>{resp.projectName}</td>
+          <td>{resp.respondentName}</td>
+          <td>{resp.respondentMobile}</td>
+          <td>{resp.respondentEmail}</td>
+          <td>{resp.rAddress1}</td>
+          <td>{resp.rAddress2}</td>
+          <td>{resp.rState}</td>
+          <td>{resp.rDistrict}</td>
+          <td>{resp.rPincode}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
           </>
         )}
 
@@ -1535,6 +1648,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 <option value="Rectification of Work">Rectification of Work</option>
               </select>
             </div>
+            
 
             {/* Any Other – Relief */}
             {form.relief === "Any Other" && (
@@ -1574,6 +1688,21 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 className="cr-container-input"
               />
             </div>
+            {form.applicationType === "FORM_M" && (
+  <div className="cr-field">
+    <label className="cr-complaint-label">
+      Facts of Complaint <span>*</span>
+    </label>
+
+    <input
+      name="factsOfComplaint"
+      placeholder="Facts of Complaint"
+      value={form.factsOfComplaint || ""}
+      onChange={handleChange}
+      className="cr-container-input"
+    />
+  </div>
+)}
           </>
         )}
 

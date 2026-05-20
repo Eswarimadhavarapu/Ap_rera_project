@@ -1,5 +1,3 @@
-
-
 /* ================= MAIN CONTAINER ================= */
 .cr-container {
   width: 100%;
@@ -426,4 +424,327 @@
 
 .cr-doc-table a:hover {
   text-decoration: underline;
+}
+/* ================= VERIFICATION SECTION ================= */
+
+.verification-section {
+  margin-top: 30px;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+}
+
+.verification-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 40px;
+}
+
+.verification-content {
+  font-size: 18px;
+  line-height: 2;
+}
+
+.verification-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.verification-inline-input {
+  border: none !important;
+  border-bottom: 1px solid #000 !important;
+
+  width: 220px !important;   /* small line */
+  min-width: 0 !important;
+  max-width: 220px !important;
+
+  height: 24px !important;
+
+  padding: 0 !important;
+  margin: 0 4px;
+
+  outline: none !important;
+  background: transparent !important;
+
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  font-size: 20px;
+}
+
+.verification-text {
+  margin-top: 20px;
+  line-height: 1.8;
+}
+
+.verification-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.verification-left {
+  width: 40%;
+}
+
+.verification-field {
+  margin-bottom: 20px;
+}
+
+.verification-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.verification-field input {
+  width: 100%;
+  padding: 10px;
+}
+
+.verification-right {
+  width: 35%;
+  text-align: center;
+}
+
+.verification-right label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.verification-signature-preview {
+  width: 180px;
+  height: 80px;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  margin-top: 15px;
+  padding: 5px;
+  background: #fff;
+}
+/* ================= VERIFICATION FINAL ================= */
+
+.verification-section {
+  margin-top: 40px;
+  padding: 40px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+}
+
+.verification-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  text-decoration: underline;
+  margin-bottom: 40px;
+}
+
+.verification-content {
+  font-size: 20px;
+  line-height: 2.2;
+}
+
+.verification-para {
+  line-height: 2.5;
+  font-size: 20px;
+}
+
+
+.verification-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+.verification-left-side {
+  width: 40%;
+}
+
+.verification-field-row {
+  margin-bottom: 25px;
+}
+
+.verification-field-row label {
+  display: inline-block;
+  width: 80px;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.verification-right-side {
+  width: 35%;
+  text-align: center;
+}
+
+.verification-right-side p {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.signature-preview {
+  width: 220px;
+  height: 60px;
+  object-fit: contain;
+  margin-top: 10px;
+  border: none;
+  padding: 5px;
+}
+.verification-field-row input {
+  width: 140px !important;
+  height: 28px !important;
+  padding: 2px 6px !important;
+  font-size: 13px !important;
+}
+.verification-left-side input[type="date"] {
+  width: 140px !important;
+  height: 28px !important;
+}
+/* ================= VERIFICATION ================= */
+
+.verification-section {
+  margin-top: 30px;
+  padding: 20px;
+}
+
+.verification-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: underline;
+  margin-bottom: 35px;
+}
+
+.verification-content {
+  width: 100%;
+}
+
+.verification-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 18px;
+  line-height: 40px;
+}
+
+.verification-inline-input {
+  border: none !important;
+  border-bottom: 1px solid #000 !important;
+  background: transparent !important;
+  outline: none !important;
+
+  width: 250px !important;
+  height: 28px !important;
+
+  padding: 0 5px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.verification-text {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 40px;
+}
+
+.verification-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 50px;
+}
+
+.verification-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.verification-field {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.verification-field input {
+  border: none !important;
+  border-bottom: 1px solid #000 !important;
+  background: transparent !important;
+  outline: none !important;
+
+  width: 180px !important;
+  height: 28px !important;
+
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.verification-right {
+  text-align: center;
+}
+
+.verification-right input[type="file"] {
+  margin-top: 10px;
+}
+
+.verification-signature-preview {
+  width: 120px;
+  height: 60px;
+  object-fit: contain;
+  margin-top: 10px;
+}
+/* ================= OFFICE USE SECTION ================= */
+
+.office-use-section {
+  margin: 30px 0;
+  padding: 20px 10px;
+}
+
+.office-use-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 15px;
+}
+
+.office-use-row label {
+  width: 260px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.office-line-input {
+  flex: 1;
+  border: none !important;
+  border-bottom: 1px solid #000 !important;
+  background: transparent !important;
+  outline: none !important;
+
+  height: 32px !important;
+  padding: 0 5px !important;
+
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.signature-row {
+  align-items: flex-start;
+}
+
+.signature-upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.office-signature-preview {
+  width: 140px;
+  height: 70px;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  padding: 5px;
 }

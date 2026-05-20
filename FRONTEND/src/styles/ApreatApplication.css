@@ -252,7 +252,7 @@ padding:0;
   justify-content:center;
   align-items:center;
 
-  text-align:center;
+   text-align:left;
 
   font-size:18px;
   font-weight:500;
@@ -349,7 +349,7 @@ padding:0;
 .apreat_top-header{
   width:100%;
 
-  height:140px;
+  height:130px;
 
   background:white;
 
@@ -422,4 +422,348 @@ padding:0;
 
 .apreat_nav-btn:hover{
   color:white;
+}
+
+/* FULL PAGE */
+
+.apreat_contact-page{
+  width:100%;
+  min-height:100vh;
+  background:#f5f5f5;
+  padding:0;
+  margin:0;
+  overflow-x:auto;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* TOP BLUE BAR */
+
+.apreat_contact-breadcrumb{
+  width:100%;
+  background:#0b84ff;
+  color:white;
+  padding:8px 15px;
+  font-size:14px;
+  box-sizing:border-box;
+  text-align:left;
+}
+
+/* SECTION */
+
+.apreat_contact-section{
+  width:98%;
+  margin:18px auto;
+}
+
+/* TITLE */
+
+.apreat_contact-section h1{
+  font-size:28px;
+  font-weight:700;
+  color:#000;
+  margin-bottom:10px;
+  position:relative;
+  display:inline-block;
+  padding-bottom:8px;
+  text-align:left;
+}
+.apreat_contact-section{
+  width:98%;
+  margin:18px auto;
+  text-align:left;
+}
+
+/* BLUE SMALL LINE */
+
+.apreat_contact-section h1::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:50px;
+  height:3px;
+  background:#0b84ff;
+}
+
+/* TABLE */
+
+.apreat_contact-section table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+}
+
+/* TABLE HEADER */
+
+.apreat_contact-section th{
+  background:#41556d;
+  color:white;
+  padding:16px 10px;
+  font-size:14px;
+  font-weight:600;
+  border:1px solid #d1d1d1;
+  text-align:center;
+}
+
+/* TABLE BODY */
+
+.apreat_contact-section td{
+  padding:12px;
+  border:1px solid #d7d7d7;
+  text-align:center;
+  font-size:16px;
+  color:#444;
+  vertical-align:middle;
+  height:90px;
+}
+
+/* PHOTO */
+
+.apreat_contact-photo{
+  width:95px;
+  height:95px;
+  object-fit:cover;
+}
+
+/* COLUMN WIDTHS */
+
+.apreat_contact-section th:nth-child(1),
+.apreat_contact-section td:nth-child(1){
+  width:70px;
+}
+
+.apreat_contact-section th:nth-child(2),
+.apreat_contact-section td:nth-child(2){
+  width:180px;
+}
+
+.apreat_contact-section th:nth-child(4),
+.apreat_contact-section td:nth-child(4){
+  width:180px;
+}
+
+.apreat_contact-section th:nth-child(5),
+.apreat_contact-section td:nth-child(5){
+  width:150px;
+}
+
+.apreat_contact-section th:nth-child(6),
+.apreat_contact-section td:nth-child(6){
+  width:150px;
+}
+
+/* BACK BUTTON */
+
+.apreat_contact-back-btn{
+  margin:20px;
+  padding:10px 25px;
+  border:none;
+  background:#0b84ff;
+  color:white;
+  font-size:16px;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+.apreat_contact-back-btn:hover{
+  background:#006fe0;
+}
+
+
+/* ================= ORDERS PAGE ================= */
+
+.apreat_orders-page{
+  width:100%;
+  min-height:100vh;
+  background:#f3f3f3;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* TOP BLUE BAR */
+
+.apreat_orders-breadcrumb{
+  background:#1185f7;
+  color:white;
+  padding:10px 18px;
+  font-size:14px;
+}
+
+.apreat_orders-home-link{
+  color:yellow;
+  margin-left:5px;
+  margin-right:5px;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+/* TITLE */
+
+.apreat_orders-title-section{
+  padding:18px 18px 8px;
+}
+
+.apreat_orders-title-section h1{
+  font-size:24px;
+  font-weight:400;
+  margin:0;
+  color:#111;
+}
+
+.apreat_orders-line{
+  width:55px;
+  height:3px;
+  background:#1565c0;
+  margin-top:14px;
+}
+
+/* TOP FILTER AREA */
+
+.apreat_orders-top-bar{
+  width:97%;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding-top:8px;
+  padding-bottom:18px;
+}
+
+/* LEFT */
+
+.apreat_orders-show{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:16px;
+  color:#111;
+}
+
+.apreat_orders-show select{
+  width:55px;
+  height:38px;
+  border:1px solid #c7c7c7;
+  background:white;
+  font-size:16px;
+  padding-left:5px;
+}
+
+/* RIGHT */
+
+.apreat_orders-search{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:18px;
+  font-size:16px;
+}
+
+.apreat_orders-search input{
+  width:210px;
+  height:32px;
+  border:1px solid #c7c7c7;
+  border-radius:4px;
+  padding-left:10px;
+  outline:none;
+  background:white;
+}
+
+/* TABLE */
+
+.apreat_orders-table{
+  width:97%;
+  margin:auto;
+  border-collapse:collapse;
+  background:white;
+}
+
+/* HEADER */
+
+.apreat_orders-table th{
+  background:#455c74;
+  color:white;
+  font-size:14px;
+  font-weight:700;
+  padding:14px;
+  border:1px solid #d4d4d4;
+  text-align:center;
+}
+
+/* BODY */
+
+.apreat_orders-table td{
+  border:1px solid #d6d6d6;
+  padding:12px;
+  font-size:15px;
+  color:#222;
+  line-height:1.5;
+  vertical-align:middle;
+}
+
+/* COLUMN ALIGNMENTS */
+
+.apreat_orders-table td:nth-child(1),
+.apreat_orders-table td:nth-child(3),
+.apreat_orders-table td:nth-child(4){
+  text-align:center;
+}
+
+/* DOWNLOAD ICON */
+
+.apreat_download-icon{
+  color:#1e88ff;
+  font-size:24px;
+  cursor:pointer;
+}
+
+/* PAGINATION */
+
+.apreat_orders-pagination{
+  width:97%;
+  margin:auto;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+  padding-top:6px;
+  padding-bottom:20px;
+  font-size:14px;
+  color:#555;
+}
+
+.apreat_orders-pagination button{
+  width:28px;
+  height:32px;
+  border:1px solid #aaa;
+  background:#efefef;
+  cursor:pointer;
+}
+
+/* REMOVE CENTER ALIGN ISSUE */
+
+.apreat_orders-page *{
+  text-align:left;
+}
+
+.apreat_orders-table th{
+  text-align:center !important;
+}
+
+.apreat_orders-table td:nth-child(1),
+.apreat_orders-table td:nth-child(3),
+.apreat_orders-table td:nth-child(4){
+  text-align:center !important;
+}
+
+
+.apreat_blink-text{
+  color:red;
+  font-weight:bold;
+  margin-left:5px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  0%{opacity:1;}
+  50%{opacity:0;}
+  100%{opacity:1;}
 }

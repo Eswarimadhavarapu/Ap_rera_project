@@ -18,11 +18,18 @@ import LegalSidebar from "./LegalSidebar";
 import LegalHeader from "./LegalHeader";
 
 import "../../styles/legal.css";
+import ComplaintList from "./ComplaintList";
+import HearingHistory from "./HearingHistory";
+import AdminComplaintsDetailss from "../admin/Admincomplaintsdetails";
 
 const LegalDashboard = () => {
 
   const [complaints, setComplaints] =
     useState([]);
+  const [activeTab, setActiveTab] =
+  useState("dashboard");
+  const [selectedComplaint, setSelectedComplaint] =
+  useState(null);
 
   const loadComplaints = async () => {
 
@@ -80,127 +87,163 @@ const LegalDashboard = () => {
 
         {/* SIDEBAR */}
 
-        <LegalSidebar />
+        <LegalSidebar
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+/>
 
         {/* CONTENT */}
 
         <div className="legal-content">
 
-          <h1 className="legal-dashboard-heading">
-            Dashboard Overview
-          </h1>
+          {activeTab === "dashboard" && (
 
-          <div className="row g-4">
+  <>
 
-            {/* TOTAL */}
+    <h1 className="legal-dashboard-heading">
+      Dashboard Overview
+    </h1>
 
-            <div className="col-md-6 col-xl-4">
+    <div className="row g-4">
 
-              <div className="legal-dashboard-card">
+      {/* TOTAL */}
+      <div className="col-md-6 col-xl-4">
 
-                <div className="legal-card-top">
+        <div className="legal-dashboard-card">
 
-                  <h5 className="legal-card-title">
-                    Total Complaints
-                  </h5>
+          <div className="legal-card-top">
 
-                  <FileText
-                    size={32}
-                    className="legal-card-icon"
-                  />
+            <h5 className="legal-card-title">
+              Total Complaints
+            </h5>
 
-                </div>
-
-                <h1 className="legal-card-count">
-                  {totalComplaints}
-                </h1>
-
-              </div>
-
-            </div>
-
-            {/* PENDING */}
-
-            <div className="col-md-6 col-xl-4">
-
-              <div className="legal-dashboard-card">
-
-                <div className="legal-card-top">
-
-                  <h5 className="legal-card-title">
-                    Pending Complaints
-                  </h5>
-
-                  <Clock
-                    size={32}
-                    className="legal-card-icon"
-                  />
-
-                </div>
-
-                <h1 className="legal-card-count">
-                  {pendingComplaints}
-                </h1>
-
-              </div>
-
-            </div>
-
-            {/* APPROVED */}
-
-            <div className="col-md-6 col-xl-4">
-
-              <div className="legal-dashboard-card">
-
-                <div className="legal-card-top">
-
-                  <h5 className="legal-card-title">
-                    Approved Complaints
-                  </h5>
-
-                  <CheckCircle
-                    size={32}
-                    className="legal-card-icon"
-                  />
-
-                </div>
-
-                <h1 className="legal-card-count">
-                  {approvedComplaints}
-                </h1>
-
-              </div>
-
-            </div>
-
-            {/* REJECTED */}
-
-            <div className="col-md-6 col-xl-4">
-
-              <div className="legal-dashboard-card">
-
-                <div className="legal-card-top">
-
-                  <h5 className="legal-card-title">
-                    Rejected Complaints
-                  </h5>
-
-                  <XCircle
-                    size={32}
-                    className="legal-card-icon"
-                  />
-
-                </div>
-
-                <h1 className="legal-card-count">
-                  {rejectedComplaints}
-                </h1>
-
-              </div>
-
-            </div>
+            <FileText
+              size={32}
+              className="legal-card-icon"
+            />
 
           </div>
+
+          <h1 className="legal-card-count">
+            {totalComplaints}
+          </h1>
+
+        </div>
+
+      </div>
+
+      {/* PENDING */}
+      <div className="col-md-6 col-xl-4">
+
+        <div className="legal-dashboard-card">
+
+          <div className="legal-card-top">
+
+            <h5 className="legal-card-title">
+              Pending Complaints
+            </h5>
+
+            <Clock
+              size={32}
+              className="legal-card-icon"
+            />
+
+          </div>
+
+          <h1 className="legal-card-count">
+            {pendingComplaints}
+          </h1>
+
+        </div>
+
+      </div>
+
+      {/* APPROVED */}
+      <div className="col-md-6 col-xl-4">
+
+        <div className="legal-dashboard-card">
+
+          <div className="legal-card-top">
+
+            <h5 className="legal-card-title">
+              Approved Complaints
+            </h5>
+
+            <CheckCircle
+              size={32}
+              className="legal-card-icon"
+            />
+
+          </div>
+
+          <h1 className="legal-card-count">
+            {approvedComplaints}
+          </h1>
+
+        </div>
+
+      </div>
+
+      {/* REJECTED */}
+      <div className="col-md-6 col-xl-4">
+
+        <div className="legal-dashboard-card">
+
+          <div className="legal-card-top">
+
+            <h5 className="legal-card-title">
+              Rejected Complaints
+            </h5>
+
+            <XCircle
+              size={32}
+              className="legal-card-icon"
+            />
+
+          </div>
+
+          <h1 className="legal-card-count">
+            {rejectedComplaints}
+          </h1>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </>
+
+)}
+
+{activeTab === "complaints" && (
+
+  <ComplaintList
+  setSelectedComplaint={
+    setSelectedComplaint
+  }
+  setActiveTab={
+    setActiveTab
+  }
+/>
+
+)}
+
+{activeTab === "hearings" && (
+
+  <HearingHistory />
+
+)}
+{activeTab ===
+  "complaint-details" && (
+
+  <AdminComplaintsDetailss
+    complaint={
+      selectedComplaint
+    }
+  />
+
+)}
 
         </div>
 

@@ -57,7 +57,7 @@ const DepartmentLogin = () => {
       const dept = normalizeDept(data.admin.department);
 
 const deptRoutes = {
-  planning: "/planning/planning-dashboard",
+  planning: "/scrutiny//planning/planning-dashboard",
   legal: "/scrutiny/legal/legal-dashboard",
   audit: "/scrutiny/audit/audit-dashboard",
   engineer: "/scrutiny/scrutiny-engineer",

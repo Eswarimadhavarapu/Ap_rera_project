@@ -69,7 +69,7 @@ const AnnouncementPopup = () => {
 
 
   // ✅ SHOW POPUP ONLY ON HOME PAGE
-  if (location.pathname !== "/") {
+  if (location.pathname !== "/home") {
     return null;
   }
 
