@@ -8,20 +8,20 @@ import memberImage from "../assets/images/member.jpeg";
 import registrarImage from "../assets/images/registrar.jpg";
 
 const openCauseListPdf = () => {
-  window.open("../../public/assets/pdfs/APRERAT_CAUSE_LIST.pdf", "_blank");
+  window.open("/pdfs/APRERAT_CAUSE_LIST.pdf", "_blank");
 };
 const openProceedingListPdf = () => {
-  window.open("../../public/assets/pdfs/PROCEEDING_LIST.pdf", "_blank");
+  window.open("/pdfs/PROCEEDING_LIST.pdf", "_blank");
 };
 const openAppearancePdf = () => {
-  window.open("../../public/assets/pdfs/APPEARANCE.pdf", "_blank");
+  window.open("/pdfs/APPEARANCE.pdf", "_blank");
 };
 const openSpecialHospitalPdf = () => {
-  window.open("../../public/assets/pdfs/SPECIAL_HOSPITAL.pdf", "_blank");
+  window.open("/pdfs/SPECIAL_HOSPITAL.pdf", "_blank");
 };
 
 const openRegulationsPdf = () => {
-  window.open("../../public/assets/pdfs/REGULATIONS_2023.pdf", "_blank");
+  window.open("/pdfs/REGULATIONS_2023.pdf", "_blank");
 };
 import { FaDownload } from "react-icons/fa";
 
@@ -39,6 +39,52 @@ function ApreatApplication() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const complaintStatusData = [
+  {
+    id: 1,
+    complaintName: "Project Registration Delay",
+    respondent: "ABC Builders",
+    description: "Delay in project registration approval",
+    complaintDate: "2026-05-01",
+    firstHearing: "2026-05-2",
+    secondHearing: "2026-05-20",
+    status: "Pending",
+  },
+
+  {
+    id: 2,
+    complaintName: "Construction Quality Issue",
+    respondent: "XYZ Constructions",
+    description: "Poor construction quality complaint",
+    complaintDate: "2026-05-05",
+    firstHearing: "2026-05-15",
+    secondHearing: "2026-05-25",
+    status: "In Progress",
+  },
+
+  {
+    id: 3,
+    complaintName: "Refund Delay",
+    respondent: "Urban Infra",
+    description: "Refund not processed",
+    complaintDate: "2026-05-08",
+    firstHearing: "2026-05-18",
+    secondHearing: "2026-05-28",
+    status: "Closed",
+  },
+];
+const getRemainingDays = (complaintDate) => {
+  const startDate = new Date(complaintDate);
+  const today = new Date();
+
+  const diffTime = today - startDate;
+
+  const passedDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const remainingDays = 60 - passedDays;
+
+  return remainingDays > 0 ? remainingDays : 0;
+};
 const ordersData = [
   {
     id: 1,
@@ -486,6 +532,7 @@ else if (item === "Regulations 2023") {
             </div>
 
           </div>
+          
 
           {/* RIGHT SECTION */}
 
@@ -505,17 +552,80 @@ else if (item === "Regulations 2023") {
               </h1>
 
               <h2>
-                Chairperson Andhra Pradesh <br />
-                Real Estate Regulatory Authority
+                Chairperson APREAT<br />
+            
               </h2>
 
             </div>
 
+
+
           </div>
+          
 
         </div>
+        
 
       )}
+      <div className="apreat_status-complaint-wrapper">
+
+  <div className="apreat_status-complaint-section">
+
+    <h1>Status Of Complaint</h1>
+
+    <table className="apreat_status-complaint-table">
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Name Of Complaint</th>
+          <th>Name Of Respondent</th>
+          <th>Complaint Description</th>
+          <th>Date Of Complaint</th>
+          <th>1st Hearing Date</th>
+          <th>2nd Hearing Date</th>
+          <th>Status</th>
+          <th>Remaining Days</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {complaintStatusData.map((item) => (
+
+          <tr key={item.id}>
+
+            <td>{item.id}</td>
+
+            <td>{item.complaintName}</td>
+
+            <td>{item.respondent}</td>
+
+            <td>{item.description}</td>
+
+            <td>{item.complaintDate}</td>
+
+            <td>{item.firstHearing}</td>
+
+            <td>{item.secondHearing}</td>
+
+            <td>{item.status}</td>
+
+            <td>
+              {getRemainingDays(item.complaintDate)} Days
+            </td>
+
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
 
     </>
   );

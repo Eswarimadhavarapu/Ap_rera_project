@@ -8,7 +8,7 @@ const R6_2_3 = () => {
     <div className="report-page-wrapper">
       {/* Breadcrumb remains for navigation consistency */}
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R6.2.3 Complaints
+        You are here : <Link to="/home" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R6.2.3 Complaints
       </div>
 
       <div className="report-card-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '70vh', backgroundColor: '#fff' }}>

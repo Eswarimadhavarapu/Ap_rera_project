@@ -67,7 +67,7 @@ function AgentRenewal() {
   {/* Breadcrumb */}
   <div class="agentrenewal-breadcrumb-bar">
   You are here :
-  <a href="/" class="agentrenewal-breadcrumb-link">Home</a> /
+  <a href="/home" class="agentrenewal-breadcrumb-link">Home</a> /
   <span> Registration /</span>
   <span>Agent Renewal</span>
 </div>

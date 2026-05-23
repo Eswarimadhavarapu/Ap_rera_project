@@ -15,6 +15,11 @@ const [selectedComplaint, setSelectedComplaint] =
   useState(null);
 const handleSearch = async () => {
 
+   // ✅ EMPTY CHECK
+  if (!caseNumber.trim()) {
+    alert("Please enter Case Number");
+    return;
+  }
   try {
 
     const response = await fetch(
@@ -80,16 +85,9 @@ const handleView = async (complaintId) => {
         {/* TABS */}
         <div className="case-page-top-tabs">
 
-          <button>Party Name</button>
-
-          <button className="case-page-active-tab">
-            Case Number
-          </button>
-
-          <button>Counsel/Rep Name</button>
-
-          <button>Complaint Type</button>
-
+<button className="case-page-active-tab">
+  Case / Complaint Number
+</button>
         </div>
 
         {/* FORM */}
@@ -172,7 +170,7 @@ const handleView = async (complaintId) => {
 
                 <th>Sr.No</th>
 
-                <th>Complaint Number</th>
+                <th>Case / Complaint Number</th>
 
                 <th>Complainant Name</th>
 
@@ -200,8 +198,8 @@ const handleView = async (complaintId) => {
         <td>{index + 1}</td>
 
         <td>
-          {item.complaint_register_no || item.complaint_id}
-        </td>
+  {item.case_no || item.complaint_id || "--"}
+</td>
 
         <td>{item.complainant_name}</td>
 
@@ -424,8 +422,11 @@ Name of Respondent
 
 <td>
 {
-selectedComplaint?.respondent
-?.name || "--"
+selectedComplaint?.respondents?.length > 0
+  ? selectedComplaint.respondents
+      .map((r) => r.name)
+      .join(", ")
+  : "--"
 }
 </td>
 

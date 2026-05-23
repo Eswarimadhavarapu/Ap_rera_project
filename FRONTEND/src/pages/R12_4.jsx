@@ -113,7 +113,7 @@ const R12_4 = () => {
   return (
     <div className="report-page-wrapper">
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / <Link to="/mis-reports" className="text-white underline" target="_blank" rel="noopener noreferrer">MIS Reports</Link> / Region Wise Reports R12.4 - Ananthapuramu
+        You are here : <Link to="/home" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / <Link to="/mis-reports" className="text-white underline" target="_blank" rel="noopener noreferrer">MIS Reports</Link> / Region Wise Reports R12.4 - Ananthapuramu
       </div>
 
       <div className="report-card-container">

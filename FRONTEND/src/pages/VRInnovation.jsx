@@ -12,7 +12,7 @@ export default function VRInnovation() {
         <div className="homeview-gap-zone"></div>
             <div className="homeview-breadcrumb-bar">
               <span className="homeview-bread-text">You are here :</span>
-              <Link className="homeview-bread-link" to="/">Home</Link>
+              <Link className="homeview-bread-link" to="/home">Home</Link>
               <span className="homeview-bread-slash">/</span>
               <span className="homeview-bread-current">VR inovation in construction</span>
             </div>

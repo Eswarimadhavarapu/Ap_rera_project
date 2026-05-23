@@ -75,6 +75,7 @@ const normalizeDept = (value) => {
   if (deptName.includes("assistant director")) return "ad";
   if (deptName.includes("deputy director")) return "dd";
   if (deptName.includes("director")) return "director";
+  if (deptName.includes("chairman")) return "chairman";
   if (deptName.includes("verification")) return "verification";
   if (deptName.includes("planning")) return "planning";
   if (deptName.includes("legal")) return "legal";

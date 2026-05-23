@@ -190,6 +190,15 @@ export default function RTI() {
 </div>
 
 </div>
+{/* Submit Request Button */}
+     <div className="submit-btn-wrapper">
+  <button
+    className="submit-btn"
+    onClick={() => window.location.href = "/Rtilogin"}
+  >
+    Submit Request
+  </button>
+</div>
       </div>
     </div>
   );

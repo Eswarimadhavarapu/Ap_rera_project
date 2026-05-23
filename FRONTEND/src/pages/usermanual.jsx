@@ -13,7 +13,7 @@ const UserManual = () => {
       {/* Breadcrumb */}
       <div className="um-bread">
         You are here :
-        <a href="#"> Home </a> /
+        <a href="/home"> Home </a> /
         <a href="#"> Registration </a> /
         <span> User Manuals</span>
       </div>

@@ -6,6 +6,8 @@ import "../styles/QuickLinks.css";
 // import "../styles/publicnotice.css";
 import "../styles/Homeservices.css";
 import "../styles/AboutAPRERA.css";
+import { HiLocationMarker } from "react-icons/hi";
+import HearingCalendar from "../components/HearingCalendar";
 
 // import { useNavigate } from "react-router-dom";
 // import test3 from "/assets/images/img21.png";
@@ -352,7 +354,8 @@ const registrationLinks = [
   },
   {
     title: "List of un-registered projects with APRERA",
-    icon: FaListUl,
+    icon: FaListUl, 
+     path: "/Registerlist",
   },
    {
     title: "exemption",
@@ -472,8 +475,25 @@ function Publicnotice() {
 
   return (
     <section className="homepublic-notice-section">
+      <HearingCalendar />
+
+        <div className="homepublic-notice-grid">
+          {notices.map((notice, index) => (
+            <div className="homepublic-notice-card" key={index}>
+             <div className={`homepublic-notice-icon icon-${index}`}>
+      {notice.icon}
+    </div>
+              {/* <h3 className="homepublic-notice-title">{notice.title}</h3> */}
+              <p className="homepublic-notice-text">{notice.description}</p>
+            </div>
+          ))}
+        </div>
       <div className="homepublic-notice-container">
+
+        
         <h2 className="homepublic-notice-title">Our Philosophy</h2>
+
+        
 
         <div className="homepublic-notice-grid">
           {notices.map((notice, index) => (
@@ -1027,6 +1047,7 @@ function Feedback() {
     <section className="home-new-feedback-wrapper">
       <div className="home-new-contact-row" id="home-new-contactinfo">
         {/* LEFT */}
+        {/* LEFT */}
         <div className="home-new-contact-col">
           <div className="home-new-reach-card">
             <div className="home-new-reach-border">
@@ -1045,6 +1066,17 @@ function Feedback() {
                 Rayapudi, Tulluru Mandal, Amaravati, Guntur District,
                 <br />
                 Andhra Pradesh. Pin - 522237.
+
+                {/* Map Icon */}
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=APCRDA+Project+Office+Rayapudi+Tulluru+Amaravati+Andhra+Pradesh+522237"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="home-new-map-link"
+                  title="Open Location in Map"
+                >
+                   <HiLocationMarker />
+                </a>
               </p>
 
               <p className="home-new-reach-helpdesk">
@@ -1153,27 +1185,100 @@ function Feedback() {
 function Footer() {
   return (
     <footer className="home-new-footer">
-      <div className="home-new-footer-logos">
-        <img
-          src="https://rera.ap.gov.in/RERA/images/footerlinksimg/AP-STATE.png"
-          alt="AP State Portal"
-        />
-        <img src="https://pgportal.gov.in/images/logo.png" alt="PGRS" />
-        <img
-          src="https://rera.ap.gov.in/RERA/images/footerlinksimg/core.png"
-          alt="CORE"
-        />
-        <img
-          src="https://rera.ap.gov.in/RERA/images/footerlinksimg/eOffice.png"
-          alt="eOffice"
-        />
-        <img
-          src="https://rera.ap.gov.in/RERA/images/footerlinksimg/india_gov_logo.png"
-          alt="India Gov"
-        />
-      </div>
+   <div className="home-new-footer-logos">
 
-      <div className="home-new-footer-policy">
+  <a
+    href="https://www.ap.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://rera.ap.gov.in/RERA/images/footerlinksimg/AP-STATE.png"
+      alt="AP State Portal"
+    />
+  </a>
+
+  <a
+    href="https://pgportal.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://pgportal.gov.in/images/logo.png"
+      alt="PGRS"
+    />
+  </a>
+
+  <a
+    href="https://core.ap.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://rera.ap.gov.in/RERA/images/footerlinksimg/core.png"
+      alt="CORE"
+    />
+  </a>
+
+  <a
+    href="https://eoffice.ap.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://rera.ap.gov.in/RERA/images/footerlinksimg/eOffice.png"
+      alt="eOffice"
+    />
+  </a>
+
+  <a
+    href="https://www.india.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://rera.ap.gov.in/RERA/images/footerlinksimg/india_gov_logo.png"
+      alt="India Gov"
+    />
+  </a>
+<a
+  href="https://pgrs.ap.gov.in/"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    src="https://rera.ap.gov.in/RERA/images/footerlinksimg/pgrs-logo.png"
+    alt="PGRS"
+  />
+</a>
+  <a
+    href="https://www.digitalindia.gov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="http://maharera.maharashtra.gov.in/sites/default/files/logo_icon/digital-india-logo.jpg"
+      alt="Digital India"
+    />
+  </a>
+
+  <a
+    href="https://www.mygov.in/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://maharera.maharashtra.gov.in/sites/default/files/logo_icon/my-gov-logo.jpg"
+      alt="MyGov"
+    />
+  </a>
+
+</div>
+
+
+
+
+      {/* <div className="home-new-footer-policy">
         <span>Privacy Policy</span>
         <span>› Hyperlinking Policy</span>
         <span>› Copyright Policy</span>
@@ -1188,9 +1293,9 @@ function Footer() {
           <span className="tw">t</span>
           <span className="yt">▶</span>
         </div>
-      </div>
+      </div> */}
 
-      <div className="home-new-footer-bottom">
+      {/* <div className="home-new-footer-bottom">
         <div className="home-new-left">© 2017, All Rights Reserved by APRERA, Govt of A.P. India</div>
         <div className="home-new-center">
           <span>No. Of Visitors : </span>
@@ -1200,7 +1305,7 @@ function Footer() {
           Last Updated on : 22/12/2025 17:14:45 <br />
           Designed and Developed by <b>APOnline</b>
         </div>
-      </div>
+      </div> */}
     </footer>
   );
 }
@@ -1221,7 +1326,7 @@ export default function HomePage() {
       <Expertise />
       <Learning />
       <Feedback />
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }

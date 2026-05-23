@@ -13,9 +13,15 @@ const Navbar = ({ setHideNotice }) => {
   const navigate = useNavigate();
   const location = useLocation(); // ✅
   const [showNotice, setShowNotice] = useState(false);
-  const isScrutinyRoute =
-    location.pathname.startsWith("/scrutiny") ||
-    location.pathname.startsWith("/scrutinity");
+  const hideNavbarRoutes = [
+  "/",
+  "/welcome",
+];
+
+const isScrutinyRoute =
+  location.pathname.startsWith("/scrutiny") ||
+  location.pathname.startsWith("/scrutinity") ||
+  hideNavbarRoutes.includes(location.pathname);
 
  if (
   isScrutinyRoute ||
@@ -56,7 +62,7 @@ const Navbar = ({ setHideNotice }) => {
       {/* Main Navbar */}
       <nav className="main-navbar">
         <ul className="nav-list">
-          <li onClick={() => navigate("/")}>
+          <li onClick={() => navigate("/home")}>
             HOME
           </li>
 

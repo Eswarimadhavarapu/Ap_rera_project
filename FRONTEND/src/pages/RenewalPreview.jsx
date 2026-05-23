@@ -41,7 +41,7 @@ function RenewalPreview() {
 
       <div className="renewalpayment-breadcrumb-bar">
         You are here :
-        <a href="/" className="renewalpayment-breadcrumb-link">Home</a> /
+        <a href="/home" className="renewalpayment-breadcrumb-link">Home</a> /
         <span>Registration</span> /
         <span>Agent Renewal</span>
       </div>

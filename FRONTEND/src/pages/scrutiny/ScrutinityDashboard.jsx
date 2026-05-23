@@ -10,7 +10,16 @@ const ScrutinyDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const { admin } = useAdmin(); // ✅ get admin
-  const dept = admin?.department?.toLowerCase(); // ✅ get department
+  const deptName = String(admin?.department || "").toLowerCase(); // ✅ get department
+  const dept = deptName.includes("assistant director")
+    ? "ad"
+    : deptName.includes("deputy director")
+      ? "dd"
+      : deptName.includes("director")
+        ? "director"
+        : deptName.includes("chairman")
+          ? "chairman"
+        : deptName;
   const dashboardNames = {
   planning: "Planning Dashboard",
   legal: "Legal Dashboard",
@@ -19,6 +28,8 @@ const ScrutinyDashboard = () => {
   verification: "Verification Dashboard",
   ad: "Assistant Director Dashboard",
   dd: "Deputy Director Dashboard",
+  director: "Director Dashboard",
+  chairman: "Chairman Dashboard",
   l1: "Legal 1 Dashboard",
   l2: "Legal 2 Dashboard",
 };

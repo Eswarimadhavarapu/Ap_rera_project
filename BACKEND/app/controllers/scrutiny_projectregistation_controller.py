@@ -9,11 +9,17 @@ from app.models.database import db
 from app.models.scrutiny_projectregistation_model import (
     create_verification_remark,
     create_scrutiny_file as create_scrutiny_file_record,
+    get_document_shortfall_remarks,
+    get_final_shortfall_remarks,
+    get_project_contact_by_application,
+    generate_project_registration_number,
     get_verification_remarks,
     get_scrutiny_fpms_dashboard_data,
     get_scrutiny_project_registration_by_application,
     get_scrutiny_project_registrations,
+    update_project_scrutiny_status,
 )
+from app.utils.mail_service import send_email
 
 
 scrutiny_bp = Blueprint("scrutiny_bp", __name__)
@@ -57,6 +63,38 @@ def scrutiny_project_registrations():
 
 from app.models.scrutiny_projectregistation_model import create_final_verification
 
+
+def _format_shortfall_email(application_no, applicant_name, final_shortfalls, document_shortfalls):
+    final_lines = [
+        f"{index}. {row.get('verified_by') or 'Department'}: {row.get('remarks') or 'No remarks'}"
+        for index, row in enumerate(final_shortfalls, 1)
+    ] or ["No general shortfall remarks recorded."]
+
+    document_lines = [
+        (
+            f"{index}. {row.get('document_name') or 'Document'}"
+            f" - {row.get('verified_by') or row.get('verification_team') or 'Department'}:"
+            f" {row.get('remarks') or 'No remarks'}"
+        )
+        for index, row in enumerate(document_shortfalls, 1)
+    ] or ["No document shortfall remarks recorded."]
+
+    return f"""Dear {applicant_name or 'Promoter'},
+
+Shortfalls have been identified for project application {application_no}.
+
+General shortfall remarks:
+{chr(10).join(final_lines)}
+
+Document shortfall remarks:
+{chr(10).join(document_lines)}
+
+Please address the above shortfalls and submit the required corrections/documents as per AP RERA instructions.
+
+Regards,
+AP RERA Authority
+"""
+
 @scrutiny_bp.route("/scrutiny/final-submit", methods=["POST"])
 def final_submit():
     try:
@@ -67,7 +105,8 @@ def final_submit():
             "status": "verified",   # ✅ THIS LINE ADD CHEY
             "is_shortfall": True if str(data.get("is_shortfall")).lower() == "yes" else False,
             "verified_by": data.get("department"),
-            "remarks": data.get("remarks")
+            "remarks": data.get("remarks"),
+            "registration_number": None,
         }
 
         if not payload["application_no"]:
@@ -75,11 +114,127 @@ def final_submit():
 
         result = create_final_verification(payload)
 
-        return jsonify({
+        response_payload = {
             "message": "Final Verification Done",
-            "data": result
-        }), 200
+            "data": result,
+        }
 
+        is_director = str(payload["verified_by"] or "").strip().lower() == "director"
+
+        if is_director and payload["is_shortfall"]:
+            contact = get_project_contact_by_application(payload["application_no"])
+            final_shortfalls = get_final_shortfall_remarks(payload["application_no"])
+            document_shortfalls = get_document_shortfall_remarks(payload["application_no"])
+
+            if not contact or not contact.get("email"):
+                return jsonify({"error": "Promoter email not found"}), 404
+
+            email_sent = send_email(
+                contact["email"],
+                f"Shortfall Notice - {payload['application_no']}",
+                _format_shortfall_email(
+                    payload["application_no"],
+                    contact.get("applicant_name"),
+                    final_shortfalls,
+                    document_shortfalls,
+                ),
+            )
+
+            response_payload.update(
+                {
+                    "message": "Final Verification Done and shortfall email sent"
+                    if email_sent
+                    else "Final Verification Done but shortfall email failed",
+                    "email_sent": email_sent,
+                }
+            )
+
+        elif is_director and not payload["is_shortfall"]:
+            response_payload["message"] = "Final Verification Done and forwarded to chairman"
+            response_payload["forwarded_to"] = "chairman"
+
+        return jsonify(response_payload), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@scrutiny_bp.route("/scrutiny/chairman-decision", methods=["POST"])
+def chairman_decision():
+    try:
+        data = request.get_json() or {}
+        application_no = str(data.get("application_no") or "").strip()
+        decision = str(data.get("decision") or "").strip().lower()
+        remarks = str(data.get("remarks") or "").strip()
+
+        if not application_no:
+            return jsonify({"error": "application_no required"}), 400
+
+        if decision not in {"approved", "rejected"}:
+            return jsonify({"error": "decision must be approved or rejected"}), 400
+
+        if not remarks:
+            return jsonify({"error": "remarks required"}), 400
+
+        contact = None
+        if decision == "approved":
+            contact = get_project_contact_by_application(application_no)
+            if not contact or not contact.get("email"):
+                return jsonify({"error": "Promoter email not found"}), 404
+
+        registration_number = (
+            generate_project_registration_number() if decision == "approved" else None
+        )
+
+        result = create_final_verification(
+            {
+                "application_no": application_no,
+                "status": decision,
+                "is_shortfall": False,
+                "verified_by": "chairman",
+                "remarks": remarks,
+                "registration_number": registration_number,
+            }
+        )
+
+        updated_registration = update_project_scrutiny_status(application_no, decision)
+        if not updated_registration:
+            return jsonify({"error": "Project registration not found"}), 404
+
+        email_sent = None
+        if decision == "approved":
+            approval_body = f"""Dear {contact.get('applicant_name') or 'Promoter'},
+
+Your project application {application_no} has been approved by AP RERA.
+
+Registration Number: {registration_number}
+
+Regards,
+AP RERA Authority
+"""
+
+            email_sent = send_email(
+                contact["email"],
+                f"Project Registration Approved - {registration_number}",
+                approval_body,
+            )
+
+        return (
+            jsonify(
+                {
+                    "message": (
+                        f"Application approved by chairman. Registration number {registration_number} created"
+                        if decision == "approved"
+                        else "Application rejected by chairman"
+                    ),
+                    "data": result,
+                    "updated_registration": updated_registration,
+                    "registration_number": registration_number,
+                    "email_sent": email_sent,
+                }
+            ),
+            200,
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -338,5 +493,3 @@ def get_verification_remark_api():
         return jsonify({"rows": rows}), 200
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
-
-

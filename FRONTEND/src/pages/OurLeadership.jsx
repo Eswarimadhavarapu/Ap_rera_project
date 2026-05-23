@@ -9,7 +9,7 @@ export default function OurLeadership() {
       {/* Breadcrumb */}
       <div className="ourleadership-breadcrumb">
   You are here :
-  <Link to="/" className="breadcrumb-home">
+  <Link to="/home" className="breadcrumb-home">
     Home
     <span className="home-underline"></span>
   </Link>

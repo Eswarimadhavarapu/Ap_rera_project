@@ -213,7 +213,7 @@ function GoapNotifications() {
       {/* Breadcrumb */}
     <div className="goap-breadcrumb">
   You are here :
-  <a href="/" className="goap-home"> Home</a>
+  <a href="/home" className="goap-home"> Home</a>
   <span> / </span>
    <span className="goap-text">Notifications</span>
   <span> / </span>

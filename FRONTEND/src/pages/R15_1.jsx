@@ -73,7 +73,7 @@ const R15_1 = () => {
   return (
     <div className="r15-container">
       <div className="breadcrumb-bar">
-        You are here : <Link to="/" className="link">Home</Link> / 
+        You are here : <Link to="/home" className="link">Home</Link> / 
         <Link to="/mis-reports" className="link">MIS Reports</Link> / R15.1 Rate of Website Graph
       </div>
 

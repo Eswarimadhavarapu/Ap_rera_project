@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
       {/* Breadcrumb */}
       <div className="privacypolicy-breadcrumb">
         <span>You are here :</span>
-        <a href="/"> Home</a>
+        <a href="/home"> Home</a>
         <span> / Privacy Policy</span>
       </div>
 

@@ -248,7 +248,7 @@ const handleBranchChange = (e) => {
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb">
         <span>You are here : </span>
-        <a href="/">Home</a>
+        <a href="/home">Home</a>
         <span> / </span>
         <span>Registration / Project Registration</span>
       </div>

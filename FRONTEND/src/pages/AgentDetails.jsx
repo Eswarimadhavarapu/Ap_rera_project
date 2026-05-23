@@ -2428,7 +2428,7 @@ const handlePDFFile = (e, setter, field) => {
     <div className="yagentdetails-agent-wrapper">
       {/* Breadcrumb */}
       <div className="yagentdetails-breadcrumb">
-        You are here : <span><a href="/">  Home </a> </span> / <span> Registration</span> /{" "}
+        You are here : <span><a href="/home">  Home </a> </span> / <span> Registration</span> /{" "}
         <span>Real Estate Agent Registration</span>
       </div>
 <div className="yagentdetails-page-content">

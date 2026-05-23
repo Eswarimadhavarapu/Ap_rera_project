@@ -79,7 +79,7 @@ const AgentDetailExisting = () => {
 
         <div className="agentexisting-breadcrumb-box">
           You are here :
-       <a href="/"> <span className="agentexisting-crumb-link"> Home </span> </a>/
+       <a href="/home"> <span className="agentexisting-crumb-link"> Home </span> </a>/
         <span> Registration </span> /
           <span> Real Estate Agent Registration</span>
         </div>

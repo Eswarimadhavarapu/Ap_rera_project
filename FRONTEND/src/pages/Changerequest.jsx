@@ -20,11 +20,11 @@ const ALL_SUBSECTION_CONFIGS = [
 ];
 
 const SECTIONS_CONFIG = [
-  { id: "project_details", label: "Project Details", subSections: PROJECT_DETAILS_SUBSECTIONS, component: "project" },
-  { id: "promoter_details", label: "Promoter Details",  subSections: PROMOTER_DETAILS_SUBSECTIONS, component: "promoter" },
-  { id: "development_details", label: "Development Details",  subSections: DEVELOPMENT_DETAILS_SUBSECTIONS, component: "development" },
-  { id: "associate_details", label: "Associate Details", subSections: ASSOCIATE_DETAILS_SUBSECTIONS, component: "associate" },
-  { id: "upload_documents", label: "Upload Documents",  subSections: UPLOAD_DOCUMENTS_SUBSECTIONS, component: "upload" },
+  { id: "promoter_details", label: "• Promoter Details",  subSections: PROMOTER_DETAILS_SUBSECTIONS, component: "promoter" },
+   { id: "project_details", label: "• Project Details", subSections: PROJECT_DETAILS_SUBSECTIONS, component: "project" },
+  { id: "development_details", label: "• Development Details",  subSections: DEVELOPMENT_DETAILS_SUBSECTIONS, component: "development" },
+  { id: "associate_details", label: "• Associate Details", subSections: ASSOCIATE_DETAILS_SUBSECTIONS, component: "associate" },
+  { id: "upload_documents", label: "• Upload Documents",  subSections: UPLOAD_DOCUMENTS_SUBSECTIONS, component: "upload" },
 ];
 
 const genRef = () => "CR" + Date.now().toString().slice(-8);
@@ -71,6 +71,8 @@ export default function ChangeRequest() {
   const [loadingPreview, setLoadingPreview] = useState(true);
 
   const [activeSection, setActiveSection] = useState("");
+  const [showApplication, setShowApplication] = useState(false);
+const [showId, setShowId] = useState(false);
 
   React.useEffect(() => {
     const fetchPreviewData = async () => {
@@ -205,12 +207,36 @@ export default function ChangeRequest() {
         const subFields = subConfig?.fields || panel.fields || [];
 
         stored.forEach((r) => {
-          if (r.workType !== undefined) {
-           rows.push({
-  subLabel: panel.subLabel, field: r.workType, existingValue: r.previousPercent || "-",
-  newValue: r.changePercent || "-", description: r.remarks || "-",
-  document: r.supportingdocumentsName || "-", documentUrl: "", type: "field"
-});
+          if (
+  r.oldFileName ||
+  r.newFileName ||
+  r.supportingdocumentsName
+) {
+
+  rows.push({
+
+    subLabel: "External Development Work",
+
+    oldFileName:
+      r.oldFileName || "-",
+
+    newFileName:
+      r.newFileName || "-",
+
+    supportingdocumentsName: 
+      r.supportingdocumentsName || "-",
+
+    newFileUrl:
+      r.newFileUrl || "",
+
+    supportingdocumentsUrl:
+      r.supportingdocumentsUrl || "",
+
+    type: "development"
+
+  });
+
+
           } else if (r.docType !== undefined) {
             rows.push({
               subLabel: panel.subLabel, field: r.docType, existingValue: r.existingFileName || "-",
@@ -323,23 +349,39 @@ export default function ChangeRequest() {
       }
 
       // ── tableStore rows ──────────────────────────────────────────────
-      const stored = tableStore[panel.subId];
+      const stored =
+  tableStore[panel.id] ||
+  tableStore[subId] ||
+  [];
+      console.log("TABLE STORE:", stored);
       if (stored?.length > 0) {
         stored.forEach((r) => {
 
           // External development work (workType)
-          if (r.workType !== undefined) {
-            changesArray.push({
-              section: panel.sectionId,
-              subsection: panel.subId,
-              field_name: r.workType,
-              existing_value: r.previousPercent || null,
-              new_value: r.changePercent || null,
-              description: r.remarks || null,
-              change_mode: "update",
-              data_json: null,
-            });
-            idx++;
+          if (
+  r.oldFileName ||
+  r.newFileName ||
+  r.supportingdocumentsName
+) {
+
+  rows.push({
+
+    subLabel: "External Development Work",
+
+    oldFileName:
+      r.oldFileName || "-",
+
+    newFileName:
+      r.newFileName || "-",
+
+    supportingdocumentsName:
+      r.supportingdocumentsName || "-",
+
+    type: "development"
+
+  });
+
+
 
             // Upload Documents (docType — has old file + new file)
           } else if (r.docType !== undefined) {
@@ -490,6 +532,132 @@ export default function ChangeRequest() {
     Change Request
   </div>
 
+  {/* PROJECT & PROMOTER DETAILS */}
+<div
+  className="changerequest-sidebar-header"
+style={{
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "80px",
+  marginTop: "25px",
+  marginBottom: "30px",
+  width: "100%"
+}}
+>
+
+  {/* PROJECT */}
+  <div>
+    <div className="changerequest-sidebar-label">
+      Project Name
+    </div>
+
+    <div className="changerequest-sidebar-value">
+      {APP_INFO.projectName}
+    </div>
+  </div>
+
+  {/* PROMOTER */}
+  <div>
+    <div className="changerequest-sidebar-label">
+      Promoter Name
+    </div>
+
+    <div className="changerequest-sidebar-value">
+      {APP_INFO.applicantName}
+    </div>
+  </div>
+  {/* STATUS BUTTONS */}
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "10px",
+    marginLeft: "30px",
+    marginTop: "5px"
+  }}
+>
+
+  {/* BUTTON ROW */}
+  <div
+    style={{
+      display: "flex",
+      gap: "12px"
+    }}
+  >
+
+    {/* IN PROGRESS */}
+    <button
+      onClick={() => {
+        setShowApplication(!showApplication);
+        setShowId(false);
+      }}
+      style={{
+        background: "#f59e0b",
+        color: "#fff",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: "8px",
+        fontWeight: "600",
+        cursor: "pointer",
+        fontSize: "14px"
+      }}
+    >
+      In Progress
+    </button>
+
+    {/* APPROVED */}
+    <button
+      onClick={() => {
+        setShowId(!showId);
+        setShowApplication(false);
+      }}
+      style={{
+        background: "#16a34a",
+        color: "#fff",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: "8px",
+        fontWeight: "600",
+        cursor: "pointer",
+        fontSize: "14px"
+      }}
+    >
+      Approved
+    </button>
+
+  </div>
+
+  {/* APPLICATION NUMBER */}
+  {showApplication && (
+    <div
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        color: "#92400e"
+      }}
+    >
+      Application Number: {APP_INFO.applicationNumber}
+    </div>
+  )}
+
+  {/* ID */}
+  {showId && (
+    <div
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        color: "#166534"
+      }}
+    >
+      ID: {APP_INFO.applicationNumber}
+    </div>
+  )}
+
+</div>
+
+</div>
 
 
 
@@ -501,15 +669,7 @@ export default function ChangeRequest() {
   {/* LEFT SIDEBAR */}
 <div className="changerequest-sidebar">
   {/* ✅ PROJECT INFO */}
-<div className="changerequest-sidebar-header">
-  <div className="changerequest-sidebar-label">Project Name</div>
-  <div className="changerequest-sidebar-value">{APP_INFO.projectName}</div>
 
-  <div className="changerequest-sidebar-label" style={{ marginTop: "10px" }}>
-    Promoter Name
-  </div>
-  <div className="changerequest-sidebar-value">{APP_INFO.applicantName}</div>
-</div>
     {SECTIONS_CONFIG.map((section) => (
       <div key={section.id}>
         
@@ -885,7 +1045,7 @@ export default function ChangeRequest() {
             </div>
             <div className="changerequest-success-actions">
               <button className="changerequest-btn-secondary" onClick={resetAll}>+ Submit Another Request</button>
-              <button className="changerequest-btn-primary" onClick={() => window.location.href = "/"}>← Back to Home</button>
+              <button className="changerequest-btn-primary" onClick={() => window.location.href = "/home"}>← Back to Home</button>
             </div>
           </div>
         )}

@@ -84,7 +84,7 @@ const handleVerifyOtp = async () => {
 
         <div className="agentchangerequest-breadcrumb-box">
           You are here :
-          <a href="/">
+          <a href="/home">
             <span className="agentchangerequest-crumb-link"> Home </span>
           </a>
           / <span>Agent</span> / <span>Change Request</span>

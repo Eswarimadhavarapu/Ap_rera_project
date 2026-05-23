@@ -112,8 +112,28 @@ const ComplaintList = () => {
         </td>
 
         <td>
-          {item.respondent_name || "-"}
-        </td>
+
+  {item.respondent_name &&
+  item.respondent_name.length > 0 ? (
+
+    item.respondent_name.map(
+      (name, index) => (
+
+        <div key={index}>
+
+          {name}
+
+        </div>
+      )
+    )
+
+  ) : (
+
+    "-"
+
+  )}
+
+</td>
 
         <td>
 

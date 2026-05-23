@@ -9,7 +9,7 @@ const TermsConditions = () => {
       {/* Breadcrumb */}
       <div className="terms-breadcrumb">
         <span>You are here :</span>
-        <a href="/"> Home</a>
+        <a href="/home"> Home</a>
         <span> / Terms and Conditions</span>
       </div>
 

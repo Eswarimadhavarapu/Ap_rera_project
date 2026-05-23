@@ -14,7 +14,7 @@ const Recruitment = () => {
         {/* Breadcrumb */}
         <div className="recruitmentt-breadcrumb-bar">
           You are here :
-          <Link to="/" className="recruitmentt-breadcrumb-home"> Home</Link>
+          <Link to="/home" className="recruitmentt-breadcrumb-home"> Home</Link>
           <span className="recruitmentt-breadcrumb-separator"> / </span>
           <span className="recruitmentt-breadcrumb-text">About Us</span>
           <span className="recruitmentt-breadcrumb-separator"> / </span>

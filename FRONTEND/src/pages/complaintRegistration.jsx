@@ -120,7 +120,7 @@ const complaintSteps = [
             <div className="complaintregistration-container">
                 <div className="complaintregistration-breadcrumb">
                     <span>You are here : </span>
-                    <a href="/">Home</a> / Registration /{" "}
+                    <a href="/home">Home</a> / Registration /{" "}
                     <span>Complaint Registration</span>
                 </div>
 

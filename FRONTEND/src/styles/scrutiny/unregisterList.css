@@ -477,9 +477,21 @@ table.unregList-table {
   color: #a05a00;
   border: 1px solid rgba(224,123,0,0.3);
 }
+.unregList-badge-exemption {
+  background-color: #fff3cd;   /* light yellow */
+  color: #856404;              /* dark yellow text */
+  border: 1px solid #ffeeba;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
-
-
+.unregList-badge-exemption .unregList-badge-dot {
+  background-color: #f1c40f;  /* yellow dot */
+}
 .unregList-badge-null {
   background: rgba(90,122,150,0.1);
   color: var(--unreg-text-muted);

@@ -100,7 +100,7 @@ const PromoterOtpLogin = () => {
 
             <span
               className="promoterotplogin-breadcrumb-link"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
             >
               Home
             </span>

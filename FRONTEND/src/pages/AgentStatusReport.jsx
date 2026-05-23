@@ -116,7 +116,7 @@ const AgentStatusReport = () => {
   return (
     <div className="report-page-wrapper">
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / MIS Reports / R1.2 Agent Status
+        You are here : <Link to="/home" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / MIS Reports / R1.2 Agent Status
       </div>
 
       <div className="report-card-container">

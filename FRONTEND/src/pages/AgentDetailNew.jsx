@@ -73,7 +73,7 @@ if (agentType === "Individual") {
       <div className="agent-new-outer-box">
         <div className="agent-new-breadcrumb-box">
            You are here :
-        <a href="/"> <span className="agent-new-crumb-link"> Home </span> </a>/
+        <a href="/home"> <span className="agent-new-crumb-link"> Home </span> </a>/
         <span> Registration </span> /
           <span> Real Estate Agent Registration</span>
         </div>

@@ -3,12 +3,12 @@ import { apiGet } from "../../api/api";   // ←←← Import added (path correc
 
 // ─── SUB-SECTION CONFIGS ──────────────────────────────────────────────────────
 export const UPLOAD_DOCUMENTS_SUBSECTIONS = [
-  {
-    id: "documents",
-    label: "Upload Documents",
-    isDocumentSection: false,
-    fields: [],
-  },
+  // {
+  //   id: "documents",
+  //   label: "Upload Documents",
+  //   isDocumentSection: false,
+  //   fields: [],
+  // },
   {
     id: "consultancy_details",
     label: "Consultancy Details",
@@ -341,7 +341,7 @@ function UploadDocSection({ onChange, tableData, setTableData, applicationNumber
       </div>
 
       <div style={{ marginBottom: "16px", width: "50%" }}>
-        <FW label="Remarks">
+        <FW label="Reasons for change">
           <textarea 
             style={S.textarea} 
             rows={2} 
@@ -364,7 +364,7 @@ function UploadDocSection({ onChange, tableData, setTableData, applicationNumber
                 <th style={S.th}>Field</th>
                 <th style={S.th}>Existing Value</th>
                 <th style={S.th}>New Value</th>
-                <th style={{ ...S.th, minWidth: "160px" }}>Remarks</th>
+                <th style={{ ...S.th, minWidth: "160px" }}>Reasons for change</th>
                 {/* <th style={S.th}>Supporting Documents</th> */}
                 <th style={{ ...S.th, width: "60px" }}>Action</th>
               </tr>
@@ -588,13 +588,13 @@ supportingdocumentsUrl: file
             <FW label={`Existing ${selectedField}`}>
               <input style={S.inputRO} type="text" value={loadingApi ? "Loading…" : oldValue} readOnly />
             </FW>
-            <FW label={`New ${selectedField}`}>
+            <FW label={`Mention ${selectedField}`}>
               <input style={S.input} type={selectedField === "Mobile Number" ? "tel" : selectedField === "Email Id" ? "email" : "text"} value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={`Enter new ${selectedField}`} />
             </FW>
           </div>
 
           <div style={S.grid2}>
-            <FW label="Remarks">
+            <FW label="Reasons for change">
               <textarea style={S.textarea} rows={2} value={remarks} onChange={(e) => setRemarks(e.target.value)} placeholder="Enter reason for this change..." />
             </FW>
             <FW label="Supporting Document">
@@ -616,7 +616,7 @@ supportingdocumentsUrl: file
                 <th style={S.th}>Field</th>
                 <th style={S.th}>Old Value</th>
                 <th style={S.th}>New Value</th>
-                <th style={{ ...S.th, minWidth: "160px" }}>Remarks</th>
+                <th style={{ ...S.th, minWidth: "160px" }}>Reasons for change</th>
                 <th style={S.th}>Supporting Documents</th>
                 <th style={{ ...S.th, width: "60px" }}>Action</th>
               </tr>

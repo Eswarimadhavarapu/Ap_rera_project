@@ -9,7 +9,7 @@ const MobileApp = () => {
       {/* Breadcrumb */}
       <div className="ma-breadcrumb">
         <span>You are here :</span>
-        <a href="/">Home</a>
+        <a href="/home">Home</a>
         <span>/</span>
         <span className="ma-active">Work in Progress</span>
       </div>

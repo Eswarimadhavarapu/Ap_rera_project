@@ -9,7 +9,7 @@ const Disclaimer = () => {
       {/* Full width breadcrumb */}
       <div className="disclaimer-breadcrumb">
         <span>You are here :</span>
-        <a href="/"> Home</a>
+        <a href="/home"> Home</a>
         <span> / Disclaimer</span>
       </div>
 

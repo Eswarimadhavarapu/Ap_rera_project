@@ -67,7 +67,7 @@ const R25_2 = () => {
   return (
     <div className="report-page-wrapper">
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R25.2 Change Request Status
+        You are here : <Link to="/home" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R25.2 Change Request Status
       </div>
 
       <div className="report-card-container">

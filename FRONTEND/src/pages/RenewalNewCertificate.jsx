@@ -32,7 +32,7 @@ function RenewalNewCertificate() {
 
     alert("Certificate uploaded successfully");
 
-    navigate("/"); // or next page
+    navigate("/home"); // or next page
   };
 
   return (

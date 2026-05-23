@@ -720,7 +720,7 @@
 // export default App;
 
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Layout from "./layouts/Layout.jsx";
 
@@ -988,6 +988,13 @@ import CaseStatus from "./pages/CaseStatus.jsx";
 import RtiPage from "./pages/RtiPage.jsx";
 import HearingHistory from "./pages/LegalSideComplaint/HearingHistory.jsx";
 import Welcome from "./pages/Welcome";
+import RTI_Details_Page from "./pages/RTI/RTI_Details_Page.jsx";
+import RtiRequestForm from "./pages/RTI/RtiRequestForm.jsx";
+import RtiUserLogin from "./pages/RTI/RtiUserLogin.jsx";
+import RtiPaymentPage from "./pages/RTI/RtiPaymentPage.jsx";
+import RTI_List from "./pages/RTI/RTI_LIst.jsx";
+import Registerlist from "./pages/Registerlist";
+import CauseList from "./pages/CauseList.jsx";
 
 
 function App() {
@@ -1261,6 +1268,8 @@ function App() {
             <Route path="/scrutiny/ad/ad-dashboard" element={<ScrutinyDashboard />} />
             <Route path="/scrutiny/dd/dd-dashboard" element={<ScrutinyDashboard />} />
             <Route path="/scrutiny/it/it-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/director/director-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/chairman/chairman-dashboard" element={<ScrutinyDashboard />} />
              <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
            {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
              <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
@@ -1378,8 +1387,19 @@ function App() {
   path="/hearings"
   element={<HearingHistory />}
 />
+<Route path="/RTI_list" element={<RTI_List />}
+            />
+            <Route
+              path="/rti_Details_page"
+              element={<RTI_Details_Page />}
+            />
+            <Route path="/Rtilogin" element={<RtiUserLogin />} />
+           <Route path="/RtireqForm" element={<RtiRequestForm/>}/>
+            <Route path="/RtiPaymentPage" element={<RtiPaymentPage/>}/>
+            <Route path="/Registerlist" element={<Registerlist />} />
+            <Route path="/cause-list" element={<CauseList />} />
           </Routes>
-          <Chatbot />
+          {window.location.pathname !== "/" && <Chatbot />}
         </Layout></AgentFormProvider>
     </BrowserRouter>
   );

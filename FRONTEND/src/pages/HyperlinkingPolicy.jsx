@@ -8,7 +8,7 @@ const HyperlinkingPolicy = () => {
       {/* Breadcrumb */}
       <div className="hyperlink-breadcrumb">
         <span>You are here :</span>
-        <a href="/"> Home</a>
+        <a href="/home"> Home</a>
         <span> / Hyperlinking Policy</span>
       </div>
 

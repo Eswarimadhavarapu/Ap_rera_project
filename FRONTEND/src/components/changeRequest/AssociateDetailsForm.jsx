@@ -2,17 +2,17 @@ import React, { useState } from "react";
 
 // ─── SUB-SECTION CONFIGS ─────────────────────────────────────────────────────
 export const ASSOCIATE_DETAILS_SUBSECTIONS = [
-  {
-    id: "project_agent",
-    label: "Project Agent",
-    fields: [
-      { name: "agentName", label: "Agent Name", type: "text" },
-      { name: "agentMobile", label: "Agent Mobile", type: "text" },
-      { name: "agentEmail", label: "Agent Email", type: "email" },
-      { name: "agentReraRegNo", label: "Agent RERA Reg No", type: "text" },
-      { name: "agentAddress", label: "Agent Address", type: "textarea" },
-    ],
-  },
+  // {
+  //   id: "project_agent",
+  //   label: "Project Agent",
+  //   fields: [
+  //     { name: "agentName", label: "Agent Name", type: "text" },
+  //     { name: "agentMobile", label: "Agent Mobile", type: "text" },
+  //     { name: "agentEmail", label: "Agent Email", type: "email" },
+  //     { name: "agentReraRegNo", label: "Agent RERA Reg No", type: "text" },
+  //     { name: "agentAddress", label: "Agent Address", type: "textarea" },
+  //   ],
+  // },
   {
     id: "architects",
     label: "Project Architects",
@@ -34,7 +34,7 @@ export const ASSOCIATE_DETAILS_SUBSECTIONS = [
     id: "structural_engineers",
     label: "Structural Engineers",
     fields: [
-      { name: "structEngineerName", label: "Engineer Name", type: "text" },
+      // { name: "structEngineerName", label: "Engineer Name", type: "text" },
       { name: "structEngineerMobile", label: "Engineer Mobile", type: "text" },
       { name: "structEngineerEmail", label: "Engineer Email", type: "email" },
       { name: "structEngineerLicense", label: "Engineer License No", type: "text" },
@@ -154,6 +154,18 @@ function FormField({ field, value, onChange, error }) {
 const thStyle = { padding: "10px", border: "1px solid #ccc", textAlign: "left" };
 const tdStyle = { padding: "8px", border: "1px solid #ccc" };
 
+const STRUCTURAL_ENGINEER_DOCUMENTS = [
+  "License form of Structural Engineer issued by Local / Competent authority.",
+  "FORM P19 i.e. Structural Stability certificate issued by Structural Engineer.",
+  "StructuralEngineer KYC Details ( Mobile no, email id, address)",
+  "NOC from previous Structural Engineer."
+];
+
+const CA_DOCUMENTS = [
+  "License form of CA.",
+  "CA KYC details ( Mobile no, email id, address)",
+  "NOC from previous Structural Engineer."
+];
 // ─── NEW ROWS TABLE ──────────────────────────────────────────────────────────
 function NewRowsTable({ rows, subSection, onDelete }) {
   if (!rows.length) return null;
@@ -176,8 +188,9 @@ function NewRowsTable({ rows, subSection, onDelete }) {
               {subSection.fields.map((field) => (
                 <th key={field.name} style={thStyle}>{field.label}</th>
               ))}
-              <th style={thStyle}>Remarks</th>
+              <th style={thStyle}>Reasons for changes</th>
               <th style={thStyle}>Supporting Document</th>
+              <th style={thStyle}>Additional Documents</th>
               <th style={{ ...thStyle, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -220,6 +233,29 @@ function NewRowsTable({ rows, subSection, onDelete }) {
                         style={{ color: "#1e4d8f", fontWeight: "600" }}>{row.fileName}</a>
                     : "-"}
                 </td>
+                <td style={tdStyle}>
+  <div
+    style={{
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+      lineHeight: "22px"
+    }}
+  >
+    {(row.structuralDocuments || "")
+      .split("\n")
+      .map((line, index) => (
+        <div
+          key={index}
+          style={{
+            color: line.includes(".pdf") ? "#1a7a3c" : "#000",
+            fontWeight: line.includes(".pdf") ? "600" : "400"
+          }}
+        >
+          {line}
+        </div>
+      ))}
+  </div>
+</td>
                 <td style={{ ...tdStyle, textAlign: "center" }}>
                   <button
                     onClick={() => onDelete(originalIndex)}
@@ -257,7 +293,7 @@ function ExistingRowsTable({ rows, subSection, onDelete }) {
               <th style={thStyle}>Field Changed</th>
               <th style={thStyle}>Existing Value</th>
               <th style={thStyle}>New Value</th>
-              <th style={thStyle}>Remarks</th>
+              <th style={thStyle}>Reasons for change</th>
               <th style={thStyle}>Supporting Document</th>
               <th style={{ ...thStyle, width: "60px" }}>Action</th>
             </tr>
@@ -312,6 +348,8 @@ function AssociateSectionInner({ subSection, onChange, tableData, setTableData, 
   const [selectedField, setSelectedField] = useState("");
   const [remarks, setRemarks] = useState("");
   const [file, setFile] = useState(null);
+
+  const [structuralDocs, setStructuralDocs] = useState({});
 
   const getExistingValuesList = (fieldName) => {
     if (!previewData || !previewData.associate_details) return [];
@@ -529,6 +567,13 @@ if (name.toLowerCase().includes("pincode")) {
     newEntry.fileURL = URL.createObjectURL(file);
     hasValue = true;
   }
+  newEntry.structuralDocuments =
+  Object.entries(structuralDocs)
+    .map(
+      ([doc, file], index) =>
+        `${index + 1}. ${doc}\n${file?.name || "No File"}`
+    )
+    .join("\n\n");
 
   if (!hasValue) {
     alert("Please enter at least one field");
@@ -565,6 +610,17 @@ if (name.toLowerCase().includes("pincode")) {
   return (
 
     <div style={{ padding: "20px" }}>
+      {/* SUB SECTION HEADING */}
+<div
+  style={{
+    fontSize: "28px",
+    fontWeight: "700",
+    color: "#1e293b",
+    marginBottom: "25px"
+  }}
+>
+  {subSection.label}
+</div>
       {/* NEW / OLD RADIO */}
       <div style={{ marginBottom: "20px", display: "flex", gap: "30px" }}>
         <label style={{ fontWeight: "600", cursor: "pointer" }}>
@@ -618,10 +674,175 @@ if (name.toLowerCase().includes("pincode")) {
             ))}
           </div>
 
+          {subSection.id === "structural_engineers" && (
+  <div style={{ marginBottom: "20px" }}>
+    <h4
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        marginBottom: "12px",
+        color: "#1e3a5f"
+      }}
+    >
+      Required Documents
+    </h4>
+
+    {STRUCTURAL_ENGINEER_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff"
+        }}
+      >
+       <div
+  style={{
+    width: "70%",
+    fontSize: "15px",
+    fontWeight: "600",
+    lineHeight: "24px",
+    color: "#1e293b"
+  }}
+>
+          {index + 1}. {doc}
+        </div>
+
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) => {
+            const selectedFile = e.target.files[0];
+
+            if (!selectedFile) return;
+
+            setStructuralDocs((prev) => ({
+              ...prev,
+              [doc]: selectedFile,
+            }));
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
+{subSection.id === "chartered_accountant" && (
+  <div style={{ marginBottom: "20px" }}>
+    <h4
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        marginBottom: "12px",
+        color: "#1e3a5f"
+      }}
+    >
+      Required Documents
+    </h4>
+
+    {CA_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff"
+        }}
+      >
+        <div
+          style={{
+            width: "70%",
+            fontSize: "15px",
+            fontWeight: "600",
+            lineHeight: "24px",
+            color: "#1e293b"
+          }}
+        >
+          {index + 1}. {doc}
+        </div>
+
+        <div
+          style={{
+            minWidth: "320px",
+            border: "2px solid #c7d2e2",
+            borderRadius: "14px",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            background: "#f8fbff",
+            padding: "8px"
+          }}
+        >
+          <input
+            type="file"
+            accept=".pdf"
+            id={`caDoc_${index}`}
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const selectedFile = e.target.files[0];
+
+              if (!selectedFile) return;
+
+              setStructuralDocs((prev) => ({
+                ...prev,
+                [doc]: selectedFile,
+              }));
+            }}
+          />
+
+          <label
+            htmlFor={`caDoc_${index}`}
+            style={{
+              background: "#28469b",
+              color: "#fff",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              whiteSpace: "nowrap"
+            }}
+          >
+            Choose File
+          </label>
+
+          <div
+            style={{
+              marginLeft: "14px",
+              fontSize: "14px",
+              color: structuralDocs[doc] ? "#111" : "#777",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {structuralDocs[doc]
+              ? structuralDocs[doc].name
+              : "No file chosen"}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
           {/* Description + Upload */}
           <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
             <div style={{ flex: 1 }}>
-              <label style={{ fontWeight: "600" }}>Remarks</label>
+              <label style={{ fontWeight: "600" }}>Reasons for change</label>
               <textarea
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
@@ -636,6 +857,7 @@ if (name.toLowerCase().includes("pincode")) {
   <input
     type="file"
     id="fileUploadNew"
+     accept=".pdf,application/pdf"
     style={{ display: "none" }}
     onChange={(e) => {
       const selectedFile = e.target.files[0];
@@ -791,7 +1013,7 @@ if (name.toLowerCase().includes("pincode")) {
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>New {selectedFieldLabel}</label>
+                  <label style={{ fontWeight: "600" }}>Mention {selectedFieldLabel}</label>
                   <input
                     type="text"
                     name={selectedField}
@@ -814,10 +1036,219 @@ if (name.toLowerCase().includes("pincode")) {
                 </div>
               </div>
 
+              {/* {subSection.id === "structural_engineers" && (
+  <div style={{ marginBottom: "20px" }}>
+    <h4
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        marginBottom: "12px",
+        color: "#1e3a5f"
+      }}
+    >
+      Required Documents
+    </h4>
+
+    {STRUCTURAL_ENGINEER_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff"
+        }}
+      >
+        <div
+          style={{
+            width: "70%",
+            fontSize: "13px",
+            fontWeight: "500",
+            lineHeight: "20px"
+          }}
+        >
+          {index + 1}. {doc}
+        </div>
+
+       <div
+  style={{
+    minWidth: "320px",
+    border: "2px solid #c7d2e2",
+    borderRadius: "14px",
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    background: "#f8fbff",
+    padding: "8px"
+  }}
+>
+  <input
+    type="file"
+    accept=".pdf"
+    id={`structuralDoc_${index}`}
+    style={{ display: "none" }}
+    onChange={(e) => {
+      const selectedFile = e.target.files[0];
+
+      if (!selectedFile) return;
+
+      setStructuralDocs((prev) => ({
+        ...prev,
+        [doc]: selectedFile,
+      }));
+    }}
+  />
+
+  <label
+    htmlFor={`structuralDoc_${index}`}
+    style={{
+      background: "#28469b",
+      color: "#fff",
+      padding: "12px 22px",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontWeight: "600",
+      fontSize: "14px",
+      whiteSpace: "nowrap"
+    }}
+  >
+    Choose File
+  </label>
+
+  <div
+    style={{
+      marginLeft: "14px",
+      fontSize: "14px",
+      color: structuralDocs[doc] ? "#111" : "#777",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
+    }}
+  >
+    {structuralDocs[doc]
+      ? structuralDocs[doc].name
+      : "No file chosen"}
+  </div>
+</div>
+      </div>
+    ))}
+  </div>
+)}
+
+{subSection.id === "chartered_accountant" && (
+  <div style={{ marginBottom: "20px" }}>
+    <h4
+      style={{
+        fontSize: "15px",
+        fontWeight: "600",
+        marginBottom: "12px",
+        color: "#1e3a5f"
+      }}
+    >
+      Required Documents
+    </h4>
+
+    {CA_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff"
+        }}
+      >
+        <div
+          style={{
+            width: "70%",
+            fontSize: "15px",
+            fontWeight: "600",
+            lineHeight: "24px",
+            color: "#1e293b"
+          }}
+        >
+          {index + 1}. {doc}
+        </div>
+
+        <div
+          style={{
+            minWidth: "320px",
+            border: "2px solid #c7d2e2",
+            borderRadius: "14px",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            background: "#f8fbff",
+            padding: "8px"
+          }}
+        >
+          <input
+            type="file"
+            accept=".pdf"
+            id={`caDoc_${index}`}
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const selectedFile = e.target.files[0];
+
+              if (!selectedFile) return;
+
+              setStructuralDocs((prev) => ({
+                ...prev,
+                [doc]: selectedFile,
+              }));
+            }}
+          />
+
+          <label
+            htmlFor={`caDoc_${index}`}
+            style={{
+              background: "#28469b",
+              color: "#fff",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              whiteSpace: "nowrap"
+            }}
+          >
+            Choose File
+          </label>
+
+          <div
+            style={{
+              marginLeft: "14px",
+              fontSize: "14px",
+              color: structuralDocs[doc] ? "#111" : "#777",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {structuralDocs[doc]
+              ? structuralDocs[doc].name
+              : "No file chosen"}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)} */}
+
               {/* Description + Upload */}
               <div style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontWeight: "600" }}>Remarks</label>
+                  <label style={{ fontWeight: "600" }}>Reasons for change</label>
                   <textarea
                     value={remarks}
                     onChange={(e) => setRemarks(e.target.value)}
@@ -833,6 +1264,7 @@ if (name.toLowerCase().includes("pincode")) {
   <input
     type="file"
     id="fileUpload"
+     accept=".pdf,application/pdf"
     style={{ display: "none" }}
     onChange={(e) => {
       const selectedFile = e.target.files[0];

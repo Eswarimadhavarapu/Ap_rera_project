@@ -197,7 +197,7 @@ const MisReports = () => {
   return (
     <div className="mis-container">
       <div className="breadcrumb-bar">
-        You are here : <Link to="/" className="link">Home</Link> / MIS Reports
+        You are here : <Link to="/home" className="link">Home</Link> / MIS Reports
       </div>
 
       <div className="reports-content-box">

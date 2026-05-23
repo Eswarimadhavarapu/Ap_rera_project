@@ -8,7 +8,7 @@ const R8_1 = () => {
     <div className="report-page-wrapper">
       {/* Breadcrumb remains for navigation consistency */}
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R8.1 Area Sold
+        You are here : <Link to="/home" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R8.1 Area Sold
       </div>
 
       <div className="report-card-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '70vh', backgroundColor: '#fff' }}>

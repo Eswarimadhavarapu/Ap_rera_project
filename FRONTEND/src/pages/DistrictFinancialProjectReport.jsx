@@ -71,7 +71,7 @@ const DistrictFinancialProjectReport = () => {
   return (
     <div className="report-page-wrapper">
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / <Link to="/mis-reports" className="text-white underline" target="_blank" rel="noopener noreferrer">MIS Reports</Link> / R13.6 District Wise Financial Report (Projects)
+        You are here : <Link to="/home" className="text-white underline" target="_blank" rel="noopener noreferrer">Home</Link> / <Link to="/mis-reports" className="text-white underline" target="_blank" rel="noopener noreferrer">MIS Reports</Link> / R13.6 District Wise Financial Report (Projects)
       </div>
 
       <div className="report-card-container">

@@ -405,7 +405,7 @@ export default function AuthorityNotifications() {
       {/* Breadcrumb */}
      <div className="auth-notif-breadcrumb">
   You are here :
-  <a href="/" className="auth-notif-home"> Home</a>
+  <a href="/home" className="auth-notif-home"> Home</a>
   <span> / </span>
   <span>Notifications</span>
   <span> / </span>

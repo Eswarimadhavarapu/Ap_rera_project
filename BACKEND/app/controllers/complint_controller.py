@@ -787,6 +787,7 @@ from app.models.database import db
 from app.models.complint_complainant import ComplintComplainant
 from app.models.complint_respondent import ComplintRespondent
 from app.models.complint_complaint import ComplintComplaint
+from app.models.complaint_respondent_mapping import ComplaintRespondentMapping
 from datetime import datetime
 from sqlalchemy import text
 from flask import send_from_directory
@@ -886,14 +887,22 @@ def create_complint():
             return jsonify({"status": "error", "message": "JSON body required"}), 400
 
         c = data.get("complainant", {})
-        r = data.get("respondent", {})
+        respondents = data.get("respondents", [])
         comp = data.get("complaint", {})
+        verification = comp.get("verification", {})
         project = comp.get("project", {})
 
         # ---------- Complainant ----------
         complainant = ComplintComplainant(
             complainant_registered_id=c.get("registered_id"),
             complainant_type=c.get("type"),
+            is_rera_registered=c.get(
+                "is_rera_registered",
+                False
+            ),
+            registration_id=c.get(
+                "registration_id"
+            ),
             name=c.get("name"),
             mobile_no=c.get("mobile"),
             email=c.get("email"),
@@ -906,35 +915,23 @@ def create_complint():
         db.session.add(complainant)
         db.session.flush()
 
-        respondent = ComplintRespondent(
-            registered_id=r.get("registered_id"),
-            respondent_type=r.get("type"),
-            is_rera_registered=r.get("is_rera_registered", False),
-            registration_id=r.get("registration_id"),
-            name=r.get("name"),
-            phone=r.get("phone"),
-            email=r.get("email"),
-            project_name=r.get("project_name"),
-            address_line1=r.get("address_line1"),
-            address_line2=r.get("address_line2"),
-            state=r.get("state"),
-            district=r.get("district"),
-            pincode=r.get("pincode"),
-        )
-        db.session.add(respondent)
-        db.session.flush()
 
         complaint_register_no = generate_complaint_register_no(complainant.district)
 
         complaint = ComplintComplaint(
             complaint_id=generate_complaint_id(),
             complainant_id=complainant.complainant_id,
-            respondent_id=respondent.respondent_id,
             subject=comp.get("subject"),
             relief_sought=comp.get("relief_sought"),
             complaint_regarding=comp.get("complaint_regarding"),
             application_type=comp.get("application_type"),
             description=comp.get("description"),
+            facts_of_complaint=comp.get("facts_of_complaint"),
+            verification_name=verification.get("full_name"),
+            verification_parent=verification.get("parent_name"),
+            verification_place=verification.get("place"),
+            verification_date=verification.get("date"),
+            verification_signature=verification.get("signature"),
             complaint_facts=comp.get("complaint_facts"),
             project_details=project,
             complaint_documents={},
@@ -943,6 +940,59 @@ def create_complint():
         )
 
         db.session.add(complaint)
+        db.session.flush()
+        for r in respondents:
+            respondent = ComplintRespondent(
+                registered_id=r.get("registered_id"),
+
+                respondent_type=r.get("type"),
+
+                is_rera_registered=r.get(
+                    "is_rera_registered",
+                     False
+                ),
+
+                registration_id=r.get(
+                    "registration_id"
+                ),
+
+                name=r.get("name"),
+
+                phone=r.get("phone"),
+
+                email=r.get("email"),
+
+                project_name=r.get(
+                    "project_name"
+                ),
+
+                address_line1=r.get(
+                    "address_line1"
+                ),
+
+                address_line2=r.get(
+                    "address_line2"
+                ),
+
+                state=r.get("state"),
+
+                district=r.get("district"),
+
+                pincode=r.get("pincode"),
+            )
+
+            db.session.add(respondent)
+
+            db.session.flush()
+
+            mapping = ComplaintRespondentMapping(
+                complaint_id=complaint.complaint_id,
+
+                respondent_id=respondent.respondent_id
+            )
+
+            db.session.add(mapping)
+
         db.session.commit()
 
         logger.info(
@@ -1055,8 +1105,57 @@ def get_complaint(complaint_id):
         complaint = ComplintComplaint.query.get_or_404(complaint_id)
 
         complainant = ComplintComplainant.query.get(complaint.complainant_id)
-        respondent = ComplintRespondent.query.get(complaint.respondent_id)
+        mappings = ComplaintRespondentMapping.query.filter_by(
+            complaint_id=complaint_id
+        ).all()
+        
+        respondents = []
 
+        for m in mappings:
+            respondent = ComplintRespondent.query.get(
+                m.respondent_id
+            )
+
+            if respondent:
+                respondents.append({
+                    "respondent_id":
+                        respondent.respondent_id,
+
+                    "name":
+                        respondent.name,
+
+                    "type":
+                        respondent.respondent_type,
+
+                    "mobile":
+                        respondent.phone,
+                    "email":
+                        respondent.email,
+
+                    "is_rera_registered":
+                        respondent.is_rera_registered,
+
+                    "registration_id":
+                        respondent.registration_id,
+
+                    "address": {
+
+                        "line1":
+                            respondent.address_line1,
+
+                        "line2":
+                            respondent.address_line2,
+
+                        "state":
+                            respondent.state,
+
+                        "district":
+                            respondent.district,
+
+                        "pincode":
+                            respondent.pincode,
+                    }
+                })
         hearings = (
             ComplaintHearing.query.filter_by(complaint_id=complaint_id)
             .order_by(ComplaintHearing.hearing_no.asc())
@@ -1097,6 +1196,12 @@ def get_complaint(complaint_id):
                     "application_type": complaint.application_type,
                     "complaint_regarding": complaint.complaint_regarding,
                     "description": complaint.description,
+                    "facts_of_complaint":complaint.facts_of_complaint,
+                    "verification_name":complaint.verification_name,
+                    "verification_parent":complaint.verification_parent,
+                    "verification_place":complaint.verification_place,
+                    "verification_date":complaint.verification_date,
+                    "verification_signature":complaint.verification_signature,
                     "complaint_facts": complaint.complaint_facts,
                     "complaint_documents": complaint.complaint_documents,
                     "supporting_documents": complaint.supporting_documents,
@@ -1122,22 +1227,7 @@ def get_complaint(complaint_id):
                         "pincode": complainant.pincode,
                     },
                 },
-                "respondent": {
-                    "name": respondent.name,
-                    "type": respondent.respondent_type,
-                    "project_name": respondent.project_name,
-                    "mobile": respondent.phone,
-                    "email": respondent.email,
-                    "is_rera_registered": respondent.is_rera_registered,
-                    "registration_id": respondent.registration_id,
-                    "address": {
-                        "line1": respondent.address_line1,
-                        "line2": respondent.address_line2,
-                        "state": respondent.state,
-                        "district": respondent.district,
-                        "pincode": respondent.pincode,
-                    },
-                },
+                "respondents": respondents,
                 "hearings": hearing_list,
             }
         )
@@ -1150,6 +1240,7 @@ def get_complaint(complaint_id):
             ),
             500,
         )
+    
 
 
 @complint_bp.route("/complint/list", methods=["GET"])
@@ -1164,10 +1255,6 @@ def list_complaints():
                 ComplintComplainant.name.label(
                     "complainant_name"
                 ),
-
-                ComplintRespondent.name.label(
-                    "respondent_name"
-                ),
             )
 
             .join(
@@ -1178,13 +1265,6 @@ def list_complaints():
                 ComplintComplainant.complainant_id
             )
 
-            .join(
-                ComplintRespondent,
-
-                ComplintComplaint.respondent_id
-                ==
-                ComplintRespondent.respondent_id
-            )
 
             .order_by(
                 ComplintComplaint.created_at.desc()
@@ -1197,9 +1277,22 @@ def list_complaints():
 
         for (
             c,
-            complainant_name,
-            respondent_name
+            complainant_name
         ) in complaints:
+            
+            mappings = ComplaintRespondentMapping.query.filter_by(
+                complaint_id=c.complaint_id
+            ).all()
+
+            respondent_names = []
+            for m in mappings:
+                respondent = ComplintRespondent.query.get(
+                    m.respondent_id
+                )
+                if respondent:
+                    respondent_names.append(
+                        respondent.name
+                    )
 
             data.append({
 
@@ -1213,7 +1306,7 @@ def list_complaints():
                     complainant_name,
 
                 "respondent_name":
-                    respondent_name,
+                    respondent_names,
 
                 "status":
                     c.status,
@@ -1275,10 +1368,22 @@ def search_case(case_no):
         complainant = ComplintComplainant.query.get(
             c.complainant_id
         )
+        mappings = ComplaintRespondentMapping.query.filter_by(
+            complaint_id=c.complaint_id
+        ).all()
 
-        respondent = ComplintRespondent.query.get(
-            c.respondent_id
-        )
+        respondent_names = []
+
+        for m in mappings:
+            respondent = ComplintRespondent.query.get(
+                m.respondent_id
+            )
+
+            if respondent:
+                
+                respondent_names.append(
+                    respondent.name
+                )
 
         data.append({
 
@@ -1291,7 +1396,7 @@ def search_case(case_no):
                 complainant.name if complainant else "",
 
             "respondent_name":
-                respondent.name if respondent else "",
+                ", ".join(respondent_names),
 
             "created_at":
                 c.created_at.strftime("%d-%m-%Y")
@@ -1626,9 +1731,6 @@ def add_hearing():
             complaint.complainant_id
         )
 
-        respondent = ComplintRespondent.query.get(
-            complaint.respondent_id
-        )
 
 # ================= SEND MAIL TO COMPLAINANT =================
 
@@ -1649,21 +1751,31 @@ def add_hearing():
         )
 # ================= SEND MAIL TO RESPONDENT =================
 
-        send_hearing_update_mail_respondent(
-            respondent.email,
+        mappings = ComplaintRespondentMapping.query.filter_by(
+            complaint_id=complaint_id
+        ).all()
 
-            respondent.name,
+        for m in mappings:
+            respondent = ComplintRespondent.query.get(
+                m.respondent_id
+            )
 
-            complaint.case_no,
+            if respondent:
+                send_hearing_update_mail_respondent(
+                    respondent.email,
 
-            status,
+                    respondent.name,
 
-            remarks,
+                    complaint.case_no,
 
-            next_hearing_date.isoformat(),
+                    status,
 
-            hearing_place
-        )
+                    remarks,
+
+                    next_hearing_date.isoformat(),
+
+                    hearing_place
+                )
         complaint = ComplintComplaint.query.get(
             complaint_id
         )
@@ -1702,7 +1814,7 @@ def get_hearings(complaint_id):
 
         for h in hearings:
             data.append(
-                {
+                { 
                     "hearing_id": h.hearing_id,
                     "hearing_no": h.hearing_no,
                     "hearing_date": (
@@ -1741,6 +1853,16 @@ def register_case():
         complaint_id = data.get("complaint_id")
 
         case_no = data.get("case_no")
+        
+        existing_case = ComplintComplaint.query.filter_by(
+            case_no=case_no
+        ).first()
+
+        if existing_case:
+            return jsonify({
+                "status": "error",
+                "message": "Complaint already registered with this case number"
+            }), 400
 
         hearing_date = data.get("hearing_date")
 
@@ -1799,9 +1921,7 @@ def register_case():
             complaint.complainant_id
         )
 
-        respondent = ComplintRespondent.query.get(
-            complaint.respondent_id
-        )
+       
 
 # ================= SEND MAIL TO COMPLAINANT =================
         send_case_registered_mail_complainant(
@@ -1818,17 +1938,27 @@ def register_case():
 
 # ================= SEND MAIL TO RESPONDENT =================
 
-        send_case_registered_mail_respondent(
-            respondent.email,
+        mappings = ComplaintRespondentMapping.query.filter_by(
+            complaint_id=complaint_id
+        ).all()
 
-            respondent.name,
+        for m in mappings:
+            respondent = ComplintRespondent.query.get(
+                m.respondent_id
+            )
 
-            complaint.case_no,
+            if respondent:
+                send_case_registered_mail_respondent(
+                    respondent.email,
 
-            hearing_date,
+                    respondent.name,
 
-            hearing_place
-        )
+                    complaint.case_no,
+
+                    hearing_date,
+
+                    hearing_place
+                )
         
         db.session.commit()
         print("DB CASE NUMBER =", complaint.case_no)
@@ -1866,8 +1996,7 @@ def send_notice():
         complainant_email = data.get("complainant_email")
         complainant_name = data.get("complainant_name")
 
-        respondent_email = data.get("respondent_email")
-        respondent_name = data.get("respondent_name")
+        respondents = data.get("respondents", [])
 
         message = data.get("message")
         notice_date = data.get("notice_date")
@@ -1880,25 +2009,27 @@ def send_notice():
             send_notice_mail_complainant(
                 complainant_email,
                 complainant_name,
-                respondent_name,
+                "Respondents",
                 complaint_id,
                 message,
                 notice_date,
                 venue
             )
 
-        # SEND MAIL TO RESPONDENT
-        if respondent_email:
-
-            send_notice_mail_respondent(
-                respondent_email,
-                respondent_name,
-                complainant_name,
-                complaint_id,
-                message,
-                notice_date,
-                venue
-            )
+        # SEND MAIL TO ALL RESPONDENTS
+        for respondent in respondents:
+            respondent_email = respondent.get("email")
+            respondent_name = respondent.get("name")
+            if respondent_email:
+                send_notice_mail_respondent(
+                    respondent_email,
+                    respondent_name,
+                    complainant_name,
+                    complaint_id,
+                    message,
+                    notice_date,
+                    venue
+                )
         
         complaint = ComplintComplaint.query.get(complaint_id)
         
@@ -2017,3 +2148,89 @@ def get_all_hearings():
             "message": str(e)
 
         }), 500
+
+#  //added by svss 
+@complint_bp.route("/complint/calendar", methods=["GET"])
+def hearing_calendar():
+
+    try:
+
+        hearings = (
+            db.session.query(
+                ComplaintHearing,
+                ComplintComplaint.case_no,
+                ComplintComplainant.name.label("complainant_name")
+            )
+
+            .join(
+                ComplintComplaint,
+                ComplaintHearing.complaint_id ==
+                ComplintComplaint.complaint_id
+            )
+
+            .join(
+                ComplintComplainant,
+                ComplintComplaint.complainant_id ==
+                ComplintComplainant.complainant_id
+            )
+
+            .all()
+        )
+
+        result = {}
+
+        for hearing, case_no, complainant_name in hearings:
+
+            mappings = ComplaintRespondentMapping.query.filter_by(
+                complaint_id=hearing.complaint_id
+            ).all()
+
+            respondent_names = []
+
+            for m in mappings:
+
+                respondent = ComplintRespondent.query.get(
+                    m.respondent_id
+                )
+
+                if respondent:
+                    respondent_names.append(
+                        respondent.name
+                    )
+
+            date_key = hearing.hearing_date.strftime("%Y-%m-%d")
+
+            if date_key not in result:
+                result[date_key] = []
+
+            result[date_key].append({
+
+                "hearing_id": hearing.hearing_id,
+
+                "caseNo": case_no,
+
+                "complainant": complainant_name,
+
+                "respondent": ", ".join(respondent_names),
+
+                "time": hearing.hearing_date.strftime("%I:%M %p"),
+
+                "hall": hearing.hearing_place,
+
+                "status": hearing.status
+            })
+
+        return jsonify({
+            "status": "success",
+            "data": result
+        })
+
+    except Exception as e:
+
+        logger.error(traceback.format_exc())
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+  

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import text
 from app.models.database import db
 
@@ -46,13 +48,18 @@ def get_agent_scrutiny_registrations(dept=None):
 
     if dept and dept.lower() != "verification":
         required_verification = "'verification'"
-        is_ad = dept.lower() in ["ad", "assistant director"]
-        is_dd = dept.lower() in ["dd", "deputy director"]
+        dept_key = dept.lower()
+        is_ad = dept_key in ["ad", "assistant director"]
+        is_dd = dept_key in ["dd", "deputy director"]
+        is_director = dept_key in ["directory", "director"]
+        is_chairman = dept_key in ["chairman", "chairperson"]
 
         if is_ad or is_dd:
             required_verification = "'planning'"
-        elif dept.lower() in ["directory", "director"]:
+        elif is_director:
             required_verification = "'audit'"
+        elif is_chairman:
+            required_verification = "'director'"
 
         condition += f"""
         AND EXISTS (
@@ -68,6 +75,22 @@ def get_agent_scrutiny_registrations(dept=None):
             condition += f"\n        AND UPPER(COALESCE(dm.district_name, CAST(a.district AS TEXT))) IN ({ad_districts_str})"
         elif is_dd:
             condition += f"\n        AND (UPPER(COALESCE(dm.district_name, CAST(a.district AS TEXT))) NOT IN ({ad_districts_str}) OR COALESCE(dm.district_name, CAST(a.district AS TEXT)) IS NULL)"
+        elif is_chairman:
+            condition += """
+        AND EXISTS (
+            SELECT 1
+            FROM agent_verification_final_status_t director_status
+            WHERE TRIM(director_status.application_no) = TRIM(a.application_no)
+              AND LOWER(director_status.verified_by) IN ('director', 'directory')
+              AND director_status.is_shortfall = FALSE
+        )
+        AND NOT EXISTS (
+            SELECT 1
+            FROM agent_verification_final_status_t chairman_status
+            WHERE TRIM(chairman_status.application_no) = TRIM(a.application_no)
+              AND LOWER(chairman_status.verified_by) = 'chairman'
+        )
+        """
 
     query = text(f"""
         SELECT
@@ -345,20 +368,77 @@ def get_agent_verification_remarks(application_no, document_name=None, verificat
         results.append(d)
     return results
 
+
+def get_agent_final_shortfall_remarks(application_no):
+    query = text(
+        """
+        SELECT verified_by, remarks, verified_at
+        FROM agent_verification_final_status_t
+        WHERE TRIM(application_no) = TRIM(:application_no)
+          AND is_shortfall = TRUE
+        ORDER BY verified_at ASC
+        """
+    )
+    rows = db.session.execute(query, {"application_no": application_no}).mappings().all()
+    return [dict(row) for row in rows]
+
+
+def get_agent_document_shortfall_remarks(application_no):
+    query = text(
+        """
+        SELECT document_name, verification_team, remarks, verified_by, created_at
+        FROM agent_verification_remarks_t
+        WHERE TRIM(application_no) = TRIM(:application_no)
+          AND is_shortfall = TRUE
+        ORDER BY created_at ASC, id ASC
+        """
+    )
+    rows = db.session.execute(query, {"application_no": application_no}).mappings().all()
+    return [dict(row) for row in rows]
+
+
+def get_agent_contact_by_application(application_no):
+    query = text(
+        """
+        SELECT application_no, agent_name AS applicant_name, email
+        FROM agentregistration_details_t
+        WHERE TRIM(application_no) = TRIM(:application_no)
+        LIMIT 1
+        """
+    )
+    row = db.session.execute(query, {"application_no": application_no}).mappings().first()
+    return dict(row) if row else None
+
+
+def generate_agent_registration_number():
+    year = datetime.now().year
+    prefix = f"APRERA-AGENT-{year}-"
+    query = text(
+        """
+        SELECT COUNT(*) AS total
+        FROM agent_verification_final_status_t
+        WHERE registration_number LIKE :prefix
+        """
+    )
+    row = db.session.execute(query, {"prefix": f"{prefix}%"}).mappings().first()
+    next_number = int(row["total"] or 0) + 1 if row else 1
+    return f"{prefix}{str(next_number).zfill(5)}"
+
 def create_agent_final_verification(data):
     query = text("""
         INSERT INTO agent_verification_final_status_t (
-            application_no, status, is_shortfall, verified_by, remarks
+            application_no, status, is_shortfall, verified_by, remarks, registration_number
         )
         VALUES (
-            :application_no, 'verified', :is_shortfall, :verified_by, :remarks
+            :application_no, :status, :is_shortfall, :verified_by, :remarks, :registration_number
         )
         ON CONFLICT (application_no, verified_by)
         DO UPDATE SET
-            status = 'verified',
+            status = EXCLUDED.status,
             is_shortfall = EXCLUDED.is_shortfall,
             verified_by = EXCLUDED.verified_by,
             remarks = EXCLUDED.remarks,
+            registration_number = COALESCE(EXCLUDED.registration_number, agent_verification_final_status_t.registration_number),
             verified_at = CURRENT_TIMESTAMP
         RETURNING *;
     """)

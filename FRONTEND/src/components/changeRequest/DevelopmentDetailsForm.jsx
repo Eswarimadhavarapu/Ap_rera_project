@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 export const DEVELOPMENT_DETAILS_SUBSECTIONS = [
   {
     id: "external_development",
-    label: "External Development Work",
+    label: "Flat/Plot details upload",
+    //  label: "External Development Work",
     fields: [],
   },
   // {
@@ -40,11 +41,34 @@ const S = {
   wrap:       { padding: "20px" },
   grid2:      { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" },
   label:      { display: "block", fontWeight: "600", marginBottom: "5px", fontSize: "13px", color: "#1a2535" },
-  input:      { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box" },
+input: {
+  width: "100%",
+  padding: "14px 16px",
+border: "1px solid #cbd5e1",
+  borderRadius: "14px",
+  fontSize: "14px",
+  boxSizing: "border-box",
+  background: "#f8fbff",
+  transition: "0.3s ease",
+  cursor: "pointer",
+  minHeight: "65px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.04)"
+},
   inputRO:    { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box", backgroundColor: "#f0f4f8", color: "#555", cursor: "not-allowed" },
   select:     { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box", background: "#fff" },
   textarea:   { width: "100%", padding: "9px 12px", border: "1px solid #ccd4e0", borderRadius: "6px", fontSize: "13px", boxSizing: "border-box", resize: "vertical" },
-  btn:        { padding: "10px 24px", background: "#1f4e79", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600", fontSize: "13px" },
+ btn: {
+  padding: "12px 28px",
+  background: "linear-gradient(135deg,#1e3a8a,#2563eb)",
+  color: "#fff",
+  border: "none",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "700",
+  fontSize: "14px",
+  boxShadow: "0 4px 12px rgba(37,99,235,0.25)",
+  transition: "0.3s ease"
+},
   btnDel:     { background: "#c0200f", color: "#fff", border: "none", borderRadius: "4px", padding: "4px 10px", cursor: "pointer", fontSize: "12px" },
   table:      { width: "100%", borderCollapse: "collapse", marginTop: "20px", fontSize: "13px" },
   th:         { background: "#1f4e79", color: "#fff", padding: "10px 12px", border: "1px solid #ccd4e0", textAlign: "left", fontWeight: "600" },
@@ -65,6 +89,15 @@ function FW({ label, children }) {
 // ─── EXTERNAL DEVELOPMENT WORK ────────────────────────────────────────────────
 const WORK_OPTIONS = Object.keys(WORK_TYPE_KEY_MAP);
 
+
+const DEVELOPMENT_REQUIRED_DOCUMENTS = [
+  "Plan and Proceedings",
+  "Development details excel sheet",
+  "If any sale, 2/3rd of consent letters shall be submitted individually. In case there are no sales or allotments, the promoter shall submit a No-Sale Affidavit.",
+  "Latest EC & Sale deed, if any sale exits."
+];
+
+
 function ExternalDevelopmentSection({
   onChange,
   tableData,
@@ -77,6 +110,9 @@ function ExternalDevelopmentSection({
   const [changePercent,   setChangePercent]   = useState("");
   const [remarks,     setRemarks]     = useState("");
   const [docFile,         setDocFile]         = useState(null);
+  const [oldFile, setOldFile] = useState(null);
+const [newFile, setNewFile] = useState(null);
+const [developmentDocs, setDevelopmentDocs] = useState({});
   const [fileInputKey,    setFileInputKey]    = useState(0); // ← used to reset file input
 
   // API data state
@@ -146,34 +182,69 @@ function ExternalDevelopmentSection({
   };
 
   // ── Notify parent so Next button enablement works ─────────────────────────
-  const notifyParent = (rows) => {
-    onChange({
-      target: {
-        name: "__development_rows",
-        value: rows.length ? JSON.stringify(rows) : "",
-      },
-    });
-  };
+const notifyParent = (rows) => {
+
+  const formattedRows = rows.map((row) => ({
+    ...row,
+    subLabel:  "Flat/Plot details upload",
+  }));
+
+  onChange({
+    target: {
+      name: "external_development",
+      value: formattedRows,
+    },
+  });
+};
 
  const handleAdd = () => {
-  if (!workType) { alert("Please select a work type."); return; }
-  if (!changePercent || changePercent === "") { alert("Please enter Change Completion %."); return; }
-  if (Number(changePercent) < 0 || Number(changePercent) > 100) { alert("Change Completion % must be between 0 and 100."); return; }
+  
+ 
 const newRow = {
-  workType,
-  previousPercent: previousPercent || "-",
-  changePercent:   changePercent   || "-",
-  remarks:     remarks     || "-",
-  supportingdocumentsName:    docFile ? docFile.name : "-",
-  _docFile:        docFile || null,          // ← save actual File object
+  subLabel: "Flat/Plot details upload",
+
+  oldFileName: oldFile ? oldFile.name : "-",
+
+  newFileName: newFile ? newFile.name : "-",
+
+  supportingdocumentsName: docFile
+    ? docFile.name
+    : "-",
+
+  newFileUrl: newFile
+    ? URL.createObjectURL(newFile)
+    : "",
+
+  supportingdocumentsUrl: docFile
+    ? URL.createObjectURL(docFile)
+    : "",
+
+  _oldFile: oldFile || null,
+  _newFile: newFile || null,
+  _docFile: docFile || null,
+
+  developmentDocuments:
+  Object.entries(developmentDocs)
+    .map(
+      ([doc, file], index) =>
+        `${index + 1}. ${doc}\n${file?.name || "No File"}`
+    )
+    .join("\n\n"),
+
 };
 
     const updated = [...tableData, newRow];
     setTableData(updated);
     notifyParent(updated);
 
-    setWorkType(""); setPreviousPercent(""); setChangePercent(""); setRemarks(""); setDocFile(null);
-    setFileInputKey((k) => k + 1); // ← reset file input field
+   setWorkType("");
+setPreviousPercent("");
+setChangePercent("");
+setRemarks("");
+
+setOldFile(null);
+setNewFile(null);
+setDocFile(null); // ← reset file input field
   };
 
   const handleDelete = (idx) => {
@@ -182,8 +253,23 @@ const newRow = {
     notifyParent(updated);
   };
 
-  return (
-    <div style={S.wrap}>
+return (
+  <div style={S.wrap}>
+
+    {/* PAGE HEADING */}
+    <div
+      style={{
+        fontSize: "20px",
+        fontWeight: "500",
+        color: "#000000",
+        marginBottom: "30px",
+        paddingBottom: "10px",
+        // borderBottom: "2px solid #dbe4f0",
+        letterSpacing: "0.5px"
+      }}
+    >
+      Development Details
+    </div>
 
       {/* Loading / error banners */}
       {loadingApi && (
@@ -193,76 +279,178 @@ const newRow = {
         <div style={S.errorBox}>⚠️ {apiError}</div>
       )}
 
-      {/* Row 1: Work Type + Previous % */}
-      <div style={S.grid2}>
-        <FW label="Work Type">
-          <select
-            style={S.select}
-            value={workType}
-            onChange={(e) => handleWorkTypeChange(e.target.value)}
-          >
-            <option value="">-- Select Work --</option>
-            {WORK_OPTIONS.map((o) => (
-              <option key={o} value={o}>{o}</option>
-            ))}
-          </select>
-        </FW>
+     {/* OLD & NEW EXCEL SECTION */}
+<div
+ style={{
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "35px",
+  marginBottom: "35px",
+  alignItems: "stretch"
+}}
+>
 
-        <FW label="Previous Completion %">
-          <input
-            style={S.inputRO}
-            type="text"
-            value={
-              loadingApi
-                ? "Loading…"
-                : previousPercent !== ""
-                  ? previousPercent
-                  : workType
-                    ? "No data available"
-                    : ""
-            }
-            readOnly
-            placeholder="Select a work type first"
-          />
-        </FW>
+  {/* OLD EXCEL */}
+  <div
+  style={{
+    background: "#ffffff",
+    padding: "22px",
+    borderRadius: "18px",
+    border: "1px solid #dbe4f0",
+    boxShadow: "0 4px 20px rgba(15,23,42,0.06)"
+  }}
+>
+    <FW label="Existing Excel File">
+
+      
+
+      {/* OLD FILE */}
+      <input
+        type="file"
+        accept=".xls,.xlsx"
+        style={{
+          ...S.input,
+          height: "55px",
+          cursor: "pointer"
+        }}
+       onChange={(e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setOldFile(file);
+  }
+}}
+      />
+    </FW>
+
+
+    {/* DOWNLOAD BUTTON */}
+     {/* DOWNLOAD BUTTON */}
+{oldFile && (
+  <a
+    href={URL.createObjectURL(oldFile)}
+    download={oldFile.name}
+    style={{
+      display: "inline-block",
+      padding: "10px 16px",
+      background: "#1e3a8a",
+      color: "#fff",
+      borderRadius: "6px",
+      textDecoration: "none",
+      fontWeight: "300",
+      marginBottom: "12px"
+    }}  
+  >
+    Download Old Excel
+  </a>
+)}
+  </div>
+
+  {/* NEW EXCEL */}
+  <div>
+    <FW label="Mention Excel File">
+
+      <input
+        type="file"
+        accept=".xls,.xlsx"
+        style={{
+          ...S.input,
+          height: "55px",
+          cursor: "pointer"
+        }}
+        onChange={(e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setNewFile(file);
+  }
+}}
+      />
+    </FW>
+  </div>
+
+
+</div>
+
+
+{/* REQUIRED DOCUMENTS */}
+<div style={{ marginBottom: "20px" }}>
+
+  <h4 style={{
+    fontSize: "15px",
+    fontWeight: "600",
+    marginBottom: "12px",
+    color: "#1e3a5f"
+  }}>
+    Required Documents
+  </h4>
+
+  {DEVELOPMENT_REQUIRED_DOCUMENTS.map((doc, index) => (
+
+    <div
+      key={index}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "20px",
+        marginBottom: "10px",
+        padding: "6px 10px",
+        border: "1px solid #dbe3f0",
+        borderRadius: "4px",
+        background: "#f9fbff",
+        width: "900px",
+        minHeight: "45px"
+      }}
+    >
+
+      {/* DOCUMENT NAME */}
+      <div style={{
+        width: "520px",
+        fontSize: "13px",
+        color: "#1a2535",
+        fontWeight: "500",
+        lineHeight: "20px"
+      }}>
+        {index + 1}. {doc}
       </div>
 
-      {/* Row 2: Change % + Description */}
-      <div style={S.grid2}>
-        <FW label="Change Completion %">
-          <input
-            style={S.input}
-            type="number"
-            min="0"
-            max="100"
-            value={changePercent}
-            onChange={(e) => setChangePercent(e.target.value)}
-            placeholder="Enter change %"
-          />
-        </FW>
-        <FW label="Remarks">
-          <textarea
-            style={{ ...S.textarea, minHeight: "42px", overflow: "hidden" }}
-            rows={1}
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            onInput={(e) => {
-              e.target.style.height = "auto";
-              e.target.style.height = e.target.scrollHeight + "px";
-            }}
-            placeholder="Enter remarks…"
-          />
-        </FW>
-      </div>
+      {/* FILE UPLOAD */}
+      <input
+        type="file"
+        accept=".pdf,application/pdf"
+        style={{
+          width: "220px",
+          fontSize: "12px"
+        }}
+        onChange={(e) => {
+
+          const file = e.target.files[0];
+
+          if (!file) return;
+
+          if (file.type !== "application/pdf") {
+            alert("Only PDF files are allowed.");
+            e.target.value = "";
+            return;
+          }
+
+          setDevelopmentDocs((prev) => ({
+            ...prev,
+            [doc]: file,
+          }));
+        }}
+      />
+    </div>
+  ))}
+</div>
 
       {/* ADD BUTTON */}
     {/* Row 3: Document Upload */}
 <div style={{ marginBottom: "16px" }}>
-  <FW label="Supporting Documents (optional)">  
+  <FW label="Supporting Documents">  
    <input
   key={fileInputKey}
   type="file"
-  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+   accept=".pdf,application/pdf"
   style={{
   ...S.input,
   width: "350px",
@@ -274,15 +462,12 @@ const newRow = {
     const file = e.target.files[0];
     if (!file) return;
 
-    // ── Blocked extensions ──
-    const blockedExtensions = [".zip", ".rar", ".7z", ".tar", ".gz", ".xls", ".xlsx", ".csv", ".exe", ".xml"];
-    const fileName = file.name.toLowerCase();
-    const isBlocked = blockedExtensions.some((ext) => fileName.endsWith(ext));
-    if (isBlocked) {
-      alert("❌ This file type is not allowed.\nAllowed types: PDF, JPG, PNG, DOC, DOCX only.");
-      e.target.value = "";
-      return;
-    }
+    // ── Allow ONLY PDF ──
+if (file.type !== "application/pdf") {
+  alert("❌ Only PDF files are allowed.");
+  e.target.value = "";
+  return;
+}
 
     // ── Max size: 5MB ──
     const maxSizeMB = 5;
@@ -308,39 +493,132 @@ const newRow = {
         <button style={S.btn} onClick={handleAdd}>+ Add</button>
       </div>
 
-      {/* TABLE — persists across Back navigation */}
-      {tableData.length > 0 && (
-        <div style={{ overflowX: "auto", width: "100%", marginTop: "20px" }}>
-        <table style={{ ...S.table, marginTop: 0, minWidth: "700px" }}>
-          <thead>
-            <tr>
-              <th style={S.th}>Work Type</th>
-              <th style={S.th}>Previous %</th>
-              <th style={S.th}>Change %</th>
-              <th style={{ ...S.th, minWidth: "200px" }}>Remarks</th>
-              <th style={S.th}>SupportingDocuments</th>
-              <th style={{ ...S.th, width: "60px" }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row, i) => (
-              <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                <td style={{ ...S.td, fontWeight: "600", color: "#0f3460" }}>{row.workType}</td>
-                <td style={{ ...S.td, color: "#6b7c93" }}>{row.previousPercent}</td>
-                <td style={{ ...S.td, color: "#1a7a3c", fontWeight: "600" }}>{row.changePercent}</td>
-                <td style={{ ...S.td, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "260px" }}>{row.remarks}</td>
-                <td style={{ ...S.td, color: row.supportingdocumentsName !== "-" ? "#1a7a3c" : "#999" }}>
-                  {row.supportingdocumentsName !== "-" ? `📎 ${row.supportingdocumentsName}` : "-"}
-                </td>
-                <td style={{ ...S.td, textAlign: "center" }}>
-                  <button style={S.btnDel} onClick={() => handleDelete(i)}>✕</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  {/* TABLE */}
+{tableData.length > 0 && (
+  <div style={{ overflowX: "auto", marginTop: "25px" }}>
+
+    <table
+      style={{
+        width: "100%",
+        borderCollapse: "collapse",
+        background: "#fff",
+        borderRadius: "16px",
+        overflow: "hidden",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.06)"
+      }}
+    >
+
+      {/* TABLE HEADER */}
+      <thead>
+        <tr>
+          <th style={S.th}>Old File</th>
+          <th style={S.th}>New File</th>
+          <th style={S.th}>Supporting Documents</th>
+          <th style={S.th}>Additional Documents</th>
+          <th style={S.th}>Action</th>
+        </tr>
+      </thead>
+
+      {/* TABLE BODY */}
+      <tbody>
+        {tableData.map((row, i) => (
+          <tr
+            key={i}
+            style={{
+              borderBottom: "1px solid #e5e7eb"
+            }}
+          >
+
+            {/* OLD FILE */}
+            <td
+              style={{
+                ...S.td,
+                color: "#0f172a",
+                fontWeight: "500"
+              }}
+            >
+              {row.oldFileName || "-"}
+            </td>
+
+            {/* NEW FILE */}
+            <td
+              style={{
+                ...S.td,
+                color: "#15803d",
+                fontWeight: "500"
+              }}
+            >
+              {row.newFileName || "-"}
+            </td>
+
+            {/* SUPPORTING DOC */}
+            <td
+              style={{
+                ...S.td,
+                color: "#1d4ed8",
+                fontWeight: "500"
+              }}
+            >
+              {row.supportingdocumentsName || "-"}
+            </td>
+
+            <td style={S.td}>
+  <div
+    style={{
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+      lineHeight: "22px"
+    }}
+  >
+    {(row.developmentDocuments || "-")
+      .split("\n")
+      .map((line, index) => (
+        <div
+          key={index}
+          style={{
+            color: line.includes(".pdf") ? "#15803d" : "#000",
+            fontWeight: line.includes(".pdf") ? "400" : "350"
+          }}
+        >
+          {line}
         </div>
-      )}
+      ))}
+  </div>
+</td>
+
+
+            {/* ACTION */}
+            <td
+              style={{
+                ...S.td,
+                textAlign: "center"
+              }}
+            >
+              <button
+                onClick={() => handleDelete(i)}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: "#163b6d",
+                  color: "#fff",
+                  fontSize: "22px",
+                  cursor: "pointer",
+                  fontWeight: "600"
+                }}
+              >
+                ×
+              </button>
+            </td>
+
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+  </div>
+)}
     </div>
   );
 }
@@ -395,21 +673,30 @@ export default function DevelopmentDetailsForm({
   const subSection = DEVELOPMENT_DETAILS_SUBSECTIONS.find((s) => s.id === subSectionId);
   if (!subSection) return null;
 
-  const tableData    = tableStore[subSectionId] || [];
-  const setTableData = (rows) =>
-    setTableStore((prev) => ({ ...prev, [subSectionId]: rows }));
+  
+    
+ const tableData = tableStore[subSectionId] || [];
 
-  if (subSectionId === "external_development") {
-    return (
-      <ExternalDevelopmentSection
-        onChange={onChange}
-        tableData={tableData}
-        setTableData={setTableData}
-        applicationNumber={applicationNumber}
-        panNumber={panNumber}
-      />
-    );
-  }
+const setTableData = (rows) => {
+  setTableStore((prev) => ({
+    ...prev,
+    [subSectionId]: rows,
+  }));
+};
+
+if (subSectionId === "external_development") {
+  return (
+    <ExternalDevelopmentSection
+      onChange={onChange}
+      tableData={tableData}
+      setTableData={setTableData}
+      applicationNumber={applicationNumber}
+      panNumber={panNumber}
+    />
+  );
+}   
+
+
 
   if (subSectionId === "other_external_works") {
     return (

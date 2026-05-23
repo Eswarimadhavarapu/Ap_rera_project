@@ -26,7 +26,7 @@ export default function ProjectRegistration() {
         {/* breadcrumb attached to the card */}
         <div className="proregi-breadcrumb-card">
           You are here :{" "}
-          <span onClick={() => navigate("/")}>Home</span> /
+          <span onClick={() => navigate("/home")}>Home</span> /
           <span> Registration / Project Registration</span>
         </div>
 

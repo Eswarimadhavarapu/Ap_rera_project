@@ -81,6 +81,82 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
             </div>
 
             {Object.entries(grouped).map(([subName, rows]) => {
+              if (subName === "External Development Work") {
+  return (
+    <div key={subName} style={S.group}>
+
+      {/* SECTION HEADER */}
+      <div style={S.secHdr}>
+        <span style={S.secName}>{subName}</span>
+        <span style={S.secCount}>
+          {rows.length} change{rows.length > 1 ? "s" : ""}
+        </span>
+      </div>
+
+      {/* DEVELOPMENT TABLE */}
+      <table style={S.table}>
+
+        {/* TABLE HEADER */}
+        <thead>
+          <tr>
+            <th style={S.th}>Old File</th>
+            <th style={S.th}>New File</th>
+            <th style={S.th}>Supporting Documents</th>
+            {/* <th style={S.th}>Action</th> */}
+          </tr>
+        </thead>
+
+        {/* TABLE BODY */}
+<tbody>
+  {rows.map((row, i) => (
+    <tr key={i}>
+
+      {/* OLD FILE */}
+      <td style={S.td}>
+        {row.oldFileName || "-"}
+      </td>
+
+      {/* NEW FILE */}
+      <td style={S.td}>
+        {row.newFileUrl ? (
+          <a
+            href={row.newFileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#1a7a3c", fontWeight: "600" }}
+          >
+            {row.newFileName || "-"}
+          </a>
+        ) : (
+          row.newFileName || "-"
+        )}
+      </td>
+
+      {/* SUPPORTING DOCUMENT */}
+      <td style={S.td}>
+        {row.supportingdocumentsUrl ? (
+          <a
+            href={row.supportingdocumentsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#1e4d8f", fontWeight: "600" }}
+          >
+            {row.supportingdocumentsName || "-"}
+          </a>
+        ) : (
+          row.supportingdocumentsName || "-"
+        )}
+      </td>
+
+    </tr>
+  ))}
+</tbody>
+
+      </table>
+
+    </div>
+  );
+}
               const newRows = rows.filter(r => r.type === "associate_new");
               const existingRows = rows.filter(r => r.type === "associate_existing");
 

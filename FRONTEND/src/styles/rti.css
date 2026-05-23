@@ -140,3 +140,26 @@ body {
 .rti-maincontaint{
   margin: 10px 30px;
 }
+
+
+.submit-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+
+.submit-btn {
+  background: #0b5ed7;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #084298;
+}

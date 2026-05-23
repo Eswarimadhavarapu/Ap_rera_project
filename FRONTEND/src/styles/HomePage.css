@@ -2370,3 +2370,100 @@ background: linear-gradient(
 .aboutrera{
   color: #5c1717;
 }
+
+
+.home-new-map-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  font-size: 28px;
+  color: red; /* red color */
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+  vertical-align: middle;
+}
+
+.home-new-map-link:hover {
+  transform: scale(1.1);
+}
+
+
+
+/* ===== FOOTER WEBSITE LINKS ===== */
+
+.home-new-footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  background: #f5f5f5;
+  flex-wrap: wrap;
+}
+
+.home-new-link-card {
+  width: 210px;
+  height: 58px;
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+}
+
+.home-new-link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.home-new-link-card img {
+  max-width: 90%;
+  max-height: 42px;
+  object-fit: contain;
+}
+.home-new-footer-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+/* FOOTER LOGOS */
+
+.home-new-footer-logos {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 18px 30px;
+  background: #f3f3f3;
+  flex-wrap: nowrap !important;
+  scrollbar-width: none;
+}
+
+.home-new-footer-logos::-webkit-scrollbar {
+  display: none;
+}
+
+.home-new-footer-logos a {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-new-footer-logos img {
+  width: 150px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 4px;
+}

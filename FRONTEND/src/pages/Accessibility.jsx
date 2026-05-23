@@ -10,7 +10,7 @@ const Accessibility = () => {
       {/* Full widthhaiu*/}
       <div className="accessibility-breadcrumb">
         <span>You are here :</span>
-        <a href="/"> Home</a>
+        <a href="/home"> Home</a>
         <span> / Accessibility</span>
       </div>
 

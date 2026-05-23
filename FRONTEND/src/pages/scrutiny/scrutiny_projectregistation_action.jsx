@@ -135,6 +135,7 @@ else if (dept?.includes("engineer")) dept = "engineer";
 else if (dept?.includes("assistant director")) dept = "ad";
 else if (dept?.includes("deputy director")) dept = "dd";
 else if (dept?.includes("director")) dept = "director";
+else if (dept?.includes("chairman")) dept = "chairman";
 else if (dept?.includes("verification")) dept = "verification";
 
 console.log("FINAL DEPT:", dept);
@@ -146,6 +147,7 @@ const isAudit = dept === "audit";
 const isEngineer = dept === "engineer";
 const isAD = dept === "ad";
 const isDD = dept === "dd";
+const isChairman = dept === "chairman";
   const applicationNumber =
   String(
     location.state?.applicationNumber ||
@@ -188,8 +190,12 @@ const filtered = rows.filter((item) => {
   const rowDept = (item.verified_by || "").toLowerCase();
 
   // ✅ Verification → ONLY own
-  if (currentDept.includes("verification")) {
+  if (dept === "verification") {
     return rowDept === "verification";
+  }
+
+  if (dept === "director" || dept === "chairman") {
+    return true;
   }
 
   // ✅ Other departments → verification + own
@@ -455,7 +461,7 @@ const handleFinalSubmit = async () => {
   }
 
   try {
-    await apiPost("/api/scrutiny/final-submit", {
+    const submitResult = await apiPost("/api/scrutiny/final-submit", {
   application_no: applicationNumber,
   department: dept,   // 👈 ADD THIS LINE
   is_shortfall: shortfall,
@@ -467,8 +473,30 @@ const handleFinalSubmit = async () => {
     setFinalRemarks("");   // reset here
     setShortfall("");
 
-    alert("Final Verification Completed");
+    alert(submitResult?.message || "Final Verification Completed");
 
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const handleChairmanDecision = async (decision) => {
+  if (!finalRemarks.trim()) {
+    alert("Please enter chairman remarks");
+    return;
+  }
+
+  try {
+    const result = await apiPost("/api/scrutiny/chairman-decision", {
+      application_no: applicationNumber,
+      decision,
+      remarks: finalRemarks,
+    });
+
+    await loadRemarks();
+    setFinalRemarks("");
+    alert(result?.message || `Application ${decision}`);
+    navigate("/scrutiny/project-registration");
   } catch (err) {
     console.error(err);
   }
@@ -654,6 +682,7 @@ const handleFinalSubmit = async () => {
                 </div>
            )}     
 
+                {!isChairman && (
                 <section className="sra-panel">
   <div className="sra-panel-head">
     <h2>ACTION TO BE TAKEN</h2>
@@ -710,6 +739,43 @@ const handleFinalSubmit = async () => {
 </button>
   </div>
 </section>
+)}
+
+{isChairman && (
+  <section className="sra-panel">
+    <div className="sra-panel-head">
+      <h2>CHAIRMAN DECISION</h2>
+    </div>
+
+    <div className="sra-remarks-box">
+      <textarea
+        className="sra-textarea"
+        placeholder="Enter chairman remarks..."
+        rows={4}
+        value={finalRemarks}
+        onChange={(e) => setFinalRemarks(e.target.value)}
+      />
+    </div>
+
+    <div className="sra-submit-row">
+      <button
+        type="button"
+        className="sra-btn sra-btn-primary"
+        onClick={() => handleChairmanDecision("approved")}
+      >
+        Approve
+      </button>
+
+      <button
+        type="button"
+        className="sra-btn sra-btn-secondary"
+        onClick={() => handleChairmanDecision("rejected")}
+      >
+        Reject
+      </button>
+    </div>
+  </section>
+)}
 
  <section className="sra-panel">
   <div className="sra-panel-head">
@@ -735,7 +801,7 @@ const handleFinalSubmit = async () => {
       <tr key={index}>
         <td>{index + 1}</td>
         <td>{item.verified_by}</td>
-        <td>{item.is_shortfall}</td>
+        <td>{item.is_shortfall ? "Yes" : "No"}</td>
         <td>{item.remarks}</td>
         <td>NA</td>
         <td>
@@ -781,6 +847,7 @@ const handleFinalSubmit = async () => {
                   </button>
 
                   
+  {!isChairman && (
   <button
     type="button"
     className="sra-btn sra-btn-primary"
@@ -788,6 +855,7 @@ const handleFinalSubmit = async () => {
   >
     Final Submit
   </button>
+  )}
 
                 </div>
               </form>

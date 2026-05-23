@@ -39,7 +39,7 @@ function RenewalQueries() {
 
       <div className="breadcrumb-bar">
         You are here :
-        <a href="/" className="breadcrumb-link">Home</a> /
+        <a href="/home" className="breadcrumb-link">Home</a> /
         <span> Registration</span> /
         <span> Agent Renewal</span>
       </div>

@@ -126,7 +126,7 @@ const ProjectRegistrationLogin = () => {
 
               <span
                 className="otplogin-bc-link"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
               >
                 Home
               </span>

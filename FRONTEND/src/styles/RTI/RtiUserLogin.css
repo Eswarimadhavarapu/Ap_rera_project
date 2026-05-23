@@ -1,0 +1,369 @@
+.rtilog-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.rtilog-form-box {
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  padding: 40px 35px;
+  border-radius: 22px;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.rtilog-form-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    #2563eb,
+    #4f46e5,
+    #7c3aed
+  );
+}
+
+.rtilog-title {
+  text-align: center;
+  font-size: 38px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: #1e3a8a;
+  letter-spacing: 0.5px;
+}
+
+.rtilog-form-group {
+  margin-bottom: 24px;
+}
+
+.rtilog-form-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.rtilog-form-group input {
+  width: 100%;
+  height: 58px;
+  border: 1px solid #dbe2ea;
+  border-radius: 14px;
+  padding: 0 18px;
+  font-size: 15px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+  color: #0f172a;
+}
+
+.rtilog-form-group input:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.rtilog-captcha-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.rtilog-captcha-text {
+  min-width: 140px;
+  height: 58px;
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #0f172a
+  );
+  color: #ffffff;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+.rtilog-captcha-box input {
+  flex: 1;
+  height: 58px;
+  border: 1px solid #dbe2ea;
+  border-radius: 14px;
+  padding: 0 18px;
+  font-size: 15px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.rtilog-captcha-box input:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.rtilog-button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.rtilog-submit-btn,
+.rtilog-reset-btn {
+  flex: 1;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rtilog-submit-btn {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #4f46e5
+  );
+  color: #ffffff;
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
+}
+
+.rtilog-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(37, 99, 235, 0.35);
+}
+
+.rtilog-reset-btn {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.rtilog-reset-btn:hover {
+  background: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.rtilog-otp-section {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media screen and (max-width: 600px) {
+
+  .rtilog-form-box {
+    padding: 30px 20px;
+  }
+
+  .rtilog-title {
+    font-size: 30px;
+  }
+
+  .rtilog-captcha-box {
+    flex-direction: column;
+  }
+
+  .rtilog-captcha-text {
+    width: 100%;
+  }
+
+  .rtilog-button-group {
+    flex-direction: column;
+  }
+}.rtilog-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(45, 45, 45, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.rtilog-success-popup {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 35px 30px;
+  text-align: center;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: rtilogPopupScale 0.35s ease;
+}
+
+.rtilog-success-icon {
+  width: 72px;
+  height: 72px;
+  background: #16c60c;
+  color: #ffffff;
+  border-radius: 50%;
+  margin: 0 auto 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.rtilog-success-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1f1f1f;
+  margin-bottom: 14px;
+}
+
+.rtilog-success-message {
+  font-size: 19px;
+  line-height: 1.7;
+  color: #5c5c5c;
+}
+
+@keyframes rtilogPopupScale {
+
+  from {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.rtilog-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 40, 40, 0.55);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.rtilog-success-popup {
+  width: 340px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 35px 28px;
+  text-align: center;
+
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.18);
+
+  animation: rtilogPopupScale 0.35s ease;
+}
+
+.rtilog-success-icon {
+  width: 72px;
+  height: 72px;
+
+  background: #19c319;
+  color: #ffffff;
+
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto 22px;
+
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.rtilog-success-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #222222;
+
+  margin-bottom: 14px;
+}
+
+.rtilog-success-message {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #5a5a5a;
+
+  margin-bottom: 24px;
+}
+
+.rtilog-success-btn {
+  background: #19c319;
+  color: white;
+
+  border: none;
+  outline: none;
+
+  padding: 12px 28px;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.rtilog-success-btn:hover {
+  background: #13a813;
+}
+
+@keyframes rtilogPopupScale {
+
+  from {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

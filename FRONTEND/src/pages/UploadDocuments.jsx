@@ -525,7 +525,7 @@ const completeStep = (stepNo) => {
             {/* Header Navigation */}
             <div className="header-navigation">
                 <div className="breadcrumb">
-                    You are here: <a href="#">Home</a> / <a href="#">Registration</a> / <a href="#">Project Registration</a>
+                    You are here: <a href="/home">Home</a> / <a href="#">Registration</a> / <a href="#">Project Registration</a>
                 </div>
             </div>
 

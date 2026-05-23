@@ -13,39 +13,39 @@ export const PROJECT_DETAILS_SUBSECTIONS = [
         type: "select",
         options: [
           "Project Name",
-          "Project Remarks",
+          // "Project Remarks",
           "Project Type",
-          "Project Status",
+          // "Project Status",
           "Building Plan No",
           "Building Permission Validity From",
           "Building Permission Validity Upto",
           "Date of Commencement of the Project",
           "Proposed Date of Completion of the Project",
           "Total Area Of Land (Sq.m)",
-          "Total Plinth Area (Sq.m)",
-          "Total Open Area (Sq.m)",
+          // "Total Plinth Area (Sq.m)",
+          // "Total Open Area (Sq.m)",
           "Total Built-up Area (Sq.m)",
         ],
       },
     ],
   },
- {
-  id: "project_material_facts",
-  label: "Project Material Facts",
-  fields: [
-    {
-      name: "materialFactType",
-      label: "CHANGE TYPE",
-      type: "select",
-      options: [
-        "No of Units in the projects",
-        "No of Units advances taken",
-        "No of units where agreement for sale entered",
-        "No of units sold in the project",
-      ],
-    },
-  ],
-},
+//  {
+//   id: "project_material_facts",
+//   label: "Project Material Facts",
+//   fields: [
+//     {
+//       name: "materialFactType",
+//       label: "CHANGE TYPE",
+//       type: "select",
+//       options: [
+//         "No of Units in the projects",
+//         "No of Units advances taken",
+//         "No of units where agreement for sale entered",
+//         "No of units sold in the project",
+//       ],
+//     },
+//   ],
+// },
 ];
 
 const PROJECT_TYPE_OPTIONS = [
@@ -88,6 +88,38 @@ const PROJECT_STATUS_ID_MAP = {
   3: "Completed",
   4: "Stalled",
 };
+
+const PROJECT_NAME_DOCUMENTS = [
+  "Change Request Form P4",
+  "Designated Bank Statement reflecting the revised project name",
+  "Detailed Estimation Certificate in the prescribed RERA format (Form P16/P17) reflecting the revised project name.",
+  "Statement of source of funds in the prescribed RERA format (Form P 9) reflecting the revised project name.",
+  "Technical Specifications reflecting the revised project name",
+  "Form-B in the prescribed RERA format (Form P11) reflecting the revised project name.",
+  "No Litigation in the prescribed RERA format (Form P10) reflecting the revised project name",
+  " Agreement for Sale in the prescribed RERA format (Form P21) reflecting the revised project name",
+  "Allotment Letter in the prescribed RERA format (Form P14 ) reflecting the revised project name",
+  "Conveyance deed in the prescribed RERA format (Form P15 ) reflecting the revised project name",
+  "Structural Stability Certificate in the prescribed RERA format (Form P19) reflecting the revised project name.",
+  "Sale deed (If any sale , 2/3rd of consent letters shall be submitted individually. In case there are no sales or allotments, the promoter shall submit a No-Sale Affidavit to that effect.)",
+  "Latest EC, if any sale.",
+  "New Development agreement reflecting the revised project name.",
+  "Other documents"
+];
+
+const TOTAL_BUILTUP_AREA_DOCUMENTS = [
+  "Revised Plan and Proceedings",
+  "Development details excel sheet Form – P5",
+  "Detailed site plan showing the measurements as on ground including diagonals, Latitude and Longitude at end points of the project site.",
+  "Revised Detailed Estimation Certificate",
+  "Revised Statement of source of funds",
+  "Ownership Documents",
+  "Development Agreement",
+  "Latest EC",
+  "Mortgage deed",
+  "Legal Opinion",
+  "If any sale, 2/3rd of consent letters shall be submitted individually. In case there are no sales or allotments, the promoter shall submit a No-Sale Affidavit."
+];
 
 // ─── VALIDATION CONFIG ────────────────────────────────────────────────────────
 const FIELD_VALIDATIONS = {
@@ -208,6 +240,8 @@ export default function ProjectDetailsForm({
   const [newValue,       setNewValue]       = useState("");
   const [remarks,    setRemarks]    = useState("");
   const [supportingdocumentsFile,   setSupportingDocumentsFile]   = useState(null);
+  const [projectNameDocs, setProjectNameDocs] = useState({});
+  const [builtupAreaDocs, setBuiltupAreaDocs] = useState({});
   const [totalUnits,     setTotalUnits]     = useState("");
   const [unitFile,       setUnitFile]       = useState(null);
   const [hideFields,     setHideFields]     = useState(false);
@@ -373,9 +407,37 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
      remarks:  remarks || "-",
       supportingdocuments:     supportingdocumentsFile?.name || "-",
       supportingdocumentsUrl:  supportingdocumentsFile ? URL.createObjectURL(supportingdocumentsFile) : "",
+
+      promoterDocuments:
+  selectedField === "promoterName"
+    ? Object.entries(promoterNameDocs)
+        .map(([doc, file]) => `${doc} - ${file?.name || "No File"}`)
+        .join("\n")
+    : "-",
+
+
+  projectNameDocuments:
+  selectedField === "Project Name"
+    ? Object.entries(projectNameDocs)
+        .map(
+          ([doc, file], index) =>
+            `${index + 1}. ${doc}\n${file?.name || "No File"}`
+        )
+        .join("\n\n")
+    : "-",
       totalUnits:   selectedField === "Project Type" ? (totalUnits    || "-") : "",
       unitFileName: selectedField === "Project Type" ? (unitFile?.name || "-") : "",
       unitFileUrl:  selectedField === "Project Type" && unitFile ? URL.createObjectURL(unitFile) : "",
+
+      builtupAreaDocuments:
+  selectedField === "Total Built-up Area (Sq.m)"
+    ? Object.entries(builtupAreaDocs)
+        .map(
+          ([doc, file], index) =>
+            `${index + 1}. ${doc}\n${file?.name || "No File"}`
+        )
+        .join("\n\n")
+    : "-",
     };
 
     console.log("➕ [ProjectDetailsForm] Adding row to table →", newRow);
@@ -507,7 +569,7 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
 
             {/* NEW VALUE — user editable */}
             <div>
-              <label style={labelStyle}>New {selectedField}</label>
+              <label style={labelStyle}>Mention {selectedField}</label>
 
               {isProjectTypeSelected ? (
                 <select
@@ -558,7 +620,7 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
 
           {/* DESCRIPTION */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={labelStyle}>Remarks</label>
+            <label style={labelStyle}>Reasons for change</label>
             <textarea
             style={{
   ...inputStyle,
@@ -589,16 +651,151 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
             </div>
           </div>
 
+
+
+          {/* PROJECT NAME DOCUMENTS */}
+{selectedField === "Project Name" && (
+  <div style={{ marginBottom: "20px" }}>
+    <h4 style={{
+      fontSize: "15px",
+      fontWeight: "600",
+      marginBottom: "12px",
+      color: "#1e3a5f"
+    }}>
+      Required Documents
+    </h4>
+
+    {PROJECT_NAME_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+         padding: "6px 10px",
+border: "1px solid #dbe3f0",
+borderRadius: "4px",
+background: "#f9fbff",
+width: "700px",
+minHeight: "45px"
+        }}
+      >
+       <div style={{
+  width: "920px",
+  fontSize: "13px",
+  color: "#1a2535",
+  fontWeight: "500",
+  whiteSpace: "normal",
+  lineHeight: "20px"
+}}>
+          {index + 1}. {doc}
+        </div>
+
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          onChange={(e) => {
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            if (file.type !== "application/pdf") {
+              alert("Only PDF files are allowed.");
+              e.target.value = "";
+              return;
+            }
+
+            setProjectNameDocs((prev) => ({
+              ...prev,
+              [doc]: file,
+            }));
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)}
+{/* TOTAL BUILT-UP AREA DOCUMENTS */}
+{selectedField === "Total Built-up Area (Sq.m)" && (
+  <div style={{ marginBottom: "20px" }}>
+
+    <h4 style={{
+      fontSize: "15px",
+      fontWeight: "600",
+      marginBottom: "12px",
+      color: "#1e3a5f"
+    }}>
+      Required Documents
+    </h4>
+
+    {TOTAL_BUILTUP_AREA_DOCUMENTS.map((doc, index) => (
+
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "12px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff",
+          width: "700px",
+          minHeight: "45px"
+        }}
+      >
+
+        <div style={{
+          width: "920px",
+          fontSize: "13px",
+          color: "#1a2535",
+          fontWeight: "500",
+          lineHeight: "20px"
+        }}>
+          {index + 1}. {doc}
+        </div>
+
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          onChange={(e) => {
+
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            if (file.type !== "application/pdf") {
+              alert("Only PDF files are allowed.");
+              e.target.value = "";
+              return;
+            }
+
+            setBuiltupAreaDocs((prev) => ({
+              ...prev,
+              [doc]: file,
+            }));
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
           {/* UPLOAD DOCUMENT */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={labelStyle}>Supporting Documents (optional)</label>
+            <label style={labelStyle}>Supporting Documents</label>
             <input
               ref={fileInputRef}
               type="file"
               accept=".pdf,application/pdf"
               style={{
-  ...inputStyle,
-  width: "350px"
+ width: "220px",
+    fontSize: "12px"
 }}
               onChange={(e) => {
                 const file = e.target.files[0];
@@ -723,15 +920,37 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
   width: "100%",
   borderCollapse: "collapse",
   fontSize: "13px",
-  tableLayout: "fixed"   // ⭐ ADD THIS LINE
+ tableLayout: "auto"  // ⭐ ADD THIS LINE
 }}>
             <thead>
               <tr>
                 <th style={thStyle}>Field</th>
                 <th style={thStyle}>Existing Value</th>
                 <th style={thStyle}>New Value</th>
-                <th style={{ ...thStyle, minWidth: "200px" }}>Remarks</th>
-                <th style={{ ...thStyle, width: "19%" }}>SupportingDocuments</th>
+                <th
+  style={{
+    ...thStyle,
+    width: "22%",
+    minWidth: "220px",
+    textAlign: "left",
+    whiteSpace: "nowrap"
+  }}
+>
+  Reasons for change
+</th>
+                <th
+  style={{
+    ...thStyle,
+    width: "16%",
+    minWidth: "170px",
+    textAlign: "left",
+    whiteSpace: "nowrap"
+  }}
+>
+  Supporting Documents
+</th>
+                <th style={{ ...thStyle, width: "25%" }}>Additional Documents</th>
+
                 {hasExtraColumns && (
                   <>
                    <th style={{ ...thStyle, width: "12%" }}>Total Units</th>
@@ -774,6 +993,35 @@ const currentSection = PROJECT_DETAILS_SUBSECTIONS.find(
                           style={{ color: "#0f3460", fontWeight: "600" }}>{row.supportingdocuments}</a>
                       : "-"}
                   </td>
+   <td style={tdStyle}>
+  {[
+    row.projectNameDocuments,
+    row.builtupAreaDocuments
+  ]
+   .filter(
+  (doc) =>
+    doc &&
+    doc !== "-" &&
+    doc.trim() !== ""
+)
+    .join("\n")
+    .split("\n")
+    .map((line, index) => (
+      <div
+        key={index}
+        style={{
+          marginBottom: "4px",
+          color: line.includes(".pdf") ? "#1a7a3c" : "#000",
+          fontWeight: line.includes(".pdf") ? "600" : "400",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          lineHeight: "20px"
+        }}
+      >
+        {line}
+      </div>
+    ))}
+</td>
                   {hasExtraColumns && (
                     <>
                       <td style={tdStyle}>{row.totalUnits || "-"}</td>

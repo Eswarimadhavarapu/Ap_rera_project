@@ -453,7 +453,7 @@ console.log("📄 Document pages:", documentPages.length);
       <div className="preview-header no-print">
         <div className="breadcrumb">
           <span>You are here : </span>
-          <a href="/">Home</a>
+          <a href="/home">Home</a>
           <span> / </span>
           <span>Registration / Project Registration / Preview</span>
         </div>

@@ -66,7 +66,8 @@ const DocViewerModal = ({ filename, label, onClose }) => {
 
   return (
     <div className="AdminComplaintDetail-docviewer-backdrop" onClick={onClose}>
-      <div style={{ width: "100%", maxWidth: 960 }} onClick={(e) => e.stopPropagation()}>
+<div className="AdminComplaintDetail-docviewer-container"
+     onClick={(e) => e.stopPropagation()}>
         <div className="AdminComplaintDetail-docviewer-bar">
           <span className="AdminComplaintDetail-docviewer-name">📄 {label || filename}</span>
           <div className="AdminComplaintDetail-docviewer-actions">
@@ -92,6 +93,7 @@ const DocViewerModal = ({ filename, label, onClose }) => {
             <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f0f0" }}>
               <img src={url} alt={label} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
             </div>
+            
           ) : (
             <div className="AdminComplaintDetail-docviewer-nopreview">
               <span className="AdminComplaintDetail-docviewer-nopreview-icon">📎</span>
@@ -100,8 +102,78 @@ const DocViewerModal = ({ filename, label, onClose }) => {
             </div>
           )}
         </div>
+        {/* PDF KINDHA SECTION */}
+
+<div className="AdminComplaintDetail-after-pdf">
+
+  <div className="AdminComplaintDetail-shortfall-section">
+
+    <h3>Does the document have shortfall?</h3>
+
+    <div className="AdminComplaintDetail-radio-group">
+
+      <label>
+        <input type="radio" name="shortfall" />
+        Yes
+      </label>
+
+      <label>
+        <input type="radio" name="shortfall" />
+        No
+      </label>
+
+    </div>
+
+    <textarea
+      placeholder="Remarks (Maximum of 3000 Characters)"
+    />
+
+    <button className="AdminComplaintDetail-submit-btn">
+      Submit
+    </button>
+
+  </div>
+
+  <div className="AdminComplaintDetail-updated-remarks">
+
+    <h2>UPDATED REMARKS</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Authority</th>
+          <th>Is Shortfall</th>
+          <th>Remarks</th>
+          <th>Remarks Date</th>
+          <th>Document</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr>
+          <td>1</td>
+          <td>Verification Team</td>
+          <td>Yes</td>
+          <td>KJIUYTRDSEERTYUI</td>
+          <td>14 May 2026, 04:44 pm</td>
+          <td>
+            <a href="/">View</a>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
       </div>
     </div>
+    
   );
 };
 
@@ -177,6 +249,7 @@ const RejectModal = ({ data, onClose, onSuccess }) => {
 ───────────────────────────────────────────── */
 const ApproveModal = ({
   data,
+  setData,
   caseNo,
   setCaseNo,
   onClose,
@@ -194,19 +267,8 @@ const ApproveModal = ({
 
   const step1Valid = adminRemark.trim() && hearingDate && hearingPlace.trim();
 
-  const rawR = data.respondent || {};
-  const respondent = {
-    name:    rawR.name    || "",
-    email:   rawR.email   || "",
-    mobile:  rawR.mobile  || rawR.phone || "",
-    type:    rawR.type    || rawR.respondent_type || "",
-    registration_id: rawR.registration_id || "",
-    is_rera_registered: rawR.is_rera_registered ?? false,
-    project_name: rawR.project_name || "",
-    address: rawR.address || {},
-  };
-
   const { complaint, complainant } = data;
+  const respondents = data.respondents || [];
 
   const pickImg = (e, setter) => {
     const file = e.target.files[0];
@@ -225,7 +287,7 @@ const ApproveModal = ({
         pdfBlob = await html2pdf()
           .set({
             margin: 10,
-            filename: `notice_${complaint?.complaint_id}.pdf`,
+            filename: `notice.pdf`,
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
           })
@@ -239,8 +301,12 @@ const ApproveModal = ({
       const fd = new FormData();
       fd.append("complainant_email", complainant?.email || "");
       fd.append("complainant_name",  complainant?.name  || "");
-      fd.append("respondent_email",  respondent.email   || "");
-      fd.append("respondent_name",   respondent.name    || "");
+      fd.append("respondents", JSON.stringify( respondents.map((r) => ({
+      email: r.email,
+      name: r.name,
+    }))
+  )
+);
       fd.append("subject",           complaint?.subject || complaint?.complaint_regarding || "");
       fd.append("description",       complaint?.description || "");
       fd.append("admin_remark",      adminRemark);
@@ -255,6 +321,13 @@ const ApproveModal = ({
         method: "POST",
         body: fd,
       });
+      setData((prev) => ({
+  ...prev,
+  complaint: {
+    ...prev.complaint,
+    status: "CASE_REGISTERED",
+  },
+}));
       onSuccess("Complaint approved & legal notice sent successfully.");
     } catch {
       onSuccess("Request submitted (server may be offline).", "error");
@@ -296,17 +369,30 @@ const ApproveModal = ({
               </div>
               <div className="AdminComplaintDetail-field-row">
                 <div className="AdminComplaintDetail-field">
-  <label className="AdminComplaintDetail-field-label">
-    Case Number *
-  </label>
+ <label className="AdminComplaintDetail-field-label">
 
-  <input
-    type="text"
-    className="AdminComplaintDetail-input"
-    placeholder="Enter Case Number"
-    value={caseNo}
-    onChange={(e) => setCaseNo(e.target.value)}
-  />
+  {complaint?.application_type === "FORM_M"
+    ? "Complaint Petition Number *"
+    : complaint?.application_type === "FORM_N"
+    ? "Compensation Claim Petition Number *"
+    : "Case Number *"}
+
+</label>
+ <input
+  type="text"
+  className="AdminComplaintDetail-input"
+
+  placeholder={
+    complaint?.application_type === "FORM_M"
+      ? "Enter Complaint Petition Number"
+      : complaint?.application_type === "FORM_N"
+      ? "Enter Compensation Claim Petition Number"
+      : "Enter Case Number"
+  }
+
+  value={caseNo}
+  onChange={(e) => setCaseNo(e.target.value)}
+/>
 </div>
                 <div className="AdminComplaintDetail-field">
                   <label className="AdminComplaintDetail-field-label">FIRST HEARING DATE *</label>
@@ -330,7 +416,10 @@ const ApproveModal = ({
               </div>
               <div style={{ background: "#f0fdf4", border: "1px solid #a7f3d0", borderRadius: 7, padding: "10px 14px", fontSize: 12, color: "#065f46", lineHeight: 1.6 }}>
                 ✅ A formal Legal Notice (AP RERA format) will be generated and emailed to{" "}
-                <strong>{complainant?.email}</strong> and <strong>{respondent.email}</strong>.
+                <strong>{complainant?.email}</strong> and{" "}
+<strong>
+  {respondents.map((r) => r.email).join(", ")}
+</strong>
               </div>
             </div>
             <div className="AdminComplaintDetail-modal-footer">
@@ -357,14 +446,33 @@ const ApproveModal = ({
                   <div className="AdminComplaintDetail-ln-date-line"><b>Date:</b> {fmtDate()}</div>
                   <div className="AdminComplaintDetail-ln-to-block">
                     <p><b>To,</b></p>
-                    <p><b>{respondent.name || "Respondent"}</b></p>
-                    {respondent.address?.line1 && (
-                      <p>{respondent.address.line1}{respondent.address.line2 ? ", " + respondent.address.line2 : ""}</p>
-                    )}
-                    {(respondent.address?.district || respondent.address?.state) && (
-                      <p>{[respondent.address.district, respondent.address.state, respondent.address.pincode].filter(Boolean).join(", ")}</p>
-                    )}
-                    <p>Email: {respondent.email || "—"} &nbsp;|&nbsp; Mobile: {respondent.mobile || "—"}</p>
+                   {respondents.map((r, index) => (
+  <div key={index} style={{ marginBottom: "10px" }}>
+
+    <p><b>{r.name}</b></p>
+
+    {r.address?.line1 && (
+      <p>{r.address.line1}</p>
+    )}
+
+    {(r.address?.district || r.address?.state) && (
+      <p>
+        {[r.address?.district,
+          r.address?.state,
+          r.address?.pincode]
+          .filter(Boolean)
+          .join(", ")}
+      </p>
+    )}
+
+    <p>
+      Email: {r.email || "—"}
+      &nbsp;|&nbsp;
+      Mobile: {r.mobile || "—"}
+    </p>
+
+  </div>
+))}
                   </div>
                   <p className="AdminComplaintDetail-ln-subject-line">
                     SUB: Case No. {caseNo} under AP RERA Act regarding{" "}
@@ -472,7 +580,7 @@ const [venue, setVenue] = useState("");
 
   const { complainant } = data;
 
-  const respondent = data.respondent || {};
+  const respondents = data.respondents || [];
 
   const sendNotice = async () => {
 
@@ -502,11 +610,10 @@ const [venue, setVenue] = useState("");
             complainant_name:
               complainant?.name,
 
-            respondent_email:
-              respondent?.email,
-
-            respondent_name:
-              respondent?.name,
+            respondents: respondents.map((r) => ({
+  email: r.email,
+  name: r.name,
+})),
 
             message,
 
@@ -618,7 +725,13 @@ const [venue, setVenue] = useState("");
             <br />
             <b>Complainant:</b> {complainant?.email}
             <br />
-            <b>Respondent:</b> {respondent?.email}
+            <b>Respondents:</b>
+
+{respondents.map((r, index) => (
+  <div key={index}>
+    {r.email}
+  </div>
+))}
           </div>
 
         </div>
@@ -657,9 +770,24 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
   const [hearingDate, setHearingDate] = useState("");
   const [status, setStatus]           = useState("");
   const [remarks, setRemarks] = useState("");
+  const [complainantPresence, setComplainantPresence] = useState("");
+const [respondentPresence, setRespondentPresence] = useState("");
+
+const [complainantAdvocate, setComplainantAdvocate] = useState("");
+const [respondentAdvocate, setRespondentAdvocate] = useState("");
+
+const [complainantDocs, setComplainantDocs] = useState([]);
+const [respondentDocs, setRespondentDocs] = useState([]);
+  const [complainantPresent, setComplainantPresent] = useState("");
+const [respondentPresent, setRespondentPresent] = useState("");
+
+
+const [absentParties, setAbsentParties] = useState("");
   const [loading, setLoading]         = useState(false);
   const [hearingPlace, setHearingPlace] = useState("");
   const { complaint } = data;
+const respondents = data.respondents || [];
+const complainant = data.complainant || {};
   const [showDocs, setShowDocs] = useState(false);
   const [docDesc, setDocDesc]   = useState("");
   const [docFile, setDocFile]   = useState(null);
@@ -673,14 +801,56 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
     setLoading(true);
     try {
       const fd = new FormData();
+      fd.append(
+  "complainant_presence",
+  complainantPresence
+);
+
+fd.append(
+  "respondent_presence",
+  respondentPresence
+);
+
+fd.append(
+  "complainant_advocate",
+  complainantAdvocate
+);
+
+fd.append(
+  "respondent_advocate",
+  respondentAdvocate
+);
+      fd.append(
+  "respondents",
+  JSON.stringify(
+    respondents.map((r) => ({
+      email: r.email,
+      name: r.name,
+    }))
+  )
+);
       fd.append("complaint_id",      complaint?.complaint_id || "");
       fd.append("status",            status);
+      fd.append("remarks", remarks);
       fd.append("hearing_place",     hearingPlace);
       fd.append("next_hearing_date", hearingDate);
       docList.forEach((d) => {
         fd.append("documents",    d.file);
         fd.append("descriptions", d.description);
       });
+      complainantDocs.forEach((file) => {
+  fd.append(
+    "complainant_documents",
+    file
+  );
+});
+
+respondentDocs.forEach((file) => {
+  fd.append(
+    "respondent_documents",
+    file
+  );
+});
       await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/add-hearing", {
         method: "POST",
         body: fd,
@@ -716,6 +886,120 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
     onChange={(e) => setRemarks(e.target.value)}
     placeholder="Enter what happened in this hearing..."
     rows={4}
+  />
+
+</div>
+{/* COMPLAINANT DETAILS */}
+
+<div className="AdminComplaintDetail-field-row">
+
+  <div className="AdminComplaintDetail-field">
+    <label>Complainant Name</label>
+
+    <input
+      type="text"
+      className="AdminComplaintDetail-input"
+      value={data?.complainant?.name || ""}
+      readOnly
+    />
+  </div>
+
+  <div className="AdminComplaintDetail-field">
+    <label>Complainant Status</label>
+
+    <select
+      className="AdminComplaintDetail-input"
+      value={complainantPresence}
+      onChange={(e) =>
+        setComplainantPresence(e.target.value)
+      }
+    >
+      <option value="">Select</option>
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+    </select>
+  </div>
+
+</div>
+
+<div className="AdminComplaintDetail-field">
+
+  <label>Complainant Advocate</label>
+
+  <input
+    type="text"
+    className="AdminComplaintDetail-input"
+    placeholder="Enter complainant advocate name"
+    value={complainantAdvocate}
+    onChange={(e) =>
+      setComplainantAdvocate(e.target.value)
+    }
+  />
+
+</div>
+
+<div className="AdminComplaintDetail-field">
+
+  <label>Complainant Submitted Documents</label>
+
+  <input
+    type="file"
+    multiple
+    className="AdminComplaintDetail-input"
+    onChange={(e) =>
+      setComplainantDocs([...e.target.files])
+    }
+  />
+
+</div>
+
+{/* RESPONDENT DETAILS */}
+
+<div className="AdminComplaintDetail-field-row">
+
+  <div className="AdminComplaintDetail-field">
+    <label>Respondent Status</label>
+
+    <select
+      className="AdminComplaintDetail-input"
+      value={respondentPresence}
+      onChange={(e) =>
+        setRespondentPresence(e.target.value)
+      }
+    >
+      <option value="">Select</option>
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+    </select>
+  </div>
+
+  <div className="AdminComplaintDetail-field">
+    <label>Respondent Advocate</label>
+
+    <input
+      type="text"
+      className="AdminComplaintDetail-input"
+      placeholder="Enter respondent advocate name"
+      value={respondentAdvocate}
+      onChange={(e) =>
+        setRespondentAdvocate(e.target.value)
+      }
+    />
+  </div>
+
+</div>
+
+<div className="AdminComplaintDetail-field">
+
+  <label>Respondent Submitted Documents</label>
+
+  <input
+    type="file"
+    multiple
+    className="AdminComplaintDetail-input"
+    onChange={(e) =>
+      setRespondentDocs([...e.target.files])
+    }
   />
 
 </div>
@@ -818,7 +1102,7 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
 
 
           <div style={{ background: "#ebf8ff", border: "1px solid #bee3f8", borderRadius: 7, padding: "10px 14px", fontSize: 12, color: "#2c5282", lineHeight: 1.6 }}>
-            ℹ️ Complaint <strong>{complaint?.complaint_id}</strong> — the status and documents will be saved
+            ℹ️ the status and documents will be saved
             and the hearing date will be recorded for tracking purposes.
           </div>
         </div>
@@ -1017,24 +1301,30 @@ console.log("TYPE 👉", complaintType);
   const [toast, setToast]     = useState(null);
   const [viewDoc, setViewDoc] = useState(null);
 
-  useEffect(() => {
-    fetch(`https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/${id}`)
-      .then((r) => r.json())
-      .then((res) => {
-        console.log("API FULL RESPONSE 👉", res);
-        console.log("Complaint 👉", res.complaint);
-        console.log("Complainant 👉", res.complainant);
-        console.log("Respondent 👉", res.respondent);
-        setData(res);
-      })
-      .catch(console.error);
-  }, [id]);
+ const fetchComplaint = () => {
+  fetch(`https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/${id}`)
+    .then((r) => r.json())
+    .then((res) => {
+      console.log("API FULL RESPONSE 👉", res);
+      setData(res);
+    })
+    .catch(console.error);
+};
 
-  const showToast = (msg, type = "success") => {
-    setModal(null);
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 4000);
-  };
+useEffect(() => {
+  fetchComplaint();
+}, [id]);
+
+ const showToast = (msg, type = "success") => {
+
+  fetchComplaint(); // 🔥 refresh latest hearings/status
+
+  setModal(null);
+
+  setToast({ msg, type });
+
+  setTimeout(() => setToast(null), 4000);
+};
 
   if (!data)
     return (
@@ -1045,6 +1335,8 @@ console.log("TYPE 👉", complaintType);
     );
 
   const { complaint, complainant } = data;
+  const respondents =
+  data.respondents || [];
   const status =
   complaint?.status?.toLowerCase();
 
@@ -1114,11 +1406,12 @@ const isRejected =
               <span className="AdminComplaintDetail-card-hbadge">FORM</span>
             </div>
             <div className="AdminComplaintDetail-card-body">
-              <Field label="Complaint ID"  value={complaint?.complaint_id} mono />
+
               <Field label="App. Type"     value={complaint?.application_type} />
               <Field label="Subject"       value={complaint?.subject} />
               <Field label="Regarding"     value={complaint?.complaint_regarding} />
               <Field label="Description"   value={complaint?.description} />
+              <Field label="Facts Of Complaint" value={complaint?.facts_of_complaint}/>
               <Field label="Relief Sought" value={complaint?.relief_sought} />
               <Field label="Filed On"      value={complaint?.created_at} />
               {complaint?.project_details?.registration_number == null ? (
@@ -1153,31 +1446,122 @@ const isRejected =
             </div>
           </div>
 
-          {/* Respondent */}
-          <div className="AdminComplaintDetail-card">
-            <div className="AdminComplaintDetail-card-head">
-              <div className="AdminComplaintDetail-card-icon AdminComplaintDetail-ci-amber">🏢</div>
-              <span className="AdminComplaintDetail-card-htitle">Respondent</span>
-              <span className="AdminComplaintDetail-card-hbadge">{respondent.type || "—"}</span>
-            </div>
-            <div className="AdminComplaintDetail-card-body">
-              <Field label="Type" value={respondent.type} />
-              {respondent?.registration_id ? (
-                <Field label="Registration ID" value={respondent.registration_id} mono />
-              ) : (
-                <div className="AdminComplaintDetail-row">
-                  <span className="AdminComplaintDetail-label">RERA Reg.</span>
-                  <span className="AdminComplaintDetail-badge-no">✗ Not Registered</span>
-                </div>
-              )}
-              <Field label="Name"         value={respondent.name} />
-              <Field label="Email"        value={respondent.email} />
-              <Field label="Mobile"       value={respondent.mobile} mono />
-              <Field label="Project Name" value={respondent.project_name} />
-              <Field label="Address"      value={addrStr(respondent.address)} />
-            </div>
-          </div>
+         {/* Respondents */}
 
+<div className="AdminComplaintDetail-card">
+
+  <div className="AdminComplaintDetail-card-head">
+
+    <div className="AdminComplaintDetail-card-icon AdminComplaintDetail-ci-amber">
+      🏢
+    </div>
+
+    <span className="AdminComplaintDetail-card-htitle">
+      Respondents
+    </span>
+
+    <span className="AdminComplaintDetail-card-hbadge">
+      {respondents.length}
+    </span>
+
+  </div>
+
+  <div className="AdminComplaintDetail-card-body AdminComplaintDetail-respondent-wrapper">
+
+    {respondents.length > 0 ? (
+
+      <div className="AdminComplaintDetail-table-wrap">
+
+  <table className="AdminComplaintDetail-table">
+
+    <thead>
+
+      <tr>
+
+        <th>#</th>
+
+        <th>Type</th>
+
+        <th>Name</th>
+
+        <th>Email</th>
+
+        <th>Mobile</th>
+
+        <th>RERA Status</th>
+
+        <th>Address</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {respondents.map((respondent, index) => (
+
+        <tr key={index}>
+
+          <td>{index + 1}</td>
+
+          <td>
+            {respondent.type || "-"}
+          </td>
+
+          <td>
+            {respondent.name || "-"}
+          </td>
+
+          <td>
+            {respondent.email || "-"}
+          </td>
+
+          <td>
+            {respondent.mobile || "-"}
+          </td>
+
+         <td>
+
+  <span
+    className={
+      respondent.is_rera_registered
+        ? "AdminComplaintDetail-badge-yes"
+        : "AdminComplaintDetail-badge-no"
+    }
+  >
+
+    {respondent.is_rera_registered
+      ? "✓ Registered"
+      : "✗ Not Registered"}
+
+  </span>
+
+</td>
+
+
+          <td>
+            {addrStr(respondent.address)}
+          </td>
+
+        </tr>
+
+      ))}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+    ) : (
+
+      <div>No Respondents</div>
+
+    )}
+
+  </div>
+
+</div>
           
 
           {/* Attached Documents */}
@@ -1190,54 +1574,181 @@ const isRejected =
                  (complaint?.complaint_documents ? Object.keys(complaint.complaint_documents).length : 0)} files
               </span>
             </div>
-            <div className="AdminComplaintDetail-docs-grid">
-              {complaint?.complaint_documents &&
-                Object.entries(complaint.complaint_documents).map(([type, filename]) => (
-                  <div
-                    className="AdminComplaintDetail-doc-item"
-                    key={type}
-                    onClick={() => setViewDoc({ filename, label: type.replace(/_/g, " ") })}
-                  >
-                    <div className="AdminComplaintDetail-doc-icon-wrap">
-                      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    <div className="AdminComplaintDetail-doc-info">
-                      <span className="AdminComplaintDetail-doc-type">{type.replace(/_/g, " ")}</span>
-                      <span className="AdminComplaintDetail-doc-name" title={filename}>{filename}</span>
-                    </div>
-                    <span className="AdminComplaintDetail-doc-open-hint">View →</span>
-                  </div>
-                ))}
+            <div className="AdminComplaintDetail-card-body AdminComplaintDetail-doc-wrapper">
 
-              {complaint?.supporting_documents?.length > 0 && (
-                <div className="AdminComplaintDetail-doc-table">
-                  <div className="doc-table-header">
-                    <span>Supporting</span>
-                    <span>Document</span>
-                  </div>
-                  {complaint.supporting_documents.map((doc, i) => (
-                    <div className="doc-table-row" key={i}>
-                      <span className="doc-desc">{doc.description || "—"}</span>
-                      <span
-                        className="doc-link"
-                        onClick={() => setViewDoc({ filename: doc.document, label: doc.description || `Supporting Doc ${i + 1}` })}
-                      >
-                        View Document →
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+  <table className="AdminComplaintDetail-table">
 
-              {(!complaint?.complaint_documents && !complaint?.supporting_documents?.length) && (
-                <div style={{ padding: "20px 4px", color: "#a0aec0", fontSize: 13, gridColumn: "1/-1" }}>
-                  No documents attached.
-                </div>
-              )}
-            </div>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Description</th>
+        <th>Uploaded Document</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {/* Complaint Documents */}
+      {complaint?.complaint_documents &&
+        Object.entries(complaint.complaint_documents).map(
+          ([type, filename], index) => (
+
+            <tr key={index}>
+
+              <td>{index + 1}</td>
+
+              <td>
+                {type.replace(/_/g, " ")}
+              </td>
+
+              <td>
+
+                <span
+                  className="AdminComplaintDetail-doc-link"
+                  onClick={() =>
+                    setViewDoc({
+                      filename,
+                      label: type.replace(/_/g, " "),
+                    })
+                  }
+                >
+                  View Document →
+                </span>
+
+              </td>
+
+            </tr>
+          )
+        )}
+
+      {/* Supporting Documents */}
+      {complaint?.supporting_documents?.map(
+        (doc, index) => (
+
+          <tr
+            key={`support-${index}`}
+          >
+
+            <td>
+              {(complaint?.complaint_documents
+                ? Object.keys(
+                    complaint.complaint_documents
+                  ).length
+                : 0) +
+                index +
+                1}
+            </td>
+
+            <td>
+              {doc.description || "-"}
+            </td>
+
+            <td>
+
+              <span
+                className="AdminComplaintDetail-doc-link"
+                onClick={() =>
+                  setViewDoc({
+                    filename:
+                      doc.document,
+                    label:
+                      doc.description ||
+                      `Supporting Doc ${
+                        index + 1
+                      }`,
+                  })
+                }
+              >
+                View Document →
+              </span>
+
+            </td>
+
+          </tr>
+        )
+      )}
+
+    </tbody>
+
+  </table>
+
+</div>
           </div>
+
+{/* Verification Details */}
+
+<div className="AdminComplaintDetail-card AdminComplaintDetail-card-wide">
+
+  <div className="AdminComplaintDetail-card-head">
+
+    <div className="AdminComplaintDetail-card-icon AdminComplaintDetail-ci-green">
+      ✔
+    </div>
+
+    <span className="AdminComplaintDetail-card-htitle">
+      Verification Details
+    </span>
+
+  </div>
+
+  <div className="AdminComplaintDetail-card-body">
+
+    <div className="AdminComplaintDetail-grid-2">
+
+      <Field
+        label="Full Name"
+        value={complaint?.verification_name}
+      />
+
+      <Field
+        label="Parent Name"
+        value={complaint?.verification_parent}
+      />
+
+      <Field
+        label="Place"
+        value={complaint?.verification_place}
+      />
+
+      <Field
+        label="Date"
+        value={complaint?.verification_date}
+      />
+
+    </div>
+
+    <div style={{ marginTop: "20px" }}>
+
+      <div
+        className="AdminComplaintDetail-label"
+        style={{ marginBottom: "10px" }}
+      >
+        Signature
+      </div>
+
+      {complaint?.verification_signature ? (
+
+        <img
+          src={complaint.verification_signature}
+          alt="Signature"
+          style={{
+            width: "220px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            padding: "10px",
+            background: "#fff",
+          }}
+        />
+
+      ) : (
+        "—"
+      )}
+
+    </div>
+
+  </div>
+
+</div>
            {isRejected && (
   <div className="AdminComplaintDetail-card AdminComplaintDetail-card-wide">
     <div className="AdminComplaintDetail-card-head">
@@ -1320,8 +1831,15 @@ const isRejected =
       fd.append("complainant_email", complainant?.email || "");
       fd.append("complainant_name", complainant?.name || "");
 
-      fd.append("respondent_email", respondent.email || "");
-      fd.append("respondent_name", respondent.name || "");
+      fd.append(
+  "respondents",
+  JSON.stringify(
+    respondents.map((r) => ({
+      email: r.email,
+      name: r.name,
+    }))
+  )
+);
 
       fd.append("subject", complaint?.subject || "");
       fd.append("description", complaint?.description || "");
@@ -1358,7 +1876,7 @@ const isRejected =
       </>
     ) : (
       <>
-      {isNoticeSent && (
+      {(isOpen || isNoticeSent) && (
         <button
           className="AdminComplaintDetail-btn-reject"
           onClick={() => setModal("reject")}
@@ -1410,13 +1928,14 @@ const isRejected =
       {/* ── MODALS ── */}
       {modal === "reject"       && <RejectModal       data={data} onClose={() => setModal(null)} onSuccess={showToast} />}
       {modal === "approve" && (
-  <ApproveModal
-    data={data}
-    caseNo={caseNo}
-    setCaseNo={setCaseNo}
-    onClose={() => setModal(null)}
-    onSuccess={showToast}
-  />
+<ApproveModal
+  data={data}
+  setData={setData}
+  caseNo={caseNo}
+  setCaseNo={setCaseNo}
+  onClose={() => setModal(null)}
+  onSuccess={showToast}
+/>
 )}
      {modal === "notice" && (
   <NoticeModal
@@ -1442,7 +1961,7 @@ const isRejected =
             </div>
             <div className="AdminComplaintDetail-modal-body">
               <div style={{ background: "#fef9ec", border: "1px solid #fcd34d", borderRadius: 7, padding: "12px 14px", fontSize: 13, color: "#92400e", lineHeight: 1.6 }}>
-                ⚠️ Are you sure you want to reopen complaint <strong>{complaint?.complaint_id}</strong>? Its status will be set back to <strong>Pending</strong>.
+                ⚠️ Are you sure you want to reopen this complaint? Its status will be set back to <strong>Pending</strong>.
               </div>
             </div>
             <div className="AdminComplaintDetail-modal-footer">

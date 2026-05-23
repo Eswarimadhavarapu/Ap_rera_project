@@ -138,7 +138,7 @@ useEffect(() => {
         {/* ===== BREADCRUMB ===== */}
         <div className="ud-breadcrumb">
           You are here :
-       <a href="/"> <span className="ud-link"> Home </span> </a>/
+       <a href="/home"> <span className="ud-link"> Home </span> </a>/
         <span> Registration </span> / 
           <span className="ud-current"> Real Estate Agent Registration</span>
         </div>

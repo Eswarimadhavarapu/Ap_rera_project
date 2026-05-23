@@ -211,6 +211,9 @@ export const getHearings = (complaintId) => {
     `/api/complint/hearings/${complaintId}`
   );
 };
+export const getCalendarHearings = () => {
+  return apiGet("/api/complint/calendar");
+};
 
 // Add hearing
 export const addHearing = (formData) => {
@@ -219,3 +222,48 @@ export const addHearing = (formData) => {
     formData
   );
 };
+
+export const getRTIList = (page = 1, status = "", fromDate = "", toDate = "") => {
+  const params = new URLSearchParams({ page });
+  if (status) params.append("status", status);
+  if (fromDate) params.append("from_date", fromDate);
+  if (toDate) params.append("to_date", toDate);
+  return apiGet(`/api/rti/list?${params.toString()}`);
+};
+
+export const getRTIById = (id) => apiGet(`/api/rti/${id}`);
+
+export const createRTI = (formData) => apiPost("/api/rti/create", formData);
+
+export const updateRTI = (id, formData) =>
+  apiFetch(`/api/rti/updates/${id}`, { method: "PATCH", body: formData });
+export const sendReturnApplication = (id, formData) =>
+  apiFetch(`/api/rti/send-return_application/${id}`, { method: "PATCH", body: formData });
+
+// Inform APIO  (PATCH /api/rti/updates/:id)
+export const informAPIORTI = (id, formData) =>
+  apiFetch(`/api/rti/updates/${id}`, { method: "PATCH", body: formData });
+
+// Create assignments  (POST /api/rti/assignment/create)
+export const createRTIAssignment = (formData) =>
+  apiPost("/api/rti/assignment/create", formData);
+
+// Update single assignment  (PATCH /api/rti/assignment/update/:id)
+export const updateRTIAssignment = (id, formData) =>
+  apiFetch(`/api/rti/assignment/update/${id}`, { method: "PATCH", body: formData });
+
+// Get assignments by RTI application id
+export const getAssignmentsByRTI = (rtiAppId) =>
+  apiGet(`/api/rti/assignments/${rtiAppId}`);
+
+// Get assignments by department
+export const getAssignmentsByDept = (dept) =>
+  apiGet(`/api/rti/assignments/department/${dept}`);
+
+// Send OTP
+export const sendRTIOTP = (email) =>
+  apiFetch("/api/rti/send-email-otp", { method: "POST", body: JSON.stringify({ email }) });
+
+// Verify OTP
+export const verifyRTIOTP = (email, otp) =>
+  apiFetch("/api/rti/verify-email-otp", { method: "POST", body: JSON.stringify({ email, otp }) });

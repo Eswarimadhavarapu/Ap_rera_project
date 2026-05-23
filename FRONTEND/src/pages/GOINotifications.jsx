@@ -39,7 +39,7 @@ function GoiRera() {
       {/* Breadcrumb */}
       <div className="goi-notif-breadcrumb">
         You are here :
-        <a href="/" className="goi-notif-home"> Home</a> /{" "}
+        <a href="/home" className="goi-notif-home"> Home</a> /{" "}
         <span className="goIitext">Notifications</span>
           <span> / </span>
   <span>GOIN Notifications</span>

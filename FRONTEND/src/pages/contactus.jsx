@@ -9,7 +9,7 @@ export default function ContactUs() {
       {/* Breadcrumb */}
       <div className="contactuss-breadcrumb-bar">
   You are here :
-  <Link to="/" className="contactuss-breadcrumb-home">
+  <Link to="/home" className="contactuss-breadcrumb-home">
     Home
     <span className="contactuss-home-underline"></span>
   </Link>

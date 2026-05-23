@@ -9,7 +9,7 @@ const JudgementHub = () => {
         {/* Breadcrumb */}
         <div className="judgement-breadcrumb">
           You are here :&nbsp;
-          <a href="#">Home</a> /&nbsp;
+          <a href="/home">Home</a> /&nbsp;
           <a href="#">Knowledge Hub</a> /&nbsp;
           <span>Judgement</span>
         </div>

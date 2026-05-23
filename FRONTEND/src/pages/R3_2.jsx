@@ -7,7 +7,7 @@ const R3_2 = () => {
     <div className="report-page-wrapper">
       {/* Breadcrumb remains for navigation consistency */}
       <div className="breadcrumb-blue no-print">
-        You are here : <Link to="/" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R3.2 Group housing Reports
+        You are here : <Link to="/home" className="text-white underline">Home</Link> / <Link to="/mis-reports" className="text-white underline">MIS Reports</Link> / R3.2 Group housing Reports
       </div>
 
       

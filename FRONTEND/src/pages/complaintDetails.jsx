@@ -126,6 +126,7 @@ export default function ComplaintDetails({
     cState: "",
     cDistrict: "",
     cPincode: "",
+     cNoticeAddress: "Yes",
     agentId: "",
     respondentRERA: "",
     projectName: "",
@@ -137,6 +138,7 @@ export default function ComplaintDetails({
     rState: "",
     rDistrict: "",
     rPincode: "",
+   rNoticeAddress: "Yes",
     promoterRegId: "",
     subject: "",
     subjectOther: "",
@@ -813,11 +815,46 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 
       setSubmitError("");
 
+      let finalRespondents = [...respondents];
+
+if (
+  form.respondentName &&
+  finalRespondents.length === 0
+) {
+  finalRespondents.push({
+
+    projectName: form.projectName,
+
+    respondentName: form.respondentName,
+
+    respondentMobile: form.respondentMobile,
+
+    respondentEmail: form.respondentEmail,
+
+    rAddress1: form.rAddress1,
+
+    rAddress2: form.rAddress2,
+
+    rState: form.rState,
+
+    rDistrict: form.rDistrict,
+
+    rPincode: form.rPincode,
+  });
+}
+
       // STEP 1: Create complaint (POST /complint/create)
       const complaintPayload = {
         complainant:
         {
           type: form.complaintBy || "",
+          is_rera_registered:
+  form.complainantRERA === "Yes",
+  registration_id:
+    form.complainantRERA === "Yes"
+      ? form.agentId || null
+      : null,
+
           registered_id: form.complainantRERA === "Yes" ? form.agentId || null : null,
           name: form.complainantName || "",
           mobile: form.complainantMobile || "",
@@ -828,24 +865,55 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           district: form.cDistrict || "",
           pincode: form.cPincode || "",
         },
-        respondent:
-        {
-          type: form.complaintAgainst || "",
-          is_rera_registered: form.respondentRERA === "Yes",
-          registration_id: form.respondentRERA === "Yes" ? form.promoterRegId || null : null,
-          project_name: form.projectName || "",
-          name: form.respondentName || "",
-          phone: form.respondentMobile || "",
-          email: form.respondentEmail || "",
-          address_line1: form.rAddress1 || "",
-          address_line2: form.rAddress2 || "",
-          state: form.rState || "",
-          district: form.rDistrict || "",
-          pincode: form.rPincode || "",
-        },
+        respondents: finalRespondents.map((r) => ({
+
+  type: form.complaintAgainst || "",
+
+  is_rera_registered:
+    form.respondentRERA === "Yes",
+
+  registration_id:
+    form.respondentRERA === "Yes"
+      ? form.promoterRegId || null
+      : null,
+
+  project_name: r.projectName || "",
+
+  name: r.respondentName || "",
+
+  phone: r.respondentMobile || "",
+
+  email: r.respondentEmail || "",
+
+  address_line1: r.rAddress1 || "",
+
+  address_line2: r.rAddress2 || "",
+
+  state: r.rState || "",
+
+  district: r.rDistrict || "",
+
+  pincode: r.rPincode || "",
+})),
         complaint:
         {
           subject: form.subject || "",
+           facts_of_complaint: form.factsOfComplaint,
+
+  verification: {
+
+    full_name: form.verificationName,
+
+    parent_name: form.verificationParent,
+
+    place: form.verificationPlace,
+
+    date: form.verificationDate,
+
+    signature: form.verificationSignature,
+
+  },
+
           relief_sought: form.relief || "",
           application_type: form.applicationType,
           complaint_regarding: form.complaintRegarding,
@@ -856,6 +924,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
               delivered: rows[0].delivered,
               deviation: rows[0].deviation,
             } : null,
+
            project: {
       is_registered: form.projectRegistered === "Yes",
       registration_number:
@@ -1195,6 +1264,101 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                 className="cr-container-input"
               />
             </div>
+                        <div className="cr-field">
+  <label className="cr-complaint-label">
+    Notice Issued This Address ?
+  </label>
+
+  <div className="cr-radio-line">
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="cNoticeAddress"
+        value="Yes"
+        checked={form.cNoticeAddress === "Yes"}
+        onChange={handleChange}
+      />
+      Yes
+    </label>
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="cNoticeAddress"
+        value="No"
+        checked={form.cNoticeAddress === "No"}
+        onChange={handleChange}
+      />
+      No
+    </label>
+
+  </div>
+</div>
+{form.cNoticeAddress === "No" && (
+  <>
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 1
+      </label>
+
+      <input
+        value={form.cAddress1}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 2
+      </label>
+
+      <input
+        value={form.cAddress2}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        State / UT
+      </label>
+
+      <input
+        value={form.cState}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        District
+      </label>
+
+      <input
+        value={form.cDistrict}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        PIN Code
+      </label>
+
+      <input
+        value={form.cPincode}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+  </>
+)}
+
           </div>
 
         </>
@@ -1357,6 +1521,101 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                     className="cr-container-input"
                   />
                 </div>
+                                <div className="cr-field">
+  <label className="cr-complaint-label">
+    Notice Issued This Address ?
+  </label>
+
+  <div className="cr-radio-line">
+
+    <label className="cr-complaint-label">
+  <input
+  type="radio"
+  name="cNoticeAddress"
+  value="Yes"
+  checked={form.cNoticeAddress === "Yes"}
+  onChange={handleChange}
+/>
+      Yes
+    </label>
+
+    <label className="cr-complaint-label">
+     <input
+  type="radio"
+  name="cNoticeAddress"
+  value="No"
+  checked={form.cNoticeAddress === "No"}
+  onChange={handleChange}
+/>
+      No
+    </label>
+
+  </div>
+</div>
+{form.cNoticeAddress === "No" && (
+  <>
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 1
+      </label>
+
+      <input
+       value={form.cAddress1}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 2
+      </label>
+
+      <input
+      value={form.cAddress2}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        State / UT
+      </label>
+
+      <input
+   value={form.cState}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        District
+      </label>
+
+      <input
+       value={form.cDistrict}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        PIN Code
+      </label>
+
+      <input
+        value={form.cPincode}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+  </>
+)}
+
               </div>
             </>
           )}
@@ -1542,6 +1801,100 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
                   className="cr-container-input"
                 />
               </div>
+              <div className="cr-field">
+  <label className="cr-complaint-label">
+    Notice Issued This Address ?
+  </label>
+
+  <div className="cr-radio-line">
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="rNoticeAddress"
+        value="Yes"
+        checked={form.rNoticeAddress === "Yes"}
+        onChange={handleChange}
+      />
+      Yes
+    </label>
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="rNoticeAddress"
+        value="No"
+        checked={form.rNoticeAddress === "No"}
+        onChange={handleChange}
+      />
+      No
+    </label>
+
+  </div>
+</div>
+{form.rNoticeAddress === "No" && (
+  <>
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 1
+      </label>
+
+      <input
+        value={form.rAddress1}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Notice Address Line 2
+      </label>
+
+      <input
+        value={form.rAddress2}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        State / UT
+      </label>
+
+      <input
+        value={form.rState}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        District
+      </label>
+
+      <input
+        value={form.rDistrict}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        PIN Code
+      </label>
+
+      <input
+        value={form.rPincode}
+        readOnly
+        className="cr-container-input"
+      />
+    </div>
+  </>
+)}
 
             </div>
               <div style={{ marginTop: "15px" }}>
@@ -1590,6 +1943,7 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
 )}
           </>
         )}
+        {/* ================= OFFICE USE SECTION ================= */}
 
       <h4>Details Of The Complaint</h4>
       <div className="cr-container-cr-row-3">
@@ -2033,6 +2387,158 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           )}
         </>
       )}
+            {/* ================= ADVOCATE SECTION ================= */}
+
+<h4>Advocate / Lawyer Details</h4>
+
+<div className="cr-field">
+
+  <label className="cr-complaint-label">
+    Do you have a lawyer/advocate representing you?
+  </label>
+
+  <div className="cr-radio-line">
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="hasAdvocate"
+        value="Yes"
+        checked={form.hasAdvocate === "Yes"}
+        onChange={handleChange}
+        className="cr-container-input"
+      />
+      Yes
+    </label>
+
+    <label className="cr-complaint-label">
+      <input
+        type="radio"
+        name="hasAdvocate"
+        value="No"
+        checked={form.hasAdvocate === "No"}
+        onChange={handleChange}
+        className="cr-container-input"
+      />
+      No
+    </label>
+
+  </div>
+</div>
+
+{form.hasAdvocate === "Yes" && (
+
+  <div className="cr-container-cr-row-3">
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Advocate Full Name <span>*</span>
+      </label>
+
+      <input
+        type="text"
+        name="advocateName"
+        value={form.advocateName || ""}
+        onChange={handleChange}
+        placeholder="Advocate Full Name"
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Bar Council Registration Number <span>*</span>
+      </label>
+
+      <input
+        type="text"
+        name="barCouncilNumber"
+        value={form.barCouncilNumber || ""}
+        onChange={handleChange}
+        placeholder="Bar Council Registration Number"
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Mobile Number <span>*</span>
+      </label>
+
+      <input
+        type="text"
+        name="advocateMobile"
+        value={form.advocateMobile || ""}
+        onChange={handleChange}
+        placeholder="Mobile Number"
+        className="cr-container-input"
+        maxLength={10}
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Email ID
+      </label>
+
+      <input
+        type="email"
+        name="advocateEmail"
+        value={form.advocateEmail || ""}
+        onChange={handleChange}
+        placeholder="Email ID"
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Office Address
+      </label>
+
+      <input
+        type="text"
+        name="advocateOfficeAddress"
+        value={form.advocateOfficeAddress || ""}
+        onChange={handleChange}
+        placeholder="Office Address"
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        State Bar Council
+      </label>
+
+      <input
+        type="text"
+        name="stateBarCouncil"
+        value={form.stateBarCouncil || ""}
+        onChange={handleChange}
+        placeholder="State Bar Council"
+        className="cr-container-input"
+      />
+    </div>
+
+    <div className="cr-field">
+      <label className="cr-complaint-label">
+        Vakalatnama / Authorization Letter (PDF)
+        <span>*</span>
+      </label>
+
+      <input
+        type="file"
+        name="authorizationFile"
+        accept="application/pdf"
+        onChange={handleChange}
+        className="cr-container-input"
+      />
+    </div>
+
+  </div>
+)}
+
       <h4>Project Details</h4>
 
 <div className="cr-container-cr-row-3">
@@ -2169,6 +2675,117 @@ if (form.projectRegistered === "No" && !form.projectLpNumber) {
           </tbody>
         </table>
       )}
+      {/* ================= VERIFICATION SECTION ================= */}
+
+<h4>Verification</h4>
+
+<div className="verification-section">
+
+  <h2 className="verification-title">
+    VERIFICATION
+  </h2>
+
+  <div className="verification-content">
+
+    <div className="verification-line">
+
+      <span>I</span>
+
+      <input
+        type="text"
+        name="verificationName"
+        placeholder="Enter Full Name"
+        value={form.verificationName || ""}
+        onChange={handleChange}
+        className="verification-inline-input"
+      />
+
+      <span>
+        (name in full block letters), son/daughter of
+      </span>
+
+      <input
+        type="text"
+        name="verificationParent"
+        placeholder="Enter Father / Mother Name"
+        value={form.verificationParent || ""}
+        onChange={handleChange}
+        className="verification-inline-input"
+      />
+
+    </div>
+
+    <p className="verification-text">
+      the complainant do hereby verify that the contents of paragraphs
+      [1 to 9] are true to my personal knowledge and belief and that
+      I have not suppressed any material fact(s).
+    </p>
+
+    <div className="verification-bottom">
+
+      <div className="verification-left">
+
+        <div className="verification-field">
+          <label>Place :</label>
+
+          <input
+            type="text"
+            name="verificationPlace"
+            placeholder="Enter Place"
+            value={form.verificationPlace || ""}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="verification-field">
+          <label>Date :</label>
+
+          <input
+            type="date"
+            name="verificationDate"
+            value={form.verificationDate || ""}
+            onChange={handleChange}
+          />
+        </div>
+
+      </div>
+
+      <div className="verification-right">
+
+        <label>Signature of the appellant(s)</label>
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+
+            if (file) {
+              const imageUrl = URL.createObjectURL(file);
+
+              setForm((prev) => ({
+                ...prev,
+                verificationSignature: imageUrl,
+              }));
+            }
+          }}
+        />
+
+        {form.verificationSignature && (
+          <img
+            src={form.verificationSignature}
+            alt="Signature Preview"
+            className="verification-signature-preview"
+          />
+        )}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
       <h4>Declaration</h4>
       <div className="cr-declaration">

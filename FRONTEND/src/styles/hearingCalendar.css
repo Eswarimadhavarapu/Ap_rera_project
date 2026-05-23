@@ -1,0 +1,372 @@
+.calendar-main-container {
+  padding: 60px 80px;
+  background: #f5ecec;
+}
+
+/* TITLE */
+
+.calendar-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #5b2c06;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* MAIN LAYOUT */
+
+.calendar-content {
+  display: flex;
+  gap: 35px;
+  align-items: flex-start;
+}
+
+/* LEFT PANEL */
+
+.calendar-left {
+  width: 35%;
+  background: #2f2f2f;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* RIGHT PANEL */
+
+.calendar-right {
+  width: 65%;
+  background: #fffaf5;
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  border: 1px solid #ead8c5;
+}
+
+.calendar-right h3 {
+  font-size: 34px;
+  margin-bottom: 20px;
+  color: #5b2c06;
+}
+
+.calendar-right p {
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: #333;
+}
+
+/* HEARING CARD */
+
+.hearing-card {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 14px;
+  background: #fff;
+  border-left: 5px solid #0d6efd;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.hearing-card:hover {
+  transform: translateY(-3px);
+}
+
+.hearing-card h4 {
+  font-size: 30px;
+  margin-bottom: 16px;
+  color: #0d6efd;
+}
+
+.hearing-card p {
+  font-size: 17px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* NO HEARING */
+
+.no-hearing {
+  margin-top: 25px;
+  color: #888;
+  font-size: 20px;
+}
+
+/* CALENDAR */
+
+.react-calendar {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  color: white;
+  font-family: inherit;
+}
+
+/* NAVIGATION */
+
+.react-calendar__navigation {
+  margin-bottom: 25px;
+}
+
+.react-calendar__navigation button {
+  background: transparent !important;
+  color: white !important;
+  font-size: 20px;
+  min-width: 44px;
+  border: none;
+}
+
+.react-calendar__navigation button:hover {
+  background: rgba(255,255,255,0.1) !important;
+  border-radius: 8px;
+}
+
+/* WEEK DAYS */
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ddd;
+  margin-bottom: 12px;
+}
+
+/* DATE TILES */
+
+.react-calendar__tile {
+  height: 65px;
+  color: white;
+  background: transparent !important;
+  border-radius: 14px;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+/* HOVER */
+
+.react-calendar__tile:hover {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+/* TODAY */
+
+.react-calendar__tile--now {
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+}
+
+/* SELECTED DATE */
+
+.react-calendar__tile--active {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+/* HOLIDAYS */
+
+.holiday-date {
+  background: #f59e0b !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+/* HEARING DATES */
+
+.hearing-date {
+  background: #2563eb !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+/* SUNDAYS */
+
+.react-calendar__month-view__days__day--weekend {
+  color: #ff6b6b !important;
+}
+
+/* RESPONSIVE */
+
+/* BUTTON */
+
+.view-btn {
+
+  margin-top: 20px;
+  background: #0d6efd;
+  color: white;
+
+  border: none;
+
+  padding: 12px 22px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  transition: 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #0b5ed7;
+}
+
+/* OVERLAY */
+
+.overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.7);
+
+  z-index: 9999;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+/* MODAL */
+
+.hearing-modal {
+
+  background: #fffaf5;
+
+  width: 75%;
+
+  max-width: 900px;
+
+  max-height: 85vh;
+
+  overflow-y: auto;
+
+  border-radius: 18px;
+
+  padding: 30px;
+
+  position: relative;
+
+  outline: none;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+  animation: popupAnimation 0.3s ease;
+}
+
+/* HEADER */
+
+.modal-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 25px;
+
+  border-bottom: 1px solid #ddd;
+
+  padding-bottom: 15px;
+}
+
+.modal-header h2 {
+
+  font-size: 34px;
+
+  color: #5b2c06;
+}
+
+/* CLOSE BUTTON */
+
+.close-btn {
+
+  background: #dc3545;
+
+  color: white;
+
+  border: none;
+
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 50%;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #bb2d3b;
+}
+
+/* CONTENT */
+
+.modal-content {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* ANIMATION */
+
+@keyframes popupAnimation {
+
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* RESPONSIVE */
+
+@media screen and (max-width: 992px) {
+
+  .calendar-content {
+    flex-direction: column;
+  }
+
+  .calendar-left,
+  .calendar-right {
+    width: 100%;
+  }
+
+  .calendar-main-container {
+    padding: 30px 20px;
+  }
+
+  .calendar-title {
+    font-size: 32px;
+  }
+
+  .calendar-right h3 {
+    font-size: 28px;
+  }
+
+  .hearing-modal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 26px;
+  }
+}

@@ -20,7 +20,8 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
   dd: "DEPUTY DIRECTOR",
   l1: "LEGAL 1 PANEL",
   l2: "LEGAL 2 PANEL",
-  directory: "DIRECTOR DASHBOARD",
+  director: "DIRECTOR DASHBOARD",
+  chairman: "CHAIRMAN DASHBOARD",
 };
 
   // ✅ Dropdown state
@@ -79,6 +80,9 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
         </>
       <button onClick={() => navigate("/scrutiny/UnregisterList")}>
         Rera unregistration
+      </button>
+      <button onClick={() => navigate("/RTI_List")}>
+        RTI
       </button>
       {/* Logout */}
       <button onClick={() => navigate("/")}>

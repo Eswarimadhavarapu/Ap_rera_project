@@ -30,7 +30,7 @@ const R19_1 = () => {
     <div className="r19-container">
       {/* Breadcrumb Bar */}
       <div className="breadcrumb-bar">
-        You are here : <Link to="/" className="link">Home</Link> / <Link to="/mis-reports" className="link">MIS Reports</Link> / R19.1 Eligible Projects under RERA as per DPMS
+        You are here : <Link to="/home" className="link">Home</Link> / <Link to="/mis-reports" className="link">MIS Reports</Link> / R19.1 Eligible Projects under RERA as per DPMS
       </div>
 
       <div className="content-box">

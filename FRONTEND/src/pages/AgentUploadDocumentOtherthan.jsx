@@ -186,7 +186,7 @@ if (!files.year3 && !files.year3Url) {
     <div className="zagentud-page-wrapper">
 
       <div className="zagentud-breadcrumb">
-        You are here : <a href="/">Home</a> / Registration / <strong>Real Estate Agent Registration</strong>
+        You are here : <a href="/home">Home</a> / Registration / <strong>Real Estate Agent Registration</strong>
       </div>
 
       <div className="zagentud-container">

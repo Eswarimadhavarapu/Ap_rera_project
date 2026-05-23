@@ -1052,7 +1052,6 @@
 
 .AdminComplaintDetail-docviewer-bar {
   width: 100%;
-  max-width: 960px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1780,4 +1779,265 @@
 
 .AdminComplaintDetail-btn-warning:hover{
   background:#d97706;
+}
+
+
+
+
+
+
+.AdminComplaintDetail-respondent-wrapper{
+  width: 2450px;
+  overflow: hidden;
+  padding: 0;
+  background: #fff;
+  margin:15px;
+}
+
+.AdminComplaintDetail-respondent-wrapper table{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.AdminComplaintDetail-respondent-wrapper thead tr{
+  background: #6f92b2;
+}
+
+.AdminComplaintDetail-respondent-wrapper th{
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px;
+  border: 1px solid #d6d6d6;
+  text-align: left;
+}
+
+.AdminComplaintDetail-respondent-wrapper td{
+  padding: 18px 16px;
+  border: 1px solid #d6d6d6;
+  font-size: 15px;
+  color: #222;
+  vertical-align: top;
+  line-height: 1.6;
+  background: #fff;
+}
+
+.AdminComplaintDetail-respondent-wrapper tbody tr:nth-child(even){
+  background: #f8fafc;
+}
+
+.AdminComplaintDetail-respondent-wrapper tbody tr:hover{
+  background: #eef5fb;
+}
+
+.AdminComplaintDetail-respondent-wrapper td:last-child,
+.AdminComplaintDetail-respondent-wrapper th:last-child{
+  width: 35%;
+}
+
+.AdminComplaintDetail-respondent-wrapper td:nth-child(4){
+  min-width: 260px;
+}
+
+.AdminComplaintDetail-respondent-wrapper td:nth-child(6){
+  min-width: 320px;
+}
+
+
+
+.AdminComplaintDetail-doc-wrapper{
+  width:2450px;
+  padding:0;
+  margin: 15px;
+}
+
+.AdminComplaintDetail-doc-wrapper table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:auto;
+}
+
+.AdminComplaintDetail-doc-wrapper thead tr{
+  background:#6f92b2;
+}
+
+.AdminComplaintDetail-doc-wrapper th{
+  color:#fff;
+  padding:18px 20px;
+  border:1px solid #d6d6d6;
+  text-align:left;
+  font-size:15px;
+  font-weight:600;
+}
+
+.AdminComplaintDetail-doc-wrapper td{
+  padding:20px;
+  border:1px solid #d6d6d6;
+  font-size:15px;
+  vertical-align:middle;
+  background:#fff;
+}
+
+.AdminComplaintDetail-doc-wrapper tbody tr:nth-child(even){
+  background:#f8fafc;
+}
+
+.AdminComplaintDetail-doc-link{
+  color:#1b63b7;
+  font-weight:500;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.AdminComplaintDetail-doc-link:hover{
+  text-decoration:underline;
+}
+
+.AdminComplaintDetail-docviewer-container{
+    width: 72vw;
+  height: 88vh;
+  max-width: 1150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.AdminComplaintDetail-docviewer-bar{
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+   max-width: 100%;
+}
+
+.AdminComplaintDetail-docviewer-frame{
+  width: 100%;
+  height: calc(88vh - 65px);
+  max-width: 100%;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.AdminComplaintDetail-docviewer-frame iframe{
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+
+
+.AdminComplaintDetail-after-pdf{
+  background:#fff;
+  padding:30px;
+  margin-top:20px;
+  border-top:1px solid #d6d6d6;
+}
+
+/* SHORTFALL TITLE */
+.AdminComplaintDetail-shortfall-section h3{
+  font-size:20px;
+  margin-bottom:18px;
+  color:#2f2f2f;
+  font-weight:600;
+}
+
+/* RADIO */
+.AdminComplaintDetail-radio-group{
+  display:flex;
+  gap:25px;
+  margin-bottom:20px;
+}
+
+.AdminComplaintDetail-radio-group label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  color:#444;
+}
+
+/* TEXTAREA */
+.AdminComplaintDetail-shortfall-section textarea{
+  width:100%;
+  height:130px;
+  border:1px solid #cfd6df;
+  border-radius:8px;
+  padding:15px;
+  resize:none;
+  font-size:15px;
+  outline:none;
+}
+
+.AdminComplaintDetail-shortfall-section textarea:focus{
+  border-color:#173b6c;
+}
+
+/* SUBMIT BUTTON */
+.AdminComplaintDetail-submit-btn{
+  margin-top:20px;
+  background:#ef4444;
+  color:#fff;
+  border:none;
+  padding:12px 28px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+}
+
+.AdminComplaintDetail-submit-btn:hover{
+  background:#dc2626;
+}
+
+/* UPDATED REMARKS */
+.AdminComplaintDetail-updated-remarks{
+  margin-top:45px;
+}
+
+.AdminComplaintDetail-updated-remarks h2{
+  font-size:32px;
+  margin-bottom:20px;
+  color:#444;
+  font-weight:500;
+}
+
+/* TABLE */
+.AdminComplaintDetail-updated-remarks table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+/* HEADER */
+.AdminComplaintDetail-updated-remarks th{
+  background:#173b6c;
+  color:#fff;
+  padding:16px;
+  text-align:left;
+  font-size:15px;
+  font-weight:600;
+  border:1px solid #d6d6d6;
+}
+
+/* TD */
+.AdminComplaintDetail-updated-remarks td{
+  border:1px solid #d6d6d6;
+  padding:16px;
+  font-size:15px;
+  color:#333;
+  background:#fff;
+}
+
+/* HOVER */
+.AdminComplaintDetail-updated-remarks tbody tr:hover{
+  background:#f7fafc;
+}
+
+/* VIEW LINK */
+.AdminComplaintDetail-updated-remarks a{
+  color:#1d4ed8;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.AdminComplaintDetail-updated-remarks a:hover{
+  text-decoration:underline;
 }

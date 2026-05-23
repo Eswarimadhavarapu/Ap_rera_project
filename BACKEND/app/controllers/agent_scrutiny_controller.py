@@ -13,8 +13,13 @@ from app.models.agent_scrutiny_model import (
     create_agent_verification_remark,
     get_agent_verification_remarks,
     create_agent_final_verification,
-    get_agent_final_status
+    get_agent_final_status,
+    get_agent_final_shortfall_remarks,
+    get_agent_document_shortfall_remarks,
+    get_agent_contact_by_application,
+    generate_agent_registration_number,
 )
+from app.utils.mail_service import send_email
 
 agent_scrutiny_bp = Blueprint("agent_scrutiny_bp", __name__, url_prefix="/api")
 
@@ -38,6 +43,38 @@ def _parse_bool(value):
     if isinstance(value, bool):
         return value
     return str(value or "").strip().lower() in {"true", "1", "yes", "y"}
+
+
+def _format_agent_shortfall_email(application_no, applicant_name, final_shortfalls, document_shortfalls):
+    final_lines = [
+        f"{index}. {row.get('verified_by') or 'Department'}: {row.get('remarks') or 'No remarks'}"
+        for index, row in enumerate(final_shortfalls, 1)
+    ] or ["No general shortfall remarks recorded."]
+
+    document_lines = [
+        (
+            f"{index}. {row.get('document_name') or 'Document'}"
+            f" - {row.get('verified_by') or row.get('verification_team') or 'Department'}:"
+            f" {row.get('remarks') or 'No remarks'}"
+        )
+        for index, row in enumerate(document_shortfalls, 1)
+    ] or ["No document shortfall remarks recorded."]
+
+    return f"""Dear {applicant_name or 'Agent'},
+
+Shortfalls have been identified for agent application {application_no}.
+
+General shortfall remarks:
+{chr(10).join(final_lines)}
+
+Document shortfall remarks:
+{chr(10).join(document_lines)}
+
+Please address the above shortfalls and submit the required corrections/documents as per AP RERA instructions.
+
+Regards,
+AP RERA Authority
+"""
 
 @agent_scrutiny_bp.route("/agent-scrutiny/registrations", methods=["GET", "OPTIONS"])
 def scrutiny_registrations():
@@ -210,7 +247,8 @@ def final_submit():
             "status": "verified",
             "is_shortfall": True if str(data.get("is_shortfall")).lower() == "yes" else False,
             "verified_by": data.get("department"),
-            "remarks": data.get("remarks")
+            "remarks": data.get("remarks"),
+            "registration_number": None,
         }
 
         if not payload["application_no"]:
@@ -218,11 +256,110 @@ def final_submit():
 
         result = create_agent_final_verification(payload)
 
-        return jsonify({
+        response_payload = {
             "message": "Final Verification Done",
-            "data": result
-        }), 200
+            "data": result,
+        }
 
+        is_director = str(payload["verified_by"] or "").strip().lower() in {"director", "directory"}
+
+        if is_director and payload["is_shortfall"]:
+            contact = get_agent_contact_by_application(payload["application_no"])
+            if not contact or not contact.get("email"):
+                return jsonify({"error": "Agent email not found"}), 404
+
+            email_sent = send_email(
+                contact["email"],
+                f"Agent Shortfall Notice - {payload['application_no']}",
+                _format_agent_shortfall_email(
+                    payload["application_no"],
+                    contact.get("applicant_name"),
+                    get_agent_final_shortfall_remarks(payload["application_no"]),
+                    get_agent_document_shortfall_remarks(payload["application_no"]),
+                ),
+            )
+            response_payload.update(
+                {
+                    "message": "Final Verification Done and shortfall email sent"
+                    if email_sent
+                    else "Final Verification Done but shortfall email failed",
+                    "email_sent": email_sent,
+                }
+            )
+        elif is_director and not payload["is_shortfall"]:
+            response_payload["message"] = "Final Verification Done and forwarded to chairman"
+            response_payload["forwarded_to"] = "chairman"
+
+        return jsonify(response_payload), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@agent_scrutiny_bp.route("/agent-scrutiny/chairman-decision", methods=["POST"])
+def chairman_decision():
+    try:
+        data = request.get_json() or {}
+        application_no = str(data.get("application_no") or "").strip()
+        decision = str(data.get("decision") or "").strip().lower()
+        remarks = str(data.get("remarks") or "").strip()
+
+        if not application_no:
+            return jsonify({"error": "application_no required"}), 400
+        if decision not in {"approved", "rejected"}:
+            return jsonify({"error": "decision must be approved or rejected"}), 400
+        if not remarks:
+            return jsonify({"error": "remarks required"}), 400
+
+        contact = None
+        if decision == "approved":
+            contact = get_agent_contact_by_application(application_no)
+            if not contact or not contact.get("email"):
+                return jsonify({"error": "Agent email not found"}), 404
+
+        registration_number = (
+            generate_agent_registration_number() if decision == "approved" else None
+        )
+
+        result = create_agent_final_verification(
+            {
+                "application_no": application_no,
+                "status": decision,
+                "is_shortfall": False,
+                "verified_by": "chairman",
+                "remarks": remarks,
+                "registration_number": registration_number,
+            }
+        )
+
+        email_sent = None
+        if decision == "approved":
+            email_sent = send_email(
+                contact["email"],
+                f"Agent Registration Approved - {registration_number}",
+                f"""Dear {contact.get('applicant_name') or 'Agent'},
+
+Your agent application {application_no} has been approved by AP RERA.
+
+Registration Number: {registration_number}
+
+Regards,
+AP RERA Authority
+""",
+            )
+
+        return jsonify(
+            {
+                "message": (
+                    f"Application approved by chairman. Registration number {registration_number} created"
+                    if decision == "approved"
+                    else "Application rejected by chairman"
+                ),
+                "data": result,
+                "registration_number": registration_number,
+                "email_sent": email_sent,
+            }
+        ), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

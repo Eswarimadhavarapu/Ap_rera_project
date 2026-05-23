@@ -9,7 +9,7 @@ const CopyrightPolicy = () => {
       <div className="copyright-breadcrumb-wrapper">
         <div className="copyright-breadcrumb">
           <span>You are here :</span>
-          <a href="/"> Home</a>
+          <a href="/home"> Home</a>
           <span> / Copyright Policy</span>
         </div>
       </div>

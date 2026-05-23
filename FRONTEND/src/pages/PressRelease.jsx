@@ -10,7 +10,7 @@ const PressRelease = () => {
         {/* Breadcrumb */}
         <div className="pressRel-breadcrumb">
           You are here :&nbsp;
-          <a href="#">Home</a> /&nbsp;
+          <a href="/home">Home</a> /&nbsp;
           <a href="#">Promotions</a> /&nbsp;
           <span>Press Releases</span>
         </div>

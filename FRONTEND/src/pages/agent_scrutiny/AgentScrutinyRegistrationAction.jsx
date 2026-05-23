@@ -71,7 +71,17 @@ function DataTable({ className = "", columns, rows, emptyText = "No data availab
 export default function AgentScrutinyRegistration_Action() {
   const navigate = useNavigate();
   const { admin } = useAdmin();
-  const dept = admin?.department?.toLowerCase();
+  const deptName = String(admin?.department || "").toLowerCase();
+  const dept = deptName.includes("assistant director")
+    ? "ad"
+    : deptName.includes("deputy director")
+      ? "dd"
+      : deptName.includes("director") || deptName.includes("directory")
+        ? "director"
+        : deptName.includes("chairman")
+          ? "chairman"
+          : deptName;
+  const isChairman = dept === "chairman";
 
   const location = useLocation();
   const applicationNumber = location.state?.applicationNumber || sessionStorage.getItem("agentApplicationNumber") || "";
@@ -110,8 +120,8 @@ export default function AgentScrutinyRegistration_Action() {
         }
 
         // ✅ Directory → verification + audit + own
-        if (currentDept === "directory" || currentDept === "director") {
-          return rowDept === "verification" || rowDept === "audit" || rowDept === "directory";
+        if (dept === "director" || dept === "chairman") {
+          return true;
         }
 
         // ✅ Other departments → verification + own
@@ -200,7 +210,7 @@ export default function AgentScrutinyRegistration_Action() {
     }
 
     try {
-      await apiPost("/api/agent-scrutiny/final-submit", {
+      const submitResult = await apiPost("/api/agent-scrutiny/final-submit", {
         application_no: applicationNumber,
         department: dept,
         is_shortfall: shortfall,
@@ -212,11 +222,34 @@ export default function AgentScrutinyRegistration_Action() {
       setFinalRemarks("");
       setShortfall("");
 
-      alert("Final Verification Completed");
+      alert(submitResult?.message || "Final Verification Completed");
       // navigate("/agent-scrutiny/registrations"); // Optional redirection
     } catch (err) {
       console.error(err);
       alert("Error submitting remarks");
+    }
+  };
+
+  const handleChairmanDecision = async (decision) => {
+    if (!finalRemarks.trim()) {
+      alert("Please enter chairman remarks");
+      return;
+    }
+
+    try {
+      const result = await apiPost("/api/agent-scrutiny/chairman-decision", {
+        application_no: applicationNumber,
+        decision,
+        remarks: finalRemarks,
+      });
+
+      await loadRemarks();
+      setFinalRemarks("");
+      alert(result?.message || `Application ${decision}`);
+      navigate("/scrutiny/agent-scrutiny/registrations");
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting chairman decision");
     }
   };
 
@@ -276,6 +309,7 @@ export default function AgentScrutinyRegistration_Action() {
                   />
                 </div>
 
+                {!isChairman && (
                 <section className="spr-panel" style={{ marginTop: "20px" }}>
                   <div className="spr-panel-head">
                     <h2>ACTION TO BE TAKEN</h2>
@@ -330,6 +364,43 @@ export default function AgentScrutinyRegistration_Action() {
                     </button>
                   </div>
                 </section>
+                )}
+
+                {isChairman && (
+                  <section className="spr-panel" style={{ marginTop: "20px" }}>
+                    <div className="spr-panel-head">
+                      <h2>CHAIRMAN DECISION</h2>
+                    </div>
+
+                    <div className="spr-remarks-box">
+                      <textarea
+                        className="spr-textarea"
+                        placeholder="Enter chairman remarks..."
+                        rows={4}
+                        value={finalRemarks}
+                        onChange={(e) => setFinalRemarks(e.target.value)}
+                        style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+                      />
+                    </div>
+
+                    <div className="spr-submit-row" style={{ marginTop: "15px", textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                      <button
+                        type="button"
+                        className="spr-btn spr-btn-primary"
+                        onClick={() => handleChairmanDecision("approved")}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        className="spr-btn spr-btn-secondary"
+                        onClick={() => handleChairmanDecision("rejected")}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </section>
+                )}
 
                 <section className="spr-panel" style={{ marginTop: "30px" }}>
                   <div className="spr-panel-head">
@@ -379,6 +450,7 @@ export default function AgentScrutinyRegistration_Action() {
                   </div>
                 </section>
 
+                {!isChairman && (
                 <div className="spr-footer" style={{ marginTop: "30px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                   <button
                     type="button"
@@ -388,6 +460,7 @@ export default function AgentScrutinyRegistration_Action() {
                     Final Submit
                   </button>
                 </div>
+                )}
               </>
             )}
           </div>

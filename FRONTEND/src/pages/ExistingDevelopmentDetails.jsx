@@ -1848,7 +1848,7 @@ const ExistingDevelopmentDetails = () => {
             <div className="development-details-container_pd">
                 <div className="development-details-breadcrumb1">
                     <span>You are here : </span>
-                    <a href="/">Home</a>
+                    <a href="/home">Home</a>
                     <span> / </span>
                     <span>Registration / Project Registration</span>
                 </div>
@@ -1867,7 +1867,7 @@ const ExistingDevelopmentDetails = () => {
 
             <div className="development-details-breadcrumb1">
                 <span>You are here : </span>
-                <a href="/">Home</a>
+                <a href="/home">Home</a>
                 <span> / </span>
                 <span>Registration / Project Registration</span>
             </div>

@@ -164,7 +164,7 @@ useEffect(() => {
 
       <div className="agentpreview-breadcrumb-bar">
         You are here :
-       <a href="/"><span className="agentpreview-link">Home </span> </a>/
+       <a href="/home"><span className="agentpreview-link">Home </span> </a>/
         <span> Registration </span> /
         <span className="agentpreview-active"> Real Estate Agent Registration</span>
       </div>

@@ -27,6 +27,40 @@ const isValidPastDate = (v) => {
 const isValidMobile = (v) => v.length === 10;
 const isValidAadhaar = (v) => v.length === 12;
 
+const PROMOTER_NAME_DOCUMENTS = [
+  "Change Request Form P4",
+  "Copy of PAN, PHOTO and AADHAR of the Proprietor/Authorized Signatory",
+  "Designated Bank statement",
+  "Balance sheet",
+  "IT Returns",
+  "Agreement for Sale in the prescribed RERA format (Form P21)",
+  "Conveyance deed – Form P15",
+  "Allotment Letter – Form P14",
+  "Legal Opinion",
+  "Detailed Estimation Certificate in the prescribed RERA format (Form P16/P17)",
+  "Statement of source of funds in the prescribed RERA format (Form P9)",
+  "No litigation affidavit - Form P10 on 20/- stamp paper",
+  "NOC from the previous promoter",
+  "Ownership documents",
+  "Structural Stability Certificate in the prescribed RERA format (Form P19)",
+  "New Development agreement",
+  "Sale deed (If any sale, 2/3rd of consent letters shall be submitted individually. In case there are no sales or allotments, the promoter shall submit a No-Sale Affidavit to that effect.)",
+  "Latest EC, if any sale",
+  "Form-B Form P11 on 20/- stamp paper",
+  "Other Documents"
+];
+
+const BANK_ACCOUNT_DOCUMENTS = [
+  "Change Request form – P4",
+  "New Designated Bank Statement – Promoter name & Project name should be account holder name",
+  "Form 8A (Application for Change in RERA Bank Account)",
+  "Form 8B (Certificate of Account Balance from the existing RERA Bank Account)",
+  "Form 8C (Confirmation Letter of change in RERA Account)",
+  "Form 8D (Certificate of Fund Transfer by Bank having new RERA Bank Account)",
+  "Formal letter clearly stating the reasons for changing the previously designated RERA account to the newly designated RERA account",
+   "Other Documents"
+];
+
 
 
 const handleValidatedChange = (e, onChange) => {
@@ -120,12 +154,12 @@ export const PROMOTER_DETAILS_SUBSECTIONS = [
   { name: "mobileNumber", label: "Mobile Number", type: "text" },
   { name: "emailId", label: "Email ID", type: "email" },
   { name: "aadhaarNumber", label: "Aadhaar Number", type: "text" },
-  { name: "gstNumber", label: "GST Number", type: "text" },
-  { name: "licenseNumber", label: "License Number", type: "text" },
+  // { name: "gstNumber", label: "GST Number", type: "text" },
+  // { name: "licenseNumber", label: "License Number", type: "text" },
   { name: "licenseDate", label: "License Date", type: "date" },
   { name: "websiteUrl", label: "Website URL", type: "text" },
   { name: "panNumber", label: "PAN Card Number", type: "text" },
-  { name: "landlineNumber", label: "Landline Number", type: "text" }
+  // { name: "landlineNumber", label: "Landline Number", type: "text" }
 ]
   },
 
@@ -147,6 +181,8 @@ const S = {
   td: { padding: "9px 12px", border: "1px solid #e2e8f2", verticalAlign: "top" },
 };
 
+// const [bankDocs, setBankDocs] = useState({});
+
 function FieldWrap({ label, children }) {
   return (
     <div>
@@ -159,6 +195,7 @@ function FieldWrap({ label, children }) {
 // ─── BANK ACCOUNT SECTION ─────────────────────────────────────────────────────
 // Simple grid inputs — review page shows label:value text format (not table)
 function BankAccountSection({ fields, formValues, onChange }) {
+  const [bankDocs, setBankDocs] = useState({});
   return (
     <div style={S.wrap}>
       <div style={S.grid2}>
@@ -188,7 +225,78 @@ function BankAccountSection({ fields, formValues, onChange }) {
             }}
           />
         </FieldWrap>
+        
+
       </div>
+      {/* BANK ACCOUNT REQUIRED DOCUMENTS */}
+<div style={{ marginTop: "20px" }}>
+
+  <h4 style={{
+    fontSize: "15px",
+    fontWeight: "600",
+    marginBottom: "12px",
+    color: "#1e3a5f"
+  }}>
+    Required Documents
+  </h4>
+
+  {BANK_ACCOUNT_DOCUMENTS.map((doc, index) => (
+
+    <div
+      key={index}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "20px",
+        marginBottom: "10px",
+        padding: "6px 10px",
+        border: "1px solid #dbe3f0",
+        borderRadius: "4px",
+        background: "#f9fbff",
+        width: "900px",
+        minHeight: "45px"
+      }}
+    >
+
+      <div style={{
+        width: "520px",
+        fontSize: "13px",
+        color: "#1a2535",
+        fontWeight: "500",
+        lineHeight: "20px"
+      }}>
+        {index + 1}. {doc}
+      </div>
+
+      <input
+        type="file"
+        accept=".pdf,application/pdf"
+        style={{
+          width: "220px",
+          fontSize: "12px"
+        }}
+        onChange={(e) => {
+
+          const file = e.target.files[0];
+
+          if (!file) return;
+
+          if (file.type !== "application/pdf") {
+            alert("Only PDF files are allowed.");
+            e.target.value = "";
+            return;
+          }
+
+          setBankDocs((prev) => ({
+            ...prev,
+            [doc]: file,
+          }));
+        }}
+      />
+    </div>
+  ))}
+</div>
     </div>
   );
 }
@@ -202,6 +310,7 @@ function PromoterPersonalSection({ fields, onChange, tableData, setTableData, pr
   const [newValue, setNewValue] = useState("");
   const [remarks, setRemarks] = useState("");
   const [supportingdocumentsFile, setSupportingDocumentsFile] = useState(null);
+  const [promoterNameDocs, setPromoterNameDocs] = useState({});
 
   const selectedFieldData = fields.find((f) => f.name === selectedField);
 
@@ -332,6 +441,12 @@ if (selectedField === "panNumber") {
   ? URL.createObjectURL(supportingdocumentsFile)
   : "",
       supportingdocumentsUrl: supportingdocumentsFile ? URL.createObjectURL(supportingdocumentsFile) : "",
+        // ADD THIS
+  promoterDocs: Object.keys(promoterNameDocs).map((doc) => ({
+    name: doc,
+    fileName: promoterNameDocs[doc]?.name,
+    fileUrl: URL.createObjectURL(promoterNameDocs[doc]),
+  })),
     };
 
     const updated = [...tableData, newRow];
@@ -415,7 +530,7 @@ if (selectedField === "panNumber") {
                 placeholder={`Current ${selectedFieldData.label} unavailable`}
               />
             </FieldWrap>
-            <FieldWrap label={`New ${selectedFieldData.label}`}>
+            <FieldWrap label={`Mention ${selectedFieldData.label}`}>
               <input
                 style={S.input}
                 type={selectedFieldData.type}
@@ -472,7 +587,7 @@ if (selectedField === "panNumber") {
 
           {/* Row 2: Description + Upload */}
           <div style={{ ...S.grid2, marginBottom: "16px" }}>
-            <FieldWrap label="Remarks">
+            <FieldWrap label="Reasons for change">
               <textarea
                 style={{ ...S.textarea }}
                 rows={3}
@@ -481,7 +596,7 @@ if (selectedField === "panNumber") {
                 placeholder="Enter reason for this change..."
               />
             </FieldWrap>
-            <FieldWrap label="Supporting Document (optional) ">
+            <FieldWrap label="Supporting Documents ">
               <input
                 style={S.input}
                 type="file"
@@ -508,6 +623,85 @@ if (selectedField === "panNumber") {
         </>
       )}
 
+
+
+      {/* PROMOTER NAME DOCUMENTS */}
+{selectedField === "promoterName" && (
+  <div style={{ marginBottom: "20px" }}>
+    
+    <h4 style={{
+      fontSize: "15px",
+      fontWeight: "600",
+      marginBottom: "12px",
+      color: "#1e3a5f"
+    }}>
+      Required Documents
+    </h4>
+
+    {PROMOTER_NAME_DOCUMENTS.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "20px",
+          marginBottom: "10px",
+          padding: "6px 10px",
+          border: "1px solid #dbe3f0",
+          borderRadius: "4px",
+          background: "#f9fbff",
+          width: "900px",
+          minHeight: "45px"
+        }}
+      >
+
+        {/* Document Name */}
+        <div style={{
+          width: "520px",
+          fontSize: "13px",
+          color: "#1a2535",
+          fontWeight: "500",
+          lineHeight: "20px"
+        }}>
+          {index + 1}. {doc}
+        </div>
+
+        {/* Upload */}
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          style={{
+            width: "220px",
+            fontSize: "12px"
+          }}
+          onChange={(e) => {
+
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            if (file.type !== "application/pdf") {
+              alert("Only PDF files are allowed.");
+              e.target.value = "";
+              return;
+            }
+
+            setPromoterNameDocs((prev) => ({
+              ...prev,
+              [doc]: file,
+            }));
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
+
+
+
       {/* ── ADD BUTTON ── */}
       <div style={{ marginBottom: "8px" }}>
         <button style={S.btn} onClick={handleAdd}>+ Add</button>
@@ -521,8 +715,9 @@ if (selectedField === "panNumber") {
               <th style={S.th}>Field</th>
               <th style={S.th}>Existing Value</th>
               <th style={S.th}>New Value</th>
-              <th style={S.th}>Remarks</th>
+              <th style={S.th}>Reasons for change</th>
               <th style={S.th}>Supporting Documents </th>
+              <th style={S.th}>Uploaded Documents</th>
               <th style={{ ...S.th, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -539,6 +734,49 @@ if (selectedField === "panNumber") {
                       style={{ color: "#0f3460", fontWeight: "600" }}>{row.supportingdocuments}</a>
                     : "-"}
                 </td>
+
+                <td style={S.td}>
+  {row.promoterDocs?.length > 0 ? (
+    row.promoterDocs.map((doc, index) => (
+      <div
+        key={index}
+        style={{
+          marginBottom: "10px",
+          paddingBottom: "8px",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+
+        {/* 1 to 19 Document Name */}
+        <div
+          style={{
+            fontWeight: "600",
+            color: "#0f3460",
+            marginBottom: "4px"
+          }}
+        >
+          {index + 1}. {doc.name}
+        </div>
+
+        {/* Uploaded File Name */}
+        <a
+          href={doc.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "#1a7a3c",
+            fontSize: "13px"
+          }}
+        >
+          {doc.fileName}
+        </a>
+
+      </div>
+    ))
+  ) : (
+    "-"
+  )}
+</td>
                 <td style={{ ...S.td, textAlign: "center" }}>
                   <button style={S.btnDel} onClick={() => handleDelete(i)}>✕</button>
                 </td>

@@ -27,7 +27,7 @@ function RenewalPayment() {
       {/* Breadcrumb */}
       <div className="renewal-payments-breadcrumb-bar">
         You are here :
-        <a href="/" className="renewal-payments-breadcrumb-link">Home</a> /
+        <a href="/home" className="renewal-payments-breadcrumb-link">Home</a> /
         <span> Registration</span> /
         <span> Agent Renewal</span>
       </div>

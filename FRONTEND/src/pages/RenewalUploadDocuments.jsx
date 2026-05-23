@@ -88,7 +88,7 @@ function RenewalUploadDocuments() {
 
       <div className="agentupload-breadcrumb-bar">
         You are here :
-        <a href="/" className="agentupload-breadcrumb-link">Home</a> /
+        <a href="/home" className="agentupload-breadcrumb-link">Home</a> /
         <span> Registration</span> /
         <span> Agent Renewal</span>
       </div>

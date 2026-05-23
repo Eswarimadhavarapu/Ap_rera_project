@@ -5,7 +5,6 @@ import { useAdmin } from "../../context/AdminContext";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { BASE_URL } from "../../api/api";
-
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
 const ReraStatusBadge = ({ registered, exemption_id }) => {
@@ -337,7 +336,8 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
 
   // ── Upload modal state ──
   const [showUploadModal, setShowUploadModal] = useState(false);
-
+  const [todayNoticeTotal, setTodayNoticeTotal] = useState(0);
+const [days45Total, setDays45Total] = useState(0);
   // ── Smart filter state ──
   const [filterBy, setFilterBy]         = useState("owner");
   const [filterValue, setFilterValue]   = useState("");
@@ -349,7 +349,52 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
 
   // ── Validation error state ──
   const [validationError, setValidationError] = useState("");
+   const isToday = (date) => {
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth()    === today.getMonth()    &&
+    date.getDate()     === today.getDate()
+  );
+};
 
+const fetchAllForCounts = useCallback(async () => {
+  try {
+    let allData = [];
+    let currentPage = 1;
+    let totalPagesLocal = 1;
+    while (currentPage <= totalPagesLocal) {
+      const res  = await fetch(`${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`);
+      const json = await res.json();
+      allData        = [...allData, ...(json.data || [])];
+      totalPagesLocal = json.total_pages || 1;
+      currentPage++;
+    }
+    const today = new Date();
+    const todayNotice = allData.filter((r) => {
+      if (!r.approved_date) return false;
+      const deadline = new Date(r.approved_date);
+      deadline.setDate(deadline.getDate() + 45);
+      const hasExemption = r.exemption_id !== null && r.exemption_id !== undefined && r.exemption_id !== "";
+      const status = String(r.approval_status || "").trim().toLowerCase();
+      const isWaiting = status.includes("15") || status.includes("wait");
+      return (isToday(deadline) && r.rera_registered === false && !hasExemption && !isWaiting);
+    });
+    const days45 = allData.filter((r) => {
+      if (!r.approved_date) return false;
+      const deadline = new Date(r.approved_date);
+      deadline.setDate(deadline.getDate() + 45);
+      const hasExemption = r.exemption_id !== null && r.exemption_id !== undefined && r.exemption_id !== "";
+      const status = String(r.approval_status || "").trim().toLowerCase();
+      const isWaiting = status.includes("15") || status.includes("wait");
+      return (today >= deadline && r.rera_registered === false && !hasExemption && !isWaiting);
+    });
+    setTodayNoticeTotal(todayNotice.length);
+    setDays45Total(days45.length);
+  } catch (err) {
+    console.error("Count fetch error:", err);
+  }
+}, []);
   const { admin } = useAdmin();
 
   useEffect(() => {
@@ -495,16 +540,42 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
       alert("Download failed. Check console.");
     }
   };
-  const getAllNoticeRecords = async () => {
+ const getAllNoticeRecords = async () => {
+  let allData = [];
+  let currentPage = 1;
+  let totalPages = 1;
+  while (currentPage <= totalPages) {
+    const res  = await fetch(`${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`);
+    const json = await res.json();
+    allData    = [...allData, ...(json.data || [])];
+    totalPages = json.total_pages || 1;
+    currentPage++;
+  }
+  const filtered = allData.filter((r) => {
+    if (!r.approved_date) return false;
+    const deadline = new Date(r.approved_date);
+    deadline.setDate(deadline.getDate() + 45);
+    const hasExemption = r.exemption_id !== null && r.exemption_id !== undefined && r.exemption_id !== "";
+    const status = String(r.approval_status || "").trim().toLowerCase();
+    const isWaiting = status.includes("15") || status.includes("wait");
+    return (isToday(deadline) && r.rera_registered === false && !hasExemption && !isWaiting);
+  });
+  setAllNoticeRecords(filtered);
+};
+const get45DaysCompletedRecords = async () => {
   let allData = [];
   let currentPage = 1;
   let totalPages = 1;
 
   while (currentPage <= totalPages) {
-    const res = await fetch(`${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`);
+    const res = await fetch(
+      `${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`
+    );
+
     const json = await res.json();
 
     allData = [...allData, ...(json.data || [])];
+
     totalPages = json.total_pages || 1;
 
     currentPage++;
@@ -516,16 +587,33 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
     if (!r.approved_date) return false;
 
     const approvedDate = new Date(r.approved_date);
+
+    // ✅ add 45 days
     approvedDate.setDate(approvedDate.getDate() + 45);
 
-    return (
-      today >= approvedDate &&
-      r.rera_registered === false &&
-      !r.exemption_applied
-    );
+    const status = String(r.approval_status || "")
+      .trim()
+      .toLowerCase();
+
+   const hasExemption =
+  r.exemption_id !== null &&
+  r.exemption_id !== undefined &&
+  r.exemption_id !== "";
+
+const isWaiting15Days =
+  status.includes("15") ||
+  status.includes("wait");
+
+return (
+  today >= approvedDate &&
+  r.rera_registered === false &&
+  status === "" &&
+  !hasExemption &&
+  !isWaiting15Days
+);
   });
 
-  setAllNoticeRecords(filtered);
+  return filtered;
 };
 
   // ── Fetch ──
@@ -590,6 +678,7 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
   }, [page, perPage, debounced, filterBy, filterType, filterYear, filterMonth, filterStatus, filterSno]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { fetchAllForCounts(); }, [fetchAllForCounts]);
   useEffect(() => { setPage(1); }, [debounced, filterBy, filterType, filterYear, filterMonth, filterStatus, filterSno]);
 
   const pages = buildPages(page, totalPages);
@@ -597,7 +686,7 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
   const unregisteredCount = records.filter((r) => !r.rera_registered).length;
   const layoutCount       = records.filter((r) => r.project_type === "LAYOUT").length;
   const buildingCount     = records.filter((r) => r.project_type === "BUILDING").length;
-  const getTodayNoticeApplications = (records) => {
+ const getTodayNoticeApplications = (records) => {
   const today = new Date();
 
   return records.filter((r) => {
@@ -605,19 +694,36 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
 
     const approvedDate = new Date(r.approved_date);
 
-    // add 45 days
+    // ✅ add 45 days
     approvedDate.setDate(approvedDate.getDate() + 45);
+
+    // ✅ exemption check
+    const hasExemption =
+      r.exemption_id !== null &&
+      r.exemption_id !== undefined &&
+      r.exemption_id !== "";
+
+    // ✅ approval status check
+    const approvalStatus = String(r.approval_status || "")
+      .trim()
+      .toLowerCase();
+
+    // ❌ hide wait-for-15-days applications
+    const isWaiting15Days =
+      approvalStatus.includes("15") ||
+      approvalStatus.includes("wait");
 
     return (
       today >= approvedDate &&
       r.rera_registered === false &&
-      !r.exemption_applied // change if your field name is different
+      !hasExemption &&
+      !isWaiting15Days
     );
   });
 };
 
-const todayNoticeList = getTodayNoticeApplications(records);
-const todayNoticeCount = todayNoticeList.length;  
+//const todayNoticeList = getTodayNoticeApplications(records);
+//const todayNoticeCount = todayNoticeList.length;  
 const displayData = noticeFilterActive ? allNoticeRecords : records;
   const activeTag = (() => {
     if (filterBy === "date" && (filterYear || filterMonth)) {
@@ -638,7 +744,10 @@ const displayData = noticeFilterActive ? allNoticeRecords : records;
       {showUploadModal && (
         <UploadModal
           onClose={() => setShowUploadModal(false)}
-          onSuccess={() => { setTimeout(() => fetchData(), 500); }}
+          onSuccess={() => { 
+  setTimeout(() => fetchData(), 500);
+  setTimeout(() => fetchAllForCounts(), 500);
+}}
         />
       )}
 
@@ -685,8 +794,26 @@ const displayData = noticeFilterActive ? allNoticeRecords : records;
 >
   <div className="unregList-stat-icon">📢</div>
   <div>
-    <div className="unregList-stat-value">{todayNoticeCount}</div>
+    <div className="unregList-stat-value">{todayNoticeTotal}</div>
     <div className="unregList-stat-label">Today Notice</div>
+  </div>
+</div>
+
+  <div
+  className="unregList-stat-card"
+  style={{ "--stat-color": "#8e44ad", "--stat-bg": "rgba(142,68,173,0.1)", cursor: "pointer" }}
+  onClick={async () => {
+  const data = await get45DaysCompletedRecords();
+
+  setAllNoticeRecords(data);
+
+  setNoticeFilterActive(true);
+}}
+>
+  <div className="unregList-stat-icon">📢</div>
+  <div>
+   <div className="unregList-stat-value">{days45Total}</div>
+<div className="unregList-stat-label">45 days completed</div>
   </div>
 </div>
         </div>
@@ -939,7 +1066,7 @@ const displayData = noticeFilterActive ? allNoticeRecords : records;
               <div className="unregList-empty-icon">⚠️</div>
               <div className="unregList-empty-text">Failed to load: {error}</div>
             </div>
-          ) : records.length === 0 ? (
+          ) : displayData.length === 0 ? (
             <div className="unregList-empty">
               <div className="unregList-empty-icon">📭</div>
               <div className="unregList-empty-text">No records found for the selected filters.</div>

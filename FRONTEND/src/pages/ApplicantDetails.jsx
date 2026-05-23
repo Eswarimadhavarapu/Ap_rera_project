@@ -838,7 +838,7 @@ else {
         {/* Breadcrumb */}
         <div className="applicantdetails-breadcrumb">
           You are here :
-       <a href="/"> <span className="applicantdetails-link"> Home </span> </a>/
+       <a href="/home"> <span className="applicantdetails-link"> Home </span> </a>/
         <span> Registration </span> /
           <span>Real Estate Agent Registration</span>
         </div>

@@ -10,7 +10,7 @@ export default function GuidelinesForRegistration() {
       {/* Breadcrumb */}
       <div className="gr-breadcrumb">
         You are here :&nbsp;
-        <a href="/">Home</a> /&nbsp;
+        <a href="/home">Home</a> /&nbsp;
         <a href="/registration">Registration</a> /&nbsp;
         <strong>Guidelines for Registration</strong>
       </div>

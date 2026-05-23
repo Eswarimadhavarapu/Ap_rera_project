@@ -44,6 +44,7 @@ const DepartmentLogin = () => {
         if (deptName.includes("assistant director")) return "ad";
         if (deptName.includes("deputy director")) return "dd";
         if (deptName.includes("director")) return "director";
+        if (deptName.includes("chairman")) return "chairman";
         if (deptName.includes("verification")) return "verification";
         if (deptName.includes("planning")) return "planning";
         if (deptName.includes("legal")) return "legal";
@@ -57,14 +58,15 @@ const DepartmentLogin = () => {
       const dept = normalizeDept(data.admin.department);
 
 const deptRoutes = {
-  planning: "/scrutiny//planning/planning-dashboard",
+  planning: "/scrutiny/planning/planning-dashboard",
   legal: "/scrutiny/legal/legal-dashboard",
   audit: "/scrutiny/audit/audit-dashboard",
   engineer: "/scrutiny/scrutiny-engineer",
   verification: "/scrutiny/verification/verification-dashboard",
   ad: "/scrutiny/ad/ad-dashboard",
   dd: "/scrutiny/dd/dd-dashboard",
-  director: "/scrutiny/directory/directory-dashboard",
+  director: "/scrutiny/director/director-dashboard",
+  chairman: "/scrutiny/chairman/chairman-dashboard",
   l1: "/scrutiny/L1/L1-dashboard",
   l2: "/scrutiny/L2/L2-dashboard",
 };

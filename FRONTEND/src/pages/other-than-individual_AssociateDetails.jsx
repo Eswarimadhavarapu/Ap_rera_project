@@ -8,6 +8,7 @@ import ProjectContractors from "../components/ProjectContractors";
 import CharteredAccountant from "../components/CharteredAccountant";
 import ProjectEngineers from "../components/ProjectEngineers";
 
+
 import { apiGet } from "../api/api";
 import "../styles/AssociateDetails.css";
 

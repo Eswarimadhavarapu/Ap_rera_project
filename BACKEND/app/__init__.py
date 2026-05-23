@@ -1,11 +1,10 @@
-
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 from app.config import Config
 from app.models.database import db 
 from app.utils.request_logger import log_request
 from app.jobs.payment_reminder import start_scheduler
-
+from flask_mail import Mail
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -40,7 +39,7 @@ root_logger.addHandler(logging.StreamHandler())
 # reduce flask request noise
 logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
-
+mail = Mail()
 # ---------------------------------------------------------
 # Create Flask App
 # ---------------------------------------------------------
@@ -50,7 +49,25 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     start_scheduler(app)
+    # ---------------------------------------------------------
+# MAIL CONFIGURATION
+# ---------------------------------------------------------
 
+    app.config["MAIL_SERVER"] = os.getenv("SMTP_HOST")
+
+    app.config["MAIL_PORT"] = int(os.getenv("SMTP_PORT"))
+
+    app.config["MAIL_USE_TLS"] = os.getenv("SMTP_USE_TLS") == "true"
+
+    app.config["MAIL_USE_SSL"] = os.getenv("SMTP_USE_SSL") == "true"
+
+    app.config["MAIL_USERNAME"] = os.getenv("SMTP_USER")
+
+    app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
+
+    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("FROM_EMAIL")
+
+    mail.init_app(app)
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # uploads folder
@@ -186,6 +203,7 @@ def create_app():
     from app.controllers.project_unregistered_controller import project_unregistered_bp 
     from app.controllers.project_exemption_controller import project_exemption_bp
     from app.controllers.agent_scrutiny_controller import agent_scrutiny_bp
+    from app.controllers.rti_controller import rti_bp
     
 
 
@@ -242,6 +260,7 @@ def create_app():
     app.register_blueprint(project_unregistered_bp, url_prefix="/api")
     app.register_blueprint(project_exemption_bp, url_prefix="/api")
     app.register_blueprint(agent_scrutiny_bp)
+    app.register_blueprint(rti_bp,url_prefix="/api")
 
 
     return app

@@ -14,7 +14,7 @@ function RenewalReceipt() {
       {/* Breadcrumb */}
       <div className="renewalreceipt-breadcrumb-bar">
         You are here :
-        <a href="/" className="renewalreceipt-breadcrumb-link"> Home</a> /
+        <a href="/home" className="renewalreceipt-breadcrumb-link"> Home</a> /
         <span> Registration</span> /
         <span> Agent Renewal</span>
       </div>
