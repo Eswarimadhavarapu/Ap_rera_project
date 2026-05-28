@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../styles/admin/AdminComplaintDetail.css";
 
-const DOC_BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/document/";
+const DOC_BASE_URL = "https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/document/";
 
 const Field = ({ label, value, mono }) => (
   <div className="AdminComplaintDetail-row">
@@ -188,7 +188,7 @@ const RejectModal = ({ data, onClose, onSuccess }) => {
     if (!remark.trim()) return;
     setLoading(true);
     try {
-      await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/send-rejection-mail", {
+      await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/send-rejection-mail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -317,7 +317,7 @@ const ApproveModal = ({
       fd.append("status",            "Scheduled");
       if (pdfBlob) fd.append("notice_pdf", pdfBlob, `notice_${complaint?.complaint_id}.pdf`);
 
-      await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/approve-mail", {
+      await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/approve-mail", {
         method: "POST",
         body: fd,
       });
@@ -591,7 +591,7 @@ const [venue, setVenue] = useState("");
     try {
 
       await fetch(
-        "https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/send-notice",
+        "https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/send-notice",
         {
           method: "POST",
 
@@ -771,13 +771,13 @@ const StatusUpdateModal = ({ data, onClose, onSuccess }) => {
   const [status, setStatus]           = useState("");
   const [remarks, setRemarks] = useState("");
   const [complainantPresence, setComplainantPresence] = useState("");
-const [respondentPresence, setRespondentPresence] = useState("");
+const [respondentPresence, setRespondentPresence] = useState({});
 
 const [complainantAdvocate, setComplainantAdvocate] = useState("");
-const [respondentAdvocate, setRespondentAdvocate] = useState("");
+const [respondentAdvocate, setRespondentAdvocate] = useState({});
 
 const [complainantDocs, setComplainantDocs] = useState([]);
-const [respondentDocs, setRespondentDocs] = useState([]);
+const [respondentDocs, setRespondentDocs] = useState({});
   const [complainantPresent, setComplainantPresent] = useState("");
 const [respondentPresent, setRespondentPresent] = useState("");
 
@@ -851,7 +851,7 @@ respondentDocs.forEach((file) => {
     file
   );
 });
-      await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/add-hearing", {
+      await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/add-hearing", {
         method: "POST",
         body: fd,
       });
@@ -955,54 +955,145 @@ respondentDocs.forEach((file) => {
 
 {/* RESPONDENT DETAILS */}
 
-<div className="AdminComplaintDetail-field-row">
+{respondents.map((respondent, index) => (
 
-  <div className="AdminComplaintDetail-field">
-    <label>Respondent Status</label>
+  <div
+    key={index}
+    className="AdminComplaintDetail-respondent-box"
+  >
 
-    <select
-      className="AdminComplaintDetail-input"
-      value={respondentPresence}
-      onChange={(e) =>
-        setRespondentPresence(e.target.value)
-      }
-    >
-      <option value="">Select</option>
-      <option value="Present">Present</option>
-      <option value="Absent">Absent</option>
-    </select>
+    <h4>
+      Respondent {index + 1}
+    </h4>
+
+    <div className="AdminComplaintDetail-field-row">
+
+      {/* RESPONDENT NAME */}
+
+      <div className="AdminComplaintDetail-field">
+
+        <label>Respondent Name</label>
+
+        <input
+          type="text"
+          className="AdminComplaintDetail-input"
+          value={respondent.name || ""}
+          readOnly
+        />
+
+      </div>
+
+      {/* PRESENT / ABSENT */}
+
+      <div className="AdminComplaintDetail-field">
+
+        <label>Respondent Status</label>
+
+        <select
+          className="AdminComplaintDetail-input"
+          value={
+            respondentPresence[index] || ""
+          }
+
+          onChange={(e) => {
+
+            const updated = {
+              ...respondentPresence
+            };
+
+            updated[index] =
+              e.target.value;
+
+            setRespondentPresence(updated);
+
+          }}
+        >
+
+          <option value="">
+            Select
+          </option>
+
+          <option value="Present">
+            Present
+          </option>
+
+          <option value="Absent">
+            Absent
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    {/* ADVOCATE */}
+
+    <div className="AdminComplaintDetail-field">
+
+      <label>
+        Respondent Advocate
+      </label>
+
+      <input
+        type="text"
+        className="AdminComplaintDetail-input"
+
+        placeholder="Enter advocate name"
+
+        value={
+          respondentAdvocate[index] || ""
+        }
+
+        onChange={(e) => {
+
+          const updated = {
+            ...respondentAdvocate
+          };
+
+          updated[index] =
+            e.target.value;
+
+          setRespondentAdvocate(updated);
+
+        }}
+      />
+
+    </div>
+
+    {/* DOCUMENTS */}
+
+    <div className="AdminComplaintDetail-field">
+
+      <label>
+        Respondent Submitted Documents
+      </label>
+
+      <input
+        type="file"
+        multiple
+        className="AdminComplaintDetail-input"
+
+        onChange={(e) => {
+
+          const updated = {
+            ...respondentDocs
+          };
+
+          updated[index] = [
+            ...e.target.files
+          ];
+
+          setRespondentDocs(updated);
+
+        }}
+      />
+
+    </div>
+
   </div>
 
-  <div className="AdminComplaintDetail-field">
-    <label>Respondent Advocate</label>
-
-    <input
-      type="text"
-      className="AdminComplaintDetail-input"
-      placeholder="Enter respondent advocate name"
-      value={respondentAdvocate}
-      onChange={(e) =>
-        setRespondentAdvocate(e.target.value)
-      }
-    />
-  </div>
-
-</div>
-
-<div className="AdminComplaintDetail-field">
-
-  <label>Respondent Submitted Documents</label>
-
-  <input
-    type="file"
-    multiple
-    className="AdminComplaintDetail-input"
-    onChange={(e) =>
-      setRespondentDocs([...e.target.files])
-    }
-  />
-
-</div>
+))}
 
           {/* SUBMISSION DOCUMENTS */}
           <div className="AdminComplaintDetail-field">
@@ -1302,7 +1393,7 @@ console.log("TYPE 👉", complaintType);
   const [viewDoc, setViewDoc] = useState(null);
 
  const fetchComplaint = () => {
-  fetch(`https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/${id}`)
+  fetch(`https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/${id}`)
     .then((r) => r.json())
     .then((res) => {
       console.log("API FULL RESPONSE 👉", res);
@@ -1849,7 +1940,7 @@ const isRejected =
       fd.append("case_no", caseNo);
       fd.append("status", "closed");
 
-      await fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/approve-mail", {
+      await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/approve-mail", {
         method: "POST",
         body: fd,
       });
@@ -1970,7 +2061,7 @@ const isRejected =
                 className="AdminComplaintDetail-btn-reopen"
                 onClick={async () => {
                   try {
-                    await fetch(`https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/${complaint?.complaint_id}/reopen`, { method: "POST" });
+                    await fetch(`https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/${complaint?.complaint_id}/reopen`, { method: "POST" });
                     showToast("Complaint reopened successfully.");
                   } catch {
                     showToast("Request submitted (server may be offline).", "error");

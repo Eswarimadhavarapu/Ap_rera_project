@@ -232,8 +232,24 @@ const [showId, setShowId] = useState(false);
     supportingdocumentsUrl:
       r.supportingdocumentsUrl || "",
 
-    type: "development"
+   type: "development",
 
+developmentDocs:
+  r.developmentDocuments
+    ? r.developmentDocuments
+        .split("\n\n")
+        .filter(Boolean)
+        .map((item) => {
+
+          const lines = item.split("\n");
+
+          return {
+            name: lines[0] || "",
+            fileName: lines[1] || "",
+          };
+
+        })
+    : [],
   });
 
 
@@ -248,30 +264,103 @@ const [showId, setShowId] = useState(false);
             rows.push({
               subLabel: panel.subLabel, field: r.field, existingValue: r.existingValue || "-",
               newValue: r.newValue, description: r.remarks || "-", document: r.fileName || "-",
-              documentUrl: r.fileUrl || "", type: "field"
+              documentUrl: r.fileUrl || "", type: "field",additionalDocuments: r.additionalDocuments,
             });
           } else if (r.field !== undefined && r.newValue !== undefined) {
             rows.push({
               subLabel: panel.subLabel, field: r.field,existingValue: r.oldValue || r.existingValue || "-",
               newValue: r.newValue, description: r.remarks|| "-", document: r.supportingdocuments || "-",
-              documentUrl: r.supportingdocumentsUrl || "", type: "field", _proofFile: r._proofFile
+              documentUrl: r.supportingdocumentsUrl || "", type: "field",promoterDocs: r.promoterDocs,  _proofFile: r._proofFile,additionalDocuments:
+  r.additionalDocuments?.length > 0
+    ? r.additionalDocuments
+    : [
+        ...(r.projectNameDocuments
+          ? r.projectNameDocuments
+              .split("\n\n")
+              .map((item) => {
+                const lines = item.split("\n");
+                return {
+                  name: lines[0] || "",
+                  fileName: lines[1] || "",
+                };
+              })
+          : []),
+
+        ...(r.builtupAreaDocuments
+          ? r.builtupAreaDocuments
+              .split("\n\n")
+              .map((item) => {
+                const lines = item.split("\n");
+                return {
+                  name: lines[0] || "",
+                  fileName: lines[1] || "",
+                };
+              })
+          : []),
+      ],
             });
           } else if (r.__mode === "new") {
             const fieldHeaders = subFields.map((f) => ({ label: f.label, value: r[f.name] || "-" }));
             rows.push({
-              subLabel: panel.subLabel, field: "__associate_new__", fieldHeaders,
-              description: r.remarks || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
-              type: "associate_new"
-            });
+
+  subLabel: panel.subLabel,
+
+  field: "__associate_new__",
+
+  fieldHeaders,
+  structuralDocuments: r.structuralDocuments || "",
+  uploadDocuments:
+  Array.isArray(r.uploadDocuments)
+    ? r.uploadDocuments
+    : [],
+
+  description: r.remarks || "-",
+
+  document: r.fileName || "-",
+
+  documentUrl: r.fileURL || "",
+
+  type: "associate_new",
+
+  uploadDocuments:
+    r.uploadDocuments || [],
+
+});
           } else if (r.__mode === "existing") {
             const selField = subFields.find((f) => f.name === r.__selField);
             rows.push({
-              subLabel: panel.subLabel, field: selField?.label || r.__selField,
-             existingValue: r[`existing_${r.__selField}`] || "-", newValue: r[r.__selField] || "-",
-              description: r.remarks || "-", document: r.fileName || "-", documentUrl: r.fileURL || "",
-              type: "associate_existing"
-            });
-          }
+
+  subLabel: panel.subLabel,
+
+  field: selField?.label || r.__selField,
+  structuralDocuments: r.structuralDocuments || "",
+
+  existingValue:
+    r[`existing_${r.__selField}`] || "-",
+
+    uploadDocuments:
+  Array.isArray(r.uploadDocuments)
+    ? r.uploadDocuments
+    : [],
+
+  newValue:
+    r[r.__selField] || "-",
+
+  description:
+    r.remarks || "-",
+
+  document:
+    r.fileName || "-",
+
+  documentUrl:
+    r.fileURL || "",
+
+  type: "associate_existing",
+
+  uploadDocuments:
+    r.uploadDocuments || [],
+
+});          }
         });
         return;
       }
@@ -1045,7 +1134,7 @@ style={{
             </div>
             <div className="changerequest-success-actions">
               <button className="changerequest-btn-secondary" onClick={resetAll}>+ Submit Another Request</button>
-              <button className="changerequest-btn-primary" onClick={() => window.location.href = "/home"}>← Back to Home</button>
+              <button className="changerequest-btn-primary" onClick={() => window.location.href = "/"}>← Back to Home</button>
             </div>
           </div>
         )}

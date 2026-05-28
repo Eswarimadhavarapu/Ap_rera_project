@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { apiGet } from "../api/api";
 import AgentStepper from "../components/AgentStepper";
 import { useAgentForm } from "./AgentFormContext";
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+const BASE_URL = "https://4bckgspd-8080.inc1.devtunnels.ms";
 const AgentDetailsOther = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -170,6 +170,36 @@ const [villageData, setVillageData] = useState({ id: "", name: "" });
 const [otherReraStateId, setOtherReraStateId] = useState("");
 const [otherReraDistrictId, setOtherReraDistrictId] = useState("");
 const [otherReraDistricts, setOtherReraDistricts] = useState([]);
+const statesList = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal"
+];
 
   // ===============================
   // FORM STATE
@@ -1118,7 +1148,19 @@ if (form.orgType === "Trust/Society" && files.trustDeed) {
   let registrationNo = "";
 
 if (form.orgType === "Company" || form.orgType === "Joint Venture") {
+  const cinPattern =
+  /^[LU]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/;
+
+  if (!cinPattern.test(form.cinNumber)) {
+
+    return alert(
+      "Enter valid CIN Number (Eg: L12345TG2024PLC123456)"
+    );
+
+  }
+
   registrationNo = form.cin;
+  
 } 
 else if (form.orgType === "Trust/Society") {
   registrationNo = form.trustNumber;
@@ -1334,7 +1376,7 @@ console.log("===== FORM DATA END =====");
 
   try {
     const res = await fetch(
-      "https://0jv8810n-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
+      "https://4bckgspd-8080.inc1.devtunnels.ms/api/agent/other-than-individual",
       {
         method: "POST",
         body: formData,
@@ -1441,6 +1483,7 @@ if (!/^[6-9]\d{9}$/.test(form.mobile.trim())) {
   /* ========= 7️⃣ MEMORANDUM (ONLY COMPANY/JV) ========= */
   if (
     (form.orgType === "Company" || form.orgType === "Joint Venture") &&
+    
     !hasFileOrUrl(files.memorandumDoc, files.legalDocUrl)
   ) {
     return "Upload Memorandum of Articles / Bye-laws";
@@ -1694,6 +1737,12 @@ if (hasLitigation === "Yes") {
 
     if (!l.caseNo)
       return "Please enter Case Number";
+    const caseNoPattern =
+/^[A-Z]+\/[0-9]+\/[0-9]{4}$/;
+
+if (!caseNoPattern.test(l.caseNo)) {
+  return "Enter valid Case Number format (Eg: CC/125/2024)";
+}
 
     if (!l.namePlace)
       return "Please enter Name & Place of Tribunal/Authority";
@@ -1801,9 +1850,11 @@ else if (
 }
 
 if (!isValidRegistrationNo(regValue)) {
+
   return alert(
-    "Registration/CIN/Trust Number must contain only A-Z and 0-9 (max 23 characters)"
+    "Registration/CIN/Trust Number must contain only A-Z, 0-9, / and - (max 23 characters)"
   );
+
 }
 
 
@@ -1824,10 +1875,27 @@ if (
    form.orgType === "Government Department/Local Bodies/Government Bodies") &&
   !form.regDate
 ) {
+  
   return alert("Please select Registration Date");
 }
 
+if (
+  form.regDate &&
+  new Date(form.regDate) > new Date()
+) {
+  return alert(
+    "Future dates are not allowed for Registration Date"
+  );
+}
 if (form.orgType === "Trust/Society" && !form.trustRegDate) {
+  if (
+  form.orgType === "Trust/Society" &&
+  new Date(form.trustRegDate) > new Date()
+) {
+  return alert(
+    "Future dates are not allowed for Trust Registration Date"
+  );
+}
   return alert("Please select Trust Registration Date");
 }
 
@@ -2428,7 +2496,7 @@ const handlePDFFile = (e, setter, field) => {
     <div className="yagentdetails-agent-wrapper">
       {/* Breadcrumb */}
       <div className="yagentdetails-breadcrumb">
-        You are here : <span><a href="/home">  Home </a> </span> / <span> Registration</span> /{" "}
+        You are here : <span><a href="/">  Home </a> </span> / <span> Registration</span> /{" "}
         <span>Real Estate Agent Registration</span>
       </div>
 <div className="yagentdetails-page-content">
@@ -2539,9 +2607,20 @@ const handlePDFFile = (e, setter, field) => {
             <input
   type="text"
   name="orgName"
-  value={form.orgName}
-  onChange={handleChange}
   placeholder="Organisation Name"
+  maxLength={100}
+  value={form.orgName}
+  onChange={(e) => {
+
+    const value = e.target.value
+.replace(/[^A-Za-z0-9\s&.,()-]/g, "")
+.replace(/-{2,}/g, "-")
+    setForm({
+      ...form,
+      orgName: value,
+    });
+
+  }}
 />
 
           </div>
@@ -2578,17 +2657,24 @@ const handlePDFFile = (e, setter, field) => {
 
       <input
   type="text"
-  name="cin"
-  maxLength="23"
-  value={form.cin}
-  onChange={(e) =>
-  setForm({
-    ...form,
-    cin: formatRegistrationNo(e.target.value),
-  })
-}
+  name="cinNumber"
+  placeholder="Eg: L12345TG2024PLC123456"
+  maxLength={23}
+  value={form.cinNumber}
+  onChange={(e) => {
 
-  placeholder="CIN Number"
+    const value = e.target.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9/-]/g, "")
+.replace(/-{2,}/g, "-")
+.replace(/\/{2,}/g, "/");
+
+    setForm({
+      ...form,
+      cinNumber: value,
+    });
+
+  }}
 />
 
     </div>
@@ -2600,11 +2686,12 @@ const handlePDFFile = (e, setter, field) => {
       </label>
 
       <input
-        type="date"
-        name="regDate"
-        value={form.regDate}
-        onChange={handleChange}
-      />
+  type="date"
+  name="regDate"
+  value={form.regDate}
+  max={new Date().toISOString().split("T")[0]}
+  onChange={handleChange}
+/>
     </div>
   </>
 )}
@@ -2620,18 +2707,26 @@ const handlePDFFile = (e, setter, field) => {
       </label>
 
       <input
-        type="text"
-        name="trustNumber"
-        value={form.trustNumber}
-        onChange={(e) =>
-  setForm({
-    ...form,
-    trustNumber: formatRegistrationNo(e.target.value),
-  })
-}
+  type="text"
+  name="trustNumber"
+  placeholder="Eg: TRUST/2024/1234"
+  maxLength={20}
+  value={form.trustNumber}
+  onChange={(e) => {
 
-        placeholder="Trust Number"
-      />
+    const value = e.target.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9/-]/g, "")
+.replace(/-{2,}/g, "-")
+.replace(/\/{2,}/g, "/");
+
+    setForm({
+      ...form,
+      trustNumber: value,
+    });
+
+  }}
+/>
     </div>
 
     <div>
@@ -2641,11 +2736,12 @@ const handlePDFFile = (e, setter, field) => {
       </label>
 
       <input
-        type="date"
-        name="trustRegDate"
-        value={form.trustRegDate}
-        onChange={handleChange}
-      />
+  type="date"
+  name="trustRegDate"
+  value={form.trustRegDate}
+  max={new Date().toISOString().split("T")[0]}
+  onChange={handleChange}
+/>
     </div>
 
     <div>
@@ -2691,18 +2787,26 @@ const handlePDFFile = (e, setter, field) => {
         </label>
 
         <input
-          type="text"
-          name="regNumber"
-          value={form.regNumber}
-          onChange={(e) =>
-  setForm({
-    ...form,
-    regNumber: formatRegistrationNo(e.target.value),
-  })
-}
+  type="text"
+  name="registrationNumber"
+  placeholder="Eg: REG/2024/1234"
+  maxLength={23}
+  value={form.registrationNumber}
+  onChange={(e) => {
 
-          placeholder="Registration Number"
-        />
+    const value = e.target.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9/-]/g, "")
+.replace(/-{2,}/g, "-")
+.replace(/\/{2,}/g, "/");
+
+    setForm({
+      ...form,
+      registrationNumber: value,
+    });
+
+  }}
+/>
       </div>
     </>
   )}
@@ -2899,11 +3003,12 @@ const handlePDFFile = (e, setter, field) => {
         </label>
 
         <input
-          type="date"
-          name="regDate"
-          value={form.regDate}
-          onChange={handleChange}
-        />
+  type="date"
+  name="regDate"
+  value={form.regDate}
+  max={new Date().toISOString().split("T")[0]}
+  onChange={handleChange}
+/>
       </div>
   <div>
     <label>
@@ -2947,12 +3052,13 @@ const handlePDFFile = (e, setter, field) => {
         <span className="yagentdetails-required">*</span>
       </label>
 
-      <input
-        type="date"
-        name="regDate"
-        value={form.regDate}
-        onChange={handleChange}
-      />
+     <input
+  type="date"
+  name="regDate"
+  value={form.regDate}
+  max={new Date().toISOString().split("T")[0]}
+  onChange={handleChange}
+/>
     </div>
 
     {/* UPLOAD DEED */}
@@ -5050,11 +5156,24 @@ onChange={(e) =>
           <label>Case No. <span className="yagentdetails-required">*</span></label>
           <input
   type="text"
-  placeholder="Case No."
+  placeholder="Eg: CC/125/2024"
+  maxLength={20}
   value={litigationForm.caseNo}
-  onChange={(e) =>
-    setLitigationForm({ ...litigationForm, caseNo: e.target.value })
-  }
+  onChange={(e) => {
+
+  const value = e.target.value
+    .toUpperCase()
+    .replace(/[^A-Z0-9/.-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/\/{2,}/g, "/")
+    .replace(/\.{2,}/g, ".");
+
+  setLitigationForm({
+    ...litigationForm,
+    caseNo: value,
+  });
+
+}}
 />
 
         </div>
@@ -5064,10 +5183,21 @@ onChange={(e) =>
 <input
   type="text"
   placeholder="Name & Place of Tribunal/Authority"
-  value={litigationForm.namePlace}
-  onChange={(e) =>
-    setLitigationForm({ ...litigationForm, namePlace: e.target.value })
-  }
+  value={litigationForm.tribunalPlace}
+  onChange={(e) => {
+
+  const value = e.target.value
+    .replace(/[^A-Za-z0-9\s,./-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/\/{2,}/g, "/")
+    .replace(/\.{2,}/g, ".");
+
+  setLitigationForm({
+    ...litigationForm,
+    tribunalPlace: value,
+  });
+
+}}
 />
         </div>
 
@@ -5076,10 +5206,18 @@ onChange={(e) =>
 <input
   type="text"
   placeholder="Name of the Petitioner"
-  value={litigationForm.petitioner}
-  onChange={(e) =>
-    setLitigationForm({ ...litigationForm, petitioner: e.target.value })
-  }
+  value={litigationForm.petitionerName}
+  onChange={(e) => {
+
+    const value = e.target.value
+      .replace(/[^A-Za-z\s,]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      petitionerName: value,
+    });
+
+  }}
 />
         </div>
 
@@ -5088,10 +5226,18 @@ onChange={(e) =>
 <input
   type="text"
   placeholder="Name of the Respondent"
-  value={litigationForm.respondent}
-  onChange={(e) =>
-    setLitigationForm({ ...litigationForm, respondent: e.target.value })
-  }
+  value={litigationForm.respondentName}
+  onChange={(e) => {
+
+    const value = e.target.value
+      .replace(/[^A-Za-z\s,]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      respondentName: value,
+    });
+
+  }}
 />
         </div>
       </div>
@@ -5104,9 +5250,17 @@ onChange={(e) =>
   type="text"
   placeholder="Facts of the Case"
   value={litigationForm.facts}
-  onChange={(e) =>
-    setLitigationForm({ ...litigationForm, facts: e.target.value })
-  }
+  onChange={(e) => {
+
+    const value = e.target.value
+      .replace(/[^A-Za-z0-9\s,.]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      facts: value,
+    });
+
+  }}
 />
         </div>
 
@@ -5516,9 +5670,9 @@ onChange={(e) =>
 
   <option value="">Select</option>
 
-  {states.map((s) => (
-    <option key={s.id} value={s.id}>
-      {s.state_name}
+  {statesList.map((state, index) => (
+    <option key={index} value={state}>
+      {state}
     </option>
   ))}
 </select>
@@ -5526,29 +5680,22 @@ onChange={(e) =>
 
         <div>
           <label>District <span className="yagentdetails-required">*</span></label>
-         <select
-  value={otherReraDistrictId}
-  disabled={!otherReraStateId}
+         <input
+  type="text"
+  placeholder="Enter District"
+  value={otherReraForm.district}
   onChange={(e) => {
-    const selected = otherReraDistricts.find(d => d.id == e.target.value);
 
-    setOtherReraDistrictId(e.target.value);
+    const value = e.target.value
+      .replace(/[^A-Za-z\s]/g, "");
 
-    setOtherReraForm(prev => ({
-      ...prev,
-      district: selected?.name || "", // ✅ STORE NAME
-    }));
+    setOtherReraForm({
+      ...otherReraForm,
+      district: value,
+    });
+
   }}
->
-
-  <option value="">Select</option>
-
-  {otherReraDistricts.map((d) => (
-    <option key={d.id} value={d.id}>
-      {d.name}
-    </option>
-  ))}
-</select>
+/>
         </div>
 
         <div style={{ display: "flex", alignItems: "end" }}>

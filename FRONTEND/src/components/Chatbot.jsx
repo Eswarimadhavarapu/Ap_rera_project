@@ -248,7 +248,7 @@ const sendVoiceMessage = async (message) => {
         ]);
 
         const response = await fetch(
-            'https://0jv8810n-8080.inc1.devtunnels.ms/api/chat',
+            'https://4bckgspd-8080.inc1.devtunnels.ms/api/chat',
             {
                 method: 'POST',
                 headers: {
@@ -303,7 +303,7 @@ const sendVoiceMessage = async (message) => {
 
         try {
             // API call to our new backend endpoint
-            const response = await fetch('https://0jv8810n-8080.inc1.devtunnels.ms/api/chat', {
+            const response = await fetch('https://4bckgspd-8080.inc1.devtunnels.ms/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userMessage })

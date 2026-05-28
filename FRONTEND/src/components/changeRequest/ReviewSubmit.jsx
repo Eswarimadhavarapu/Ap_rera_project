@@ -2,7 +2,12 @@ import React from "react";
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
 const S = {
-  table:  { width: "100%", borderCollapse: "collapse", fontSize: "13px" },
+ table: {
+  width: "100%",
+  minWidth: "1800px",
+  borderCollapse: "collapse",
+  fontSize: "13px"
+},
   th:     { background: "#0f3460", color: "#fff", padding: "10px 12px", border: "1px solid #ccd4e0", textAlign: "left", fontWeight: "600" },
   td:     { padding: "9px 12px", border: "1px solid #e2e8f2", verticalAlign: "top" },
   existingVal: { color: "#6b7c93" },
@@ -93,8 +98,15 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
         </span>
       </div>
 
-      {/* DEVELOPMENT TABLE */}
-      <table style={S.table}>
+     {/* DEVELOPMENT TABLE */}
+<div
+  style={{
+    width: "100%",
+    overflowX: "auto",
+    overflowY: "hidden"
+  }}
+>
+<table style={S.table}>
 
         {/* TABLE HEADER */}
         <thead>
@@ -102,6 +114,7 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
             <th style={S.th}>Old File</th>
             <th style={S.th}>New File</th>
             <th style={S.th}>Supporting Documents</th>
+            <th style={S.th}>Uploaded Documents</th>
             {/* <th style={S.th}>Action</th> */}
           </tr>
         </thead>
@@ -147,12 +160,54 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
           row.supportingdocumentsName || "-"
         )}
       </td>
+      <td style={S.td}>
+
+  {row.developmentDocs?.length > 0 ? (
+
+    row.developmentDocs.map((doc, index) => (
+
+      <div
+        key={index}
+        style={{
+          marginBottom: "10px",
+          paddingBottom: "8px",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+
+        <div
+          style={{
+            fontWeight: "600",
+            color: "#0f3460",
+            marginBottom: "4px"
+          }}
+        >
+          {doc.name}
+        </div>
+
+        <span
+          style={{
+            color: "#1a7a3c",
+            fontSize: "13px"
+          }}
+        >
+          {doc.fileName}
+        </span>
+
+      </div>
+
+    ))
+
+  ) : "-"}
+
+</td>
 
     </tr>
   ))}
 </tbody>
 
       </table>
+      </div>
 
     </div>
   );
@@ -186,14 +241,22 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                       {newRows.length > 0 && (
                         <>
                           <div style={{ padding: "10px 16px", fontWeight: "600" }}>New Entries</div>
+                          <div
+  style={{
+    width: "100%",
+    overflowX: "auto",
+    overflowY: "hidden"
+  }}
+>
                           <table style={S.table}>
                             <thead>
                               <tr>
                                 {(newRows[0]?.fieldHeaders || []).map((fh) => (
                                   <th key={fh.label} style={S.th}>{fh.label}</th>
                                 ))}
-                                <th style={S.th}>Remarks</th>
+                                <th style={S.th}>Reasons for change</th>
                                 <th style={S.th}>Supporting Documents</th>
+                                <th style={S.th}>Upload Documents</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -204,10 +267,40 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                                   ))}
                                   <td style={S.td}>{getRemarks(row)}</td>
                                   <td style={S.td}>{getSupportingDoc(row)}</td>
+                                 <td style={S.td}>
+
+ {row.structuralDocuments ? (
+
+  row.structuralDocuments
+    .split("\n")
+    .map((line, index) => (
+
+      <div
+        key={index}
+        style={{
+          color: line.includes(".pdf")
+            ? "#1a7a3c"
+            : "#000",
+          fontWeight: line.includes(".pdf")
+            ? "600"
+            : "400",
+          marginBottom: "4px",
+          whiteSpace: "pre-wrap"
+        }}
+      >
+        {line}
+      </div>
+
+    ))
+
+) : (
+  "-"
+)}</td>
                                 </tr>
                               ))}
                             </tbody>
                           </table>
+                          </div>
                         </>
                       )}
 
@@ -215,14 +308,22 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
 {existingRows.length > 0 && (
   <>
     <div style={{ padding: "10px 16px", fontWeight: "600" }}>Existing Changes</div>
+    <div
+  style={{
+    width: "100%",
+    overflowX: "auto",
+    overflowY: "hidden"
+  }}
+>
     <table style={S.table}>
       <thead>
         <tr>
           <th style={S.th}>Field</th>
           <th style={S.th}>Existing Value</th>
           <th style={S.th}>New Value</th>
-          <th style={S.th}>Remarks</th>
+          <th style={S.th}>Reasons for change</th>
           <th style={S.th}>Supporting Documents</th>
+          {/* <th style={S.th}>Uploaded Documents</th> */}
         </tr>
       </thead>
       <tbody>
@@ -248,19 +349,27 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
         ))}
       </tbody>
     </table>
+    </div>
   </>
 )}
 
                       {/* UPLOAD DOCUMENTS TABLE - Fixed */}
                       {newRows.length === 0 && existingRows.length === 0 && (
                         subName === "Upload Documents" ? (
-                          <table style={S.table}>
+  <div
+    style={{
+      width: "100%",
+      overflowX: "auto",
+      overflowY: "hidden"
+    }}
+  >
+    <table style={S.table}>
                             <thead>
                               <tr>
                                 <th style={{ ...S.th, width: "28%" }}>Field</th>
                                 <th style={{ ...S.th, width: "20%" }}>Existing File</th>
                                 <th style={{ ...S.th, width: "20%" }}>New File</th>
-                                <th style={{ ...S.th, width: "17%" }}>Remarks</th>
+                                <th style={{ ...S.th, width: "17%" }}>Reasons for change</th>
                                 {/* <th style={{ ...S.th, width: "15%" }}>Supporting Documents</th> */}
                               </tr>
                             </thead>
@@ -295,16 +404,25 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
                               ))}
                             </tbody>
                           </table>
+                          </div>
                         ) : (
-                          /* Normal Fields Table */
-                          <table style={S.table}>
+                         /* Normal Fields Table */
+<div
+  style={{
+    width: "100%",
+    overflowX: "auto",
+    overflowY: "hidden"
+  }}
+>
+<table style={S.table}>
                             <thead>
                               <tr>
                                 <th style={{ ...S.th, width: "25%" }}>Field</th>
                                 <th style={{ ...S.th, width: "20%" }}>Existing Value</th>
                                 <th style={{ ...S.th, width: "20%" }}>New value</th>
-                                <th style={{ ...S.th, width: "35%" }}>Remarks</th>
+                                <th style={{ ...S.th, width: "35%" }}>Reasons for change</th>
                                 <th style={{ ...S.th, width: "20%" }}>Supporting Documents</th>
+                                <th style={S.th}>Uploaded Documents</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -328,10 +446,165 @@ export default function ReviewSubmit({ reviewRows, onBack, onSubmit }) {
     </a>
   ) : "-"}
 </td>
-                                </tr>
+<td style={S.td}>
+
+  {/* PROMOTER DETAILS */}
+  {row.field === "Name" && row.promoterDocs?.length > 0 ? (
+
+    row.promoterDocs.map((doc, index) => (
+
+      <div
+        key={index}
+        style={{
+          marginBottom: "10px",
+          paddingBottom: "8px",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+        <div
+          style={{
+            fontWeight: "600",
+            color: "#0f3460",
+            marginBottom: "4px"
+          }}
+        >
+          {doc.name}
+        </div>
+
+        <a
+          href={doc.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "#1a7a3c",
+            fontSize: "13px"
+          }}
+        >
+          {doc.fileName}
+        </a>
+      </div>
+
+    ))
+
+  ) : row.uploadDocuments?.length > 0 ? (
+    
+
+    row.uploadDocuments.map((doc, index) => (
+
+      <div
+        key={index}
+        style={{
+          marginBottom: "10px",
+          paddingBottom: "8px",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+
+        <div
+          style={{
+            fontWeight: "600",
+            color: "#0f3460",
+            marginBottom: "4px"
+          }}
+        >
+          {doc.name}
+        </div>
+
+        <span
+          style={{
+            color: "#1a7a3c",
+            fontSize: "13px"
+          }}
+        >
+          {doc.fileName}
+        </span>
+
+      </div>
+
+    ))
+
+  ) : row.type === "development" &&
+      row.developmentDocs?.length > 0 ? (
+
+    row.developmentDocs.map((doc, index) => (
+
+      <div
+        key={index}
+        style={{
+          marginBottom: "10px",
+          paddingBottom: "8px",
+          borderBottom: "1px solid #ddd"
+        }}
+      >
+
+        <div
+          style={{
+            fontWeight: "600",
+            color: "#0f3460",
+            marginBottom: "4px"
+          }}
+        >
+          {doc.name}
+        </div>
+
+        <span
+          style={{
+            color: "#1a7a3c",
+            fontSize: "13px"
+          }}
+        >
+          {doc.fileName}
+        </span>
+
+      </div>
+
+    ))
+
+  ) : (
+    (row.field === "Project Name" ||
+     row.field === "Total Built-up Area (Sq.m)") &&
+     row.additionalDocuments?.length > 0 ? (
+
+      row.additionalDocuments.map((doc, index) => (
+
+        <div
+          key={index}
+          style={{
+            marginBottom: "10px",
+            paddingBottom: "8px",
+            borderBottom: "1px solid #ddd"
+          }}
+        >
+          <div
+            style={{
+              fontWeight: "600",
+              color: "#0f3460",
+              marginBottom: "4px"
+            }}
+          >
+            {doc.name}
+          </div>
+
+          <span
+            style={{
+              color: "#1a7a3c",
+              fontSize: "13px"
+            }}
+          >
+            {doc.fileName}
+          </span>
+        </div>
+
+      ))
+
+    ) : "-"
+  )}
+
+</td>      </tr>
                               ))}
                             </tbody>
                           </table>
+                          </div>
                         )
                       )}
                     </>

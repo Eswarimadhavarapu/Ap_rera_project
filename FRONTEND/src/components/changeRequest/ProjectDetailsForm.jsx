@@ -924,7 +924,15 @@ minHeight: "45px"
 }}>
             <thead>
               <tr>
-                <th style={thStyle}>Field</th>
+                <th
+  style={{
+    ...thStyle,
+    minWidth: "180px",
+    whiteSpace: "nowrap"
+  }}
+>
+  Field
+</th>
                 <th style={thStyle}>Existing Value</th>
                 <th style={thStyle}>New Value</th>
                 <th
@@ -949,7 +957,7 @@ minHeight: "45px"
 >
   Supporting Documents
 </th>
-                <th style={{ ...thStyle, width: "25%" }}>Additional Documents</th>
+                <th style={{ ...thStyle, width: "25%" }}>Upload  Documents</th>
 
                 {hasExtraColumns && (
                   <>
@@ -963,7 +971,19 @@ minHeight: "45px"
             <tbody>
               {tableData.map((row, i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
-                  <td style={{ ...tdStyle, fontWeight: "600", color: "#0f3460" }}>{row.field}</td>
+                  <td
+  style={{
+    ...tdStyle,
+    fontWeight: "600",
+    color: "#0f3460",
+    minWidth: "180px",
+    whiteSpace: "normal",
+    wordBreak: "keep-all",
+    lineHeight: "22px"
+  }}
+>
+  {row.field}
+</td>
                   <td style={{ ...tdStyle, maxWidth: "150px" }}>
   <div style={{
     color: "#6b7c93",

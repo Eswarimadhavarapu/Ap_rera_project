@@ -1,14 +1,27 @@
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 from app.config import Config
-from app.models.database import db 
+from app.models.database import db
 from app.utils.request_logger import log_request
 from app.jobs.payment_reminder import start_scheduler
+
+from flask import Flask
 from flask_mail import Mail
+from app.config import Config
+
+
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 
+mail = Mail()
+
+def create_app():
+    app = Flask(__name__)
+
+    app.config.from_object(Config)
+
+    mail.init_app(app)
 
 # ---------------------------------------------------------
 # Logging Setup
@@ -39,7 +52,7 @@ root_logger.addHandler(logging.StreamHandler())
 # reduce flask request noise
 logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
-mail = Mail()
+
 # ---------------------------------------------------------
 # Create Flask App
 # ---------------------------------------------------------
@@ -48,32 +61,28 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+
     start_scheduler(app)
+
     # ---------------------------------------------------------
-# MAIL CONFIGURATION
-# ---------------------------------------------------------
+    # MAIL CONFIGURATION
+    # ---------------------------------------------------------
 
     app.config["MAIL_SERVER"] = os.getenv("SMTP_HOST")
-
     app.config["MAIL_PORT"] = int(os.getenv("SMTP_PORT"))
-
     app.config["MAIL_USE_TLS"] = os.getenv("SMTP_USE_TLS") == "true"
-
     app.config["MAIL_USE_SSL"] = os.getenv("SMTP_USE_SSL") == "true"
-
     app.config["MAIL_USERNAME"] = os.getenv("SMTP_USER")
-
     app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
-
     app.config["MAIL_DEFAULT_SENDER"] = os.getenv("FROM_EMAIL")
 
-    mail.init_app(app)
+
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # uploads folder
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
     app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
 
     # ---------------------------------------------------------
     # CORS Configuration
@@ -93,13 +102,11 @@ def create_app():
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
         return response
 
-
     # ---------------------------------------------------------
     # Database Initialization
     # ---------------------------------------------------------
 
     db.init_app(app)
-
 
     # ---------------------------------------------------------
     # GLOBAL API AUDIT LOGGER (MIDDLEWARE)
@@ -107,16 +114,7 @@ def create_app():
 
     # app.after_request(log_request)
 
-
     # ---------------------------------------------------------
-    # Serve Uploaded Files
-    # ---------------------------------------------------------
-
-    # @app.route("/uploads/<path:filename>")
-    # def serve_uploaded_file(filename):
-
-    #     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-   # ---------------------------------------------------------
     # Serve Uploaded Files
     # ---------------------------------------------------------
 
@@ -132,6 +130,10 @@ def create_app():
 
         uploads_folder = os.path.join(project_root, "uploads")
 
+        legacy_upload_folder = os.path.abspath(
+            os.path.join(BASE_DIR, "..", "backend", "uploads")
+        )
+
         print("🔥 Uploads Folder:", uploads_folder)
 
         full_path = os.path.join(uploads_folder, filename)
@@ -140,9 +142,15 @@ def create_app():
 
         print("🔥 Exists:", os.path.exists(full_path))
 
-        if os.path.exists(full_path):
-            print("✅ FILE FOUND")
+        # Check current uploads folder
+        if os.path.exists(os.path.join(uploads_folder, filename)):
+            print("✅ FILE FOUND IN CURRENT UPLOADS")
             return send_from_directory(uploads_folder, filename)
+
+        # Check legacy uploads folder
+        if os.path.exists(os.path.join(legacy_upload_folder, filename)):
+            print("✅ FILE FOUND IN LEGACY UPLOADS")
+            return send_from_directory(legacy_upload_folder, filename)
 
         print("❌ FILE NOT FOUND")
 
@@ -150,7 +158,7 @@ def create_app():
             "error": "File not found",
             "path": full_path
         }, 404
-
+    
 
     # ---------------------------------------------------------
     # Register Blueprints
@@ -200,16 +208,22 @@ def create_app():
     from app.controllers.chat_controller import chat_bp
     from app.controllers.faq_controller import faq_bp
     from app.controllers.verification_controller import verification_bp
-    from app.controllers.project_unregistered_controller import project_unregistered_bp 
+    from app.controllers.project_unregistered_controller import project_unregistered_bp
     from app.controllers.project_exemption_controller import project_exemption_bp
     from app.controllers.agent_scrutiny_controller import agent_scrutiny_bp
     from app.controllers.rti_controller import rti_bp
-    
 
+    # Added from second file
+    from app.controllers.search_controller import search_bp
+    from app.controllers.project_rating_controller import project_rating_bp
+    from app.controllers.project_gallery_controller import project_gallery_bp
 
     # ---------------------------------------------------------
     # Register API Routes
     # ---------------------------------------------------------
+
+    # Added from second file
+
 
     app.register_blueprint(change_request_bp, url_prefix="/api")
     app.register_blueprint(quarterly_bp, url_prefix="/api")
@@ -260,7 +274,11 @@ def create_app():
     app.register_blueprint(project_unregistered_bp, url_prefix="/api")
     app.register_blueprint(project_exemption_bp, url_prefix="/api")
     app.register_blueprint(agent_scrutiny_bp)
-    app.register_blueprint(rti_bp,url_prefix="/api")
+    app.register_blueprint(rti_bp, url_prefix="/api")
 
+    # Added from second file
+    app.register_blueprint(search_bp, url_prefix="/api")
+    app.register_blueprint(project_rating_bp, url_prefix="/api")
+    app.register_blueprint(project_gallery_bp, url_prefix="/api")
 
     return app

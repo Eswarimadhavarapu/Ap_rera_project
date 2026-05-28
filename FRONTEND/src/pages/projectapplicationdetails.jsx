@@ -139,7 +139,7 @@ const ProjectApplicationDetails = () => {
     try {
 
       const res = await fetch(
-        "https://0jv8810n-8080.inc1.devtunnels.ms/api/extension-application",
+        "https://4bckgspd-8080.inc1.devtunnels.ms/api/extension-application",
         {
           method: "POST",
           body: payload

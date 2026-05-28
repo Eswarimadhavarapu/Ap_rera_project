@@ -313,11 +313,23 @@ return (
           height: "55px",
           cursor: "pointer"
         }}
-       onChange={(e) => {
+     onChange={(e) => {
   const file = e.target.files[0];
-  if (file) {
-    setOldFile(file);
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    alert("❌ Only Excel files (.xls, .xlsx) are allowed.");
+    e.target.value = "";
+    return;
   }
+
+  setOldFile(file);
 }}
       />
     </FW>
@@ -357,11 +369,23 @@ return (
           height: "55px",
           cursor: "pointer"
         }}
-        onChange={(e) => {
+     onChange={(e) => {
   const file = e.target.files[0];
-  if (file) {
-    setNewFile(file);
+
+  if (!file) return;
+
+  const allowedTypes = [
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    alert("❌ Only Excel files (.xls, .xlsx) are allowed.");
+    e.target.value = "";
+    return;
   }
+
+  setNewFile(file);
 }}
       />
     </FW>

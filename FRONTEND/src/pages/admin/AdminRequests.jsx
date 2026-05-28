@@ -14,7 +14,7 @@ const AdminRequests = () => {
 
   useEffect(() => {
 
-    fetch("http://localhost:8080/api/admin/requests")
+    fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/admin/requests")
       .then(res => res.json())
       .then(data => setRequests(data))
       .catch(err => console.error("Error fetching requests:", err));

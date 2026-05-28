@@ -24,7 +24,6 @@ const ApplicantDetails = () => {
 const [projectName, setProjectName] = useState("");
 const [projects, setProjects] = useState([]);
 const [litigations, setLitigations] = useState([]);
-
 const [litigationForm, setLitigationForm] = useState({
   caseNo: "",
   namePlace: "",
@@ -67,10 +66,44 @@ const [otherReraList, setOtherReraList] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [mandals, setMandals] = useState([]);
   const [villages, setVillages] = useState([]);
-  const [otherStates, setOtherStates] = useState([]);
+  // const [otherStates, setOtherStates] = useState([]);
   const [otherDistricts, setOtherDistricts] = useState([]);
   const [otherStateId, setOtherStateId] = useState("");
   const [otherDistrictId, setOtherDistrictId] = useState("");
+
+const [otherStates] = useState([
+  { id: 1, state_name: "Andhra Pradesh" },
+  { id: 2, state_name: "Arunachal Pradesh" },
+  { id: 3, state_name: "Assam" },
+  { id: 4, state_name: "Bihar" },
+  { id: 5, state_name: "Chhattisgarh" },
+  { id: 6, state_name: "Goa" },
+  { id: 7, state_name: "Gujarat" },
+  { id: 8, state_name: "Haryana" },
+  { id: 9, state_name: "Himachal Pradesh" },
+  { id: 10, state_name: "Jharkhand" },
+  { id: 11, state_name: "Karnataka" },
+  { id: 12, state_name: "Kerala" },
+  { id: 13, state_name: "Madhya Pradesh" },
+  { id: 14, state_name: "Maharashtra" },
+  { id: 15, state_name: "Manipur" },
+  { id: 16, state_name: "Meghalaya" },
+  { id: 17, state_name: "Mizoram" },
+  { id: 18, state_name: "Nagaland" },
+  { id: 19, state_name: "Odisha" },
+  { id: 20, state_name: "Punjab" },
+  { id: 21, state_name: "Rajasthan" },
+  { id: 22, state_name: "Sikkim" },
+  { id: 23, state_name: "Tamil Nadu" },
+  { id: 24, state_name: "Telangana" },
+  { id: 25, state_name: "Tripura" },
+  { id: 26, state_name: "Uttar Pradesh" },
+  { id: 27, state_name: "Uttarakhand" },
+  { id: 28, state_name: "West Bengal" },
+  { id: 29, state_name: "Delhi" }
+]);
+
+
 
   const [form, setForm] = useState({
     agentName: "",
@@ -95,6 +128,7 @@ const [otherReraList, setOtherReraList] = useState([]);
     addressProof: null,
     
   });
+
   //const completedStep = Number(localStorage.getItem("completedStep") || 0);
 
 
@@ -461,27 +495,27 @@ useEffect(() => {
 }, [villages]);
 
 
-useEffect(() => {
-  apiGet("/api/states")
-    .then((res) => {
-      console.log("Other States API response:", res); // 👈 IMPORTANT
+// useEffect(() => {
+//   apiGet("/api/states")
+//     .then((res) => {
+//       console.log("Other States API response:", res); // 👈 IMPORTANT
 
-      const data =
-        res?.data && Array.isArray(res.data)
-          ? res.data
-          : Array.isArray(res)
-          ? res
-          : [];
+//       const data =
+//         res?.data && Array.isArray(res.data)
+//           ? res.data
+//           : Array.isArray(res)
+//           ? res
+//           : [];
 
-      setOtherStates(
-        data.map((s) => ({
-          state_id: s.state_id ?? s.id,
-          state_name: s.state_name ?? s.name,
-        }))
-      );
-    })
-    .catch((err) => console.error("Other States API error:", err));
-}, []);
+//       setOtherStates(
+//         data.map((s) => ({
+//           state_id: s.state_id ?? s.id,
+//           state_name: s.state_name ?? s.name,
+//         }))
+//       );
+//     })
+//     .catch((err) => console.error("Other States API error:", err));
+// }, []);
 
 
 
@@ -558,12 +592,56 @@ const handleAddLitigation = () => {
     return;
   }
 
-  setLitigations([
-    ...litigations,
-    { ...litigationForm, id: Date.now() },
-  ]);
+  // Case No Validation
+  if (!/^[A-Z0-9]{3,20}$/.test(litigationForm.caseNo.trim())) {
+    return alert(
+      "Case No should contain only CAPITAL letters and numbers"
+    );
+  }
 
-  // reset form
+  // Name & Place Validation
+  if (!/^[A-Za-z0-9 ]{3,100}$/.test(litigationForm.namePlace.trim())) {
+    return alert(
+      "Name & Place should contain only letters, numbers and spaces"
+    );
+  }
+
+  // Petitioner Validation
+  if (!/^[A-Za-z ]{3,50}$/.test(litigationForm.petitioner.trim())) {
+    return alert(
+      "Petitioner Name should contain only alphabets and spaces"
+    );
+  }
+
+  // Respondent Validation
+  if (!/^[A-Za-z ]{3,50}$/.test(litigationForm.respondent.trim())) {
+    return alert(
+      "Respondent Name should contain only alphabets and spaces"
+    );
+  }
+
+ // Facts Validation ONLY when litigation = Yes
+if (
+  litigationStatus === "Yes" &&
+  litigationForm.facts &&
+  !/^[A-Za-z0-9 ]{3,250}$/.test(litigationForm.facts.trim())
+) {
+  return alert(
+    "Facts of the Case should contain only letters, numbers and spaces"
+  );
+}
+
+
+
+  // ===== ADD ROW TO TABLE =====
+  const newLitigation = {
+    id: Date.now(),
+    ...litigationForm,
+  };
+
+  setLitigations([...litigations, newLitigation]);
+
+  // ===== RESET FORM =====
   setLitigationForm({
     caseNo: "",
     namePlace: "",
@@ -573,6 +651,8 @@ const handleAddLitigation = () => {
     presentStatus: "",
     interimOrder: "No",
     finalOrder: "No",
+    interimCert: null,
+    disposedCert: null,
   });
 
   setInterimOrder("No");
@@ -585,39 +665,44 @@ const handleDeleteLitigation = (id) => {
 
 // Add Other State RERA
 const handleAddOtherRera = () => {
-  
+
   if (
     !otherReraForm.regNo ||
     !otherReraForm.stateId ||
-    !otherReraForm.districtId
+    !otherReraForm.districtName
   ) {
     alert("Please fill all fields");
     return;
   }
 
-// Registration Number validation (9 to 13 characters)
-if (
-  !/^[A-Za-z0-9\/-]{9,13}$/.test(otherReraForm.regNo.trim())
-) {
-  alert(
-    "Registration Number must be 9 to 13 characters and contain only letters, numbers, / or -"
-  );
-  return;
-}
+  // Registration validation
+  if (
+    !/^[A-Za-z0-9\/-]{9,13}$/.test(
+      otherReraForm.regNo.trim()
+    )
+  ) {
+    alert(
+      "Registration Number must be 9 to 13 characters"
+    );
+    return;
+  }
 
+  // create CLEAN object
   const newRow = {
     id: Date.now(),
-    ...otherReraForm,
+    regNo: otherReraForm.regNo,
+    stateId: Number(otherReraForm.stateId), // INTEGER ONLY
+    stateName: otherReraForm.stateName,
+    districtName: otherReraForm.districtName,
   };
 
-  setOtherReraList([...otherReraList, newRow]);
+  setOtherReraList((prev) => [...prev, newRow]);
 
-  // reset form
+  // reset
   setOtherReraForm({
     regNo: "",
     stateId: "",
     stateName: "",
-    districtId: "",
     districtName: "",
   });
 };
@@ -697,15 +782,8 @@ if (!/^[A-Za-z ]{3,50}$/.test(form.fatherName.trim())) {
     return alert("Please Enter Valid Land Line Number");
 
 
-  // License Number Validation (optional field)
-if (
-  form.licenseNumber &&
-  !/^[A-Za-z0-9/-]{9,13}$/.test(form.licenseNumber.trim())
-) {
-  return alert(
-    "License Number must be 9 to 13 characters and contain only letters, numbers, / or -"
-  );
-}
+ 
+
   if (!form.address1) return alert("Please Enter Address Line 1");
   if (!form.state) return alert("Please Select State");
   if (!form.district) return alert("Please Select District");
@@ -716,6 +794,15 @@ if (
   return alert("Please Upload Address Proof");
    if (litigationStatus === null)
     return alert("Please select Yes or No for Litigations");
+
+   // License Date Validation
+if (form.licenseDate) {
+  const today = new Date().toISOString().split("T")[0];
+
+  if (form.licenseDate > today) {
+    return alert("License Issued Date cannot be a future date");
+  }
+}
   if (litigationStatus === "No" && !uploadedFiles.selfAffidavitFile) {
   return alert("Please upload Self Declared Affidavit file");
 }
@@ -747,7 +834,6 @@ if (
   {uploadedFiles.photograph && (
   <small style={{ color: "green" }}>Already uploaded</small>
 )}
-
 
 
   try {
@@ -824,11 +910,11 @@ else {
     console.error(error);
     alert("Something went wrong while saving");
   }
-  if (response.success) {
-  setSavedFiles({
-    selfAffidavit: uploadedFiles.selfAffidavitFile,
-  });
-}
+//   if (response.success) {
+//   setSavedFiles({
+//     selfAffidavit: uploadedFiles.selfAffidavitFile,
+//   });
+// }
 };
 
   /* -------------------- UI -------------------- */
@@ -838,7 +924,7 @@ else {
         {/* Breadcrumb */}
         <div className="applicantdetails-breadcrumb">
           You are here :
-       <a href="/home"> <span className="applicantdetails-link"> Home </span> </a>/
+       <a href="/"> <span className="applicantdetails-link"> Home </span> </a>/
         <span> Registration </span> /
           <span>Real Estate Agent Registration</span>
         </div>
@@ -1063,25 +1149,63 @@ else {
 
               <div>
                 <label>License Number by local bodies</label>
-                <input
-                  name="licenseNumber"
-                  value={form.licenseNumber}
-                  onChange={handleChange}
-                  placeholder="License Number by the local bodies"
+               <input
+  name="licenseNumber"
+  value={form.licenseNumber}
+  placeholder="License Number by the local bodies"
+  maxLength="13"
+  onChange={(e) => {
+    let value = e.target.value.toUpperCase();
 
-                />
+    // allow only CAPITAL letters and numbers
+    value = value.replace(/[^A-Z0-9]/g, "");
+
+    setForm({
+      ...form,
+      licenseNumber: value,
+    });
+  }}
+  onPaste={(e) => {
+    let pastedText = e.clipboardData
+      .getData("text")
+      .toUpperCase();
+
+    // remove symbols and small letters
+    pastedText = pastedText.replace(/[^A-Z0-9]/g, "");
+
+    e.preventDefault();
+
+    setForm((prev) => ({
+      ...prev,
+      licenseNumber: pastedText,
+    }));
+  }}
+/>
               </div>
 
               <div>
                 <label>License Issued Date</label>
-                <input
-                  type="date"
-                  name="licenseDate"
-                  value={form.licenseDate}
-                  onChange={handleChange}
-                  placeholder="License Issued Date"
+               <input
+  type="date"
+  name="licenseDate"
+  value={form.licenseDate}
+  max={new Date().toISOString().split("T")[0]}
+  onChange={(e) => {
+    const selectedDate = e.target.value;
+    const today = new Date().toISOString().split("T")[0];
 
-                />
+    if (selectedDate > today) {
+      alert("Future dates are not allowed");
+      return;
+    }
+
+    setForm({
+      ...form,
+      licenseDate: selectedDate,
+    });
+  }}
+  placeholder="License Issued Date"
+/>
               </div>
             </div>
           </section>
@@ -1391,57 +1515,106 @@ else {
                 <div className="applicantdetails-conditional-box applicantdetails-grid-4">
                   <div>
                     <label className="required">Case No</label>
-                    <input
-            name="caseNo"
-            value={litigationForm.caseNo}
-            onChange={handleLitigationChange}
-            placeholder="Case No."
+                   <input
+  name="caseNo"
+  value={litigationForm.caseNo}
+  maxLength="20"
+  placeholder="Case No."
+  onChange={(e) => {
+    let value = e.target.value.toUpperCase();
 
-          />
+    // only CAPITAL letters and numbers
+    value = value.replace(/[^A-Z0-9]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      caseNo: value,
+    });
+  }}
+/>
                   </div>
 
                   <div>
                     <label className="required">Name & Place of Tribunal/Authority</label>
-                    <input
-            name="namePlace"
-            value={litigationForm.namePlace}
-            onChange={handleLitigationChange}
-            placeholder="Name & Place of Tribunal/Authority"
+                  <input
+  name="namePlace"
+  value={litigationForm.namePlace}
+  maxLength="100"
+  placeholder="Name & Place of Tribunal/Authority"
+  onChange={(e) => {
+    let value = e.target.value;
 
-          />
-                  </div>
+    // allow only letters, numbers and spaces
+    value = value.replace(/[^A-Za-z0-9 ]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      namePlace: value,
+    });
+  }}
+/>                  </div>
 
                   <div>
                     <label className="required">Name of the Petitioner</label>
                     <input
-            name="petitioner"
-            value={litigationForm.petitioner}
-            onChange={handleLitigationChange}
-            placeholder="Name of the Petitioner"
+  name="petitioner"
+  value={litigationForm.petitioner}
+  maxLength="50"
+  placeholder="Name of the Petitioner"
+  onChange={(e) => {
+    let value = e.target.value;
 
-          />
+    // allow only alphabets and spaces
+    value = value.replace(/[^A-Za-z ]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      petitioner: value,
+    });
+  }}
+/>
                   </div>
 
                   <div>
                     <label className="required">Name of the Respondent</label>
-                    <input
-            name="respondent"
-            value={litigationForm.respondent}
-            onChange={handleLitigationChange}
-            placeholder="Name of the Respondent"
+                   <input
+  name="respondent"
+  value={litigationForm.respondent}
+  maxLength="50"
+  placeholder="Name of the Respondent"
+  onChange={(e) => {
+    let value = e.target.value;
 
-          />
+    // allow only alphabets and spaces
+    value = value.replace(/[^A-Za-z ]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      respondent: value,
+    });
+  }}
+/>
                   </div>
 
                   <div>
                     <label className="required">Facts of the Case/Contents of the Case</label>
-                    <input
-            name="facts"
-            value={litigationForm.facts}
-            onChange={handleLitigationChange}
-            placeholder="Facts of the Case/Contents of the Case"
+           <input
+  name="facts"
+  value={litigationForm.facts}
+  maxLength="250"
+  placeholder="Facts of the Case/Contents of the Case"
+  onChange={(e) => {
+    let value = e.target.value;
 
-          />
+    // allow only letters, numbers and spaces
+    value = value.replace(/[^A-Za-z0-9 ]/g, "");
+
+    setLitigationForm({
+      ...litigationForm,
+      facts: value,
+    });
+  }}
+/>
                   </div>
 
                   <div>
@@ -1565,35 +1738,69 @@ else {
                     </label> 
                   </div> */}
 
-                 {interimOrder === "Yes" && (
+{interimOrder === "Yes" && (
   <div>
     <label className="required">Interim Order Certificate</label>
-       <input
+
+    <input
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
-      onChange={(e) =>
+      onChange={(e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const allowedTypes = [
+          "application/pdf",
+          "image/jpeg",
+          "image/png",
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+          alert("Only PDF, JPG, JPEG, and PNG files are allowed");
+          e.target.value = "";
+          return;
+        }
+
         setLitigationForm({
           ...litigationForm,
-          interimCert: e.target.files[0],
-        })
-      }
+          interimCert: file,
+        });
+      }}
     />
   </div>
 )}
 
 
-                 {finalOrder === "Yes" && (
+{finalOrder === "Yes" && (
   <div>
-    <label className="required">Disposed Certificate </label>
+    <label className="required">Disposed Certificate</label>
+
     <input
       type="file"
       accept=".pdf,.jpg,.jpeg,.png"
-      onChange={(e) =>
+      onChange={(e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const allowedTypes = [
+          "application/pdf",
+          "image/jpeg",
+          "image/png",
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+          alert("Only PDF, JPG, JPEG, and PNG files are allowed");
+          e.target.value = "";
+          return;
+        }
+
         setLitigationForm({
           ...litigationForm,
-          disposedCert: e.target.files[0],
-        })
-      }
+          disposedCert: file,
+        });
+      }}
     />
   </div>
 )}
@@ -1612,42 +1819,118 @@ else {
                   </div>
                 </div>
               {/* ===== TABLE ===== */}
-      {litigations.length > 0 && (
-        <table className="applicantdetails-table">
-          <thead>
-            <tr>
-              <th>S.No.</th>
-              <th>Case No</th>
-              <th>Name & Place</th>
-              <th>Petitioner</th>
-              <th>Respondent</th>
-              <th>Status</th>
-              <th>Interim</th>
-              <th>Final</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {litigations.map((l, index) => (
-              <tr key={l.id}>
-                <td>{index + 1}</td>
-                <td>{l.caseNo}</td>
-                <td>{l.namePlace}</td>
-                <td>{l.petitioner}</td>
-                <td>{l.respondent}</td>
-                <td>{l.presentStatus}</td>
-                <td>{l.interimOrder}</td>
-                <td>{l.finalOrder}</td>
-                <td>
-                  <button onClick={() => handleDeleteLitigation(l.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+    {litigations.length > 0 && (
+  <table className="applicantdetails-table">
+    <thead>
+      <tr>
+        <th>S.No.</th>
+        <th>Case No</th>
+        <th>Name & Place</th>
+        <th>Petitioner</th>
+        <th>Respondent</th>
+        <th>Status</th>
+        <th>Interim</th>
+        <th>Final</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {litigations.map((l, index) => (
+        <tr key={l.id}>
+          <td>{index + 1}</td>
+          <td>{l.caseNo}</td>
+          <td>{l.namePlace}</td>
+          <td>{l.petitioner}</td>
+          <td>{l.respondent}</td>
+          <td>{l.presentStatus}</td>
+
+          {/* Interim */}
+          {/* Interim */}
+<td>
+  {l.interimOrder === "Yes" ? (
+    l.interimCert ? (
+      <button
+        type="button"
+        onClick={() => {
+          const file =
+            typeof l.interimCert === "string"
+              ? l.interimCert
+              : URL.createObjectURL(l.interimCert);
+
+          window.open(file, "_blank");
+        }}
+      >
+        View
+      </button>
+    ) : (
+      "No File"
+    )
+  ) : (
+    "No"
+  )}
+</td>
+
+{/* Final */}
+<td>
+  {l.finalOrder === "Yes" ? (
+    l.disposedCert ? (
+      <button
+        type="button"
+        onClick={() => {
+          const file =
+            typeof l.disposedCert === "string"
+              ? l.disposedCert
+              : URL.createObjectURL(l.disposedCert);
+
+          window.open(file, "_blank");
+        }}
+      >
+        View
+      </button>
+    ) : (
+      "No File"
+    )
+  ) : (
+    "No"
+  )}
+</td>
+
+          {/* Final */}
+          {/* <td>
+            {l.finalOrder === "Yes" && l.disposedCert ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const fileUrl =
+                    typeof l.disposedCert === "string"
+                      ? l.disposedCert
+                      : URL.createObjectURL(l.disposedCert);
+
+                  window.open(fileUrl, "_blank");
+                }}
+              >
+                View
+              </button>
+            ) : (
+              "No"
+            )}
+          </td> */}
+
+          {/* Delete */}
+          <td>
+            <button
+              type="button"
+              onClick={() => handleDeleteLitigation(l.id)}
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
     </>
   )}
 </section>
@@ -1701,60 +1984,49 @@ else {
 
         <div>
           <label className="required">State / UT </label>
-          <select
+<select
   value={otherReraForm.stateId}
   onChange={(e) => {
+    const selectedId = Number(e.target.value);
+
     const state = otherStates.find(
-      (s) => s.state_id == e.target.value   // ✅ FIX
+      (s) => s.id === selectedId
     );
 
     setOtherReraForm({
       ...otherReraForm,
-      stateId: e.target.value,
-      stateName: state?.state_name || "",
-      districtId: "",
+      stateId: selectedId, // INTEGER
+      stateName: state?.state_name || "", // TEXT
       districtName: "",
     });
-
-    setOtherStateId(e.target.value); // triggers district API
   }}
 >
   <option value="">Select</option>
+
   {otherStates.map((s) => (
-    <option key={s.state_id} value={s.state_id}>
+    <option key={s.id} value={s.id}>
       {s.state_name}
     </option>
   ))}
 </select>
-
         </div>
 
-        <div>
-          <label className="required">District </label>
-          <select
-  value={otherReraForm.districtId}
-  onChange={(e) => {
-    const dist = otherDistricts.find(
-      (d) => d.district_id == e.target.value   // ✅ FIX
-    );
+        {/* District */}
+  <div>
+    <label className="required">District</label>
 
-    setOtherReraForm({
-      ...otherReraForm,
-      districtId: e.target.value,
-      districtName: dist?.district_name || "",
-    });
-  }}
-  disabled={!otherReraForm.stateId}
->
-  <option value="">Select</option>
-  {otherDistricts.map((d) => (
-    <option key={d.district_id} value={d.district_id}>
-      {d.district_name}
-    </option>
-  ))}
-</select>
-
-        </div>
+    <input
+      type="text"
+      placeholder="Enter District"
+      value={otherReraForm.districtName}
+      onChange={(e) =>
+        setOtherReraForm({
+          ...otherReraForm,
+          districtName: e.target.value,
+        })
+      }
+    />
+  </div>
 
         <div style={{ alignSelf: "flex-end" }}>
           <button
@@ -1828,7 +2100,6 @@ else {
             <div className="applicantdetails-success-modal">
               <h3>Success</h3>
               <p>Applicant Details Saved Successfully</p>
-
               <button
                 onClick={() => {
                   setShowSuccessPopup(false);
@@ -1849,6 +2120,5 @@ else {
     </div>
     </div>
   );
-};
-
+}; 
 export default ApplicantDetails;

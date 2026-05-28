@@ -748,3 +748,72 @@
   border: 1px solid #ccc;
   padding: 5px;
 }
+
+.cr-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow-x: auto;
+  display: block;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.cr-data-table thead {
+  background: #3f5873;
+  color: white;
+}
+
+.cr-data-table th,
+.cr-data-table td {
+  border: 1px solid #ccc;
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.cr-data-table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cr-data-table td {
+  background: #fff;
+  color: #333;
+}
+
+.cr-data-table tbody tr:nth-child(even) {
+  background-color: #f7f9fc;
+}
+
+.cr-data-table tbody tr:hover {
+  background-color: #eef4ff;
+  transition: 0.3s;
+}
+
+.cr-delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cr-delete-btn:hover {
+  background: #b52a37;
+}
+
+@media screen and (max-width: 768px) {
+  .cr-data-table th,
+  .cr-data-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+textarea.cr-container-input {
+  min-height: 120px;
+  resize: vertical;
+}

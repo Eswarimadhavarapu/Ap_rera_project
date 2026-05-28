@@ -354,7 +354,7 @@ const AdminComplaints = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   useEffect(() => {
-    fetch("https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/list")
+    fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/list")
       .then((res) => res.json())
       .then((data) => setComplaints(data.data || []))
       .catch((err) => console.log(err));

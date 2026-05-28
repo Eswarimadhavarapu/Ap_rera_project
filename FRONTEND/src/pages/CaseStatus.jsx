@@ -23,7 +23,7 @@ const handleSearch = async () => {
   try {
 
     const response = await fetch(
-      `https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/search/${caseNumber}`
+      `https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/search/${caseNumber}`
     );
 
 
@@ -56,7 +56,7 @@ const handleView = async (complaintId) => {
   try {
 
     const response = await fetch(
-      `https://0jv8810n-8080.inc1.devtunnels.ms/api/complint/${complaintId}`
+      `https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/${complaintId}`
     );
 
     const data = await response.json();

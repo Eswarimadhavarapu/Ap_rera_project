@@ -190,7 +190,7 @@ function NewRowsTable({ rows, subSection, onDelete }) {
               ))}
               <th style={thStyle}>Reasons for changes</th>
               <th style={thStyle}>Supporting Document</th>
-              <th style={thStyle}>Additional Documents</th>
+              <th style={thStyle}>Uploaded Documents</th>
               <th style={{ ...thStyle, width: "60px" }}>Action</th>
             </tr>
           </thead>
@@ -198,7 +198,23 @@ function NewRowsTable({ rows, subSection, onDelete }) {
             {rows.map(({ row, originalIndex }) => (
               <tr key={originalIndex} style={{ background: originalIndex % 2 === 0 ? "#fff" : "#f8fafd" }}>
                 {subSection.fields.map((field) => (
-  <td key={field.name} style={{ ...tdStyle, maxWidth: "200px" }}>
+<td
+  key={field.name}
+  style={{
+    ...tdStyle,
+    minWidth:
+      field.name.toLowerCase().includes("email")
+        ? "260px"
+        : "160px",
+    maxWidth:
+      field.name.toLowerCase().includes("email")
+        ? "260px"
+        : "200px",
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+    whiteSpace: "normal"
+  }}
+>
     
     {field.name.toLowerCase().includes("address") ? (
       
@@ -567,13 +583,22 @@ if (name.toLowerCase().includes("pincode")) {
     newEntry.fileURL = URL.createObjectURL(file);
     hasValue = true;
   }
-  newEntry.structuralDocuments =
+newEntry.structuralDocuments =
   Object.entries(structuralDocs)
     .map(
       ([doc, file], index) =>
         `${index + 1}. ${doc}\n${file?.name || "No File"}`
     )
     .join("\n\n");
+
+ 
+
+    newEntry.uploadDocuments = Object.entries(structuralDocs).map(
+  ([doc, file]) => ({
+    name: doc,
+    fileName: file?.name || "-"
+  })
+);
 
   if (!hasValue) {
     alert("Please enter at least one field");
@@ -590,6 +615,7 @@ if (name.toLowerCase().includes("pincode")) {
   setFile(null);
   setErrors({});
   setSelectedField("");
+  setStructuralDocs({});
 };
 
   const handleDelete = (idx) => {
@@ -714,21 +740,67 @@ if (name.toLowerCase().includes("pincode")) {
           {index + 1}. {doc}
         </div>
 
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={(e) => {
-            const selectedFile = e.target.files[0];
+       <div
+  style={{
+    minWidth: "320px",
+    border: "2px solid #c7d2e2",
+    borderRadius: "14px",
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    background: "#f8fbff",
+    padding: "8px"
+  }}
+>
+  <input
+    type="file"
+    accept=".pdf"
+    id={`structuralDoc_${index}`}
+    value=""
+    style={{ display: "none" }}
+    onChange={(e) => {
+      const selectedFile = e.target.files[0];
 
-            if (!selectedFile) return;
+      if (!selectedFile) return;
 
-            setStructuralDocs((prev) => ({
-              ...prev,
-              [doc]: selectedFile,
-            }));
-          }}
-        />
-      </div>
+      setStructuralDocs((prev) => ({
+        ...prev,
+        [doc]: selectedFile,
+      }));
+    }}
+  />
+
+  <label
+    htmlFor={`structuralDoc_${index}`}
+    style={{
+      background: "#28469b",
+      color: "#fff",
+      padding: "12px 22px",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontWeight: "600",
+      fontSize: "14px",
+      whiteSpace: "nowrap"
+    }}
+  >
+    Choose File
+  </label>
+
+  <div
+    style={{
+      marginLeft: "14px",
+      fontSize: "14px",
+      color: structuralDocs[doc] ? "#111" : "#777",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
+    }}
+  >
+    {structuralDocs[doc]
+      ? structuralDocs[doc].name
+      : "No file chosen"}
+  </div>
+</div>      </div>
     ))}
   </div>
 )}
@@ -786,11 +858,12 @@ if (name.toLowerCase().includes("pincode")) {
             padding: "8px"
           }}
         >
-          <input
-            type="file"
-            accept=".pdf"
-            id={`caDoc_${index}`}
-            style={{ display: "none" }}
+         <input
+  type="file"
+  accept=".pdf"
+  id={`caDoc_${index}`}
+  value=""
+  style={{ display: "none" }}
             onChange={(e) => {
               const selectedFile = e.target.files[0];
 

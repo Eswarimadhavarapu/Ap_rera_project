@@ -16,7 +16,7 @@ const ApplyForRenewalOTP = () => {
 
     try {
 
-      const response = await fetch("http://localhost:8080/api/otp/send-email", {
+      const response = await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/otp/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -47,7 +47,7 @@ const verifyOtp = async () => {
 
   try {
 
-    const response = await fetch("http://localhost:8080/api/otp/verify", {
+    const response = await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/otp/verify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

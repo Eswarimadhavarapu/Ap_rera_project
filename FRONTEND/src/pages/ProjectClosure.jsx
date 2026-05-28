@@ -46,7 +46,7 @@ const handleImageValidation = (e) => {
             form.append("promoterName", projectDetails.promoterName);
 
             const response = await fetch(
-                "https://0jv8810n-8080.inc1.devtunnels.ms/api/project_closure/submit",
+                "https://4bckgspd-8080.inc1.devtunnels.ms/api/project_closure/submit",
                 {
                     method: "POST",
                     body: form

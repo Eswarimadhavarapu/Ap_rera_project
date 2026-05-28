@@ -18,7 +18,7 @@ import "../../styles/RTI/RTI_Details_Page.css";
 const BASE_URL =
   import.meta.env.MODE === "production"
     ? "https://your-production-domain.com"
-    : "https://7zgjxth4-8090.inc1.devtunnels.ms";
+    : "https://4bckgspd-8080.inc1.devtunnels.ms";
 
 const DEPARTMENTS = [
   "Audit", "Legal", "Planning", "IT",

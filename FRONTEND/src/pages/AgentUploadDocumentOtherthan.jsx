@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AgentStepper from "../components/AgentStepper";
 import axios from "axios";
 
-const BASE_URL = "https://0jv8810n-8080.inc1.devtunnels.ms";
+const BASE_URL = "https://4bckgspd-8080.inc1.devtunnels.ms";
 
 export default function AgentUploadDocumentOtherthan() {
 

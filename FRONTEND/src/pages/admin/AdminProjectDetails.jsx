@@ -21,7 +21,7 @@ const [approveRemark, setApproveRemark] = useState("");
   };
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/admin/projects/${id}`)
+    fetch(`https://4bckgspd-8080.inc1.devtunnels.ms/api/admin/projects/${id}`)
       .then(res => res.json())
       .then(data => setProject(data))
       .catch(err => console.error(err));
@@ -207,7 +207,7 @@ const [approveRemark, setApproveRemark] = useState("");
   }
 
   try {
-    const response = await fetch(`http://localhost:8080/api/admin/projects/${id}/reject`, {
+    const response = await fetch(`https://4bckgspd-8080.inc1.devtunnels.ms/api/admin/projects/${id}/reject`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -285,7 +285,7 @@ const [approveRemark, setApproveRemark] = useState("");
           className="admin-project-details__confirm-approve-btn"
           onClick={async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/admin/projects/${id}/approve`, {
+    const response = await fetch(`https://4bckgspd-8080.inc1.devtunnels.ms/api/admin/projects/${id}/approve`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

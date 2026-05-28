@@ -637,7 +637,7 @@ export default function PRExistingStarting() {
     try {
       if (isOther) {
         // Save Organization changes to the DB natively
-        const response = await fetch("http://localhost:8080/api/other-t-indv/promoter/update", {
+        const response = await fetch("https://4bckgspd-8080.inc1.devtunnels.ms/api/other-t-indv/promoter/update", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

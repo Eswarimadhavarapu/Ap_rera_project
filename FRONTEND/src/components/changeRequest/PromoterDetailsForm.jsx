@@ -442,11 +442,14 @@ if (selectedField === "panNumber") {
   : "",
       supportingdocumentsUrl: supportingdocumentsFile ? URL.createObjectURL(supportingdocumentsFile) : "",
         // ADD THIS
-  promoterDocs: Object.keys(promoterNameDocs).map((doc) => ({
-    name: doc,
-    fileName: promoterNameDocs[doc]?.name,
-    fileUrl: URL.createObjectURL(promoterNameDocs[doc]),
-  })),
+ promoterDocs:
+  selectedField === "promoterName"
+    ? Object.keys(promoterNameDocs).map((doc) => ({
+        name: doc,
+        fileName: promoterNameDocs[doc]?.name,
+        fileUrl: URL.createObjectURL(promoterNameDocs[doc]),
+      }))
+    : [],
     };
 
     const updated = [...tableData, newRow];
@@ -708,6 +711,7 @@ if (selectedField === "panNumber") {
       </div>
 
       {/* ── TABLE ── */}
+      
      {tableData.length > 0 && (
         <table style={S.table}>
           <thead>
@@ -721,6 +725,7 @@ if (selectedField === "panNumber") {
               <th style={{ ...S.th, width: "60px" }}>Action</th>
             </tr>
           </thead>
+          
           <tbody>
             {tableData.map((row, i) => (
               <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f8fafd" }}>
