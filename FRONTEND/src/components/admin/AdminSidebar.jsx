@@ -80,7 +80,9 @@ const AdminSidebar = ({ sidebarOpen }) => {
       <button onClick={() => navigate("/admin/projects")}>
         Projects
       </button>
-
+           <button onClick={() => navigate("/scrutiny/project-extension")}>
+        Project Extention
+      </button>
       <button onClick={() => navigate("/admin/agents")}>
         Agents
       </button>

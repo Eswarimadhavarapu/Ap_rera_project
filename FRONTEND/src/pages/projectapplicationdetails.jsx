@@ -22,48 +22,34 @@ const ProjectApplicationDetails = () => {
     return date.toISOString().split("T")[0];
   };
 
-  /* ===============================
-     HANDLE BOTH DATA STRUCTURES
-  ================================= */
+  const projectName = projectData.project_name || projectData.name;
+  const project_id = projectData.project_id || projectData.projectId;
+  const project_district = projectData.project_district || "Unknown District";
+  const promoter_email = projectData.promoter_email || projectData.projectId;
+  const promoter_pan =
+    projectData.pan_number ||
+    projectData.promoter_pan_number ||
+    "";
+  const validityFrom = projectData.validity_from || projectData.building_permission_from;
+  const validityTo = projectData.validity_to || projectData.building_permission_upto;
+  const baNo = projectData.ba_no || projectData.building_plan_no;
 
-  const projectName =
-    projectData.project_name || projectData.name;
-
-  const validityFrom =
-    projectData.validity_from ||
-    projectData.building_permission_from;
-
-  const validityTo =
-    projectData.validity_to ||
-    projectData.building_permission_upto;
-
-  const baNo =
-    projectData.ba_no ||
-    projectData.building_plan_no;
-
-  const minNewValidityFrom = validityTo
-    ? getNextDay(validityTo)
-    : "";
+  const minNewValidityFrom = validityTo ? getNextDay(validityTo) : "";
 
   const [fileErrors, setFileErrors] = useState({});
   const [files, setFiles] = useState({});
   const [uploadedFileNames, setUploadedFileNames] = useState(new Set());
-
   const [formData, setFormData] = useState({
     newValidityFrom: "",
     newValidityTo: "",
   });
 
   const handleFileChange = (e, fieldName) => {
-
     const file = e.target.files[0];
     if (!file) return;
 
     if (file.type !== "application/pdf") {
-      setFileErrors((prev) => ({
-        ...prev,
-        [fieldName]: "Please upload only PDF format",
-      }));
+      setFileErrors((prev) => ({ ...prev, [fieldName]: "Please upload only PDF format" }));
       e.target.value = "";
       return;
     }
@@ -78,19 +64,14 @@ const ProjectApplicationDetails = () => {
 
     setFileErrors((prev) => ({ ...prev, [fieldName]: "" }));
     setFiles((prev) => ({ ...prev, [fieldName]: file }));
-
     setUploadedFileNames((prev) => new Set(prev).add(file.name));
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     if (formData.newValidityFrom < minNewValidityFrom) {
@@ -119,66 +100,37 @@ const ProjectApplicationDetails = () => {
       }
     }
 
-    const payload = new FormData();
+    // ✅ DO NOT call the backend here.
+    // ✅ Just pass projectData + files to the payment page.
+    // ✅ The API will be called AFTER payment succeeds in ExtensionPaymentPage.
 
-    payload.append("application_number", projectData.application_number);
-    payload.append("project_name", projectName);
-    payload.append("project_id", "");
-    payload.append("validity_from", validityFrom);
-    payload.append("validity_to", validityTo);
-    payload.append("new_validity_from", formData.newValidityFrom);
-    payload.append("new_validity_to", formData.newValidityTo);
-
-    payload.append("representation_letter", files.representation_letter);
-    payload.append("form_b", files.form_b);
-    payload.append("consent_letter", files.consent_letter);
-    payload.append("form_e", files.form_e);
-    payload.append("form_p4", files.form_p4);
-    payload.append("extension_proceeding", files.extension_proceeding);
-
-    try {
-
-      const res = await fetch(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/extension-application",
-        {
-          method: "POST",
-          body: payload
-        }
-      );
-
-      if (!res.ok) throw new Error();
-
-      alert("Application submitted successfully");
-
-      navigate("/extensionpaymentpage", {
-        state: {
-          projectData: {
-            ...projectData,
-            new_validity_from: formData.newValidityFrom,
-            new_validity_to: formData.newValidityTo
-          }
-        }
-      });
-
-    } catch (err) {
-      console.error(err);
-      alert("Error submitting application");
-    }
+    navigate("/extensionpaymentpage", {
+      state: {
+        projectData: {
+          ...projectData,
+          project_name: projectName,
+          validity_from: validityFrom,
+          validity_to: validityTo,
+          promoter_pan,
+          promoter_email,
+          project_district,
+          new_validity_from: formData.newValidityFrom,
+          new_validity_to: formData.newValidityTo,
+        },
+        files, // ✅ Pass uploaded File objects to payment page
+      },
+    });
   };
 
   return (
-
     <div className="projectapplicationdetails-form-container">
 
-      <h2 className="projectapplicationdetails-form-title">
-        Extension process
-      </h2>
+      <h2 className="projectapplicationdetails-form-title">Extension process</h2>
 
       <form
         className="projectapplicationdetails-application-form"
         onSubmit={handleSubmit}
       >
-
         <div className="projectapplicationdetails-note-text">
           Note: Double the registration fee for extension process
         </div>
@@ -209,10 +161,7 @@ const ProjectApplicationDetails = () => {
         </div>
 
         <div className="projectapplicationdetails-form-row">
-          <label>
-            Mention New Validity From Date According to Plan and Proceedings
-          </label>
-
+          <label>Mention New Validity From Date According to Plan and Proceedings</label>
           <input
             type="date"
             name="newValidityFrom"
@@ -223,10 +172,7 @@ const ProjectApplicationDetails = () => {
         </div>
 
         <div className="projectapplicationdetails-form-row">
-          <label>
-            Mention New Validity To Date According to Plan and Proceedings
-          </label>
-
+          <label>Mention New Validity To Date According to Plan and Proceedings</label>
           <input
             type="date"
             name="newValidityTo"
@@ -247,62 +193,37 @@ const ProjectApplicationDetails = () => {
           ["form_e", "4. Form E for Renewal"],
           ["form_p4", "5. Change Request in Form P4"],
           ["extension_proceeding", "6. Extension proceeding granted by local authority"],
+          ["form_1", "7. Form 1"],
+          ["form_2", "8. Form 2"],
+          ["form_3", "9. Form 3"],
         ].map(([key, label]) => (
-
           <div className="projectapplicationdetails-form-row" key={key}>
-
             <label>{label}</label>
-
-            <input
-              type="file"
-              onChange={(e) => handleFileChange(e, key)}
-            />
-
+            <input type="file" onChange={(e) => handleFileChange(e, key)} />
             {fileErrors[key] && (
-              <div className="projectapplicationdetails-file-error">
-                {fileErrors[key]}
-              </div>
+              <div className="projectapplicationdetails-file-error">{fileErrors[key]}</div>
             )}
-
             {key === "form_e" && (
               <div style={{ color: "red", fontSize: "13px" }}>
                 Download Form E from Forms Download
               </div>
             )}
-
             {key === "form_p4" && (
               <div style={{ color: "red", fontSize: "13px" }}>
                 Download P4 from Forms Download
               </div>
             )}
-
           </div>
-
         ))}
 
         <div className="projectapplicationdetails-button-row">
-
-          <button
-            type="reset"
-            className="projectapplicationdetails-btn reset"
-          >
-            Reset
-          </button>
-
-          <button
-            type="submit"
-            className="projectapplicationdetails-btn submit"
-          >
-            Submit Application
-          </button>
-
+          <button type="reset" className="projectapplicationdetails-btn reset">Reset</button>
+          <button type="submit" className="projectapplicationdetails-btn submit">Submit Application</button>
         </div>
 
       </form>
-
     </div>
   );
-
 };
 
 export default ProjectApplicationDetails;

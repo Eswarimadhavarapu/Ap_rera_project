@@ -995,6 +995,8 @@ import RtiPaymentPage from "./pages/RTI/RtiPaymentPage.jsx";
 import RTI_List from "./pages/RTI/RTI_LIst.jsx";
 import Registerlist from "./pages/Registerlist";
 import CauseList from "./pages/CauseList.jsx";
+import ProjectExtentionList from "./pages/scrutiny/Project_extention_list.jsx";
+import ProjectExtentionDetails from "./pages/scrutiny/Project_extention_details.jsx";
 
 
 
@@ -1280,7 +1282,28 @@ function App() {
              <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
              <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
              <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
-            
+                <Route path="/scrutiny/RTI_list" element={<RTI_List />} />
+            <Route path="/scrutiny/RTI_Details_Page" element={<RTI_Details_Page />}
+            />
+
+            {/*project extention*/}
+            <Route
+              path="/scrutiny/project-extension"
+              element={
+                <ScrutinyLayout>
+                  <ProjectExtentionList />
+                </ScrutinyLayout>
+              }
+            />
+
+            <Route
+              path="/scrutiny/project-extension-details/:id"
+              element={
+                <ScrutinyLayout>
+                  <ProjectExtentionDetails />
+                </ScrutinyLayout>
+              }
+            />
             {/* Agent Scrutiny */}
             <Route path="/scrutiny/agent-scrutiny/registrations" element={<AgentScrutinyRegistration />} />
             <Route path="/agent-scrutiny/registration_1" element={<AgentScrutinyRegistration_1 />} />

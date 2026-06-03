@@ -29,7 +29,7 @@ class Config:
     # ========================
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
     DEBUG = str_to_bool(os.getenv("FLASK_DEBUG"), False)
-    PORT = int(os.getenv("PORT", 8080))
+    PORT = int(os.getenv("PORT", 8081))
 
     # ========================
     # CORS
@@ -39,7 +39,7 @@ class Config:
         "ALLOWED_ORIGINS",
         "http://localhost:5173,"
         "http://127.0.0.1:5173,"
-        "https://4bckgspd-5173.inc1.devtunnels.ms"
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms"
     )
     # https://0jv8810n-5173.inc1.devtunnels.ms/
 

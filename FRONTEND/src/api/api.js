@@ -8,7 +8,7 @@ const isProduction = import.meta.env.MODE === "production";
  * - Dev: DevTunnel backend (8080)
  * - Prod: real domain
  */
-export const DEV_BACKEND_URL = "https://4bckgspd-8080.inc1.devtunnels.ms";
+export const DEV_BACKEND_URL = "https://n7vxv3pg-8081.inc1.devtunnels.ms";
 
  //const DEV_BACKEND_URL = "http://localhost:8080";
 
@@ -267,3 +267,60 @@ export const sendRTIOTP = (email) =>
 // Verify OTP
 export const verifyRTIOTP = (email, otp) =>
   apiFetch("/api/rti/verify-email-otp", { method: "POST", body: JSON.stringify({ email, otp }) });
+
+
+
+
+
+// ================================
+// ✅ PROJECT EXTENSION MODULE APIs
+// ================================
+
+/**
+ * Create a new project extension application.
+ * Sends FormData including all uploaded files + form fields + payment details.
+ * Called from ExtensionPaymentPage after payment success.
+ */
+export const createProjectExtension = (formData) => {
+  return apiPost("/api/project-extension/create", formData);
+};
+
+/**
+ * Get paginated list of all project extension applications.
+ * @param {number} page - Page number (default 1)
+ * @param {number} perPage - Records per page (default 10)
+ */
+export const getProjectExtensionList = (page = 1, perPage = 10) => {
+  return apiGet(`/api/project-extension/list?page=${page}&per_page=${perPage}`);
+};
+
+/**
+ * Get a single project extension application by its DB id.
+ * @param {number} id - The record ID
+ */
+export const getProjectExtensionById = (id) => {
+  return apiGet(`/api/project-extension/${id}`);
+};
+
+/**
+ * Update an existing project extension application (PATCH).
+ * Accepts FormData for file + field updates.
+ * @param {number} id - The record ID
+ * @param {FormData} formData - Fields and/or files to update
+ */
+export const updateProjectExtension = (id, formData) => {
+  return apiFetch(`/api/project-extension/update/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
+/**
+ * Send an email related to a project extension application.
+ * @param {object} payload - { email, subject, body }
+ */
+export const sendProjectExtensionMail = (payload) => {
+  return apiPost("/api/project-extension/send-mail", payload);
+};
+export const getUserDetails = (id) =>
+  apiGet(`/api/userDetails/${id}`);

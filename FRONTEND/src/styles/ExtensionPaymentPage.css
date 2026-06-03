@@ -1,153 +1,296 @@
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background:
+    linear-gradient(135deg,
+      #f4f7ff 0%,
+      #eef4ff 35%,
+      #ffffff 100%);
+  overflow-x: hidden;
 }
 
-/* Outer container */
+
 .epp-payment-container {
-  max-width: 1050px;
-  margin: 25px auto;
+  max-width: 1150px;
+  margin: 40px auto;
+  padding: 0 20px;
+  animation: eppFadeIn 0.8s ease;
 }
 
-/* Page title */
+
 .epp-page-title {
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 2px solid #4d96a3;
+  font-size: 32px;
+  font-weight: 700;
+  color: #12345b;
+  margin-bottom: 25px;
+  position: relative;
   display: inline-block;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
+  letter-spacing: 0.5px;
 }
 
-/* Main box */
+.epp-page-title::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 70%;
+  height: 4px;
+  border-radius: 20px;
+  background: linear-gradient(90deg,
+      #0b5394,
+      #31b7ff);
+}
+
 .epp-payment-box {
-  border: 2px solid #4d96a3;
-  padding-bottom: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  animation: eppSlideUp 0.8s ease;
 }
 
-/* Header bar */
+
 .epp-payment-header {
-  background: #0b5394;
-  color: #fff;
-  padding: 10px 15px;
-  font-weight: bold;
-  font-size: 15px;
+  background:
+    linear-gradient(135deg,
+      #0b5394,
+      #126dc0);
+
+  color: #ffffff;
+  padding: 18px 25px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Top details */
+
 .epp-payment-top {
   display: flex;
   justify-content: space-between;
-  padding: 15px;
-  font-size: 14px;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 28px 30px 10px;
+  flex-wrap: wrap;
 }
 
 .epp-payment-top p {
-  margin: 4px 0;
+  margin: 10px 0;
+  font-size: 15px;
+  color: #2f3a4d;
+  line-height: 1.6;
+}
+
+.epp-payment-top strong {
+  color: #0b5394;
 }
 
 .epp-payment-date {
-  text-align: right;
+  background: #f4f8ff;
+  padding: 14px 20px;
+  border-radius: 16px;
+  border: 1px solid #dbe9ff;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(11, 83, 148, 0.08);
 }
 
-/* Table wrapper to create left-right gap */
 .epp-payment-table {
-  width: calc(100% - 30px);
-  margin: 10px 15px 20px;
-  border-collapse: collapse;
+  width: calc(100% - 50px);
+  margin: 10px 25px 30px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.epp-payment-table tr {
+  transition: all 0.3s ease;
+}
+
+.epp-payment-table tr:hover {
+  background: #f8fbff;
 }
 
 .epp-payment-table td {
-  border: 1px solid #cfcfcf;
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: 18px 20px;
+  font-size: 15px;
+  border-bottom: 1px solid #edf2fa;
 }
 
-/* Gateway + total row */
+.epp-payment-table tr:last-child td {
+  border-bottom: none;
+}
+
+.epp-payment-table td:first-child {
+  background: #f5f9ff;
+  font-weight: 600;
+  color: #12345b;
+  width: 35%;
+}
+
+.epp-payment-table td:last-child {
+  background: #ffffff;
+  color: #444;
+}
+
 .epp-gateway-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 15px;
+  gap: 25px;
+  padding: 0 25px 25px;
+  flex-wrap: wrap;
 }
 
-/* Radio buttons */
+.epp-gateway-options {
+  flex: 1;
+}
+
 .epp-gateway-options p {
-  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #12345b;
+  margin-bottom: 18px;
 }
 
 .epp-gateway-options label {
-  margin-right: 18px;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+  margin-bottom: 12px;
+  padding: 12px 18px;
+  background: #f7fbff;
+  border-radius: 14px;
+  border: 1px solid #d9ebff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2f3a4d;
 }
 
-/* Total amount box */
-.epp-total-amount {
-  border: 2px solid #4d96a3;
-  padding: 8px 14px;
-  font-weight: bold;
-  font-size: 14px;
-  white-space: nowrap;
+.epp-gateway-options label:hover {
+  transform: translateY(-2px);
+  background: #eef7ff;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
 }
-/* Payment action box */
+
+.epp-gateway-options input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #0b5394;
+}
+
+.epp-total-amount {
+  background:
+    linear-gradient(135deg,
+      #0b5394,
+      #2196f3);
+
+  color: #ffffff;
+  padding: 18px 26px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow:
+    0 8px 20px rgba(11, 83, 148, 0.3);
+
+  animation: eppPulse 2s infinite;
+}
 .epp-payment-action-box {
-  border-top: 1px solid #ccc;
-  margin: 15px;
-  padding-top: 15px;
+  margin: 0 25px 30px;
+  padding: 25px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg,
+      #f8fbff,
+      #eef6ff);
+
+  border: 1px solid #d9e8ff;
   text-align: center;
-  font-size: 14px;
+
+  animation: eppFadeIn 0.5s ease;
+}
+
+.epp-payment-action-box p {
+  font-size: 17px;
+  color: #12345b;
+  margin-bottom: 20px;
 }
 
 .epp-payment-buttons {
-  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
-/* Make Payment */
-.epp-pay-btn {
-  background: #0b5394;
-  color: #fff;
+.epp-pay-btn,
+.epp-cancel-btn {
+  min-width: 170px;
+  padding: 14px 28px;
   border: none;
-  padding: 8px 16px;
-  margin-right: 10px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.epp-pay-btn {
+  background:
+    linear-gradient(135deg,
+      #0b5394,
+      #1a88ff);
+
+  color: white;
+
+  box-shadow:
+    0 8px 18px rgba(11, 83, 148, 0.28);
 }
 
 .epp-pay-btn:hover {
-  background: #083b6d;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 12px 25px rgba(11, 83, 148, 0.35);
 }
 
-/* Cancel Payment */
-.epp-cancel-btn {
-  background: #ffffff;
-  color: #000;
-  border: 1px solid #999;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.epp-cancel-btn:hover {
-  background: #f2f2f2;
+.epp-pay-btn:active {
+  transform: scale(0.97);
 }
 
 .epp-cancel-btn {
-  background-color: #dc3545; /* RED */
+  background:
+    linear-gradient(135deg,
+      #ff5f6d,
+      #ff2e43);
+
   color: #ffffff;
-  border: none;
-  padding: 8px 18px;
-  font-size: 14px;
-  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px rgba(255, 46, 67, 0.25);
 }
 
 .epp-cancel-btn:hover {
-  background-color: #b02a37; /* Dark red */
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 12px 25px rgba(255, 46, 67, 0.35);
 }
 
-
-/* ===============================
-   PAYMENT SUCCESS POPUP STYLES
-   =============================== */
+.epp-cancel-btn:active {
+  transform: scale(0.97);
+}
 
 .epp-payment-popup {
   position: fixed;
@@ -155,46 +298,187 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.45);
+
+  background: rgba(0, 0, 0, 0.55);
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
   z-index: 9999;
+
+  animation: eppPopupBg 0.3s ease;
 }
 
 .epp-payment-popup-box {
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 6px;
+  width: 420px;
+  max-width: 90%;
+
+  background: white;
+
+  border-radius: 28px;
+
+  padding: 35px 30px;
+
   text-align: center;
-  width: 360px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  position: relative;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25);
+
+  animation: eppPopupScale 0.45s ease;
+}
+
+.epp-payment-popup-box::before {
+  content: "✓";
+
+  width: 90px;
+  height: 90px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(135deg,
+      #16c47f,
+      #0fb56d);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: white;
+  font-size: 42px;
+  font-weight: bold;
+
+  margin: -75px auto 20px;
+
+  box-shadow:
+    0 10px 30px rgba(22, 196, 127, 0.35);
 }
 
 .epp-payment-popup-box h3 {
-  color: #28a745; /* green success */
-  margin-bottom: 10px;
-  font-size: 18px;
+  color: #12345b;
+  font-size: 28px;
+  margin-bottom: 12px;
 }
 
-.payment-popup-box p {
-  font-size: 14px;
-  margin-bottom: 20px;
-  color: #333;
+.epp-payment-popup-box p {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 25px;
 }
 
-/* OK button inside popup */
-.epp-payment-popup-box .pay-btn {
-  margin-right: 0;
-  padding: 8px 22px;
+@keyframes eppFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
+@keyframes eppSlideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
 
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
+@keyframes eppPopupScale {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
 
-/* Decrease image size inside payment popup */
-.epp-payment-popup-box img {
-  width: 60px;        /* 🔽 size decrease */
-  height: auto;
-  margin-bottom: 10px;
+  70% {
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes eppPopupBg {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes eppPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+
+  .epp-payment-container {
+    padding: 0 14px;
+  }
+
+  .epp-page-title {
+    font-size: 24px;
+  }
+
+  .epp-payment-top {
+    flex-direction: column;
+  }
+
+  .epp-payment-date {
+    width: 100%;
+  }
+
+  .epp-payment-table {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+
+  .epp-payment-table td {
+    font-size: 13px;
+    padding: 14px;
+  }
+
+  .epp-gateway-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .epp-total-amount {
+    text-align: center;
+    width: 100%;
+  }
+
+  .epp-payment-buttons {
+    flex-direction: column;
+  }
+
+  .epp-pay-btn,
+  .epp-cancel-btn {
+    width: 100%;
+  }
+
+  .epp-payment-popup-box {
+    padding: 30px 20px;
+  }
 }

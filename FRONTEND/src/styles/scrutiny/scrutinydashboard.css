@@ -1,25 +1,29 @@
 /* ===== Layout ===== */
 
-.scrutiny-layout{
-display:flex;
-min-height:100vh;
+.scrutiny-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ===== Sidebar ===== */
 
-.scrutiny-sidebar{
+.scrutiny-sidebar {
     position: fixed;
     top: 70px;
     left: 0;
     width: 250px;
+    min-width: 250px;
     height: calc(100vh - 70px);
-     background: linear-gradient(180deg, #029cef,
-    #858484);
+    background: linear-gradient(180deg, #029cef,
+            #858484);
     color: white;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    z-index: 1500;
 }
 
 /* Hide Scrollbar */
@@ -27,34 +31,37 @@ min-height:100vh;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
+
 .scrutiny-sidebar::-webkit-scrollbar {
     display: none;
 }
 
 /* Sidebar hidden */
-.scrutiny-sidebar-closed{
-    transform: translateX(-250px);
+.scrutiny-sidebar-closed {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden;
 }
 
 /* Sidebar visible */
-.scrutiny-sidebar-open{
-    transform: translateX(0);
+.scrutiny-sidebar-open {
+    width: 250px;
+    min-width: 250px;
 }
 
 /* ===== Sidebar Title ===== */
 
-.scrutiny-sidebar-title{
+.scrutiny-sidebar-title {
     font-size: 20px;
     font-weight: 600;
     padding: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-
-    white-space: nowrap;        /* 🔥 MAIN FIX */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
 }
 
 /* ===== Sidebar Buttons ===== */
 
-.scrutiny-sidebar button{
+.scrutiny-sidebar button {
     background: none;
     border: none;
     color: #e6edf5;
@@ -71,14 +78,14 @@ min-height:100vh;
 }
 
 /* Hover effect */
-.scrutiny-sidebar button:hover{
+.scrutiny-sidebar button:hover {
     background: #a0d4f1;
     color: #ffffff;
     border-left: 4px solid #ffffff;
 }
 
 /* Active button */
-.scrutiny-sidebar button.active{
+.scrutiny-sidebar button.active {
     background: #a0d4f1;
     color: #ffffff;
     border-left: 4px solid #a0d4f1;
@@ -86,246 +93,265 @@ min-height:100vh;
 }
 
 /* Divider */
-.scrutiny-sidebar button:not(:last-child){
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+.scrutiny-sidebar button:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-
-
 
 /* ===== Main Content ===== */
 
-.scrutiny-main{
-margin-left:250px;
-margin-top: 70px;
-width:100%;
-min-height:calc(100vh - 70px);
-background:#f5f5f5;
-padding:20px;
+.scrutiny-main {
+    flex: 1;
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+    background: #f5f5f5;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
-/* When sidebar closed */
+/* Sidebar OPEN */
+.scrutiny-main-open {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
 
-.scrutiny-main-full{
-margin-left:0;
+/* Sidebar CLOSED */
+.scrutiny-main-full {
+    margin-left: 0 !important;
+    width: 100% !important;
 }
 
 /* ===== Top Header ===== */
 
-.scrutiny-top-header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:70px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px 20px;
-background:#f2f2f2;
-border-bottom:1px solid #ddd;
-z-index:2000;
+.scrutiny-top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #f2f2f2;
+    border-bottom: 1px solid #ddd;
+    z-index: 2000;
+    box-sizing: border-box;
 }
 
-.scrutiny-header-left{
-display:flex;
-align-items:center;
-gap:12px;
-}
-.scrutiny-header-logo{
-width:52px;
-height:52px;
-border-radius:50%;          /* makes circle */
-object-fit:contain;
-background:#ffffff;
-border:2px solid #a0d4f1;   /* blue ring */
-padding:6px;
+.scrutiny-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.scrutiny-header-left h2{
-font-size:22px;
-font-weight:600;
-color: #029cef;
+.scrutiny-header-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: contain;
+    background: #ffffff;
+    border: 2px solid #a0d4f1;
+    padding: 6px;
 }
 
-.scrutiny-header-right{
-display:flex;
-align-items:center;
-gap:15px;
+.scrutiny-header-left h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #029cef;
 }
 
-.scrutiny-search-btn{
-background:red;
-color:white;
-border:none;
-padding:10px 20px;
-font-weight:bold;
-cursor:pointer;
-border-radius:4px;
+.scrutiny-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.scrutiny-search-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 /* Hamburger */
 
-.scrutiny-hamburger{
+.scrutiny-hamburger {
     font-size: 26px;
     background: transparent;
     border: none;
     color: black;
     cursor: pointer;
     margin-right: 10px;
-
-    height: 52px;              /* ✅ MATCH LOGO HEIGHT */
+    height: 52px;
     display: flex;
-    align-items: center;       /* ✅ vertical center */
+    align-items: center;
     justify-content: center;
 }
 
-.scrutiny-logo-text{
-font-size:24px;
-font-weight:600;
+.scrutiny-logo-text {
+    font-size: 24px;
+    font-weight: 600;
 }
 
-.scrutiny-panel-title{
-font-size:24px;
-margin-left:20px;
+.scrutiny-panel-title {
+    font-size: 24px;
+    margin-left: 20px;
 }
 
 /* ===== Dashboard ===== */
 
-.scrutiny-dashboard-content{
-padding:20px 30px;
-background:#f5f5f5;
-min-height:calc(100vh - 70px); /* header height */
-margin-top:0;
+.scrutiny-dashboard-content {
+    padding: 20px 30px;
+    background: #f5f5f5;
+    min-height: calc(100vh - 70px);
+    margin-top: 0;
 }
 
-.scrutiny-dashboard-cards{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
+.scrutiny-dashboard-cards {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
 }
 
-.scrutiny-card{
-background:rgb(255, 255, 255);
-padding:30px;
-border-radius:10px;
-width:200px;
-text-align:center;
-box-shadow:0 2px 10px rgba(0,0,0,0.15);
+.scrutiny-card {
+    background: rgb(255, 255, 255);
+    padding: 30px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
-.scrutiny-card h3{
-font-size:32px;
-margin-bottom:10px;
+.scrutiny-card h3 {
+    font-size: 32px;
+    margin-bottom: 10px;
 }
 
-.scrutiny-card p{
-font-size:16px;
-color:#444;
+.scrutiny-card p {
+    font-size: 16px;
+    color: #444;
 }
 
-.scrutiny-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-background:white;
+.scrutiny-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
 }
 
 .scrutiny-table th,
-.scrutiny-table td{
-border:1px solid #ddd;
-padding:10px;
-text-align:center;
+.scrutiny-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
 }
 
-.scrutiny-table th{
-background:#a0d4f1;
-color:white;
+.scrutiny-table th {
+    background: #a0d4f1;
+    color: white;
 }
 
-.scrutiny-view-btn{
-background:#a0d4f1;
-color:white;
-border:none;
-padding:6px 12px;
-cursor:pointer;
-border-radius:4px;
+.scrutiny-view-btn {
+    background: #a0d4f1;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
-.scrutiny-view-btn:hover{
-background:#a0d4f1;
+.scrutiny-view-btn:hover {
+    background: #a0d4f1;
 }
 
-.scrutiny-profile-img{
-width:38px;
-height:38px;
-border-radius:50%;
-object-fit:cover;
-cursor:pointer;
-border:2px solid #a0d4f1;
-margin-left:10px;
+.scrutiny-profile-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #a0d4f1;
+    margin-left: 10px;
 }
 
 /* Profile wrapper */
-.scrutiny-profile-wrapper{
-position:relative;
-margin-left:10px;
+.scrutiny-profile-wrapper {
+    position: relative;
+    margin-left: 10px;
 }
 
 /* Small profile icon */
-.scrutiny-profile-img{
-width:40px;
-height:40px;
-border-radius:50%;
-cursor:pointer;
-border:2px solid #a0d4f1;
+.scrutiny-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #a0d4f1;
 }
 
 /* Profile popup card */
-.scrutiny-profile-card{
-position:absolute;
-top:55px;
-right:0;
-width:260px;
-background:white;
-border-radius:10px;
-box-shadow:0 8px 25px rgba(0,0,0,0.2);
-overflow:hidden;
-z-index:1000;
+.scrutiny-profile-card {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 260px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 1000;
 }
 
 /* top section */
-.scrutiny-profile-top{
-background:#d7e3f3;
-padding:20px;
-text-align:center;
+.scrutiny-profile-top {
+    background: #d7e3f3;
+    padding: 20px;
+    text-align: center;
 }
 
-.scrutiny-profile-large{
-width:70px;
-height:70px;
-border-radius:50%;
-margin-bottom:10px;
+.scrutiny-profile-large {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
 
-.scrutiny-profile-top h3{
-margin:5px 0;
+.scrutiny-profile-top h3 {
+    margin: 5px 0;
 }
 
-.scrutiny-profile-top p{
-font-size:14px;
-color:#555;
+.scrutiny-profile-top p {
+    font-size: 14px;
+    color: #555;
 }
 
 /* logout button */
-.scrutiny-logout-btn{
-width:90%;
-margin:15px auto;
-display:block;
-padding:10px;
-background:#a0d4f1;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
+.scrutiny-logout-btn {
+    width: 90%;
+    margin: 15px auto;
+    display: block;
+    padding: 10px;
+    background: #a0d4f1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ===== Global Fix ===== */
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+html {
+    overflow-x: hidden;
 }

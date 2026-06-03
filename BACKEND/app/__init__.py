@@ -217,10 +217,7 @@ def create_app():
     from app.controllers.search_controller import search_bp
     from app.controllers.project_rating_controller import project_rating_bp
     from app.controllers.project_gallery_controller import project_gallery_bp
-
-    # ---------------------------------------------------------
-    # Register API Routes
-    # ---------------------------------------------------------
+    from app.controllers.project_extention_controller import project_extention_bp
 
     # Added from second file
 
@@ -280,5 +277,6 @@ def create_app():
     app.register_blueprint(search_bp, url_prefix="/api")
     app.register_blueprint(project_rating_bp, url_prefix="/api")
     app.register_blueprint(project_gallery_bp, url_prefix="/api")
+    app.register_blueprint(project_extention_bp, url_prefix="/api")
 
     return app

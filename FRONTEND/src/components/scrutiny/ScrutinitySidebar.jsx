@@ -220,7 +220,9 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
 
         </div>
       )}
-
+        <button onClick={() => navigate("/scrutiny/project-extension")}>
+        Project Extention
+      </button>
       {/* UNREGISTERED PROJECTS */}
       <button
         onClick={() =>
@@ -231,9 +233,7 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
       </button>
 
       {/* ✅ ADDED FROM SECOND FILE */}
-      <button
-        onClick={() => navigate("/RTI_List")}
-      >
+      <button onClick={() => navigate("/scrutiny/RTI_list")}>
         RTI
       </button>
 

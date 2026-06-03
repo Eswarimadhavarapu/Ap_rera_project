@@ -10,7 +10,13 @@ export default function ScrutinyLayout({ children }) {
     <div className="scrutiny-layout">
       <ScrutinitySidebar sidebarOpen={sidebarOpen} />
 
-      <div className={`scrutiny-main ${sidebarOpen ? "" : "scrutiny-main-full"}`}>
+     <div
+        className={
+          sidebarOpen
+            ? "scrutiny-main scrutiny-main-open"
+            : "scrutiny-main scrutiny-main-full"
+        }
+      >
         <TopHeader toggleSidebar={() => setSidebarOpen((prev) => !prev)} />
         {children}
       </div>
