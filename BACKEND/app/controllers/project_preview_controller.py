@@ -47,4 +47,4 @@ def get_project_registration_controller(application_number, pan_number):
         }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500

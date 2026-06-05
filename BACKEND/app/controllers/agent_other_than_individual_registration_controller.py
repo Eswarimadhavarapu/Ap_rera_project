@@ -240,7 +240,7 @@ def register_agent():
     except Exception as e:
         db.session.rollback()
         logger.error("REGISTER ERROR", exc_info=True)
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({"status": "error", "message": "Internal server error"}), 500
 
 
 # ==========================================================
@@ -364,7 +364,7 @@ def update_agent_itr_documents():
     except Exception as e:
         db.session.rollback()
         logger.error("ITR PATCH ERROR", exc_info=True)
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({"status": "error", "message": "Internal server error"}), 500
 @agent_other_than_individual_registration_bp.route(
     "/check-application/<application_no>", methods=["GET"]
 )
@@ -377,4 +377,4 @@ def check_application(application_no):
         return jsonify({"exists": exists}), 200
 
     except Exception as e:
-        return jsonify({"exists": False, "error": str(e)}), 500
+        return jsonify({"exists": False, "error": "Internal server error"}), 500

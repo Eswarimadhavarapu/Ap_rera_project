@@ -3,6 +3,17 @@ import os
 
 app = create_app()
 
+@app.route("/test")
+def test():
+    return 10 / 0
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=app.config["DEBUG"])
+    host = "127.0.0.1"   # localhost only
+    port = int(os.getenv("PORT", 8081))
+
+    print(f"Server starting at {host}:{port}")
+
+    app.run(
+        host=host,
+        port=port,
+        debug=False
+    )

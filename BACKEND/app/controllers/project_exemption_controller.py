@@ -1,15 +1,11 @@
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 from datetime import datetime
 
 from flask import Blueprint, current_app, request, jsonify
 from werkzeug.utils import secure_filename
 from app import db
 from app.models.project_exemption_model import ProjectExemption
+from app.utils.mail_service import get_smtp_config, send_html_email
 
 # ReportLab for PDF certificate generation
 from reportlab.lib.pagesizes import A4
@@ -34,11 +30,7 @@ for folder in [
     os.makedirs(folder, exist_ok=True)
 
 # ── Email config — set these via environment variables ──
-SMTP_HOST     = os.getenv("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT     = int(os.getenv("SMTP_PORT", 587))
-SMTP_USER     = os.getenv("SMTP_USER", "your_email@gmail.com")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "your_app_password")
-SENDER_NAME   = os.getenv("SENDER_NAME", "Exemption Portal")
+SENDER_NAME = os.getenv("SENDER_NAME", "Exemption Portal")
 
 
 def _upload_root() -> str:
@@ -314,11 +306,6 @@ def send_certificate_email(record: ProjectExemption, cert_path: str):
     Sends the certificate PDF to the applicant via SMTP.
     cert_path is the relative path (e.g. uploads/certificates/certificate_1.pdf)
     """
-    msg = MIMEMultipart("mixed")
-    msg["From"]    = f"{SENDER_NAME} <{SMTP_USER}>"
-    msg["To"]      = record.email
-    msg["Subject"] = f"Your Project Exemption Certificate — {record.name}"
-
     body_html = f"""
     <html><body style="font-family: Arial, sans-serif; color: #0f1f35; max-width: 600px; margin: auto;">
       <div style="background: #1a3557; padding: 24px 32px; border-radius: 8px 8px 0 0;">
@@ -355,27 +342,17 @@ def send_certificate_email(record: ProjectExemption, cert_path: str):
     </body></html>
     """
 
-    msg.attach(MIMEText(body_html, "html"))
-
-    # ── Attach PDF ──
     abs_cert_path = _resolve_stored_file_path(cert_path)
+    attachments = []
     if os.path.exists(abs_cert_path):
-        with open(abs_cert_path, "rb") as f:
-            part = MIMEBase("application", "octet-stream")
-            part.set_payload(f.read())
-        encoders.encode_base64(part)
-        part.add_header(
-            "Content-Disposition",
-            f"attachment; filename=Exemption_Certificate_{record.ba_number}.pdf",
-        )
-        msg.attach(part)
+        attachments.append(abs_cert_path)
 
-    # ── Send ──
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-        server.ehlo()
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.sendmail(SMTP_USER, record.email, msg.as_string())
+    send_html_email(
+        record.email,
+        f"Your Project Exemption Certificate — {record.name}",
+        body_html,
+        attachments=attachments,
+    )
 
 
 # ════════════════════════════════════════════════════════
@@ -416,7 +393,7 @@ def create_project_exemption():
         return jsonify({"message": "Created Successfully"}), 201
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # ── GET ALL ──
@@ -572,7 +549,7 @@ def stage2_update(id):
             db.session.commit()
             return jsonify({
                 "message": "Stage 2 approved but certificate generation failed",
-                "error": str(e),
+                "error": "Internal server error",
             }), 500
     else:
         record.approver_status = "s2_rejected"
@@ -610,7 +587,7 @@ def stage3_update(id):
     except Exception as e:
         return jsonify({
             "message": "Mail sending failed",
-            "error": str(e),
+            "error": "Internal server error",
         }), 500
 
     record.approver_status = "completed"
@@ -643,10 +620,7 @@ def send_rejection_email(id):
 
     # ── Send rejection email ──
     try:
-        msg = MIMEMultipart("mixed")
-        msg["From"]    = f"{SENDER_NAME} <{SMTP_USER}>"
-        msg["To"]      = record.email
-        msg["Subject"] = f"Your Project Exemption Application Status — {record.name}"
+        subject = f"Your Project Exemption Application Status — {record.name}"
 
         body_html = f"""
         <html><body style="font-family: Arial, sans-serif; color: #0f1f35; max-width: 600px; margin: auto;">
@@ -680,19 +654,16 @@ def send_rejection_email(id):
         </body></html>
         """
 
-        msg.attach(MIMEText(body_html, "html"))
-
-        # ── Send ──
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.ehlo()
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, record.email, msg.as_string())
+        send_html_email(
+            record.email,
+            subject,
+            body_html,
+        )
 
     except Exception as e:
         return jsonify({
             "message": "Rejection email sending failed",
-            "error": str(e),
+            "error": "Internal server error",
         }), 500
 
     record.approver_status = "completed"

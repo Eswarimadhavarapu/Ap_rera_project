@@ -150,7 +150,7 @@ def create_project_registration():
         }), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # =========================
@@ -175,7 +175,7 @@ def get_project_registrations():
             } for r in rows
         ])
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # =========================
@@ -256,16 +256,5 @@ def get_project_registration(application_no):
             "created_at": str(row.created_at)
         })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-# =========================
-# GET CLOSURE PROJECT LIST
-# =========================
-# @project_wizard_bp.route("/closure-projects/<pan_number>", methods=["GET"])
-# def get_closure_projects(pan_number):
-
-#     try:
-#         data = ProjectWizardModel.fetch_closure_projects(pan_number)
-#         return jsonify(data)
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
+ 

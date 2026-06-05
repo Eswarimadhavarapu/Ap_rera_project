@@ -138,7 +138,7 @@ def create_change_request():
     except Exception as e:
         db.session.rollback()
         logger.error(str(e))
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @change_request_bp.route("/change-request/<int:id>", methods=["GET"])
@@ -182,7 +182,7 @@ def get_change_requests_by_status(status):
         return jsonify({"count": len(result), "data": result}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @change_request_bp.route("/change-request/document/<path:filename>", methods=["GET"])
@@ -224,8 +224,8 @@ def reject_change_request(id):
 
     except Exception as e:
         db.session.rollback()
-        print("ERROR:", str(e))
-        return {"error": str(e)}, 500
+        current_app.logger.exception("Unexpected error")
+        return {"error": "Internal server error"}, 500
 
 
 @change_request_bp.route("/change-request/approve/<int:id>", methods=["PUT"])
@@ -267,4 +267,4 @@ def approve_change_request(id):
 
     except Exception as e:
         db.session.rollback()
-        return {"error": str(e)}, 500
+        return {"error": "Internal server error"}, 500

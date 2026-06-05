@@ -50,4 +50,4 @@ def save_quarterly_plot_details():
         return ProjectQuarterlyPlotModel.insert_quarterly_plot_details(payload)
 
     except Exception as e:
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "Internal server error"}

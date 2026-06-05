@@ -151,7 +151,7 @@ def register_agent_step1():
 
     except Exception as e:
         logging.exception("Agent Step-1 failed")
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
     
     
 # ================= STEP 2 =================
@@ -186,7 +186,7 @@ def register_agent_step2():
 
     except Exception as e:
         logging.exception("Agent Step-2 failed")
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ================= PREVIEW =================
@@ -217,7 +217,7 @@ def check_pan():
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
     
 @agent_bp.route("/send-otp", methods=["POST"])
@@ -238,7 +238,7 @@ def send_otp():
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
     
 @agent_bp.route("/verify-otp", methods=["POST"])
@@ -261,7 +261,7 @@ def verify_otp():
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
     
 @agent_bp.route("/payment-details/<int:agent_id>", methods=["GET"])
@@ -311,7 +311,7 @@ def partial_applications(pan):
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
     
 
@@ -328,7 +328,7 @@ def resume_application(application_no):
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 @agent_bp.route("/send-otp-email", methods=["POST"])
 def send_otp_email_preview():
@@ -343,4 +343,4 @@ def send_otp_email_preview():
         return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500

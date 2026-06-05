@@ -259,7 +259,7 @@ def create_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -334,7 +334,7 @@ def assign_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -537,7 +537,7 @@ def get_rti(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -607,7 +607,7 @@ def list_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -685,7 +685,7 @@ RTI Department
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -739,7 +739,7 @@ def verify_email_otp():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 @rti_bp.route("/rti/updates/<int:id>", methods=["PATCH"])
 def update_rti(id):
@@ -954,7 +954,7 @@ def update_rti(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 @rti_bp.route("/rti/send-return_application/<int:id>", methods=["PATCH"])
 def send_rti_reply(id):
@@ -1043,7 +1043,7 @@ RTI Department
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 @rti_bp.route("/rti/assignment/create", methods=["POST"])
@@ -1146,7 +1146,7 @@ def create_assignments():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
         
 @rti_bp.route("/rti/assignment/update/<int:id>", methods=["PATCH"])
@@ -1307,7 +1307,7 @@ def update_assignment(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -1387,7 +1387,7 @@ def get_assignments_by_rti_id(rti_application_id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -1469,5 +1469,5 @@ def get_assignments_by_department(department):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500

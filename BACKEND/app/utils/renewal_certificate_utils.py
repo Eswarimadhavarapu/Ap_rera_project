@@ -8,6 +8,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from datetime import datetime, timedelta
+from flask import current_app
 
 
 
@@ -86,84 +87,14 @@ def generate_certificate2(agent_name, registration_no, expiry_date):
 
     except Exception as e:
 
-        print("Certificate generation error:", str(e))
+        current_app.logger.exception("Unexpected error")
 
         return None
     
     
     
 
-# def generate_project_certificate(project):
 
-#     try:
-#         folder = "app/uploads/certificates"
-#         os.makedirs(folder, exist_ok=True)
-
-#         file_path = f"{folder}/project_{project['application_no']}.pdf"
-
-#         c = canvas.Canvas(file_path)
-
-#         # =========================
-#         # HEADER
-#         # =========================
-#         c.setFont("Helvetica-Bold", 18)
-#         c.drawCentredString(300, 780, "PROJECT CERTIFICATE")
-
-#         c.setFont("Helvetica", 12)
-#         c.drawCentredString(300, 755, "Andhra Pradesh Real Estate Regulatory Authority")
-
-#         # =========================
-#         # LINE
-#         # =========================
-#         c.line(50, 740, 550, 740)
-
-#         # =========================
-#         # BODY
-#         # =========================
-#         c.setFont("Helvetica", 12)
-
-#         c.drawString(80, 700, f"Application No      : {project['application_no']}")
-#         c.drawString(80, 670, f"Project Name        : {project.get('project_name', '-')}")
-#         c.drawString(80, 640, f"Promoter Name       : {project.get('name', '-')}")
-#         c.drawString(80, 610, f"Promoter Type       : {project.get('promoter_type', '-')}")
-#         c.drawString(80, 580, f"PAN Number          : {project.get('pan_number', '-')}")
-
-#         c.drawString(80, 550, f"Project Type        : {project.get('project_type', '-')}")
-#         c.drawString(80, 520, f"District            : {project.get('project_district', '-')}")
-#         c.drawString(80, 490, f"Address             : {project.get('project_address', '-')}")
-
-#         # =========================
-#         # APPROVAL TEXT
-#         # =========================
-#         c.drawString(80, 440, "This is to certify that the above project")
-#         c.drawString(80, 420, "has been APPROVED by AP RERA authority.")
-
-#         c.drawString(80, 390, "This certificate is issued as per RERA regulations.")
-
-#         # =========================
-#         # ISSUE DATE
-#         # =========================
-#         today = datetime.today().strftime("%d-%m-%Y")
-#         c.drawString(80, 340, f"Issue Date : {today}")
-
-#         # =========================
-#         # SIGNATURE
-#         # =========================
-#         c.drawString(400, 300, "Authorized Signatory")
-#         c.drawString(400, 280, "AP RERA")
-
-#         # Footer line
-#         c.line(50, 260, 550, 260)
-
-#         c.save()
-
-#         print("Project Certificate generated:", file_path)
-
-#         return file_path
-
-#     except Exception as e:
-#         print("Certificate error:", str(e))
-#         return None
 def generate_project_certificate(project):
 
     try:
@@ -303,5 +234,5 @@ def generate_project_certificate(project):
         return file_path
 
     except Exception as e:
-        print("❌ Error:", str(e))
+        current_app.logger.exception("Unexpected error")
         return None

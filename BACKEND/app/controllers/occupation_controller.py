@@ -24,5 +24,5 @@ def fetch_occupations():
         return jsonify({
             "success": False,
             "message": "Failed to fetch occupations",
-            "error": str(e)
+            "error": "Internal server error"
         }), 500

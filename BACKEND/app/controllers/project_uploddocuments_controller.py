@@ -84,7 +84,7 @@ def get_documents_consultant():
         logger.exception("GET FAILED")
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -187,7 +187,7 @@ def upload_documents():
         logger.exception("UPLOAD FAILED")
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -248,7 +248,7 @@ def save_consultant_declaration():
         logger.exception("SAVE FAILED")
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -300,7 +300,7 @@ def update_consultant_declaration():
         logger.exception("UPDATE FAILED")
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
     
 @project_upload_documents_bp.route("/project/documents/details", methods=["GET"])
@@ -376,4 +376,4 @@ def get_project_documents_details():
         )
 
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({"status": "error", "message": "Internal server error"}), 500

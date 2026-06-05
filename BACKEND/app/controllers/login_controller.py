@@ -92,7 +92,7 @@ def send_otp():
         logger.exception("🔥 ERROR in send-otp")
         return jsonify({
             "message": "Internal Server Error",
-            "error": str(e)
+            "error": "Internal server error"
         }), 500
 
 
@@ -139,5 +139,5 @@ def verify_login_otp():
         logger.exception("🔥 ERROR in verify-otp")
         return jsonify({
             "message": "Internal Server Error",
-            "error": str(e)
+            "error": "Internal server error"
         }), 500

@@ -193,7 +193,7 @@ def submit_closure():
 
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 

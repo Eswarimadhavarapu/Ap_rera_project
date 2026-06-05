@@ -24,13 +24,14 @@ def str_to_bool(value, default=False):
 # Config Class
 # ========================
 class Config:
-    # ========================
     # Flask App
-    # ========================
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-    DEBUG = str_to_bool(os.getenv("FLASK_DEBUG"), False)
-    PORT = int(os.getenv("PORT", 8081))
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
+    if not SECRET_KEY:
+        raise RuntimeError("❌ SECRET_KEY is not set in .env")
+
+    DEBUG = str_to_bool(os.getenv("FLASK_DEBUG"), False)
+    PORT = int(os.getenv("PORT", 8080))
     # ========================
     # CORS
     # ========================
@@ -64,6 +65,9 @@ class Config:
     SMTP_USE_SSL = str_to_bool(os.getenv("SMTP_USE_SSL"), False)
 
     FROM_EMAIL = os.getenv("FROM_EMAIL")
+
+    if not SMTP_USER or not SMTP_PASSWORD:
+        raise RuntimeError("SMTP credentials are not configured")
 
     # ========================
     # Public URL

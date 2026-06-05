@@ -68,13 +68,13 @@ def create_app():
     # MAIL CONFIGURATION
     # ---------------------------------------------------------
 
-    app.config["MAIL_SERVER"] = os.getenv("SMTP_HOST")
-    app.config["MAIL_PORT"] = int(os.getenv("SMTP_PORT"))
-    app.config["MAIL_USE_TLS"] = os.getenv("SMTP_USE_TLS") == "true"
-    app.config["MAIL_USE_SSL"] = os.getenv("SMTP_USE_SSL") == "true"
-    app.config["MAIL_USERNAME"] = os.getenv("SMTP_USER")
-    app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
-    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("FROM_EMAIL")
+    app.config["MAIL_SERVER"] = app.config["SMTP_HOST"]
+    app.config["MAIL_PORT"] = app.config["SMTP_PORT"]
+    app.config["MAIL_USE_TLS"] = app.config["SMTP_USE_TLS"]
+    app.config["MAIL_USE_SSL"] = app.config["SMTP_USE_SSL"]
+    app.config["MAIL_USERNAME"] = app.config["SMTP_USER"]
+    app.config["MAIL_PASSWORD"] = app.config["SMTP_PASSWORD"]
+    app.config["MAIL_DEFAULT_SENDER"] = app.config["FROM_EMAIL"]
 
 
 
@@ -88,7 +88,19 @@ def create_app():
     # CORS Configuration
     # ---------------------------------------------------------
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    allowed_origins = [
+    origin.strip()
+    for origin in app.config["ALLOWED_ORIGINS"].split(",")
+    ]
+
+    CORS(
+      app,
+      resources={
+        r"/api/*": {
+            "origins": allowed_origins
+        }
+      }
+    )
 
     @app.before_request
     def handle_options():
@@ -97,7 +109,7 @@ def create_app():
 
     @app.after_request
     def add_cors_headers(response):
-        response.headers["Access-Control-Allow-Origin"] = "*"
+       
         response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
         return response

@@ -217,7 +217,7 @@ def create_project_extension():
 
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -268,7 +268,7 @@ def get_all_project_extensions():
 
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -298,7 +298,7 @@ def get_project_extension_by_id(id):
 
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -457,7 +457,7 @@ def update_project_extension(id):
 
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 # =========================================================
 # MAIL SEND API
@@ -497,5 +497,5 @@ def send_project_extension_mail():
 
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500

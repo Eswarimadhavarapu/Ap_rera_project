@@ -69,7 +69,7 @@ def upload_project_image():
     except Exception as e:
         traceback.print_exc()
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @project_gallery_bp.route('/project-gallery/<string:app_no>', methods=['GET'])
@@ -86,7 +86,7 @@ def get_project_gallery(app_no):
         }), 200
     except Exception as e:
         traceback.print_exc()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @project_gallery_bp.route('/project-gallery/delete/<int:image_id>', methods=['DELETE'])
@@ -111,4 +111,4 @@ def delete_project_image(image_id):
     except Exception as e:
         traceback.print_exc()
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500

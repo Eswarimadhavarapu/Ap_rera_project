@@ -140,7 +140,7 @@ def get_all_associate_details():
             }
         }), 200
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ===================================================
@@ -174,7 +174,7 @@ def add_project_agent():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @associate_bp.route("/associate/project-agent/<int:agent_id>", methods=["DELETE"])
@@ -186,7 +186,7 @@ def delete_project_agent(agent_id):
         return jsonify({"success": True}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ===================================================
@@ -231,7 +231,7 @@ def add_architect():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @associate_bp.route("/associate/architect/<int:architect_id>", methods=["DELETE"])
@@ -243,7 +243,7 @@ def delete_architect(architect_id):
         return jsonify({"success": True}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ===================================================
@@ -300,7 +300,7 @@ def add_structural_engineer():
         db.session.rollback()
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -375,7 +375,7 @@ def add_contractor():
         db.session.rollback()
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # ===================================================
@@ -418,7 +418,7 @@ def add_accountant():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @associate_bp.route("/associate/accountant/<int:accountant_id>", methods=["DELETE"])
@@ -430,7 +430,7 @@ def delete_accountant(accountant_id):
         return jsonify({"success": True}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ===================================================
@@ -489,7 +489,7 @@ def add_project_engineer():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 
@@ -502,7 +502,7 @@ def delete_project_engineer(engineer_id):
         return jsonify({"success": True}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 # ---------------------------------------------------

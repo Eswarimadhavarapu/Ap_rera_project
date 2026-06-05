@@ -37,7 +37,7 @@ def add_org_member():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": "Internal server error"}), 400
 
 
 # ===============================

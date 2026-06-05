@@ -235,7 +235,7 @@ def get_agent_scrutiny_full_details(application_no):
             return AgentModel.get_agent_preview(agent_id)
 
     except Exception as e:
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "Internal server error"}
 
 
 def _clean_optional(value):

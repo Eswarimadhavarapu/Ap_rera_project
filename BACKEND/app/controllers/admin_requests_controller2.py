@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify
 from app.models.admin_renewal_model import get_all_projects
-import smtplib
 from email.message import EmailMessage
 from reportlab.pdfgen import canvas
 from sqlalchemy import text
@@ -156,8 +155,13 @@ def approve_project(id):
 
     except Exception as e:
 
-        print("ERROR:", str(e))
-        return jsonify({"error": str(e)}), 500
+       admin_renewal_bp.logger.exception(
+        "Error while approving project"
+       )
+
+       return jsonify({
+        "error": "Operation failed. Please try again."
+       }), 500
     
     
 @admin_renewal_bp.route("/admin/projects/<int:id>/reject", methods=["PUT"])
@@ -208,5 +212,10 @@ def reject_project(id):
 
     except Exception as e:
 
-        print("ERROR:", str(e))
-        return jsonify({"error": str(e)}), 500
+     admin_renewal_bp.logger.exception(
+        "Error while rejecting project"
+     )
+
+     return jsonify({
+        "error": "Operation failed. Please try again."
+     }), 500

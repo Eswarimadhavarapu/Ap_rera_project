@@ -83,7 +83,7 @@ def scrutiny_registrations():
         data = get_agent_scrutiny_registrations(dept)
         return jsonify(data), 200
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/registrations/details", methods=["GET", "OPTIONS"])
 def scrutiny_registration_detail():
@@ -104,7 +104,7 @@ def scrutiny_registration_detail():
 
         return jsonify(summary_data), 200
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/create-file", methods=["POST"])
 def create_scrutiny_file_api():
@@ -155,7 +155,7 @@ def create_scrutiny_file_api():
 
         return jsonify({"message": "Agent Scrutiny file created successfully", "data": created_row}), 201
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/fpms-dashboard", methods=["GET", "OPTIONS"])
 def scrutiny_fpms_dashboard():
@@ -163,7 +163,7 @@ def scrutiny_fpms_dashboard():
         data = get_agent_scrutiny_fpms_dashboard_data()
         return jsonify(data), 200
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/verification-remarks", methods=["POST"])
 def create_verification_remark_api():
@@ -212,7 +212,7 @@ def create_verification_remark_api():
         created_row = create_agent_verification_remark(data)
         return jsonify({"message": "Agent Verification remark saved successfully", "data": created_row}), 201
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/verification-remarks", methods=["GET"])
 def get_verification_remark_api():
@@ -235,7 +235,7 @@ def get_verification_remark_api():
 
         return jsonify({"rows": rows}), 200
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/final-submit", methods=["POST"])
 def final_submit():
@@ -293,7 +293,7 @@ def final_submit():
         return jsonify(response_payload), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @agent_scrutiny_bp.route("/agent-scrutiny/chairman-decision", methods=["POST"])
@@ -361,7 +361,7 @@ AP RERA Authority
             }
         ), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/final-status", methods=["GET"])
 def get_final_status():
@@ -370,4 +370,4 @@ def get_final_status():
         rows = get_agent_final_status(application_no)
         return jsonify({"rows": rows}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500

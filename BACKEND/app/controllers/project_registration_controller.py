@@ -115,7 +115,7 @@ def project_registration():
         return jsonify({"message": "Project registered successfully"}), 201
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
     
     # =====================================
 # CHECK + FETCH API  (MAIN API YOU WANT)
@@ -163,7 +163,7 @@ def get_project_by_application():
 
         print("Fetch Error:", e)
 
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
     
 
 
@@ -196,61 +196,11 @@ def get_project_registration_details():
     except Exception as e:
         return jsonify({
             "success": False,
-            "error": str(e)
+            "error": "Internal server error"
         }), 500
         
         
         
-# ==========================================================
-# ✅ NEW UPDATE API (FINAL CORRECT VERSION)
-# ==========================================================
-# @project_registration_bp.route("/project-registration/update", methods=["PUT"])
-# def update_project_registration_new():
-
-#     from app.models.project_registration_model import update_project_registration
-
-#     try:
-#         data = request.get_json()
-
-#         if not data:
-#             return jsonify({
-#                 "success": False,
-#                 "message": "No data received"
-#             }), 400
-
-#         application_number = data.get("applicationNumber")
-#         pan_number = data.get("panNumber")
-
-#         if not application_number or not pan_number:
-#             return jsonify({
-#                 "success": False,
-#                 "message": "applicationNumber and panNumber required"
-#             }), 400
-
-#         # Add DB format keys
-#         data["application_number"] = application_number
-#         data["pan_number"] = pan_number
-
-#         rows = update_project_registration(data)
-
-#         if rows > 0:
-#             return jsonify({
-#                 "success": True,
-#                 "message": "Project updated successfully"
-#             }), 200
-#         else:
-#             return jsonify({
-#                 "success": False,
-#                 "message": "No record updated"
-#             }), 200   # Not 404 (important)
-
-#     except Exception as e:
-#         import traceback
-#         traceback.print_exc()
-#         return jsonify({
-#             "success": False,
-#             "error": str(e)
-#         }), 500
 
 @project_registration_bp.route("/project-registration/update", methods=["PUT"])
 def update_project_registration_new():
@@ -343,7 +293,7 @@ def update_project_registration_new():
         traceback.print_exc()
         return jsonify({
             "success": False,
-            "error": str(e)
+            "error": "Internal server error"
         }), 500
 
 # ------------------------------vamsi anna apis --------------------------------

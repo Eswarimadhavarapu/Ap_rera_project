@@ -65,7 +65,7 @@ def link_associate_to_application():
         db.session.rollback()
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -137,5 +137,5 @@ def get_application_associates():
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500

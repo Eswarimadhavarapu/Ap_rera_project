@@ -248,7 +248,7 @@ def save_full_application():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": "Internal server error"}), 400
 
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/get/<application_no>", methods=["GET"])
 def get_full_application(application_no):
@@ -382,7 +382,7 @@ def get_full_application(application_no):
         }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": "Internal server error"}), 400
 
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/update", methods=["PUT"])
 def update_full_application():
@@ -553,4 +553,4 @@ def update_full_application():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": "Internal server error"}), 400

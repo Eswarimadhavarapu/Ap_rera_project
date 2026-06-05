@@ -1,10 +1,8 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
 import random
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from sqlalchemy import text
+from app.utils.mail_service import send_email_otp as send_email_otp_message
 
 from app.models.database import db
 from app.models.agent_model import Agent
@@ -73,49 +71,7 @@ def send_email_otp():
 
         db.session.commit()
 
-        # =================================================
-        # ✅ STEP 3: SEND EMAIL (INLINE)
-        # =================================================
-        config = current_app.config
-
-        msg = MIMEMultipart()
-        msg["From"] = config["FROM_EMAIL"]
-        msg["To"] = email
-        msg["Subject"] = "AP RERA OTP Verification"
-
-        msg.attach(MIMEText(f"""
-Dear Applicant,
-
-Your OTP for Agent Registration verification is:
-
-{otp}
-
-This OTP is valid for 5 minutes.
-
-Regards,
-AP RERA
-""", "plain"))
-
-        server = smtplib.SMTP(
-            config["SMTP_HOST"],
-            config["SMTP_PORT"]
-        )
-
-        if config["SMTP_USE_TLS"]:
-            server.starttls()
-
-        server.login(
-            config["SMTP_USER"],
-            config["SMTP_PASSWORD"]
-        )
-
-        server.sendmail(
-            config["FROM_EMAIL"],
-            email,
-            msg.as_string()
-        )
-
-        server.quit()
+        send_email_otp_message(email, otp)
 
         return jsonify({
             "message": "OTP sent to registered email"
@@ -124,7 +80,7 @@ AP RERA
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            "error": str(e)
+            "error": "Internal server error"
         }), 500
 @otp_bp.route("/verify", methods=["POST"])
 def verify_otp():
@@ -192,5 +148,5 @@ def verify_otp():
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            "error": str(e)
+            "error": "Internal server error"
         }), 500

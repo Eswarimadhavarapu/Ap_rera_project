@@ -4,7 +4,7 @@ from sqlalchemy import func
 from datetime import date
 
 UPLOAD_FOLDER = "uploads/ReraUnRegister_Documents"
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from app.models.database import db
 from app.models.project_unregistered_model import ProjectUnregisteredDetails
 import pandas as pd
@@ -245,7 +245,7 @@ def upload_excel():
     except Exception as e:
         db.session.rollback()
         traceback.print_exc()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # ----------------------------------------------------------
@@ -380,9 +380,9 @@ def update_status(record_id):
     except Exception as e:
         db.session.rollback()
 
-        print("ERROR:", str(e))
+        current_app.logger.exception("Unexpected error")
 
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @project_unregistered_bp.route("/project-unregistered/<int:record_id>", methods=["GET"])
@@ -393,7 +393,7 @@ def get_single_record(record_id):
             return jsonify({"success": False, "message": "Record not found"}), 404
         return jsonify({"success": True, "data": record.to_dict()}), 200
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @project_unregistered_bp.route("/project-unregistered", methods=["GET"])
@@ -472,7 +472,7 @@ def get_all_records():
         )
 
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({"success": False, "message": "Internal server error"}), 500
 
 
 @project_unregistered_bp.route(
@@ -597,5 +597,5 @@ AP RERA Authority
 
     except Exception as e:
         db.session.rollback()
-        print("ERROR:", str(e))
-        return jsonify({"success": False, "message": str(e)}), 500
+        current_app.logger.exception("Unexpected error")
+        return jsonify({"success": False, "message": "Internal server error"}), 500

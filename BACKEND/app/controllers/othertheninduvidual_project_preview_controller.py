@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
 # --------------------------------------------------
 # 🔥 IMPORT PREVIEW BUILDER
@@ -62,10 +62,10 @@ def othertheninduvidual_project_preview_controller():
         }), 200
 
     except Exception as e:
-        print("❌ PREVIEW CONTROLLER ERROR:", str(e))
+        current_app.logger.exception("Unexpected error")
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
@@ -99,8 +99,8 @@ def get_othertheninduvidual_project_registration_controller(
         }), 200
 
     except Exception as e:
-        print("❌ REGISTRATION FETCH ERROR:", str(e))
+        current_app.logger.exception("Unexpected error")
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Internal server error"
         }), 500

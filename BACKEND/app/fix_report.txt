@@ -1,0 +1,719 @@
+TOTAL_FIXED 168
+FILES_CHANGED 43
+controllers\admin_controller.py
+controllers\agent_other_than_individual_registration_controller.py
+controllers\agent_registration_controller.py
+controllers\agent_renewal_controller.py
+controllers\agent_scrutiny_controller.py
+controllers\application_associate_controller.py
+controllers\associate_controller.py
+controllers\change_request_controller.py
+controllers\complint_controller.py
+controllers\development_details_controller.py
+controllers\litigation_other_t_indv_controller.py
+controllers\login_controller.py
+controllers\occupation_controller.py
+controllers\org_member_other_t_indv_controller.py
+controllers\othertheninduvidual_project_preview_controller.py
+controllers\othertheninduvidual_project_registration_controller.py
+controllers\otp_controller.py
+controllers\past_project_other_t_indv_controller.py
+controllers\project_closure_controller.py
+controllers\project_exemption_controller.py
+controllers\project_extention_controller.py
+controllers\project_gallery_controller.py
+controllers\project_preview_controller.py
+controllers\project_quarterly_plot_controller.py
+controllers\project_rating_controller.py
+controllers\project_registration_controller.py
+controllers\project_unregistered_controller.py
+controllers\project_uploddocuments_controller.py
+controllers\project_wizard_controller.py
+controllers\promoter2_other_t_indv_controller.py
+controllers\promoter_other_t_indv_controller.py
+controllers\promoter_registration_controller.py
+controllers\rera_other_t_indv_controller.py
+controllers\rti_controller.py
+controllers\scrutiny_projectregistation_controller.py
+controllers\search_controller.py
+models\agent_change_request_model.py
+models\agent_model.py
+models\agent_registration_model.py
+models\agent_scrutiny_model.py
+models\project_quarterly_plot_model.py
+utils\mail_service.py
+utils\renewal_certificate_utils.py
+
+DETAILS:
+controllers\admin_controller.py:294
+OLD:         print(e)
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\admin_controller.py:361
+OLD:         print(e)
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\admin_controller.py:402
+OLD:         print(e)
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\agent_other_than_individual_registration_controller.py:243
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\agent_other_than_individual_registration_controller.py:367
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\agent_other_than_individual_registration_controller.py:380
+OLD:         return jsonify({"exists": False, "error": str(e)}), 500
+NEW:         return jsonify({"exists": False, "error": "Internal server error"}), 500
+
+controllers\agent_registration_controller.py:154
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\agent_registration_controller.py:189
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\agent_registration_controller.py:220
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\agent_registration_controller.py:241
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\agent_registration_controller.py:264
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\agent_registration_controller.py:314
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\agent_registration_controller.py:331
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\agent_registration_controller.py:346
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\agent_renewal_controller.py:233
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_renewal_controller.py:282
+OLD:         print("UPLOAD ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\agent_renewal_controller.py:283
+OLD:         return {"error": str(e)}, 500
+NEW:         return {"error": "Internal server error"}, 500
+
+controllers\agent_renewal_controller.py:506
+OLD:         print("ERROR OCCURRED:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\agent_renewal_controller.py:508
+OLD:         return {"error": str(e)}, 500
+NEW:         return {"error": "Internal server error"}, 500
+
+controllers\agent_scrutiny_controller.py:86
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:107
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:158
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:166
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:215
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:238
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:296
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:364
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\agent_scrutiny_controller.py:373
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\application_associate_controller.py:68
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\application_associate_controller.py:140
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\associate_controller.py:143
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:177
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:189
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:234
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:246
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:303
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\associate_controller.py:378
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\associate_controller.py:421
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:433
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:492
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\associate_controller.py:505
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\change_request_controller.py:141
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\change_request_controller.py:185
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\change_request_controller.py:227
+OLD:         print("ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\change_request_controller.py:228
+OLD:         return {"error": str(e)}, 500
+NEW:         return {"error": "Internal server error"}, 500
+
+controllers\change_request_controller.py:270
+OLD:         return {"error": str(e)}, 500
+NEW:         return {"error": "Internal server error"}, 500
+
+controllers\complint_controller.py:1336
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\complint_controller.py:1477
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\complint_controller.py:1621
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\complint_controller.py:1801
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\complint_controller.py:1840
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\complint_controller.py:1982
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\complint_controller.py:2049
+OLD:         print("NOTICE ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\complint_controller.py:2053
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\complint_controller.py:2148
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\complint_controller.py:2234
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\development_details_controller.py:249
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\development_details_controller.py:283
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\development_details_controller.py:324
+OLD:                 {"status": "error", "message": "Internal Server Error", "error": str(e)}
+NEW:                 {"status": "error", "message": "Internal Server Error", "error": "Internal server error"}
+
+controllers\litigation_other_t_indv_controller.py:31
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\login_controller.py:95
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\login_controller.py:142
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\occupation_controller.py:27
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\org_member_other_t_indv_controller.py:40
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\othertheninduvidual_project_preview_controller.py:65
+OLD:         print("❌ PREVIEW CONTROLLER ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\othertheninduvidual_project_preview_controller.py:68
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\othertheninduvidual_project_preview_controller.py:102
+OLD:         print("❌ REGISTRATION FETCH ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\othertheninduvidual_project_preview_controller.py:105
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\othertheninduvidual_project_registration_controller.py:149
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\othertheninduvidual_project_registration_controller.py:192
+OLD:         return jsonify({"error": str(e)}), 500 
+NEW:         return jsonify({"error": "Internal server error"}), 500 
+
+controllers\othertheninduvidual_project_registration_controller.py:232
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\othertheninduvidual_project_registration_controller.py:378
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\otp_controller.py:127
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\otp_controller.py:195
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\past_project_other_t_indv_controller.py:33
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\project_closure_controller.py:196
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_exemption_controller.py:419
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_exemption_controller.py:575
+OLD:                 "error": str(e),
+NEW:                 "error": "Internal server error",
+
+controllers\project_exemption_controller.py:613
+OLD:             "error": str(e),
+NEW:             "error": "Internal server error",
+
+controllers\project_exemption_controller.py:695
+OLD:             "error": str(e),
+NEW:             "error": "Internal server error",
+
+controllers\project_extention_controller.py:220
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_extention_controller.py:271
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_extention_controller.py:301
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_extention_controller.py:460
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_extention_controller.py:500
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_gallery_controller.py:72
+OLD:         return jsonify({"success": False, "error": str(e)}), 500
+NEW:         return jsonify({"success": False, "error": "Internal server error"}), 500
+
+controllers\project_gallery_controller.py:89
+OLD:         return jsonify({"success": False, "error": str(e)}), 500
+NEW:         return jsonify({"success": False, "error": "Internal server error"}), 500
+
+controllers\project_gallery_controller.py:114
+OLD:         return jsonify({"success": False, "error": str(e)}), 500
+NEW:         return jsonify({"success": False, "error": "Internal server error"}), 500
+
+controllers\project_preview_controller.py:50
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_quarterly_plot_controller.py:53
+OLD:         return {"success": False, "message": str(e)}
+NEW:         return {"success": False, "message": "Internal server error"}
+
+controllers\project_rating_controller.py:47
+OLD:         return jsonify({"success": False, "error": str(e)}), 500
+NEW:         return jsonify({"success": False, "error": "Internal server error"}), 500
+
+controllers\project_registration_controller.py:118
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_registration_controller.py:166
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_registration_controller.py:199
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\project_registration_controller.py:346
+OLD:             "error": str(e)
+NEW:             "error": "Internal server error"
+
+controllers\project_unregistered_controller.py:248
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_unregistered_controller.py:383
+OLD:         print("ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\project_unregistered_controller.py:385
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\project_unregistered_controller.py:396
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\project_unregistered_controller.py:475
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\project_unregistered_controller.py:600
+OLD:         print("ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+controllers\project_unregistered_controller.py:601
+OLD:         return jsonify({"success": False, "message": str(e)}), 500
+NEW:         return jsonify({"success": False, "message": "Internal server error"}), 500
+
+controllers\project_uploddocuments_controller.py:87
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_uploddocuments_controller.py:190
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_uploddocuments_controller.py:251
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_uploddocuments_controller.py:303
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\project_uploddocuments_controller.py:379
+OLD:         return jsonify({"status": "error", "message": str(e)}), 500
+NEW:         return jsonify({"status": "error", "message": "Internal server error"}), 500
+
+controllers\project_wizard_controller.py:153
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_wizard_controller.py:178
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\project_wizard_controller.py:259
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\promoter2_other_t_indv_controller.py:36
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\promoter_other_t_indv_controller.py:251
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\promoter_other_t_indv_controller.py:385
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\promoter_other_t_indv_controller.py:556
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\promoter_registration_controller.py:127
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\promoter_registration_controller.py:168
+OLD:         return jsonify({"exists": False, "error": str(e)}), 500
+NEW:         return jsonify({"exists": False, "error": "Internal server error"}), 500
+
+controllers\rera_other_t_indv_controller.py:27
+OLD:         return jsonify({"error": str(e)}), 400
+NEW:         return jsonify({"error": "Internal server error"}), 400
+
+controllers\rti_controller.py:262
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:337
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:540
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:610
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:688
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:742
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:957
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:1046
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:1149
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:1310
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:1390
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\rti_controller.py:1472
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+controllers\scrutiny_projectregistation_controller.py:58
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:159
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:239
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:270
+OLD:         return jsonify({"error": str(e)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:293
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:366
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:381
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:468
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\scrutiny_projectregistation_controller.py:495
+OLD:         return jsonify({"error": str(exc)}), 500
+NEW:         return jsonify({"error": "Internal server error"}), 500
+
+controllers\search_controller.py:33
+OLD:         return jsonify({"success": False, "error": str(e)}), 500
+NEW:         return jsonify({"success": False, "error": "Internal server error"}), 500
+
+models\agent_change_request_model.py:702
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_change_request_model.py:833
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_change_request_model.py:871
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_change_request_model.py:959
+OLD:                 "message": str(exc)
+NEW:                 "message": "Internal server error"
+
+models\agent_change_request_model.py:1110
+OLD:                 "message": str(exc)
+NEW:                 "message": "Internal server error"
+
+models\agent_model.py:39
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_registration_model.py:830
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:857
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:988
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1020
+OLD:             "message": str(e)
+NEW:             "message": "Internal server error"
+
+models\agent_registration_model.py:1061
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1096
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1145
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1236
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_registration_model.py:1306
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1328
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1371
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1401
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+models\agent_registration_model.py:1436
+OLD:                 "message": str(e)
+NEW:                 "message": "Internal server error"
+
+models\agent_scrutiny_model.py:238
+OLD:         return {"success": False, "message": str(e)}
+NEW:         return {"success": False, "message": "Internal server error"}
+
+models\project_quarterly_plot_model.py:64
+OLD:             return {"success": False, "message": str(e)}
+NEW:             return {"success": False, "message": "Internal server error"}
+
+utils\mail_service.py:887
+OLD:         print("EMAIL ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\mail_service.py:984
+OLD:         print("PROJECT APPROVAL EMAIL ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\mail_service.py:1036
+OLD:         print("PROJECT REJECTION EMAIL ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\mail_service.py:1067
+OLD:         print("❌ Reminder email error:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\mail_service.py:1192
+OLD:         print("EMAIL ERROR:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\mail_service.py:1644
+OLD:         print("❌ Email attachment error:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\renewal_certificate_utils.py:89
+OLD:         print("Certificate generation error:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+
+utils\renewal_certificate_utils.py:306
+OLD:         print("❌ Error:", str(e))
+NEW:         current_app.logger.exception("Unexpected error")
+

@@ -124,7 +124,7 @@ def promoter_registration():
     except Exception as e:
         db.session.rollback()
         logger.exception("PROMOTER REGISTRATION FAILED")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # ============================
@@ -165,4 +165,4 @@ def check_promoter(promoter_register_id):
         return jsonify({"exists": exists}), 200
 
     except Exception as e:
-        return jsonify({"exists": False, "error": str(e)}), 500
+        return jsonify({"exists": False, "error": "Internal server error"}), 500

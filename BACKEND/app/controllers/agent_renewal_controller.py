@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.models.agent_renewal_model import AgentRenewal
@@ -230,7 +230,7 @@ def get_agent_details(application_no):
 
     except Exception as e:
 
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
     
 # ===============================
 # Upload Documents (FIXED)
@@ -279,8 +279,8 @@ def upload_doc():
         }
 
     except Exception as e:
-        print("UPLOAD ERROR:", str(e))
-        return {"error": str(e)}, 500
+        current_app.logger.exception("Unexpected error")
+        return {"error": "Internal server error"}, 500
     
 @agent_renewal_bp.route("/officer/list", methods=["GET"])
 def officer_list():
@@ -503,6 +503,6 @@ def update_status(renewal_id):
 
     except Exception as e:
 
-        print("ERROR OCCURRED:", str(e))
+        current_app.logger.exception("Unexpected error")
 
-        return {"error": str(e)}, 500
+        return {"error": "Internal server error"}, 500

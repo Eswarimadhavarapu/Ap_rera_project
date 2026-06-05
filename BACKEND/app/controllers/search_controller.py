@@ -30,4 +30,4 @@ def get_project_details(application_number):
             
         return jsonify({"success": True, "data": data})
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500

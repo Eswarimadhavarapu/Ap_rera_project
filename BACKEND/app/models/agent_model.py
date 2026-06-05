@@ -36,5 +36,5 @@ class Agent(db.Model):
         except Exception as e:
             return {
                 "success": False,
-                "message": str(e)
+                "message": "Internal server error"
             }

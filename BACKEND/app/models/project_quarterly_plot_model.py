@@ -61,4 +61,4 @@ class ProjectQuarterlyPlotModel:
 
         except Exception as e:
             db.session.rollback()
-            return {"success": False, "message": str(e)}
+            return {"success": False, "message": "Internal server error"}
