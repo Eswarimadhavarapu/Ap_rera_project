@@ -3,11 +3,15 @@
 from flask import Blueprint, request, jsonify, current_app
 from app.models.database import db
 from app.models.extension_project_application_details_models import ExtensionProjectApplicationDetails
-
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 from werkzeug.utils import secure_filename
 from flask_mail import Message
 from app import mail
-
+from flask import send_from_directory
+from flask_jwt_extended import jwt_required
 from datetime import datetime
 import os
 import uuid
@@ -499,3 +503,42 @@ def send_project_extension_mail():
             "success": False,
             "message": "Internal server error"
         }), 500
+
+@project_extention_bp.route(
+    "/uploads/project_extention/<path:filename>",
+    methods=["GET"]
+)
+@jwt_required()
+def view_project_extension_file(filename):
+
+    try:
+
+        print("========== PDF API HIT ==========")
+
+        user_id = get_jwt_identity()
+
+        print("JWT USER ID =", user_id)
+
+        upload_folder = os.path.join(
+            current_app.root_path,
+            "..",
+            "uploads",
+            "project_extention"
+        )
+
+        print("FILE =", filename)
+        print("PATH =", upload_folder)
+
+        return send_from_directory(
+            upload_folder,
+            filename
+        )
+
+    except Exception as e:
+
+        print("PDF ERROR =", str(e))
+
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 404

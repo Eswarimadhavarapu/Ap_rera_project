@@ -6,6 +6,7 @@ app = create_app()
 @app.route("/test")
 def test():
     return 10 / 0
+
 if __name__ == "__main__":
     host = "127.0.0.1"   # localhost only
     port = int(os.getenv("PORT", 8081))

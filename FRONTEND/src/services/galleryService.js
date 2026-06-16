@@ -1,6 +1,6 @@
-import { DEV_BACKEND_URL } from "../api/api";
-
-const BASE_URL = import.meta.env.MODE === "production" ? "" : DEV_BACKEND_URL;
+// import { DEV_BACKEND_URL } from "../api/api";
+import { BASE_URL } from "../api/api";
+// const BASE_URL = import.meta.env.MODE === "production" ? "" : DEV_BACKEND_URL;
 
 export async function uploadProjectImage(appNo, file, title = "", description = "") {
   try {

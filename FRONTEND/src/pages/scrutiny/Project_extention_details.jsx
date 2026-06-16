@@ -60,6 +60,35 @@ const toDateTimeStr = (iso) => {
 const pdfUrl = (path) => (path ? `${BASE_URL}${path}` : null);
 const todayDate = () => new Date().toISOString().split("T")[0];
 
+const handleViewPdf = async (url) => {
+  try {
+
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("access_token");
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const blob = await response.blob();
+
+    const fileURL = URL.createObjectURL(blob);
+
+    window.open(fileURL, "_blank");
+
+  } catch (error) {
+    console.error("PDF Error:", error);
+    alert("Unable to open document");
+  }
+};
+
 // ─────────────────────────────────────────────────────────
 // District groups
 // ─────────────────────────────────────────────────────────
@@ -99,9 +128,12 @@ const DocLink = ({ label, path }) => {
       <span className="ped-doc-icon">📄</span>
       <span className="ped-doc-label">{label}</span>
       {url ? (
-        <a className="ped-doc-btn" href={url} target="_blank" rel="noreferrer">
-          View PDF
-        </a>
+       <button
+  className="ped-doc-btn"
+  onClick={() => handleViewPdf(url)}
+>
+  View PDF
+</button>
       ) : (
         <span className="ped-doc-na">Not uploaded</span>
       )}

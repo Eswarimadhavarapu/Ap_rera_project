@@ -21,21 +21,28 @@ export const AdminProvider = ({ children }) => {
     }
   });
 
-  const saveAdmin = (adminData) => {
-    // ✅ LOG 2 — fires after OTP verification succeeds
-    
-    console.log("🔑 Role  ", adminData?.role ?? "N/A");
-   
+ const saveAdmin = (adminData, token) => {
 
-    localStorage.setItem("admin", JSON.stringify(adminData));
-    setAdmin(adminData);
-  };
+  localStorage.setItem(
+    "admin",
+    JSON.stringify(adminData)
+  );
+
+  localStorage.setItem(
+    "token",
+    token
+  );
+
+  setAdmin(adminData);
+};
 
   const clearAdmin = () => {
     // ✅ LOG 3 — fires on logout
     console.log("%c🚪 AdminContext — clearAdmin() called → session cleared", "color: red; font-weight: bold;");
     localStorage.removeItem("admin");
+    localStorage.removeItem("token");
     setAdmin(null);
+
   };
 
   return (

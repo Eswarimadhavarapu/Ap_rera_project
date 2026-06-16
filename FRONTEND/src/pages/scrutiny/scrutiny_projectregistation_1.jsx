@@ -133,21 +133,53 @@ function Section({ title, children }) {
     </section>
   );
 }
+const openProtectedDocument = async (path) => {
+  try {
+    const token = localStorage.getItem("token");
 
+    const response = await fetch(
+      getFileUrl(path),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      alert("Unable to open document");
+      return;
+    }
+
+    const blob = await response.blob();
+    const fileUrl = URL.createObjectURL(blob);
+
+    window.open(fileUrl, "_blank");
+  } catch (err) {
+    console.error(err);
+  }
+};
 function DocumentCell({ path, label = "View Document" }) {
-  const href = getFileUrl(path);
-
-  if (!href) {
+  if (!path) {
     return <span className="spr-display-field">N/A</span>;
   }
 
   return (
-    <a className="spr-file-link" href={href} target="_blank" rel="noreferrer">
+    <button
+      type="button"
+      className="spr-file-link"
+      onClick={() => openProtectedDocument(path)}
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+      }}
+    >
       {label}
-    </a>
+    </button>
   );
 }
-
 function DataTable({ className = "", columns, rows, emptyText = "No data available." }) {
   return (
     <div className="spr-table-wrap">

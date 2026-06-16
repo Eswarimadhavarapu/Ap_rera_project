@@ -942,6 +942,27 @@ export default function UnregistrationProjectDetails() {
   const role = admin?.role; 
   const user = location.state?.user;
   const record = location.state?.record;
+  const openProtectedDocument = async (filePath) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      `${BASE_URL}/${filePath}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const blob = await response.blob();
+    const fileUrl = window.URL.createObjectURL(blob);
+
+    window.open(fileUrl, "_blank");
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   useEffect(() => {
     if (user) { console.log("👤 Received User:", user); console.log("🔑 Role:", user?.role); }
@@ -1437,12 +1458,20 @@ const hasExemption = d.exemption_id !== null;
     <div className="unregDetails-doc-grid">
       {documents.map((doc) =>
         doc.path ? (
-         <a
-  key={doc.label}
-  href={`${BASE_URL}/${doc.path.replace("backend/", "")}`} className="unregDetails-doc-pill available"
-            target="_blank" rel="noreferrer">
-            📄 {doc.label}
-          </a>
+        <div className="unregDetails-doc-grid">
+  {documents.map((doc) =>
+    doc.path ? (
+      <button
+        key={doc.label}
+        type="button"
+        className="unregDetails-doc-pill available"
+        onClick={() => openProtectedDocument(doc.path)}
+      >
+        📄 {doc.label}
+      </button>
+    ) : null
+  )}
+</div>
         ) : null   // ❗ empty span remove చేయి
       )}
     </div>

@@ -4,25 +4,37 @@ from app.config import Config
 from app.models.database import db
 from app.utils.request_logger import log_request
 from app.jobs.payment_reminder import start_scheduler
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask import Flask
 from flask_mail import Mail
 from app.config import Config
+from flask_jwt_extended import JWTManager
 
+from flask_jwt_extended import jwt_required, get_jwt_identity, JWTManager
 
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per hour", "50 per minute"]
+)
 mail = Mail()
-
+jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
-
+    limiter.init_app(app)
     app.config.from_object(Config)
+    app.config["JWT_SECRET_KEY"] = "ap_rera_secret_key"
 
+    app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+
+    app.config["JWT_HEADER_NAME"] = "Authorization"
+
+    app.config["JWT_HEADER_TYPE"] = "Bearer"
     mail.init_app(app)
-
+    
 # ---------------------------------------------------------
 # Logging Setup
 # ---------------------------------------------------------
@@ -60,7 +72,18 @@ logging.getLogger("werkzeug").setLevel(logging.WARNING)
 def create_app():
 
     app = Flask(__name__)
+    limiter.init_app(app)
     app.config.from_object(Config)
+
+    app.config["JWT_SECRET_KEY"] = "ap_rera_secret_key"
+
+    app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+
+    app.config["JWT_HEADER_NAME"] = "Authorization"
+
+    app.config["JWT_HEADER_TYPE"] = "Bearer"
+
+    jwt.init_app(app)
 
     start_scheduler(app)
 
@@ -94,13 +117,17 @@ def create_app():
     ]
 
     CORS(
-      app,
-      resources={
-        r"/api/*": {
-            "origins": allowed_origins
-        }
-      }
-    )
+    app,
+    resources={
+        r"/api/*": {"origins": allowed_origins},
+        r"/uploads/*": {"origins": allowed_origins}
+    },
+    supports_credentials=True,
+    allow_headers=[
+        "Content-Type",
+        "Authorization"
+    ]
+)
 
     @app.before_request
     def handle_options():
@@ -131,6 +158,7 @@ def create_app():
     # ---------------------------------------------------------
 
     @app.route("/uploads/<path:filename>")
+    @jwt_required()
     def serve_uploaded_file(filename):
 
         print("🔥 FILE ROUTE HIT")

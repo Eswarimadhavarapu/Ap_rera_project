@@ -1,7 +1,7 @@
 import os
 import logging
 from flask import Blueprint, request, jsonify
-
+from app import limiter
 from app.models.login_model import (
     get_emails_by_pan,
     get_projects_by_pan
@@ -9,9 +9,7 @@ from app.models.login_model import (
 from app.utils.otp_utils import generate_otp, verify_otp
 from app.utils.mail_utils import send_otp_email
 
-# =====================================================
-# LOGGER SETUP (LOGIN CONTROLLER)
-# =====================================================
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -30,14 +28,8 @@ file_handler.setFormatter(formatter)
 if not logger.handlers:
     logger.addHandler(file_handler)
 
-# =====================================================
-# BLUEPRINT
-# =====================================================
 login_bp = Blueprint("login_bp", __name__)
 
-# =====================================================
-# TEST API
-# =====================================================
 @login_bp.route("/login/test", methods=["GET"])
 def login_test():
     logger.info("TEST API HIT")
@@ -46,11 +38,11 @@ def login_test():
         "message": "Login API is working"
     }), 200
 
-
-# =====================================================
-# SEND OTP API
-# =====================================================
 @login_bp.route("/login/send-otp", methods=["POST"])
+@limiter.limit(
+    "3 per 15 minutes",
+    key_func=lambda: request.get_json(silent=True).get("pan_number", "")
+)
 def send_otp():
     logger.info("========== /login/send-otp API HIT ==========")
 
@@ -95,11 +87,11 @@ def send_otp():
             "error": "Internal server error"
         }), 500
 
-
-# =====================================================
-# VERIFY OTP API (IMPORTANT – FIXES YOUR BUG)
-# =====================================================
 @login_bp.route("/login/verify-otp", methods=["POST"])
+@limiter.limit(
+    "5 per 15 minutes",
+    key_func=lambda: request.get_json(silent=True).get("pan_number", "")
+)
 def verify_login_otp():
     logger.info("========== /login/verify-otp API HIT ==========")
 
@@ -115,7 +107,6 @@ def verify_login_otp():
                 "message": "pan_number and otp are required"
             }), 400
 
-        # 🔐 ACTUAL OTP VALIDATION
         is_valid = verify_otp(pan, otp)
 
         if not is_valid:

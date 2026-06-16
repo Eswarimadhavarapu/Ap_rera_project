@@ -1,23 +1,23 @@
 // src/api/api.js
 
 
-const isProduction = import.meta.env.MODE === "production";
+// const isProduction = import.meta.env.MODE === "production";
 
-/**
- * Backend Base URL
- * - Dev: DevTunnel backend (8080)
- * - Prod: real domain
- */
-export const DEV_BACKEND_URL = "https://n7vxv3pg-8081.inc1.devtunnels.ms";
+// /**
+//  * Backend Base URL
+//  * - Dev: DevTunnel backend (8080)
+//  * - Prod: real domain
+//  */
+// //export const DEV_BACKEND_URL = "https://n7vxv3pg-8081.inc1.devtunnels.ms";
+// export const DEV_BACKEND_URL = "http://localhost:8080";
+//  //const DEV_BACKEND_URL = "http://localhost:8080";
 
- //const DEV_BACKEND_URL = "http://localhost:8080";
+// const PROD_BACKEND_URL = "https://your-production-domain.com";
 
-const PROD_BACKEND_URL = "https://your-production-domain.com";
-
-export const BASE_URL = isProduction
-  ? PROD_BACKEND_URL
-  : DEV_BACKEND_URL;
-
+// export const BASE_URL = isProduction
+//   ? PROD_BACKEND_URL
+//   : DEV_BACKEND_URL;
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // ================================
 // 🔁 API FETCH WRAPPER
 // ================================

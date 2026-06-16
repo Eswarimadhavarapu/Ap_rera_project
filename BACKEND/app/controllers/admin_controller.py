@@ -6,6 +6,8 @@ from sqlalchemy import text
 from werkzeug.security import check_password_hash
 from app.utils.mail_utils import send_otp_email
 from app.models.admin_model import Admin
+from app import limiter
+from flask_jwt_extended import create_access_token
 admin_bp = Blueprint("admin_bp", __name__)
 
 # Temporary OTP store
@@ -13,6 +15,10 @@ otp_store = {}
 
 
 @admin_bp.route("/admin/login", methods=["POST"])
+@limiter.limit(
+    "10 per hour",
+    key_func=lambda: request.get_json(silent=True).get("username", "")
+)
 def admin_login():
     try:
         data = request.get_json()
@@ -27,7 +33,13 @@ def admin_login():
             db.session.execute(
                 text(
                     """
-                SELECT * FROM admin_master_t
+                SELECT
+                    id,
+                    username,
+                    full_name,
+                    role,
+                    department
+                FROM admin_master_t
                 WHERE username = :u
                 LIMIT 1
             """
@@ -65,6 +77,10 @@ def admin_login():
 # VERIFY OTP → RETURN FULL DATA
 # -------------------------------
 @admin_bp.route("/admin/verify-otp", methods=["POST"])
+@limiter.limit(
+    "5 per 15 minutes",
+    key_func=lambda: request.get_json(silent=True).get("username", "")
+)
 def verify_otp():
     try:
         data = request.get_json()
@@ -82,7 +98,13 @@ def verify_otp():
             db.session.execute(
                 text(
                     """
-                SELECT * FROM admin_master_t
+                SELECT
+                    id,
+                    username,
+                    full_name,
+                    role,
+                    department
+                FROM admin_master_t
                 WHERE username = :u
             """
                 ),
@@ -97,11 +119,16 @@ def verify_otp():
 
         # remove OTP after success
         otp_store.pop(username, None)
+        # Create JWT Token
+        access_token = create_access_token(
+        identity=str(result["id"])
+        )
 
         return (
             jsonify(
                 {
                     "message": "Login successful",
+                    "access_token": access_token,
                     "admin": {
                         "id": result["id"],
                         "username": result["username"],
