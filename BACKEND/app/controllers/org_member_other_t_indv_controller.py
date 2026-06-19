@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app import db
 from app.models.org_member_other_t_indv import OrgMemberOtherTINDV
+from app.utils.validation_schemas import validate_registration
 
 org_member_other_t_indv_bp = Blueprint("org_member_other_t_indv_bp", __name__)
 
@@ -11,7 +12,15 @@ org_member_other_t_indv_bp = Blueprint("org_member_other_t_indv_bp", __name__)
 def add_org_member():
 
     data = request.json
-
+    validation_error = validate_registration({
+        "pan": data.get("pan"),
+        "aadhaar": data.get("aadhaar"),
+        "mobile": data.get("mobile")
+    })
+    
+    if validation_error:
+        return validation_error
+    
     try:
         member = OrgMemberOtherTINDV(
             application_no=data["applicationNo"],

@@ -7,6 +7,7 @@ import pandas as pd
 from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from app.models.development_details import DevelopmentDetailsModel
+from app.utils.validation_schemas import validate_registration
 
 development_details_bp = Blueprint("development_details_bp", __name__)
 
@@ -29,7 +30,13 @@ def save_development_details():
         work_type = request.form.get("work_type")
         pan_number = request.form.get("pan_number")
         application_number = request.form.get("application_number")
-
+        # ---------- VALIDATION ----------
+        validation_error = validate_registration({
+            "pan": pan_number
+        })
+        
+        if validation_error:
+            return validation_error
         # ---------- READ JSON FIELDS ----------
         development_details = json.loads(
             request.form.get("development_details", "{}")

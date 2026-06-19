@@ -10,7 +10,7 @@ from app.models.rera_other_t_indv import ReraOtherTINDV
 from app.models.past_project_other_t_indv import PastProjectOtherTINDV
 from app.models.litigation_other_t_indv import LitigationOtherTINDV
 from werkzeug.utils import secure_filename
-
+from app.utils.validation_schemas import validate_registration
 promoter_other_t_indv_bp = Blueprint("promoter_other_t_indv_bp", __name__)
 
 UPLOAD_SUBFOLDER = "other_t_indv"
@@ -65,7 +65,15 @@ def _save_uploaded_file(file, application_no, folder_name):
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/save", methods=["POST"])
 def save_full_application():
     data = _get_request_data()
+    
+    validation_error = validate_registration({
+        "pan": data.get("panNumber"),
+        "mobile": data.get("authorizedSignatoryMobile")
+    })
 
+    if validation_error:
+        return validation_error
+    
     try:
         application_no = data["applicationNo"]
 
@@ -387,6 +395,13 @@ def get_full_application(application_no):
 @promoter_other_t_indv_bp.route("/api/other-t-indv/promoter/update", methods=["PUT"])
 def update_full_application():
     data = _get_request_data()
+    validation_error = validate_registration({
+        "pan": data.get("panNumber"),
+        "mobile": data.get("authorizedSignatoryMobile")
+    })
+
+    if validation_error:
+        return validation_error
     try:
         application_no = data["applicationNo"]
         promoter = PromoterOtherTINDV.query.filter_by(application_no=application_no).first()

@@ -12,7 +12,7 @@ from app.models.agent_other_than_individual_registration_authorized_model import
 from app.models.agent_other_than_individual_registration_litigation_model import (
     AgentOtherThanIndividualLitigation,
 )
-
+from app.utils.validation_schemas import validate_registration
 import os
 import json
 import logging
@@ -64,7 +64,13 @@ def register_agent():
     try:
         form = request.form
         files = request.files
-
+        validation_error = validate_registration({
+            "pan": form.get("pan_card_number"),
+            "mobile": form.get("mobile_number")
+        })
+        
+        if validation_error:
+            return validation_error
         application_no = generate_application_no()
 
         affidavit_value = form.get("self_declared_affidavit")
@@ -137,6 +143,15 @@ def register_agent():
         entities_data = json.loads(form.get("entities", "[]"))
 
         for index, e in enumerate(entities_data):
+            validation_error = validate_registration({
+                "pan": e.get("pan"),
+                "aadhaar": e.get("aadhaar"),
+                "mobile": e.get("mobile")
+            })
+            
+            if validation_error:
+                return validation_error
+            
             entity = AgentOtherThanIndividualEntity(
                 designation=e.get("designation"),
                 name=e.get("name"),
@@ -324,7 +339,13 @@ def update_agent_itr_documents():
                 ),
                 400,
             )
-
+        validation_error = validate_registration({
+            "pan": pan_card_number
+        })
+        
+        if validation_error:
+            return validation_error
+        
         organisation = AgentOtherThanIndividualOrganisation.query.filter_by(
             id=id, pan=pan_card_number
         ).first()

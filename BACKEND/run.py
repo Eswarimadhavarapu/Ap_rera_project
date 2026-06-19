@@ -1,7 +1,10 @@
 from app import create_app
+from flask_talisman import Talisman
 import os
 
 app = create_app()
+
+Talisman(app)
 
 @app.route("/test")
 def test():

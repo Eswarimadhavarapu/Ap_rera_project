@@ -7,7 +7,7 @@ from app.models.database import db
 from app.models.rti_application import RTIApplication
 
 from app.models.rti_application_assignments import RTIAssignment
-
+from app.utils.validation_schemas import validate_registration
 from datetime import datetime
 from app import mail
 from flask_mail import Message
@@ -35,7 +35,14 @@ def create_rti():
     try:
 
         data = request.form
+        validation_error = validate_registration({
+            "mobile": data.get("phone_number"),
+            "email": data.get("email_id")
+        })
 
+        if validation_error:
+            return validation_error
+        
         # =====================================================
         # SUPPORTING DOCUMENTS
         # =====================================================
@@ -634,7 +641,12 @@ def send_email_otp():
     try:
 
         data = request.get_json()
+        validation_error = validate_registration({
+            "email": data.get("email")
+        })
 
+        if validation_error:
+            return validation_error
         email = data.get("email")
 
         if not email:
@@ -971,7 +983,14 @@ def send_rti_reply(id):
             }), 404
 
         data = request.form
+        
+        validation_error = validate_registration({
+            "email": data.get("email")
+        })
 
+        if validation_error:
+            return validation_error
+        
         email = data.get("email")
 
         rti_replaid_person_id = data.get(

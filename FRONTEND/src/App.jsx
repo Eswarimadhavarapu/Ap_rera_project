@@ -857,6 +857,7 @@ import AdminRequests from "./pages/admin/AdminRequests.jsx";
 import AdminProjects from "./pages/admin/AdminProjects.jsx";
 import AdminAgents from "./pages/admin/AdminAgents.jsx";
 import AdminComplaints from "./pages/admin/AdminComplaints.jsx";
+import Add_User from "./pages/admin/Add_User.jsx";
 import AdminRenewal from "./pages/admin/AdminRenewal.jsx";
 import AdminRenewalList from "./pages/admin/AdminRenewalList.jsx";
 import AdminRenewalDetail from "./pages/admin/AdminRenewalDetail.jsx";
@@ -1287,6 +1288,14 @@ function App() {
             />
 
             {/*project extention*/}
+             <Route
+              path="/Add_User"
+              element={
+                <ScrutinyLayout>
+                  <Add_User />
+                </ScrutinyLayout>
+              }
+            />
             <Route
               path="/scrutiny/project-extension"
               element={

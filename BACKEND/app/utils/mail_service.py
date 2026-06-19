@@ -1371,3 +1371,32 @@ AP RERA Authority
     )
 
     server.quit()
+    
+def send_admin_credentials_email(
+    to_email,
+    username,
+    password
+):
+
+    subject = "AP RERA Admin Account"
+
+    body = f"""
+Dear User,
+
+Your AP RERA Admin Account Created Successfully.
+
+Username : {username}
+
+Password : {password}
+
+Please change password after login.
+
+Regards,
+AP RERA
+"""
+
+    return send_email(
+        to_email,
+        subject,
+        body
+    )

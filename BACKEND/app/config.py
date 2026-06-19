@@ -73,6 +73,18 @@ class Config:
     # Public URL
     # ========================
     PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")
+    # JWT Configuration
+    # ========================
+
+    JWT_SECRET_KEY = "ap_rera_secret_key"
+
+    JWT_TOKEN_LOCATION = ["cookies"]
+
+    JWT_COOKIE_SECURE = True
+
+    JWT_COOKIE_CSRF_PROTECT = False
+
+    JWT_ACCESS_COOKIE_NAME = "access_token"
 
     # ========================
     # File Uploads

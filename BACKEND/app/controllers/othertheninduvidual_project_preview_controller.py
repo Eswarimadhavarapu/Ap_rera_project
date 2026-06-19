@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-
+from app.utils.validation_schemas import validate_registration
 # --------------------------------------------------
 # 🔥 IMPORT PREVIEW BUILDER
 # (THIS CALLS organization_profile_model FUNCTIONS)
@@ -47,7 +47,12 @@ def othertheninduvidual_project_preview_controller():
             }), 400
 
         print("🔥 RAW JSON:", raw_data)
-
+        validation_error = validate_registration({
+            "pan": raw_data.get("pan_number")
+        })
+        
+        if validation_error:
+            return validation_error
         # -----------------------------
         # BUILD PREVIEW DATA
         # -----------------------------

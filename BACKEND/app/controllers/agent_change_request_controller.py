@@ -11,6 +11,7 @@ from app.utils.mail_service import (
     send_agent_change_request_approval_email,
     send_agent_change_request_rejection_email
 )
+from app.utils.validation_schemas import validate_registration
 
 agent_change_request_bp = Blueprint("agent_change_request_bp", __name__)
 
@@ -261,6 +262,21 @@ def get_application_numbers():
 
         if not pan:
             return jsonify({"error": "PAN number required"}), 400
+        validation_error = validate_registration({
+            "pan": pan
+        })
+
+        print("PAN =", pan)
+        print("VALIDATION =", validation_error)
+        
+        if validation_error:
+            return validation_error
+        result = AgentRegistrationDetails.get_applications_by_pan(pan)
+
+        if not result["success"]:
+            return jsonify({
+                "error": result["message"]
+            }), 500
 
         result = AgentRegistrationDetails.get_applications_by_pan(pan)
 
@@ -580,7 +596,12 @@ def save_change_request():
         # -------------------------
         # SAVE TO DATABASE
         # -------------------------
-
+        validation_error = validate_registration({
+            "pan": data.get("panNumber")
+        })
+        
+        if validation_error:
+            return validation_error
         change_request = AgentChangeRequest(
 
             pan_number=data.get("panNumber"),

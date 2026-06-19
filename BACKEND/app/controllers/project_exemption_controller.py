@@ -14,7 +14,7 @@ from reportlab.lib.units import mm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
-
+from app.utils.validation_schemas import validate_registration
 
 project_exemption_bp = Blueprint("project_exemption", __name__)
 
@@ -30,9 +30,17 @@ for folder in [
     os.makedirs(folder, exist_ok=True)
 
 # ── Email config — set these via environment variables ──
+SMTP_HOST = os.getenv("SMTP_HOST")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SENDER_NAME = os.getenv("SENDER_NAME", "Exemption Portal")
 
 
+if not SMTP_USER or not SMTP_PASSWORD:
+    raise RuntimeError(
+        "SMTP_USER and SMTP_PASSWORD environment variables must be configured"
+    )
 def _upload_root() -> str:
     return current_app.config.get(
         "UPLOAD_FOLDER",
@@ -364,7 +372,14 @@ def send_certificate_email(record: ProjectExemption, cert_path: str):
 def create_project_exemption():
     try:
         data = request.form
-
+        validation_error = validate_registration({
+            "mobile": data.get("mobile_no")
+            # "email": data.get("email")  # add only if email validation exists in schema
+            })
+        
+        if validation_error:
+            return validation_error
+        
         def save_file(file_key):
             file = request.files.get(file_key)
             if file:

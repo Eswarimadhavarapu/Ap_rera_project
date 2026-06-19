@@ -1,23 +1,213 @@
-
+import traceback
+import hashlib
+import hmac
 import random
-from flask import Blueprint, request, jsonify, current_app
+import secrets
+import string
+import os
+from datetime import datetime, timedelta
+from flask import Blueprint, current_app, request, jsonify
 from app.models.database import db
-from sqlalchemy import text
-from werkzeug.security import check_password_hash
 from app.utils.mail_utils import send_otp_email
 from app.models.admin_model import Admin
 from app import limiter
-from flask_jwt_extended import create_access_token
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
+from werkzeug.utils import secure_filename
+
+from app.utils.encryption import (
+    encrypt_value,
+    decrypt_value,
+    decrypt_if_encrypted
+)
+
+from app.utils.mail_service import (
+    send_admin_credentials_email
+)
+from flask_jwt_extended import (
+    create_access_token
+)
+from flask_jwt_extended import jwt_required
 admin_bp = Blueprint("admin_bp", __name__)
 
-# Temporary OTP store
-otp_store = {}
+SECRET_KEY = "aprera_secret_key"
 
 
+def generate_username():
+
+    while True:
+
+        username = (
+            "APRERA" +
+            str(
+                secrets.randbelow(
+                    999999
+                )
+            ).zfill(6)
+        )
+
+        exists = Admin.query.filter_by(
+            username=username
+        ).first()
+
+        if not exists:
+            return username
+        
+def generate_password():
+    chars = (
+        string.ascii_letters +
+        string.digits +
+        "@#$"
+    )
+
+    return "".join(
+        secrets.choice(chars)
+        for _ in range(12)
+    )
+
+
+def hash_otp(otp):
+    return hmac.new(
+        SECRET_KEY.encode(),
+        str(otp).encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+def admin_response(admin):
+    return {
+        "id": admin.id,
+        "username": admin.username,
+        "full_name": admin.full_name,
+        "email": decrypt_if_encrypted(admin.email),
+        "phone": decrypt_if_encrypted(admin.phone),
+        "role": admin.role,
+        "department": admin.department,
+        "photo": admin.photo,
+        "employee_id": admin.employee_id,
+        "state": admin.state,
+        "district": admin.district,
+        "mandal": admin.mandal,
+        "village": admin.village,
+        "pincode": admin.pincode,
+    }
+   
+@admin_bp.route("/admin/create", methods=["POST"])
+@jwt_required()
+def create_admin():
+
+    try:
+
+        full_name = request.form.get("full_name")
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        department = request.form.get("department")
+        role = request.form.get("role")
+        employee_id = request.form.get("employee_id")
+
+        if not email:
+            return jsonify({
+                "error": "Email required"
+            }), 400
+
+        if not phone:
+            return jsonify({
+                "error": "Phone required"
+            }), 400
+
+        username = generate_username()
+
+        plain_password = generate_password()
+
+        hashed_password = generate_password_hash(
+            plain_password
+        )
+
+        encrypted_email = encrypt_value(email)
+
+        encrypted_phone = encrypt_value(phone)
+
+        photo_path = None
+
+        image = request.files.get("photo")
+
+        if image:
+
+            upload_folder = os.path.join(
+                os.getcwd(),
+                "uploads",
+                "authority_images"
+            )
+
+            os.makedirs(
+                upload_folder,
+                exist_ok=True
+            )
+
+            filename = (
+                f"{username}_"
+                + secure_filename(image.filename)
+            )
+
+            file_path = os.path.join(
+                upload_folder,
+                filename
+            )
+
+            image.save(file_path)
+
+            photo_path = (
+                f"authority_images/{filename}"
+            )
+
+        admin = Admin(
+            username=username,
+            password=hashed_password,
+            first_name=first_name,
+            last_name=last_name,
+            full_name=full_name,
+            email=encrypted_email,
+            phone=encrypted_phone,
+            department=department,
+            role=role,
+            employee_id=employee_id,
+            photo=photo_path
+        )
+
+        db.session.add(admin)
+
+        db.session.commit()
+
+        send_admin_credentials_email(
+            email,
+            username,
+            plain_password
+        )
+
+        return jsonify({
+            "message": "Admin Created Successfully",
+            "username": username
+        }), 201
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        print(str(e))
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+        
+        
 @admin_bp.route("/admin/login", methods=["POST"])
 @limiter.limit(
-    "10 per hour",
-    key_func=lambda: request.get_json(silent=True).get("username", "")
+    "3 per 15 minutes",
+    key_func=lambda: request.get_json().get("username")
 )
 def admin_login():
     try:
@@ -25,62 +215,75 @@ def admin_login():
 
         username = data.get("username")
         password = data.get("password")
+        print("USERNAME:", username)
+        print("PASSWORD:", password)
 
         if not username or not password:
             return jsonify({"error": "Username and password required"}), 400
 
-        result = (
-            db.session.execute(
-                text(
-                    """
-                SELECT
-                    id,
-                    username,
-                    full_name,
-                    role,
-                    department
-                FROM admin_master_t
-                WHERE username = :u
-                LIMIT 1
-            """
-                ),
-                {"u": username},
-            )
-            .mappings()
-            .fetchone()
-        )
+        admin = Admin.query.filter_by(username=username).first()
+        print("DB USER:", admin.username if admin else "NOT FOUND")
 
-        if not result:
+        if not admin:
             return jsonify({"error": "Invalid username"}), 401
 
-        # ✅ Plain password check
-        if result["password"] != password:
-            return jsonify({"error": "Invalid password"}), 401
+        if admin.locked_until and datetime.now() < admin.locked_until:
+            return jsonify({
+                "error": "Account locked for 15 minutes due to multiple failed OTP attempts"
+            }), 403
+            
+        print("DB HASH:", admin.password)
+        print("PASSWORD MATCH:", check_password_hash(admin.password, password))
+        if not check_password_hash(
+        admin.password,
+        password
+):
+         return jsonify({
+        "error": "Invalid password"
+    }), 401
+          
 
-        # OTP generation
         otp = str(random.randint(100000, 999999))
-        otp_store[username] = otp
+        otp_hash = hash_otp(otp)
+        otp_expiry = datetime.now() + timedelta(minutes=5)
 
-        send_otp_email(result["email"], otp)
+        Admin.query.filter_by(id=admin.id).update({
+            "otp_hash": otp_hash,
+            "otp_expiry": otp_expiry
+        })
 
-        return (
-            jsonify({"message": "OTP sent to registered email", "username": username}),
-            200,
-        )
+        db.session.commit()
+        db.session.refresh(admin)
+        print("Email in DB:", admin.email)
+
+        real_email = decrypt_if_encrypted(
+    admin.email
+)
+        print("Final Email:", real_email)
+        send_otp_email(
+    real_email,
+    otp
+)
+        return jsonify({
+            "message": "OTP sent to registered email",
+            "username": username
+        }), 200
 
     except Exception as e:
-        current_app.logger.exception("Unexpected error")
-        return jsonify({"error": "Internal server error"}), 500
+      db.session.rollback()
 
+      print("========== ERROR ==========")
+      traceback.print_exc()
+      print("===========================")
+
+      return jsonify({
+        "error": str(e)
+      }), 500
 
 # -------------------------------
 # VERIFY OTP → RETURN FULL DATA
 # -------------------------------
 @admin_bp.route("/admin/verify-otp", methods=["POST"])
-@limiter.limit(
-    "5 per 15 minutes",
-    key_func=lambda: request.get_json(silent=True).get("username", "")
-)
 def verify_otp():
     try:
         data = request.get_json()
@@ -91,106 +294,58 @@ def verify_otp():
         if not username or not otp:
             return jsonify({"error": "Username and OTP required"}), 400
 
-        if otp_store.get(username) != otp:
-            return jsonify({"error": "Invalid OTP"}), 401
+        admin = Admin.query.filter_by(username=username).first()
 
-        result = (
-            db.session.execute(
-                text(
-                    """
-                SELECT
-                    id,
-                    username,
-                    full_name,
-                    role,
-                    department
-                FROM admin_master_t
-                WHERE username = :u
-            """
-                ),
-                {"u": username},
-            )
-            .mappings()
-            .fetchone()
-        )
-
-        if not result:
-            return jsonify({"error": "Admin not found"}), 404
-
-        # remove OTP after success
-        otp_store.pop(username, None)
-        # Create JWT Token
-        access_token = create_access_token(
-        identity=str(result["id"])
-        )
-
-        return (
-            jsonify(
-                {
-                    "message": "Login successful",
-                    "access_token": access_token,
-                    "admin": {
-                        "id": result["id"],
-                        "username": result["username"],
-                        "full_name": result["full_name"],
-                        "email": result["email"],
-                        "phone": result["phone"],
-                        "role": result["role"],
-                        "department": result["department"],
-                        "photo": result["photo"],
-                        "employee_id": result["employee_id"],
-                        "state": result["state"],
-                        "district": result["district"],
-                        "mandal": result["mandal"],
-                        "village": result["village"],
-                        "pincode": result["pincode"],
-                    },
-                }
-            ),
-            200,
-        )
-
-    except Exception as e:
-        current_app.logger.exception("Unexpected error")
-        return jsonify({"error": "Internal server error"}), 500
-
-@admin_bp.route("/userDetails/<int:id>", methods=["GET"])
-def get_admin_by_id(id):
-    try:
-        admin = Admin.query.get(id)
-
-        print("🔥 API HIT")
-        print("🔥 ID:", id)
         if not admin:
             return jsonify({"error": "Admin not found"}), 404
+        
+       
 
-        return (
-            jsonify(
-                {
-                    "success": True,
-                    "admin": {
-                        "id": admin.id,
-                        "username": admin.username,
-                        "full_name": admin.full_name,
-                        "first_name": admin.first_name,
-                        "last_name": admin.last_name,
-                        "email": admin.email,
-                        "phone": admin.phone,
-                        "role": admin.role,
-                        "department": admin.department,
-                        "employee_id": admin.employee_id,
-                        "photo": admin.photo,
-                        "state": admin.state,
-                        "district": admin.district,
-                        "mandal": admin.mandal,
-                        "village": admin.village,
-                        "pincode": admin.pincode,
-                    },
-                }
-            ),
-            200,
-        )
+        if admin.locked_until and datetime.now() < admin.locked_until:
+            return jsonify({
+                "error": "Account locked for 15 minutes due to multiple failed OTP attempts"
+            }), 403
+
+        if not admin.otp_hash or not admin.otp_expiry:
+            return jsonify({"error": "Invalid OTP"}), 401
+
+        if datetime.now() > admin.otp_expiry:
+            return jsonify({"error": "OTP expired"}), 401
+
+        if not hmac.compare_digest(hash_otp(otp), admin.otp_hash):
+
+            admin.failed_otp_attempts = (
+                admin.failed_otp_attempts or 0
+            ) + 1
+
+            if admin.failed_otp_attempts >= 5:
+                admin.locked_until = datetime.now() + timedelta(minutes=15)
+
+            db.session.commit()
+
+            return jsonify({"error": "Invalid OTP"}), 401
+
+        Admin.query.filter_by(id=admin.id).update({
+            "otp_hash": None,
+            "otp_expiry": None,
+            "failed_otp_attempts": 0,
+            "locked_until": None
+        })
+
+        db.session.commit()
+        db.session.refresh(admin)
+
+        token = create_access_token(
+    identity=str(admin.id)
+)
+
+        return jsonify({
+    "message": "Login successful",
+    "access_token": token,
+    "admin": admin_response(admin)
+}), 200
 
     except Exception as e:
-        current_app.logger.exception("Unexpected error")
+        db.session.rollback()
+        print(e)
         return jsonify({"error": "Internal server error"}), 500

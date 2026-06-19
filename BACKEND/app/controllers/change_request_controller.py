@@ -11,6 +11,7 @@ from app.models.change_request_changes_model import ChangeRequestChange
 from app.utils.mail_service import send_rejection_email
 from sqlalchemy import func
 from app.utils.mail_service import send_change_request_approval_email
+from app.utils.validation_schemas import validate_registration
 
 change_request_bp = Blueprint("change_request_bp", __name__)
 
@@ -53,6 +54,13 @@ def create_change_request():
     try:
         data = request.form
         print("EMAIL ", data.get("email"))
+        validation_error = validate_registration({
+            "pan": data.get("pan_number")
+        })
+        
+        if validation_error:
+            return validation_error
+        
         new_request = ProjectChangeRequest(
             reference_no=generate_reference_no(),
             application_number=data.get("application_number"),

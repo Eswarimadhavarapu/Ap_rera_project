@@ -1,13 +1,22 @@
 from flask import Blueprint, request, jsonify
 from app import db
 from app.models.promoter2_other_t_indv import Promoter2OtherTINDV
-
+from app.utils.validation_schemas import validate_registration
 promoter2_other_t_indv_bp = Blueprint("promoter2_other_t_indv_bp", __name__)
 
 @promoter2_other_t_indv_bp.route("/api/other-t-indv/promoter2/add", methods=["POST"])
 def add_promoter2():
     data = request.json
+    # Validation
+    validation_error = validate_registration({
+        "pan": data.get("panCard"),
+        "mobile": data.get("mobile"),
+        "aadhaar": data.get("aadhaar")
+    })
 
+    if validation_error:
+        return validation_error
+    
     try:
         promoter2 = Promoter2OtherTINDV(
             application_no=data["applicationNo"],

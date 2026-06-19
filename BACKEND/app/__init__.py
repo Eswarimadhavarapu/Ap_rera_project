@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request,abort
 from flask_cors import CORS
 from app.config import Config
 from app.models.database import db
@@ -10,7 +10,7 @@ from flask import Flask
 from flask_mail import Mail
 from app.config import Config
 from flask_jwt_extended import JWTManager
-
+from datetime import timedelta
 from flask_jwt_extended import jwt_required, get_jwt_identity, JWTManager
 
 import logging
@@ -20,6 +20,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per hour", "50 per minute"]
 )
+from flask_talisman import Talisman
 mail = Mail()
 jwt = JWTManager()
 def create_app():
@@ -27,6 +28,7 @@ def create_app():
     limiter.init_app(app)
     app.config.from_object(Config)
     app.config["JWT_SECRET_KEY"] = "ap_rera_secret_key"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=9)
 
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 
@@ -74,8 +76,44 @@ def create_app():
     app = Flask(__name__)
     limiter.init_app(app)
     app.config.from_object(Config)
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Strict",
+    )
+
+    # mail.init_app(app)
+
+    csp = {
+        "default-src": "'self'",
+        "script-src": [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'"
+        ],
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "img-src": [
+            "'self'",
+            "data:"
+        ]
+    }
+
+    Talisman(
+        app,
+        content_security_policy=csp,
+        force_https=True,
+        strict_transport_security=True,
+        strict_transport_security_max_age=31536000,
+        frame_options="DENY",
+        x_content_type_options="nosniff",
+        referrer_policy="strict-origin-when-cross-origin"
+    )
 
     app.config["JWT_SECRET_KEY"] = "ap_rera_secret_key"
+    jwt = JWTManager(app)
 
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 
@@ -118,11 +156,12 @@ def create_app():
 
     CORS(
     app,
+    supports_credentials=True,
     resources={
         r"/api/*": {"origins": allowed_origins},
         r"/uploads/*": {"origins": allowed_origins}
     },
-    supports_credentials=True,
+   
     allow_headers=[
         "Content-Type",
         "Authorization"
@@ -133,13 +172,21 @@ def create_app():
     def handle_options():
         if request.method == "OPTIONS":
             return "", 200
+    @app.before_request
+    def csrf_protection():
 
-    @app.after_request
-    def add_cors_headers(response):
-       
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-        return response
+      if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+
+        origin = request.headers.get("Origin")
+
+        allowed_origins = [
+            origin.strip()
+            for origin in app.config["ALLOWED_ORIGINS"].split(",")
+        ]
+
+        if origin and origin not in allowed_origins:
+            abort(403, description="Invalid Origin")
+
 
     # ---------------------------------------------------------
     # Database Initialization

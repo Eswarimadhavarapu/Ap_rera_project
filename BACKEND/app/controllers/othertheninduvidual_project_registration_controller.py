@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from app.models.othertheninduvidual_project_registration_model import (
     insert_othertheninduvidual_project_registration
 )
-
+from app.utils.validation_schemas import validate_registration
 # =========================================================
 # BLUEPRINT
 # =========================================================
@@ -138,7 +138,13 @@ def othertheninduvidual_project_registration():
                 "authorized_signatory"
             ),
         }
-
+        validation_error = validate_registration({
+            "pan": data.get("pan_number")
+        })
+        
+        if validation_error:
+            return validation_error
+        
         insert_othertheninduvidual_project_registration(data)
 
         return jsonify({

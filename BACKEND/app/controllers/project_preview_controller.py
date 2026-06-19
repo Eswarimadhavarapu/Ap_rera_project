@@ -6,7 +6,7 @@ from app.models.architect import Architect
 from app.models.engineer import Engineer
 from app.models.accountant import Accountant
 from app.models.project_agent import AgentModel
-
+from app.utils.validation_schemas import validate_registration
 # --------------------------------------------------
 # Blueprint
 # --------------------------------------------------
@@ -21,7 +21,15 @@ def project_preview_controller():
 
     raw_data = request.get_json()
     print("🔥 RAW JSON:", raw_data)
+    validation_error = validate_registration({
+        "pan": raw_data.get("pan_number"),
+        "aadhaar": raw_data.get("aadhaar"),
+        "mobile": raw_data.get("mobile")
+    })
 
+    if validation_error:
+        return validation_error
+    
     preview_data = build_project_preview_data(raw_data)
 
     return jsonify({

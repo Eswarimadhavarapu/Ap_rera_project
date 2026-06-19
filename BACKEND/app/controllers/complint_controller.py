@@ -20,6 +20,7 @@ from app.utils.mail_service import (
     send_hearing_update_mail_complainant,
     send_hearing_update_mail_respondent,
 )
+from app.utils.validation_schemas import validate_registration
 from app.models.complaint_hearing import ComplaintHearing
 from flask import request, jsonify
 import os
@@ -106,6 +107,11 @@ def create_complint():
         c = data.get("complainant", {})
         respondents = data.get("respondents", [])
         comp = data.get("complaint", {})
+        validation_error = validate_registration({
+            "mobile": c.get("mobile")
+        })
+        if validation_error:
+            return validation_error
         verification = comp.get("verification", {})
         project = comp.get("project", {})
 

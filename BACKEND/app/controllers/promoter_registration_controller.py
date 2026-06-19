@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from app.models.database import db
 from app.models.promoter_registration_model import PromoterRegistration
-
+from app.utils.validation_schemas import validate_registration
 promoter_registration_bp = Blueprint(
     "promoter_registration_bp", __name__
 )
@@ -49,7 +49,14 @@ def safe_get(field):
 )
 def promoter_registration():
     logger.info("========== PROMOTER REGISTRATION START ==========")
+    validation_error = validate_registration({
+        "pan": safe_get("pan_number"),
+        "mobile": safe_get("mobile_number")
+    })
 
+    if validation_error:
+        return validation_error
+    
     try:
         # ----------------------------
         # Incoming Logs

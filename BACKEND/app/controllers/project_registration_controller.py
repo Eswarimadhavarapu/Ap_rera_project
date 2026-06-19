@@ -9,8 +9,8 @@ from app.models.project_registration_model import (
 #     get_project_basic_details_by_pan,
 #     insert_extension_project_application
 # )
-
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.utils.validation_schemas import validate_registration
 
 project_registration_bp = Blueprint("project_registration_bp", __name__)
 
@@ -34,7 +34,14 @@ def project_registration():
     try:
         form = request.form
         files = request.files
+        # PAN validation
+        validation_error = validate_registration({
+            "pan": form.get("panNumber")
+        })
 
+        if validation_error:
+            return validation_error
+        
         data = {
             "application_number": form.get("applicationNumber"),
             "pan_number": form.get("panNumber"),

@@ -8,6 +8,7 @@ import logging
 import json 
 
 from app.models.agent_registration_model import AgentModel
+from app.utils.validation_schemas import validate_registration
 
 agent_bp = Blueprint("agent", __name__)
 UPLOAD_FOLDER = "uploads/agents"
@@ -44,7 +45,15 @@ def register_agent_step1():
     try:
         form = request.form
         files = request.files
-
+        validation_error = validate_registration({
+            "pan": form.get("pan"),
+            "aadhaar": form.get("aadhaar"),
+            "mobile": form.get("mobile")
+        })
+        
+        if validation_error:
+            return validation_error
+        
         required_files = ["photograph", "panProof", "addressProof"]
 
         for f in required_files:
@@ -210,6 +219,13 @@ def check_pan():
                 "success": False,
                 "message": "PAN is required"
             }), 400
+            
+        validation_error = validate_registration({
+            "pan": pan
+        })
+        
+        if validation_error:
+            return validation_error
 
         result = AgentModel.get_agent_by_pan(pan.strip().upper())
         return jsonify(result), 200
@@ -300,6 +316,12 @@ def partial_applications(pan):
             }), 400
 
         pan = pan.strip().upper()
+        validation_error = validate_registration({
+            "pan": pan
+        })
+        
+        if validation_error:
+            return validation_error
 
         data = AgentModel.get_partial_applications(pan)
 

@@ -9,12 +9,11 @@ const PromoterData = () => {
     const location = useLocation();
 
     // get login data from session
-    const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
+    //const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
 
     // get pan from navigation OR session
-    const panNumber =
-        location.state?.panNumber || storedLogin?.pan_number;
-
+    //const panNumber =location.state?.panNumber || storedLogin?.pan_number;
+    const panNumber = location.state?.panNumber;
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
 

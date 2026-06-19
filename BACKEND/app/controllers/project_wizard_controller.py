@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from app.models.project_wizard import ProjectWizardModel
 from app.models.database import db
-
+from app.utils.validation_schemas import validate_registration
 def clean(value):
     if value == "" or value is None:
         return None

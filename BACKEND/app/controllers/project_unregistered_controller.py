@@ -11,7 +11,7 @@ import pandas as pd
 import traceback
 from app.utils.mail_service import send_email, send_email_with_attachment
 from flask import send_from_directory
-
+from app.utils.validation_schemas import validate_registration
 project_unregistered_bp = Blueprint("project_unregistered", __name__)
 
 COLUMN_MAP = {
@@ -268,7 +268,13 @@ def update_status(record_id):
 
         # ✅ FORM DATA
         body = request.form
+        validation_error = validate_registration({
+            "pan": body.get("pan_number")
+        })
 
+        if validation_error:
+            return validation_error
+        
         # ✅ FILES
         first_notice_file = request.files.get("first_notice")
         second_notice_file = request.files.get("second_notice")

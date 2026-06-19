@@ -7,7 +7,7 @@ from app.models.quarterly_update import QuarterlyUpdate
 from app.models.quarterly_document import QuarterlyDocument
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
+from app.utils.validation_schemas import validate_registration
 quarterly_bp = Blueprint("quarterly_bp", __name__)
 
 UPLOAD_FOLDER = "uploads/quarterly"
@@ -38,7 +38,14 @@ def create_quarterly():
 
     pan_number = request.form.get("panNumber")
     occupancy = request.form.get("occupancy")
+    # Validation
+    validation_error = validate_registration({
+        "pan": pan_number
+    })
 
+    if validation_error:
+        return validation_error
+    
     # 1️⃣ Find project using PAN
     project = ProjectRegistration.query.filter_by(
         pan_number=pan_number
@@ -107,7 +114,13 @@ def create_quarterly():
 def get_current_quarter():
 
     pan_number = request.args.get("panNumber")
+    validation_error = validate_registration({
+        "pan": pan_number
+    })
 
+    if validation_error:
+        return validation_error
+    
     project = ProjectRegistration.query.filter_by(
         pan_number=pan_number
     ).first()

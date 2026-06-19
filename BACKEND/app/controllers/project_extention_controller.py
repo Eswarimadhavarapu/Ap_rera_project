@@ -13,6 +13,7 @@ from app import mail
 from flask import send_from_directory
 from flask_jwt_extended import jwt_required
 from datetime import datetime
+from app.utils.validation_schemas import validate_registration
 import os
 import uuid
 
@@ -92,7 +93,13 @@ def create_project_extension():
     try:
 
         data = request.form
+        validation_error = validate_registration({
+            "pan": data.get("promoter_pan")
+        })
 
+        if validation_error:
+            return validation_error
+        
         representation_letter = save_file(
             request.files.get("representation_letter")
         )

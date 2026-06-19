@@ -217,6 +217,14 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
           >
             📑 Exemption
           </button>
+          <button
+            onClick={() =>
+              navigate("/Add_User")
+            }
+          >
+            Add New User
+          </button>
+        
 
         </div>
       )}

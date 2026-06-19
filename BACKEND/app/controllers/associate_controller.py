@@ -10,7 +10,7 @@ from app.models.accountant import Accountant
 from app.models.project_engineer import ProjectEngineer
 from app.models.database import db
 from app.models.application_associate import ApplicationAssociate
-
+from app.utils.validation_schemas import validate_registration
 
 # ---------------------------------------------------
 # Blueprint
@@ -328,7 +328,15 @@ def add_contractor():
                 "success": False,
                 "message": f"{missing} is required"
             }), 400
-
+        
+        validation_error = validate_registration({
+            "pan": data.get("pan_number")
+        })
+        
+        if validation_error:
+            return validation_error
+        
+        
         # 1️⃣ Create contractor (STRINGS ONLY)
         contractor = Contractor(
             nature_of_work=data["nature_of_work"],
@@ -456,7 +464,14 @@ def add_project_engineer():
         ])
         if missing:
             return jsonify({"success": False, "message": f"{missing} is required"}), 400
-
+        
+        validation_error = validate_registration({
+            "pan": data.get("pan_number")
+        })
+        
+        if validation_error:
+            return validation_error
+        
         engineer = ProjectEngineer(
             engineer_name=data["engineer_name"],
             email_id=data.get("email_id"),

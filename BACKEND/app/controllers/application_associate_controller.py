@@ -9,7 +9,7 @@ from app.models.accountant import Accountant
 from app.models.project_agent import AgentModel
 from app.models.contractor import Contractor
 from app.models.project_engineer import ProjectEngineer
-
+from app.utils.validation_schemas import validate_registration
 import logging
 #hello
 
@@ -45,7 +45,13 @@ def link_associate_to_application():
                     "success": False,
                     "message": f"{field} is required"
                 }), 400
-
+        validation_error = validate_registration({
+            "pan": pan
+        })
+        
+        if validation_error:
+            return validation_error
+        
         link = ApplicationAssociate(
             application_number=data["application_number"],
             pan_number=data["pan_number"],
@@ -83,7 +89,14 @@ def get_application_associates():
                 "success": False,
                 "message": "application_number and pan_number are required"
             }), 400
-
+        
+        validation_error = validate_registration({
+            "pan": pan_number
+        })
+        
+        if validation_error:
+            return validation_error
+        
         links = ApplicationAssociate.query.filter_by(
             application_number=application_number,
             pan_number=pan_number

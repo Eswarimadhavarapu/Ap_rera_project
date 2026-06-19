@@ -8,8 +8,8 @@ from app.models.login_model import (
 )
 from app.utils.otp_utils import generate_otp, verify_otp
 from app.utils.mail_utils import send_otp_email
-
-
+from flask_jwt_extended import create_access_token
+from app.utils.validation_schemas import validate_registration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -57,7 +57,13 @@ def send_otp():
             return jsonify({
                 "message": "pan_number is required"
             }), 400
-
+        
+        validation_error = validate_registration({
+            "pan": pan
+        })
+        
+        if validation_error:
+            return validation_error
         emails = get_emails_by_pan(pan)
         logger.info(f"Emails fetched for PAN {pan}: {emails}")
 
@@ -106,7 +112,13 @@ def verify_login_otp():
             return jsonify({
                 "message": "pan_number and otp are required"
             }), 400
-
+        validation_error = validate_registration({
+            "pan": pan
+        })
+        
+        if validation_error:
+            return validation_error
+        
         is_valid = verify_otp(pan, otp)
 
         if not is_valid:
@@ -120,11 +132,23 @@ def verify_login_otp():
         # Optional: Fetch projects after login
         projects = get_projects_by_pan(pan)
 
+        # Create JWT access token
+        access_token = create_access_token(identity=pan)
+
         return jsonify({
             "message": "OTP verified successfully",
             "pan_number": pan,
             "projects": projects
-        }), 200
+        })
+        response.set_cookie(
+            "access_token",
+    access_token,
+    httponly=True,
+    secure=True,
+    samesite="None",
+    max_age=3600
+        )
+        return response, 200
 
     except Exception as e:
         logger.exception("🔥 ERROR in verify-otp")

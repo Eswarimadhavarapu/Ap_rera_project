@@ -76,10 +76,10 @@ const ProjectRegistrationLogin = () => {
         otp: otp,
       });
 
-      sessionStorage.setItem(
-        "loginResponse",
-        JSON.stringify(data)
-      );
+      // sessionStorage.setItem(
+      //   "loginResponse",
+      //   JSON.stringify(data)
+      // );
 
       // redirect after successful login
       navigate("/promoterData", {
