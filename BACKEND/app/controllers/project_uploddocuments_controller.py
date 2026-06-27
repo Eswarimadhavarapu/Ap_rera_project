@@ -51,18 +51,22 @@ def get_documents_consultant():
 
         # Prepare documents with URLs
         documents_with_urls = {}
+
         if document_record and document_record.documents:
-            base_url = request.host_url.rstrip('/')
-            for doc_id, file_path in document_record.documents.items():
-                if file_path:
-                    # Extract filename from path
-                    filename = os.path.basename(file_path)
-                    url_path = f"/uploads/project_documents/{application_number}/{filename}"
-                    documents_with_urls[doc_id] = f"{base_url}{url_path}"
+
+         for doc_id, file_path in document_record.documents.items():
+
+          if file_path:
+
+            filename = os.path.basename(file_path)
+
+            documents_with_urls[doc_id] = (
+                f"/uploads/project_documents/{application_number}/{filename}"
+            )
 
         # Prepare consultant data
         consultant_data = {}
-        if consultant_record:
+        if consultant_record:   
             consultant_data = {
                 "consultancy_name": consultant_record.consultancy_name or "",
                 "consultant_name": consultant_record.consultant_name or "",

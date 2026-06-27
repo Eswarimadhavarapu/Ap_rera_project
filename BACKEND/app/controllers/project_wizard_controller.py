@@ -17,7 +17,6 @@ project_wizard_bp = Blueprint("project_wizard_bp", __name__)
 # =========================
 UPLOAD_FOLDER = "uploads/project_documents"
 ALLOWED_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
-
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 

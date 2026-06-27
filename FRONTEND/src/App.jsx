@@ -894,7 +894,6 @@ import AgentScrutinyRegistration_1 from "./pages/agent_scrutiny/AgentScrutinyReg
 import AgentScrutinyRegistration_2 from "./pages/agent_scrutiny/AgentScrutinyRegistration2.jsx";
 import AgentScrutinyRegistration_Action from "./pages/agent_scrutiny/AgentScrutinyRegistrationAction.jsx";
 import ScrutinyDashboard from "./pages/scrutiny/ScrutinityDashboard.jsx";
-
 import ScrutinyRegistration from "./pages/scrutiny/ScrutinyRegistration.jsx";
 import ScrutinyFpmsDashboard from "./pages/scrutiny/ScrutinyFpmsDashboard.jsx";
 import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
@@ -1289,7 +1288,7 @@ function App() {
 
             {/*project extention*/}
              <Route
-              path="/Add_User"
+              path="/add-user"
               element={
                 <ScrutinyLayout>
                   <Add_User />

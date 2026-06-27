@@ -1,80 +1,9 @@
 import React, { useState } from "react";
 import "../../styles/admin/Add_User.css";
 import { apiPost } from "../../api/api";
-
+import Swal from "sweetalert2";
 const Add_User = () => {
-const [formData, setFormData] = useState({
-first_name: "",
-last_name: "",
-full_name: "",
-department: "",
-role: "",
-email: "",
-phone: "",
-employee_id: "",
-});
-
-const [photo, setPhoto] = useState(null);
-const [loading, setLoading] = useState(false);
-const [message, setMessage] = useState("");
-
-const departments = [
-"Planning Department",
-"Engineering Department",
-"Legal Department",
-"Finance Department",
-"Administration Department",
-];
-
-const roles = [
-"AD",
-"JD",
-"DD",
-"AO",
-"ADMIN",
-];
-
-const handleChange = (e) => {
-setFormData({
-...formData,
-[e.target.name]: e.target.value,
-});
-};
-
-const handleImageChange = (e) => {
-setPhoto(e.target.files[0]);
-};
-
-const handleSubmit = async (e) => {
-e.preventDefault();
-
-```
-try {
-  setLoading(true);
-  setMessage("");
-
-  const submitData = new FormData();
-
-  Object.keys(formData).forEach((key) => {
-    submitData.append(key, formData[key]);
-  });
-
-  if (photo) {
-    submitData.append("photo", photo);
-  }
-
-  const response = await apiPost(
-    "/api/admin/create",
-    submitData,
-    true
-  );
-
-  setMessage(
-    response.message ||
-    "User Created Successfully"
-  );
-
-  setFormData({
+  const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     full_name: "",
@@ -85,185 +14,266 @@ try {
     employee_id: "",
   });
 
-  setPhoto(null);
+  const [photo, setPhoto] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-} catch (error) {
-  console.error(error);
+  const departments = [
+    "Planning Department",
+    "Engineering Department",
+    "Legal Department",
+    "Finance Department",
+    "Administration Department",
+    "verification",
+    "audit",
+  ];
 
-  setMessage(
-    error?.message ||
-    "Failed to create user"
-  );
-} finally {
-  setLoading(false);
-}
-```
+  const roles = [
+    "AD",
+    "planning1",
+    "planning2",
+    "Audit",
+    "DD",
+    "chairman",
+    "director",
+    "STAFF",
+    "Engineer",
+    "LEGAL_L1",
+  ];
 
-};
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-return ( <div className="add-user-container">
+  const handleImageChange = (e) => {
+    if (e.target.files.length > 0) {
+      setPhoto(e.target.files[0]);
+    }
+  };
 
-```
-  <div className="add-user-card">
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    <h2 className="add-user-title">
-      Add New User
-    </h2>
+    console.log("Create User Button Clicked");
 
-    <form
-      className="add-user-form"
-      onSubmit={handleSubmit}
-    >
+    try {
+      setLoading(true);
+      setMessage("");
 
-      <div className="add-user-grid">
+      const submitData = new FormData();
 
-        <div className="add-user-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      Object.keys(formData).forEach((key) => {
+        submitData.append(key, formData[key]);
+      });
 
-        <div className="add-user-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      if (photo) {
+        submitData.append("photo", photo);
+      }
 
-        <div className="add-user-group">
-          <label>Full Name</label>
-          <input
-            type="text"
-            name="full_name"
-            value={formData.full_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      console.log("Sending Data...");
 
-        <div className="add-user-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      for (let pair of submitData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
-        <div className="add-user-group">
-          <label>Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      const response = await apiPost(
+        "/api/admin/create",
+        submitData
+      );
 
-        <div className="add-user-group">
-          <label>Employee ID</label>
-          <input
-            type="text"
-            name="employee_id"
-            value={formData.employee_id}
-            onChange={handleChange}
-          />
-        </div>
+      console.log("API Response:", response);
+Swal.fire({
+  icon: "success",
+  title: "Success",
+  text: response.message || "User Created Successfully",
+  confirmButtonColor: "#2563eb",
+});
+      setFormData({
+        first_name: "",
+        last_name: "",
+        full_name: "",
+        department: "",
+        role: "",
+        email: "",
+        phone: "",
+        employee_id: "",
+      });
 
-        <div className="add-user-group">
-          <label>Department</label>
-          <select
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            required
-          >
-            <option value="">
-              Select Department
-            </option>
+      setPhoto(null);
 
-            {departments.map((dept) => (
-              <option
-                key={dept}
-                value={dept}
+    } catch (error) {
+      console.error("Create User Error:", error);
+
+      setMessage(
+        error?.message ||
+        "Failed to create user"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="add-user-container">
+      <div className="add-user-card">
+
+        <h2 className="add-user-title">
+          Add New User
+        </h2>
+
+        <form
+          className="add-user-form"
+          onSubmit={handleSubmit}
+        >
+          <div className="add-user-grid">
+
+            <div className="add-user-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                name="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="full_name"
+                value={formData.full_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Phone</label>
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Employee ID</label>
+              <input
+                type="text"
+                name="employee_id"
+                value={formData.employee_id}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="add-user-group">
+              <label>Department</label>
+              <select
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                required
               >
-                {dept}
-              </option>
-            ))}
-          </select>
-        </div>
+                <option value="">
+                  Select Department
+                </option>
 
-        <div className="add-user-group">
-          <label>Role</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="">
-              Select Role
-            </option>
+                {departments.map((dept) => (
+                  <option
+                    key={dept}
+                    value={dept}
+                  >
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            {roles.map((role) => (
-              <option
-                key={role}
-                value={role}
+            <div className="add-user-group">
+              <label>Role</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
               >
-                {role}
-              </option>
-            ))}
-          </select>
-        </div>
+                <option value="">
+                  Select Role
+                </option>
 
-        <div className="add-user-group add-user-full-width">
-          <label>Upload Photo</label>
+                {roles.map((role) => (
+                  <option
+                    key={role}
+                    value={role}
+                  >
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </div>
+            <div className="add-user-group add-user-full-width">
+              <label>Upload Photo</label>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
+
+          </div>
+
+          <button
+            type="submit"
+            className="add-user-btn"
+            disabled={loading}
+          >
+            {loading
+              ? "Creating..."
+              : "Create User"}
+          </button>
+
+          {message && (
+            <div className="add-user-message">
+              {message}
+            </div>
+          )}
+
+        </form>
 
       </div>
-
-      <button
-        type="submit"
-        className="add-user-btn"
-        disabled={loading}
-      >
-        {loading
-          ? "Creating..."
-          : "Create User"}
-      </button>
-
-      {message && (
-        <div className="add-user-message">
-          {message}
-        </div>
-      )}
-
-    </form>
-
-  </div>
-
-</div>
-
-
-);
+    </div>
+  );
 };
 
 export default Add_User;

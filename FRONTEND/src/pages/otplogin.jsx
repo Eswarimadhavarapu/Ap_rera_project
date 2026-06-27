@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiPost } from "../api/api";
 import "../styles/otplogin.css";
 
 const OTPLogin = () => {  
   const navigate = useNavigate();
 
-  const [pan, setPan] = useState("");
+  const location = useLocation();
+
+  const redirectTo = location.state?.redirectTo || "/extensionprocess";
+  const redirectState = location.state?.redirectState || {};
+  const initialPan = location.state?.panNumber || redirectState?.panNumber || "";
+
+  const [pan, setPan] = useState(initialPan);
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
@@ -92,9 +98,11 @@ const OTPLogin = () => {
       sessionStorage.setItem("loginResponse", JSON.stringify(data));
 
       // ✅ NAVIGATE WITH RESPONSE
-      navigate("/ExtensionProcess", {
+      navigate(redirectTo, {
         state: {
+          ...redirectState,
           loginData: data,
+          panNumber: data.pan_number || pan,
         },
       });
 

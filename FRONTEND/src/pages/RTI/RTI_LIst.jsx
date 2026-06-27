@@ -50,9 +50,14 @@ const formatDate = (dateStr) => {
   } catch { return "—"; }
 };
 
-const initials = (name = "") =>
-  name.trim().split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase() || "").join("") || "?";
-
+const initials = (name) => {
+  return (name || "")
+    .trim()
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() || "")
+    .join("") || "?";
+};
 // ─── card config ─────────────────────────────────────────────────────────────
 
 const CARDS = [

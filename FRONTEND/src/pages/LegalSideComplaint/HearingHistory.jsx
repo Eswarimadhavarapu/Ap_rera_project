@@ -30,7 +30,7 @@ const [openModal, setOpenModal] =
     try {
 
       const res = await axios.get(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/complint/all-hearings"
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/complint/all-hearings"
       );
 
       console.log("HEARINGS API 👉", res.data);

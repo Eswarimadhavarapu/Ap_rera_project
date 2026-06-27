@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, request,abort
+from flask import Flask, send_from_directory, request,abort, jsonify
 from flask_cors import CORS
 from app.config import Config
 from app.models.database import db
@@ -16,6 +16,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, JWTManager
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+mail=Mail()
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per hour", "50 per minute"]
@@ -129,22 +130,23 @@ def create_app():
     # MAIL CONFIGURATION
     # ---------------------------------------------------------
 
-    app.config["MAIL_SERVER"] = app.config["SMTP_HOST"]
-    app.config["MAIL_PORT"] = app.config["SMTP_PORT"]
-    app.config["MAIL_USE_TLS"] = app.config["SMTP_USE_TLS"]
-    app.config["MAIL_USE_SSL"] = app.config["SMTP_USE_SSL"]
-    app.config["MAIL_USERNAME"] = app.config["SMTP_USER"]
-    app.config["MAIL_PASSWORD"] = app.config["SMTP_PASSWORD"]
-    app.config["MAIL_DEFAULT_SENDER"] = app.config["FROM_EMAIL"]
+    app.config["MAIL_SERVER"] = os.getenv("SMTP_HOST")
+    app.config["MAIL_PORT"] = int(os.getenv("SMTP_PORT"))
+    app.config["MAIL_USE_TLS"] = os.getenv("SMTP_USE_TLS") == "true"
+    app.config["MAIL_USE_SSL"] = os.getenv("SMTP_USE_SSL") == "true"
+    app.config["MAIL_USERNAME"] = os.getenv("SMTP_USER")
+    app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
+    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("FROM_EMAIL")
 
 
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    # uploads folder
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+    UPLOAD_FOLDER = os.path.abspath(
+    os.path.join(BASE_DIR, "..", "uploads")
+)
 
+    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
     # ---------------------------------------------------------
     # CORS Configuration
     # ---------------------------------------------------------
@@ -193,6 +195,14 @@ def create_app():
     # ---------------------------------------------------------
 
     db.init_app(app)
+    limiter.init_app(app)
+
+    @app.errorhandler(429)
+    def ratelimit_handler(e):
+        return jsonify({
+            "success": False,
+            "message": "Maximum 3 OTP requests allowed in 15 minutes. Please try again after 15 minutes."
+        }), 429
 
     # ---------------------------------------------------------
     # GLOBAL API AUDIT LOGGER (MIDDLEWARE)

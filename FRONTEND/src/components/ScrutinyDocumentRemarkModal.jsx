@@ -114,6 +114,7 @@ export default function ScrutinyDocumentRemarkModal({
   const [feedback, setFeedback] = useState({ type: "", text: "" });
   const [submitting, setSubmitting] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [blobUrl, setBlobUrl] = useState("");
   const documentKey = useMemo(
     () =>
       String(
@@ -163,7 +164,31 @@ export default function ScrutinyDocumentRemarkModal({
     setHistory([]);
     setFeedback({ type: "", text: "" });
   }, [documentItem, isOpen]);
+  useEffect(() => {
+  const loadDocument = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const response = await fetch(documentItem.url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const blob = await response.blob();
+
+      const fileUrl = URL.createObjectURL(blob);
+
+      setBlobUrl(fileUrl);
+    } catch (err) {
+      console.error("Document Load Error:", err);
+    }
+  };
+
+  if (documentItem?.url) {
+    loadDocument();
+  }
+}, [documentItem]);
   const documentName =
     documentItem?.title || documentItem?.fileName || "Document";
     const authorityMap = {
@@ -368,7 +393,7 @@ setHistory(combined.map(mapRemarkRow));
               {isImageDocument ? (
                 <div className="sdrm-image-stage">
                   <img
-                    src={documentItem?.url}
+                    src={blobUrl}
                     alt={documentItem.title || documentItem.fileName || "Document preview"}
                     className="sdrm-image-preview"
                   />
@@ -376,7 +401,7 @@ setHistory(combined.map(mapRemarkRow));
               ) : (
                 <iframe
                   title={documentItem.title || documentItem.fileName || "Document preview"}
-                  src={viewerSrc}
+                  src={blobUrl}
                   className="sdrm-viewer"
                 />
               )}

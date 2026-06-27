@@ -40,8 +40,6 @@ const EMPTY_FORM = {
   registrationDate: "",
 };
 
-
-
 const displayText = (value, fallback = "N/A") => {
   if (value === null || value === undefined) return fallback;
   if (typeof value === "string" && value.trim() === "") return fallback;
@@ -134,17 +132,30 @@ function Section({ title, children }) {
   );
 }
 const openProtectedDocument = async (path) => {
+    console.log("========== DOCUMENT CLICKED ==========");
+  console.log("PATH =", path);
+
+  const token = localStorage.getItem("token");
+  console.log("TOKEN =", token);
   try {
     const token = localStorage.getItem("token");
 
-    const response = await fetch(
-      getFileUrl(path),
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    if (!token) {
+      alert("Session expired. Please login again.");
+      return;
+    }
+
+   const url = getFileUrl(path);
+
+console.log("FETCH URL =", url);
+
+const response = await fetch(url, {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/pdf",
+  },
+});
 
     if (!response.ok) {
       alert("Unable to open document");
@@ -646,10 +657,15 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
                       <DisplayItem label="IFSC Code" value={formData.ifsc} />
                       {!isRestrictedDept && (
   <DisplayItem
-    label="Bank Account Statement"
-    value={bankStatementUrl ? bankStatementUrl : "N/A"}
-    linkText="View Document"
-  />
+  label="Bank Account Statement"
+  value={
+    <DocumentCell
+      path={formData.bankStatement}
+      label="View Document"
+    />
+  }
+/>
+ 
 )}
                     </div>
                   </Section>
@@ -719,9 +735,10 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
                       <div className="spr-affidavit">
                       {!isRestrictedDept && (
   affidavitUrl ? (
-    <a href={affidavitUrl} target="_blank" rel="noreferrer">
-      Affidavit NO CASE PENDING.pdf
-    </a>
+    <DocumentCell
+  path={formData.selfAffidavit}
+  label="Affidavit NO CASE PENDING.pdf"
+/>
   ) : (
     <span className="spr-display-field">No affidavit uploaded.</span>
   )

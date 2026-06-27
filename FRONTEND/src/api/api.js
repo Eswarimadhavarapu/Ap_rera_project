@@ -28,14 +28,28 @@ export async function apiFetch(path, options = {}) {
 
   const isFormData = options.body instanceof FormData;
 
+   const token = localStorage.getItem("token");
+
+  // 👇 REPLACE FETCH BLOCK
   const res = await fetch(url, {
     mode: "cors",
     headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...(isFormData
+        ? {}
+        : { "Content-Type": "application/json" }),
+
+      ...(token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {}),
+
       ...(options.headers || {}),
     },
+
     ...options,
   });
+
 
   const raw = await res.text();
 
@@ -51,12 +65,28 @@ export async function apiFetch(path, options = {}) {
     data = null;
   }
 
-  if (!res.ok) {
-    throw new Error(
-      (data && (data.error || data.message)) ||
-      `HTTP ${res.status}`
-    );
+ if (!res.ok) {
+
+  // JWT Token Expired
+  if (
+    data?.msg === "Token has expired" ||
+    data?.error === "Token has expired"
+  ) {
+
+    localStorage.clear();
+
+    alert("Session expired. Please login again.");
+
+    window.location.href = "/login";
+
+    return;
   }
+
+  throw new Error(
+    (data && (data.error || data.message || data.msg)) ||
+    `HTTP ${res.status}`
+  );
+}
 
   return data;
 }

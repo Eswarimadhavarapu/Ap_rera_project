@@ -25,7 +25,7 @@ def str_to_bool(value, default=False):
 # ========================
 class Config:
     # Flask App
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 
     if not SECRET_KEY:
         raise RuntimeError("❌ SECRET_KEY is not set in .env")

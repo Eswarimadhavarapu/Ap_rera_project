@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAdmin } from "../../context/AdminContext";
+import { BASE_URL } from "../../api/api";
+
 import {
   getRTIById,
   sendReturnApplication,
@@ -15,10 +17,7 @@ import "../../styles/RTI/RTI_Details_Page.css";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
-const BASE_URL =
-  import.meta.env.MODE === "production"
-    ? "https://your-production-domain.com"
-    : "https://4bckgspd-8080.inc1.devtunnels.ms";
+
 
 const DEPARTMENTS = [
   "Audit", "Legal", "Planning", "IT",
@@ -48,13 +47,31 @@ const getDocUrl = (path) => {
   console.log("DOC URL =>", url);
   return url;
 };
-
-const openDoc = (path) => {
+const openDoc = async (path) => {
   const url = getDocUrl(path);
-  if (!url) return;
-  console.log(`%c📄 openDoc: ${url}`, "color:#1d4ed8;");
-  // Open directly — browser handles the file display
-  window.open(url, "_blank", "noopener,noreferrer");
+
+  const token = localStorage.getItem("token");
+
+  console.log("TOKEN =>", token);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  console.log("STATUS =>", response.status);
+
+  if (!response.ok) {
+    alert(`Error : ${response.status}`);
+    return;
+  }
+
+  const blob = await response.blob();
+  const fileURL = URL.createObjectURL(blob);
+
+  window.open(fileURL, "_blank");
 };
 
 const STATUS_BADGE = {

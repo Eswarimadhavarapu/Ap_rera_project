@@ -43,18 +43,10 @@ COLUMN_MAP = {
     "ldcc_approved_on": ["ldcc approved on"],
 }
 
-# ============================================================
-# SHEET NAME MAP — add more as needed
-# ============================================================
 SHEET_NAME_MAP = {
     "BUILDING": "Notice",  # 🔥 Read the "Notice" sheet for BUILDING uploads
     "LAYOUT": "Notice",  # adjust if LAYOUT uses a different sheet name
 }
-
-# ============================================================
-# HELPERS
-# ============================================================
-
 
 def normalize(x):
     return str(x).strip().lower() if x else ""
@@ -149,11 +141,6 @@ def row_to_record(row, header_index, project_type):
     }
 
 
-# ============================================================
-# MAIN API
-# ============================================================
-
-
 @project_unregistered_bp.route("/project-unregistered/upload-excel", methods=["POST"])
 def upload_excel():
     try:
@@ -165,10 +152,6 @@ def upload_excel():
 
         if project_type not in ["BUILDING", "LAYOUT"]:
             return jsonify({"error": "project_type must be BUILDING or LAYOUT"}), 400
-
-        # ✅ FIX: Read the correct sheet based on project_type
-        # Your Excel has multiple sheets — default reads "Master Data" (21649 rows)
-        # We need the "Notice" sheet (16 rows)
         xl = pd.ExcelFile(file)
         available_sheets = xl.sheet_names
         target_sheet = SHEET_NAME_MAP.get(project_type)
@@ -248,11 +231,6 @@ def upload_excel():
         return jsonify({"error": "Internal server error"}), 500
 
 
-# ----------------------------------------------------------
-# GET /api/project-unregistered/<id>
-# Get single record by ID
-# ----------------------------------------------------------
-
 UPLOAD_FOLDER = "uploads/ReraUnRegister_Documents"
 
 
@@ -266,85 +244,48 @@ def update_status(record_id):
         if not record:
             return jsonify({"success": False, "message": "Record not found"}), 404
 
-        # ✅ FORM DATA
         body = request.form
-        validation_error = validate_registration({
-            "pan": body.get("pan_number")
-        })
-
-        if validation_error:
-            return validation_error
-        
-        # ✅ FILES
+       
         first_notice_file = request.files.get("first_notice")
         second_notice_file = request.files.get("second_notice")
         rera_notice_file = request.files.get("rera_notice")
         sh_file = request.files.get("sh_document")
 
-        # ✅ CREATE FOLDER
+  
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-        # =====================================================
-        # ✅ SAVE FIRST NOTICE
-        # =====================================================
         if first_notice_file:
             filename = secure_filename(first_notice_file.filename)
 
             save_path = os.path.join(UPLOAD_FOLDER, filename)
 
             first_notice_file.save(save_path)
-
-            # ✅ SAVE URL PATH
             record.first_notice_doc_path = (
                 f"uploads/ReraUnRegister_Documents/{filename}"
             )
-
-        # =====================================================
-        # ✅ SAVE SECOND NOTICE
-        # =====================================================
         if second_notice_file:
             filename = secure_filename(second_notice_file.filename)
 
             save_path = os.path.join(UPLOAD_FOLDER, filename)
 
             second_notice_file.save(save_path)
-
-            # ✅ SAVE URL PATH
             record.second_notice_doc_path = (
                 f"uploads/ReraUnRegister_Documents/{filename}"
             )
-
-        # =====================================================
-        # ✅ SAVE RERA NOTICE
-        # =====================================================
-        if rera_notice_file:
             filename = secure_filename(rera_notice_file.filename)
 
             save_path = os.path.join(UPLOAD_FOLDER, filename)
 
             rera_notice_file.save(save_path)
-
-            # ✅ SAVE URL PATH
             record.rera_personal_notice_doc_path = (
                 f"uploads/ReraUnRegister_Documents/{filename}"
             )
-
-        # =====================================================
-        # ✅ SAVE SH DOCUMENT
-        # =====================================================
         if sh_file:
             filename = secure_filename(sh_file.filename)
 
             save_path = os.path.join(UPLOAD_FOLDER, filename)
 
             sh_file.save(save_path)
-
-            # ✅ SAVE URL PATH
             record.sh_document_path = f"uploads/ReraUnRegister_Documents/{filename}"
-
-        # =====================================================
-        # ✅ NORMAL PATCH FIELDS
-        # =====================================================
         patch_fields = [
             "approval_status",
             "s1_remarks",
@@ -369,7 +310,6 @@ def update_status(record_id):
             if field in body:
                 setattr(record, field, body.get(field))
 
-        # ✅ COMMIT
         db.session.commit()
 
         return (
@@ -416,12 +356,7 @@ def get_all_records():
         sort_by = request.args.get("sort_by", "id")  # default sort column
         order = request.args.get("order", "desc")  # asc / desc
 
-        # 🔹 Base Query
         query = ProjectUnregisteredDetails.query
-
-        # --------------------------------------------------
-        # 🔥 FILTERS
-        # --------------------------------------------------
         if district:
             query = query.filter(
                 func.lower(ProjectUnregisteredDetails.district).like(
@@ -431,10 +366,6 @@ def get_all_records():
 
         if project_type:
             query = query.filter_by(project_type=project_type.upper())
-
-        # --------------------------------------------------
-        # 🔥 GLOBAL SEARCH (optional)
-        # --------------------------------------------------
         if search:
             search = f"%{search.lower()}%"
             query = query.filter(
@@ -442,10 +373,6 @@ def get_all_records():
                 | func.lower(ProjectUnregisteredDetails.organisation).like(search)
                 | func.lower(ProjectUnregisteredDetails.district).like(search)
             )
-
-        # --------------------------------------------------
-        # 🔥 SORTING
-        # --------------------------------------------------
         if hasattr(ProjectUnregisteredDetails, sort_by):
             sort_column = getattr(ProjectUnregisteredDetails, sort_by)
         else:
@@ -456,9 +383,6 @@ def get_all_records():
         else:
             query = query.order_by(sort_column.desc())
 
-        # --------------------------------------------------
-        # 🔥 PAGINATION
-        # --------------------------------------------------
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 
         data = [record.to_dict() for record in pagination.items]
@@ -512,14 +436,12 @@ def send_notice_mail(record_id):
                 400,
             )
 
-        # ================= SAVE FILE =================
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        file_path = None  # 🔥 IMPORTANT (initialize)
+        file_path = None 
 
-        # ================= FIRST NOTICE =================
         if notice1:
-            print("✅ notice1 received")
+            print("notice1 received")
 
             filename = secure_filename(notice1.filename)
 
@@ -533,12 +455,12 @@ def send_notice_mail(record_id):
             )
             record.s2_remarks = remarks
 
-            # 🔥 STATUS UPDATE (S3 → S4)
+  
             record.approval_status = "s4"
 
         # ================= SECOND NOTICE =================
         elif notice2:
-            print("✅ notice2 received")
+            print("notice2 received")
             filename = secure_filename(notice2.filename)
 
             file_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -551,14 +473,12 @@ def send_notice_mail(record_id):
                 f"uploads/ReraUnRegister_Documents/{filename}"
             )
             record.s5_remarks = remarks
-
-            # 🔥 STATUS UPDATE (S6 → S7)
             record.approval_status = "s7"
 
         else:
-            print("❌ No file received")
+            print("No file received")
 
-        # ================= EMAIL BODY =================
+      
         body = f"""
 To  
 The Project Owner / Promoter  
@@ -580,7 +500,7 @@ Regards,
 AP RERA Authority  
 """
 
-        # ================= SEND EMAIL =================
+      
         send_email_with_attachment(
             email,
             subject,

@@ -34,7 +34,35 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
     if (path instanceof File) return path.name;
     return String(path).replace(/\\/g, "/").split("/").pop() || "NA";
   };
+  const openProtectedFile = async (filePath) => {
+  try {
+    const token = localStorage.getItem("token");
 
+    const response = await fetch(
+      `${BASE_URL}/${String(filePath).replace(/\\/g, "/")}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
+      throw new Error("Unable to open file");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    window.open(url, "_blank");
+  } catch (err) {
+    console.error(err);
+    alert("Unable to open document");
+  }
+};
   return (
     <div className="form-section">
 
@@ -95,20 +123,25 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
               formData.authorizedSignatoryPhoto ||
               formData.authorizedSignatoryPhotoPath
             ) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(
-                  formData.authorizedSignatoryPhoto ||
-                  formData.authorizedSignatoryPhotoPath
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(
-                  formData.authorizedSignatoryPhoto ||
-                  formData.authorizedSignatoryPhotoPath
-                )}
-              </a>
+            <span
+  className="display-field"
+  style={{
+    color: "blue",
+    cursor: "pointer",
+    textDecoration: "underline",
+  }}
+  onClick={() =>
+    openProtectedFile(
+      formData.authorizedSignatoryPhoto ||
+      formData.authorizedSignatoryPhotoPath
+    )
+  }
+>
+  {getFileName(
+    formData.authorizedSignatoryPhoto ||
+    formData.authorizedSignatoryPhotoPath
+  )}
+</span>
             ) : (
               <span className="display-field">NA</span>
             )}
@@ -122,20 +155,25 @@ const scrutiny_OtherThanIndividualAuthorizedSignatory = ({ formData = {} }) => {
               formData.boardResolutionCopy ||
               formData.boardResolutionCopyPath
             ) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(
-                  formData.boardResolutionCopy ||
-                  formData.boardResolutionCopyPath
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(
-                  formData.boardResolutionCopy ||
-                  formData.boardResolutionCopyPath
-                )}
-              </a>
+              <span
+  className="display-field"
+  style={{
+    color: "blue",
+    cursor: "pointer",
+    textDecoration: "underline",
+  }}
+  onClick={() =>
+    openProtectedFile(
+      formData.boardResolutionCopy ||
+      formData.boardResolutionCopyPath
+    )
+  }
+>
+  {getFileName(
+    formData.boardResolutionCopy ||
+    formData.boardResolutionCopyPath
+  )}
+</span>
             ) : (
               <span className="display-field">NA</span>
             )}

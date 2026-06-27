@@ -17,7 +17,7 @@ from werkzeug.security import (
 )
 
 from werkzeug.utils import secure_filename
-
+from flask_jwt_extended import get_jwt_identity
 from app.utils.encryption import (
     encrypt_value,
     decrypt_value,
@@ -97,6 +97,11 @@ def admin_response(admin):
 @admin_bp.route("/admin/create", methods=["POST"])
 @jwt_required()
 def create_admin():
+    print("================================")
+    print("CREATE API HIT")
+    print("JWT USER:", get_jwt_identity())
+    print("================================")
+
 
     try:
 
@@ -210,6 +215,7 @@ def create_admin():
     key_func=lambda: request.get_json().get("username")
 )
 def admin_login():
+    
     try:
         data = request.get_json()
 
@@ -229,7 +235,7 @@ def admin_login():
 
         if admin.locked_until and datetime.now() < admin.locked_until:
             return jsonify({
-                "error": "Account locked for 15 minutes due to multiple failed OTP attempts"
+                "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
             }), 403
             
         print("DB HASH:", admin.password)
@@ -241,8 +247,10 @@ def admin_login():
          return jsonify({
         "error": "Invalid password"
     }), 401
+         
+       
           
-
+        print("LOGIN SUCCESS")
         otp = str(random.randint(100000, 999999))
         otp_hash = hash_otp(otp)
         otp_expiry = datetime.now() + timedelta(minutes=5)
@@ -254,6 +262,7 @@ def admin_login():
 
         db.session.commit()
         db.session.refresh(admin)
+       
         print("Email in DB:", admin.email)
 
         real_email = decrypt_if_encrypted(
@@ -272,13 +281,8 @@ def admin_login():
     except Exception as e:
       db.session.rollback()
 
-      print("========== ERROR ==========")
-      traceback.print_exc()
-      print("===========================")
-
-      return jsonify({
-        "error": str(e)
-      }), 500
+      print(e)
+      return jsonify({"error": "Internal server error"}), 500
 
 # -------------------------------
 # VERIFY OTP → RETURN FULL DATA
@@ -303,7 +307,7 @@ def verify_otp():
 
         if admin.locked_until and datetime.now() < admin.locked_until:
             return jsonify({
-                "error": "Account locked for 15 minutes due to multiple failed OTP attempts"
+                "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
             }), 403
 
         if not admin.otp_hash or not admin.otp_expiry:
@@ -319,8 +323,11 @@ def verify_otp():
             ) + 1
 
             if admin.failed_otp_attempts >= 5:
-                admin.locked_until = datetime.now() + timedelta(minutes=15)
-
+                admin.locked_until = datetime.now() + timedelta(hours=9)
+                db.session.commit()
+                return jsonify({
+                    "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
+                }), 403
             db.session.commit()
 
             return jsonify({"error": "Invalid OTP"}), 401

@@ -87,6 +87,32 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
     if (path instanceof File) return path.name;
     return String(path).replace(/\\/g, "/").split("/").pop() || "NA";
   };
+  const openProtectedFile = async (filePath) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      `${BASE_URL}/${filePath.replace(/\\/g, "/")}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Unable to open file");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    window.open(url, "_blank");
+  } catch (err) {
+    console.error(err);
+    alert("Unable to open document");
+  }
+};
 
   /* ================= RENDER ================= */
 
@@ -173,14 +199,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
           <div className="display-group">
             <span className="display-label">Architect Certificate</span>
             {getFileUrl(mappedData.architectPath) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(mappedData.architectPath)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(mappedData.architectPath)}
-              </a>
+            <span
+  className="display-field"
+  style={{
+    color: "blue",
+    cursor: "pointer",
+    textDecoration: "underline",
+  }}
+  onClick={() => openProtectedFile(mappedData.architectPath)}
+>
+  {getFileName(mappedData.architectPath)}
+</span>
             ) : (
               <span className="display-field">NA</span>
             )}
@@ -191,14 +220,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
           <div className="display-group">
             <span className="display-label">Engineer Certificate</span>
             {getFileUrl(mappedData.engineerPath) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(mappedData.engineerPath)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(mappedData.engineerPath)}
-              </a>
+             <span
+  className="display-field"
+  style={{
+    color: "blue",
+    cursor: "pointer",
+    textDecoration: "underline",
+  }}
+  onClick={() => openProtectedFile(mappedData.engineerPath)}
+>
+  {getFileName(mappedData.engineerPath)}
+</span>
             ) : (
               <span className="display-field">NA</span>
             )}
@@ -209,14 +241,17 @@ const scrutiny_ExistingProjectConstructionStatus = ({ formData }) => {
           <div className="display-group">
             <span className="display-label">CA Certificate</span>
             {getFileUrl(mappedData.caPath) ? (
-              <a
-                className="display-field"
-                href={getFileUrl(mappedData.caPath)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {getFileName(mappedData.caPath)}
-              </a>
+             <span
+  className="display-field"
+  style={{
+    color: "blue",
+    cursor: "pointer",
+    textDecoration: "underline",
+  }}
+  onClick={() => openProtectedFile(mappedData.caPath)}
+>
+  {getFileName(mappedData.caPath)}
+</span>
             ) : (
               <span className="display-field">NA</span>
             )}

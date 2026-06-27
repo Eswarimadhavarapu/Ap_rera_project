@@ -177,7 +177,7 @@ const RtiPaymentPage = () => {
       // =====================================
 
       const response = await fetch(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/rti/create",
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/create",
         {
           method: "POST",
           body: apiFormData,

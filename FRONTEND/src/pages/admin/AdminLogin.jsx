@@ -30,8 +30,8 @@ const DepartmentLogin = () => {
       clearAdmin();
       await apiPost("/api/admin/login", { username, password });
       setStep("otp");
-    } catch {
-      setError("Invalid username or password. Please try again.");
+    } catch (err){
+      setError(err?.message || "Invalid username or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -57,8 +57,8 @@ const DepartmentLogin = () => {
       }
 
       navigate(nextRoute, { replace: true });
-    } catch {
-      setError("Invalid or expired OTP. Please try again.");
+    } catch (err){
+      setError(err?.message || "Invalid or expired OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,8 +70,8 @@ const DepartmentLogin = () => {
     try {
       await apiPost("/api/admin/login", { username, password });
       setOtp("");
-    } catch {
-      setError("Failed to resend OTP. Please go back and try again.");
+    } catch (err){
+      setError(err?.message || "Failed to resend OTP. Please go back and try again.");
     } finally {
       setLoading(false);
     }

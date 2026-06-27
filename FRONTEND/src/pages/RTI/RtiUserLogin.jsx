@@ -144,7 +144,7 @@ const RtiUserLogin = () => {
 
       // SEND EMAIL OTP API
       const response = await axios.post(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/rti/send-email-otp",
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/send-email-otp",
         {
           email,
           mobile,
@@ -232,7 +232,7 @@ const RtiUserLogin = () => {
 
       // VERIFY OTP API
       const response = await axios.post(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/rti/verify-email-otp",
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/verify-email-otp",
         {
           email,
           otp,
@@ -288,7 +288,7 @@ const RtiUserLogin = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "https://4bckgspd-8080.inc1.devtunnels.ms/api/rti/send-email-otp",
+        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/send-email-otp",
         {
           email,
           mobile,

@@ -9,11 +9,11 @@ const PromoterData = () => {
     const location = useLocation();
 
     // get login data from session
-    //const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
+    const storedLogin = JSON.parse(sessionStorage.getItem("loginResponse"));
 
     // get pan from navigation OR session
-    //const panNumber =location.state?.panNumber || storedLogin?.pan_number;
-    const panNumber = location.state?.panNumber;
+    const panNumber =location.state?.panNumber || storedLogin?.pan_number;
+    // const panNumber = location.state?.panNumber;
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -80,8 +80,12 @@ const PromoterData = () => {
                     <div
                         className="corner-card"
                         onClick={() =>
-                            navigate("/ChangeRequestProcess", {
-                                state: { panNumber }
+                            navigate("/otplogin", {
+                                state: {
+                                    panNumber,
+                                    redirectTo: "/ChangeRequestProcess",
+                                    redirectState: { panNumber }
+                                }
                             })
                         }
                     >
@@ -104,10 +108,14 @@ const PromoterData = () => {
                     <div
                         className="corner-card"
                         onClick={() =>
-                            navigate("/extensionprocess", {
+                            navigate("/otplogin", {
                                 state: {
-                                    panNumber: panNumber,
-                                    applicationNumber: rows[0]?.application_number
+                                    panNumber,
+                                    redirectTo: "/extensionprocess",
+                                    redirectState: {
+                                        panNumber,
+                                        applicationNumber: rows[0]?.application_number
+                                    }
                                 }
                             })
                         }
@@ -119,8 +127,12 @@ const PromoterData = () => {
                     <div
                         className="corner-card"
                         onClick={() =>
-                            navigate("/closure", {
-                                state: { panNumber }
+                            navigate("/otplogin", {
+                                state: {
+                                    panNumber,
+                                    redirectTo: "/closure",
+                                    redirectState: { panNumber }
+                                }
                             })
                         }
                     >

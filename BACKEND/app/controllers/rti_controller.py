@@ -5,12 +5,13 @@ from flask import Blueprint, request, jsonify, send_from_directory
 from app.models.database import db
 
 from app.models.rti_application import RTIApplication
-
+from flask_jwt_extended import jwt_required
 from app.models.rti_application_assignments import RTIAssignment
 from app.utils.validation_schemas import validate_registration
 from datetime import datetime
 from app import mail
 from flask_mail import Message
+from app import limiter
 import os
 import uuid
 import random
@@ -266,7 +267,7 @@ def create_rti():
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 # =========================================================
@@ -341,7 +342,7 @@ def assign_rti():
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 # =========================================================
@@ -544,7 +545,7 @@ def get_rti(id):
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 # =========================================================
@@ -614,30 +615,35 @@ def list_rti():
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 
-# =========================================================
-# DOCUMENT VIEW
-# =========================================================
-
 @rti_bp.route("/rti/document/<path:filename>", methods=["GET"])
+@jwt_required()
 def view_document(filename):
 
+    full_path = os.path.join(UPLOAD_DIR, filename)
+
+    if not os.path.exists(full_path):
+        return jsonify({
+            "status": "error",
+            "message": "File not found"
+        }), 404
+
     return send_from_directory(
-
         UPLOAD_DIR,
-
         filename,
-
         as_attachment=False
     )
-
-
+    
+    
 @rti_bp.route("/rti/send-email-otp", methods=["POST"])
+@limiter.limit(
+    "3 per 15 minutes",
+    key_func=lambda: request.get_json().get("email")
+)
 def send_email_otp():
-
     try:
 
         data = request.get_json()
@@ -697,7 +703,7 @@ RTI Department
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 
@@ -751,7 +757,7 @@ def verify_email_otp():
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 @rti_bp.route("/rti/updates/<int:id>", methods=["PATCH"])
 def update_rti(id):
@@ -966,7 +972,7 @@ def update_rti(id):
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 @rti_bp.route("/rti/send-return_application/<int:id>", methods=["PATCH"])
 def send_rti_reply(id):
@@ -1062,7 +1068,7 @@ RTI Department
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 @rti_bp.route("/rti/assignment/create", methods=["POST"])
@@ -1165,7 +1171,7 @@ def create_assignments():
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
         
 @rti_bp.route("/rti/assignment/update/<int:id>", methods=["PATCH"])
@@ -1326,7 +1332,7 @@ def update_assignment(id):
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 # =========================================================
@@ -1406,7 +1412,7 @@ def get_assignments_by_rti_id(rti_application_id):
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
 
 # =========================================================
@@ -1488,5 +1494,5 @@ def get_assignments_by_department(department):
 
             "status": "error",
 
-            "message": "Internal server error"
+            "message": str(e)
         }), 500

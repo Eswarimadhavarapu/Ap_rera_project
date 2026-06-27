@@ -2,6 +2,49 @@ import React, { useEffect, useState, useMemo } from "react";
 import { apiGet, BASE_URL } from "../../api/api";
 import { useAdmin } from "../../context/AdminContext";
 
+const openProtectedFile = async (filePath) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const normalizedPath = String(filePath)
+      .trim()
+      .replace(/\\/g, "/");
+
+    const uploadsIndex =
+      normalizedPath.toLowerCase().indexOf("/uploads/");
+
+    const relativeUploadsPath =
+      uploadsIndex >= 0
+        ? normalizedPath.slice(uploadsIndex + 1)
+        : normalizedPath.toLowerCase().startsWith("uploads/")
+        ? normalizedPath
+        : normalizedPath.replace(/^\/+/, "");
+
+    const response = await fetch(
+      `${BASE_URL}/${relativeUploadsPath}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Unable to load file");
+    }
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    window.open(url, "_blank");
+  } catch (err) {
+    console.error(err);
+    alert("Unable to open document");
+  }
+};
+
 const scrutiny_ExistingProjectSiteAddress = ({ formData }) => {
 
   const [districts, setDistricts] = useState([]);
@@ -199,18 +242,23 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
   <div className="col-sm-3-scrutiny">
     <div className="display-group-scrutiny">
       <span className="display-label-scrutiny">Address Proof</span>
-      {getFileUrl(mappedData.addressProofPath) ? (
-        <a
-          className="display-field-scrutiny"
-          href={getFileUrl(mappedData.addressProofPath)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {getFileName(mappedData.addressProofPath)}
-        </a>
-      ) : (
-        <span className="display-field-scrutiny">NA</span>
-      )}
+       {mappedData.addressProofPath ? (
+  <span
+    className="display-field-scrutiny"
+    style={{
+      color: "blue",
+      cursor: "pointer",
+      textDecoration: "underline",
+    }}
+    onClick={() =>
+      openProtectedFile(mappedData.addressProofPath)
+    }
+  >
+    {getFileName(mappedData.addressProofPath)}
+  </span>
+) : (
+  <span className="display-field-scrutiny">NA</span>
+)}
     </div>
   </div>
 )}

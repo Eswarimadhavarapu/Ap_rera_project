@@ -21,7 +21,7 @@ export const AdminProvider = ({ children }) => {
     }
   });
 
- const saveAdmin = (adminData, token) => {
+const saveAdmin = (adminData, token) => {
 
   localStorage.setItem(
     "admin",
@@ -33,9 +33,14 @@ export const AdminProvider = ({ children }) => {
     token
   );
 
+  // ✅ Save login time
+  localStorage.setItem(
+    "loginTime",
+    Date.now()
+  );
+
   setAdmin(adminData);
 };
-
   const clearAdmin = () => {
     // ✅ LOG 3 — fires on logout
     console.log("%c🚪 AdminContext — clearAdmin() called → session cleared", "color: red; font-weight: bold;");
