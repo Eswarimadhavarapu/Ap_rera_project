@@ -633,7 +633,17 @@ return (
       if (filterBy === "type"     && filterType) params.append("project_type", filterType);
       if (filterBy === "fileno"   && debounced)  params.append("search", debounced);
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
+      // const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
+      const token = localStorage.getItem("token");
+
+const res = await fetch(
+  `${BASE_URL}/api/project-unregistered?${params}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       let data = json.data || [];

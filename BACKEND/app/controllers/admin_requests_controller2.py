@@ -14,7 +14,7 @@ from app.utils.mail_service import (
     send_project_approval_email,
     send_project_rejection_email
 )
-
+from flask_jwt_extended import jwt_required
 # Blueprint
 admin_renewal_bp = Blueprint("admin_renewal_bp", __name__)
 
@@ -23,6 +23,7 @@ admin_renewal_bp = Blueprint("admin_renewal_bp", __name__)
 # Renewal Dashboard Counts
 # ===============================
 @admin_renewal_bp.route("/admin/renewal-dashboard", methods=["GET","OPTIONS"])
+@jwt_required()
 def renewal_dashboard():
 
     data = get_renewal_dashboard_counts()
@@ -34,6 +35,7 @@ def renewal_dashboard():
 # Renewals By Status
 # ===============================
 @admin_renewal_bp.route("/admin/renewals/<status>", methods=["GET","OPTIONS"])
+@jwt_required()
 def renewals_by_status(status):
 
     rows = get_renewals_by_status(status.upper())
@@ -52,6 +54,7 @@ def renewals_by_status(status):
 
     return jsonify(result)
 @admin_renewal_bp.route("/admin/projects", methods=["GET","OPTIONS"])
+@jwt_required()
 def admin_projects():
 
     rows = get_all_projects()
@@ -74,6 +77,7 @@ def admin_projects():
 # Get Full Project Details
 # ===============================
 @admin_renewal_bp.route("/admin/projects/<int:id>", methods=["GET"])
+@jwt_required()
 def get_project_details(id):
 
     query = text("""
@@ -91,6 +95,7 @@ def get_project_details(id):
 # Update Project Status
 # ===============================
 @admin_renewal_bp.route("/admin/projects/<int:id>/status", methods=["PUT"])
+@jwt_required()
 def update_project_status(id):
     data = request.json
     status = data.get("status")
@@ -112,6 +117,7 @@ from flask import request
 # Approve Project
 # ===============================
 @admin_renewal_bp.route("/admin/projects/<int:id>/approve", methods=["PUT"])
+@jwt_required()
 def approve_project(id):
 
     try:
@@ -165,6 +171,7 @@ def approve_project(id):
     
     
 @admin_renewal_bp.route("/admin/projects/<int:id>/reject", methods=["PUT"])
+@jwt_required()
 def reject_project(id):
 
     try:

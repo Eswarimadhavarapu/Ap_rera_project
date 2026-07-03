@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 from sqlalchemy import text
-
+from flask_jwt_extended import jwt_required
 from app.models.agent_scrutiny_model import (
     get_agent_scrutiny_registrations,
     get_agent_scrutiny_registration_by_application,
@@ -22,7 +22,6 @@ from app.models.agent_scrutiny_model import (
 from app.utils.mail_service import send_email
 
 agent_scrutiny_bp = Blueprint("agent_scrutiny_bp", __name__, url_prefix="/api")
-
 def _save_scrutiny_file(file_obj):
     if not file_obj or not getattr(file_obj, "filename", ""):
         return None
@@ -77,6 +76,7 @@ AP RERA Authority
 """
 
 @agent_scrutiny_bp.route("/agent-scrutiny/registrations", methods=["GET", "OPTIONS"])
+@jwt_required()
 def scrutiny_registrations():
     try:
         dept = request.args.get("dept")
@@ -86,6 +86,7 @@ def scrutiny_registrations():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/registrations/details", methods=["GET", "OPTIONS"])
+@jwt_required()
 def scrutiny_registration_detail():
     try:
         application_no = request.args.get("application_no")
@@ -107,6 +108,7 @@ def scrutiny_registration_detail():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/create-file", methods=["POST"])
+@jwt_required()
 def create_scrutiny_file_api():
     try:
         payload = request.form if request.form else (request.get_json(silent=True) or {})
@@ -158,6 +160,7 @@ def create_scrutiny_file_api():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/fpms-dashboard", methods=["GET", "OPTIONS"])
+@jwt_required()
 def scrutiny_fpms_dashboard():
     try:
         data = get_agent_scrutiny_fpms_dashboard_data()
@@ -166,6 +169,7 @@ def scrutiny_fpms_dashboard():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/verification-remarks", methods=["POST"])
+@jwt_required()
 def create_verification_remark_api():
     try:
         payload = request.form if request.form else (request.get_json(silent=True) or {})
@@ -215,6 +219,7 @@ def create_verification_remark_api():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/verification-remarks", methods=["GET"])
+@jwt_required()
 def get_verification_remark_api():
     try:
         application_no = request.args.get("application_no") or request.args.get("applicationNo")
@@ -238,6 +243,7 @@ def get_verification_remark_api():
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/final-submit", methods=["POST"])
+@jwt_required()
 def final_submit():
     try:
         data = request.get_json()
@@ -297,6 +303,7 @@ def final_submit():
 
 
 @agent_scrutiny_bp.route("/agent-scrutiny/chairman-decision", methods=["POST"])
+@jwt_required()
 def chairman_decision():
     try:
         data = request.get_json() or {}
@@ -364,6 +371,7 @@ AP RERA Authority
         return jsonify({"error": "Internal server error"}), 500
 
 @agent_scrutiny_bp.route("/agent-scrutiny/final-status", methods=["GET"])
+@jwt_required()
 def get_final_status():
     try:
         application_no = request.args.get("application_no")

@@ -18,6 +18,7 @@ import os
 import uuid
 
 
+
 project_extention_bp = Blueprint(
     "project_extention_bp",
     __name__
@@ -88,6 +89,7 @@ def save_file(file):
     "/project-extension/create",
     methods=["POST"]
 )
+@jwt_required()
 def create_project_extension():
 
     try:
@@ -239,6 +241,7 @@ def create_project_extension():
     "/project-extension/list",
     methods=["GET"]
 )
+@jwt_required()
 def get_all_project_extensions():
 
     try:
@@ -287,6 +290,7 @@ def get_all_project_extensions():
     "/project-extension/<int:id>",
     methods=["GET"]
 )
+@jwt_required()
 def get_project_extension_by_id(id):
 
     try:
@@ -320,6 +324,7 @@ def get_project_extension_by_id(id):
     "/project-extension/update/<int:id>",
     methods=["PATCH"]
 )
+@jwt_required()
 def update_project_extension(id):
 
     try:
@@ -478,6 +483,7 @@ def update_project_extension(id):
     "/project-extension/send-mail",
     methods=["POST"]
 )
+@jwt_required()
 def send_project_extension_mail():
 
     try:

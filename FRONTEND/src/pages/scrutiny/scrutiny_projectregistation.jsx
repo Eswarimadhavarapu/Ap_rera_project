@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../api/api";
+import {apiGet} from "../../api/api";
 import "../../styles/scrutiny/scrutiny_projectregistation.css";
 import { useNavigate } from "react-router-dom";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
@@ -124,11 +125,20 @@ const dept = normalizeDept(admin?.department);
       return;
     }
 
-    const base = await fetch(
-      `${BASE_URL}/api/scrutiny/project-registrations?dept=${dept}`
+//     const base = await fetch(
+//       `${BASE_URL}/api/scrutiny/project-registrations?dept=${dept}`
 
-    ).then(res => res.json());
-const data = (base || []).map((row) => {
+//     ).then(res => res.json());
+// const data = (base || []).map((row) => {
+  const base = await apiGet(
+  `/api/scrutiny/project-registrations?dept=${dept}`
+);
+
+const list = Array.isArray(base)
+  ? base
+  : (base?.data || []);
+const data = list.map((row) => {
+  
   const normalized = normalizeScrutinyRow(row);
 
   return {

@@ -12,7 +12,7 @@ from app.utils.mail_service import send_rejection_email
 from sqlalchemy import func
 from app.utils.mail_service import send_change_request_approval_email
 from app.utils.validation_schemas import validate_registration
-
+from flask_jwt_extended import jwt_required
 change_request_bp = Blueprint("change_request_bp", __name__)
 
 
@@ -168,6 +168,7 @@ def get_change_request(id):
 
 
 @change_request_bp.route("/change-request/status/<string:status>", methods=["GET"])
+@jwt_required()
 def get_change_requests_by_status(status):
 
     try:
@@ -205,6 +206,7 @@ from datetime import datetime
 
 
 @change_request_bp.route("/change-request/reject/<int:id>", methods=["PUT"])
+@jwt_required()
 def reject_change_request(id):
     try:
         data = request.get_json()
@@ -237,6 +239,7 @@ def reject_change_request(id):
 
 
 @change_request_bp.route("/change-request/approve/<int:id>", methods=["PUT"])
+@jwt_required()
 def approve_change_request(id):
     try:
         data = request.get_json() or {}

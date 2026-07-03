@@ -7,6 +7,7 @@ from app.models.engineer import Engineer
 from app.models.accountant import Accountant
 from app.models.project_agent import AgentModel
 from app.utils.validation_schemas import validate_registration
+from flask_jwt_extended import jwt_required
 # --------------------------------------------------
 # Blueprint
 # --------------------------------------------------
@@ -16,6 +17,7 @@ preview_bp = Blueprint("preview", __name__)
 # Preview API (USED BY FRONTEND)
 # --------------------------------------------------
 @preview_bp.route("/project/preview", methods=["POST"])
+@jwt_required()
 def project_preview_controller():
     print("🔥 PREVIEW CONTROLLER HIT 🔥")
 
@@ -42,6 +44,7 @@ def project_preview_controller():
 # Project Registration Fetch API (OPTIONAL / DEBUG)
 # --------------------------------------------------
 @preview_bp.route("/project-registration/<application_number>/<pan_number>", methods=["GET"])
+@jwt_required()
 def get_project_registration_controller(application_number, pan_number):
     try:
         data = get_project_registration(application_number, pan_number)

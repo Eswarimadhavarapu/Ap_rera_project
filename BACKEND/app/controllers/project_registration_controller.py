@@ -3,14 +3,16 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from app.models.project_registration_model import (
     insert_project_registration,
-    get_project_registration
+    get_project_registration,
+    get_project_basic_details_by_pan
 )
 # from app.models.extension_project_application_details_models import (
 #     get_project_basic_details_by_pan,
 #     insert_extension_project_application
 # )
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity,get_jwt
 from app.utils.validation_schemas import validate_registration
+
 
 project_registration_bp = Blueprint("project_registration_bp", __name__)
 
@@ -30,6 +32,7 @@ def save_file(file, subfolder):
     return f"uploads/{subfolder}/{filename}"
         
 @project_registration_bp.route("/project-registration", methods=["POST"])
+@jwt_required()
 def project_registration():
     try:
         form = request.form
@@ -129,6 +132,7 @@ def project_registration():
 # =====================================
 
 @project_registration_bp.route("/get-project-by-application", methods=["POST"])
+@jwt_required()
 def get_project_by_application():
 
     try:
@@ -181,7 +185,9 @@ def get_project_by_application():
 # ✅ NEW GET API (SEPARATE – SAFE)
 # ==========================================================
 @project_registration_bp.route("/project-registration/details", methods=["GET"])
+@jwt_required()
 def get_project_registration_details():
+    
 
     try:
         application_number = request.args.get("applicationNumber")
@@ -210,6 +216,7 @@ def get_project_registration_details():
         
 
 @project_registration_bp.route("/project-registration/update", methods=["PUT"])
+@jwt_required()
 def update_project_registration_new():
 
     from app.models.project_registration_model import update_project_registration
@@ -309,6 +316,7 @@ def update_project_registration_new():
 
     
 @project_registration_bp.route("/project/basic-details-by-pan", methods=["GET"])
+@jwt_required()
 def get_project_basic_details_by_pan_controller():
     from app.models.extension_project_application_details_models import get_project_basic_details_by_pan
     pan_number = request.args.get("pan")
@@ -330,6 +338,7 @@ def get_project_basic_details_by_pan_controller():
 # ✅ SINGLE PROJECT (AUTO TYPE - BEST API)
 # =====================================
 @project_registration_bp.route("/planning-single", methods=["GET"])
+@jwt_required()
 def planning_single():
 
     application_number = request.args.get("applicationNumber")
@@ -355,6 +364,7 @@ def planning_single():
 # ✅ ALL PROJECTS (INDIVIDUAL + OTHER)
 # =====================================
 @project_registration_bp.route("/planning-dashboard-all", methods=["GET"])
+@jwt_required()
 def planning_dashboard_all():
 
     from app.models.planning_documents_model import get_all_planning_dashboard_mixed
@@ -371,6 +381,7 @@ def planning_dashboard_all():
 # ✅ FILTER BY TYPE
 # =====================================
 @project_registration_bp.route("/planning-dashboard-all-by-type", methods=["GET"])
+@jwt_required()
 def planning_dashboard_all_by_type():
 
     user_type = request.args.get("type")  # individual / other

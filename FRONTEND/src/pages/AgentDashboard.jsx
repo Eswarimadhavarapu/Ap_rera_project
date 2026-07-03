@@ -8,21 +8,25 @@ const AgentDashboard = () => {
   const [applications, setApplications] = useState([]);
 
   const navigate = useNavigate();
-  const pan = sessionStorage.getItem("agent_pan");
+  // const pan = sessionStorage.getItem("agent_pan");
 
   useEffect(() => {
-    if (!pan) return;
+    // if (!pan) return;
 
     const url =
       activeTab === "partial"
-        ? `/api/agent/partial-applications/${pan}`
-        : `/api/agent/shortfall-applications/${pan}`;
+        // ? `/api/agent/partial-applications/${pan}`
+        // : `/api/agent/shortfall-applications/${pan}`;
+        ? `/api/agent/partial-applications`
+        : `/api/agent/shortfall-applications`;
+
 
     apiGet(url)
       .then((res) => {
         console.log("FULL RESPONSE 👉", res);
 
-        if (res?.success === true && Array.isArray(res.data)) {
+        // if (res?.success === true && Array.isArray(res.data)) {
+        if (res.success) {
           setApplications(res.data);
         } else {
           setApplications([]);
@@ -32,7 +36,8 @@ const AgentDashboard = () => {
         console.error("API ERROR", err);
         setApplications([]);
       });
-  }, [activeTab, pan]);
+       }, [activeTab]);
+  // }, [activeTab, pan]);
 
  const openApplication = (app) => {
   // ✅ store agentId where ApplicantDetails expects it
@@ -90,7 +95,8 @@ const AgentDashboard = () => {
           <tbody>
             {applications.length > 0 ? (
               applications.map((app, i) => (
-                <tr key={i}>
+                // <tr key={i}>
+                <tr key={app.agent_id}>
                   <td>{i + 1}</td>
 
                   <td>

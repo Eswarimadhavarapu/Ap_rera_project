@@ -6,6 +6,7 @@ from sqlalchemy import text
 from app.models.database import db
 from app.models.project_closure_model import ProjectClosureNEW
 from app.utils.request_logger import get_client_ip
+from flask_jwt_extended import jwt_required
 
 
 project_closure_bp = Blueprint("project_closure", __name__)
@@ -15,6 +16,7 @@ project_closure_bp = Blueprint("project_closure", __name__)
 # FETCH PROJECT DETAILS
 # ---------------------------------------------------------
 @project_closure_bp.route("/details", methods=["GET"])
+@jwt_required()
 def get_project_details():
 
     try:
@@ -91,6 +93,7 @@ def save_file(file, prefix, application_no):
 # SUBMIT PROJECT CLOSURE
 # ---------------------------------------------------------
 @project_closure_bp.route("/submit", methods=["POST"])
+@jwt_required()
 def submit_closure():
 
     try:
@@ -201,6 +204,7 @@ def submit_closure():
 # CHECK IF ALREADY SUBMITTED
 # ---------------------------------------------------------
 @project_closure_bp.route("/check", methods=["GET"])
+@jwt_required()
 def check_closure():
 
     try:

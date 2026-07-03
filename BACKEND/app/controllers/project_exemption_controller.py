@@ -15,7 +15,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from app.utils.validation_schemas import validate_registration
-
+from flask_jwt_extended import jwt_required
 project_exemption_bp = Blueprint("project_exemption", __name__)
 
 # ── Folders ──────────────────────────────────────────────
@@ -369,6 +369,7 @@ def send_certificate_email(record: ProjectExemption, cert_path: str):
 
 # ── CREATE ──
 @project_exemption_bp.route("/project_exemption/create", methods=["POST"])
+@jwt_required()
 def create_project_exemption():
     try:
         data = request.form
@@ -413,6 +414,7 @@ def create_project_exemption():
 
 # ── GET ALL ──
 @project_exemption_bp.route("/project_exemption/all", methods=["GET"])
+@jwt_required()
 def get_all():
     records = ProjectExemption.query.all()
     result = []
@@ -432,6 +434,7 @@ def get_all():
 
 # ── GET BY ID ── (FIXED — returns ALL fields)
 @project_exemption_bp.route("/project_exemption/<int:id>", methods=["GET"])
+@jwt_required()
 def get_by_id(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -472,6 +475,7 @@ def get_by_id(id):
 
 # ── UPDATE ──
 @project_exemption_bp.route("/project_exemption/update/<int:id>", methods=["PUT"])
+@jwt_required()
 def update(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -486,6 +490,7 @@ def update(id):
 
 # ── DELETE ──
 @project_exemption_bp.route("/project_exemption/delete/<int:id>", methods=["DELETE"])
+@jwt_required()
 def delete(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -501,6 +506,7 @@ def delete(id):
 #  Body: { remark_s1: str, authority_id: int }
 # ════════════════════════════════════════════════════════
 @project_exemption_bp.route("/project_exemption/<int:id>/stage1", methods=["PATCH"])
+@jwt_required()
 def stage1_update(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -530,6 +536,7 @@ def stage1_update(id):
 #  Body: { decision: "approved"|"rejected", remark_s2: str, authority_id: int }
 # ════════════════════════════════════════════════════════
 @project_exemption_bp.route("/project_exemption/<int:id>/stage2", methods=["PATCH"])
+@jwt_required()
 def stage2_update(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -582,6 +589,7 @@ def stage2_update(id):
 #  Body: { authority_id: int }
 # ════════════════════════════════════════════════════════
 @project_exemption_bp.route("/project_exemption/<int:id>/stage3", methods=["PATCH"])
+@jwt_required()
 def stage3_update(id):
     record = ProjectExemption.query.get(id)
     if not record:
@@ -617,6 +625,7 @@ def stage3_update(id):
 #  Body: { email: str, reason: str, authority_id: int }
 # ════════════════════════════════════════════════════════
 @project_exemption_bp.route("/project_exemption/<int:id>/send-rejection-email", methods=["POST"])
+@jwt_required()
 def send_rejection_email(id):
     record = ProjectExemption.query.get(id)
     if not record:

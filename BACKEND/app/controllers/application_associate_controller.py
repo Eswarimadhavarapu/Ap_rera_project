@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.application_associate import ApplicationAssociate
 from app.models.database import db
-
+from flask_jwt_extended import jwt_required
 # 🔽 IMPORT ASSOCIATE MODELS (FOR PREVIEW)
 from app.models.architect import Architect
 from app.models.engineer import Engineer
@@ -22,6 +22,7 @@ application_associate_bp = Blueprint(
 # POST: LINK ASSOCIATE TO APPLICATION (ALREADY WORKING)
 # ======================================================
 @application_associate_bp.route("/application/associate", methods=["POST"])
+@jwt_required()
 def link_associate_to_application():
     try:
         data = request.get_json()
@@ -79,6 +80,7 @@ def link_associate_to_application():
 # GET: FETCH ASSOCIATES FOR PREVIEW (🔥 NEW & REQUIRED)
 # ======================================================
 @application_associate_bp.route("/application/associates", methods=["GET"])
+@jwt_required()
 def get_application_associates():
     try:
         application_number = request.args.get("application_number")

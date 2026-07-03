@@ -16,6 +16,7 @@ from app.models.admin_renewal_model import (
     get_renewal_detail,
     update_renewal_status
 )
+from flask_jwt_extended import jwt_required
 
 
 agent_renewal_bp = Blueprint("agent_renewal_bp", __name__)
@@ -135,6 +136,7 @@ def update_payment(renewal_id):
 from sqlalchemy import text
 
 @agent_renewal_bp.route("/approve/<int:renewal_id>", methods=["POST"])
+@jwt_required()
 def approve_renewal(renewal_id):
 
     renewal = AgentRenewal.query.get(renewal_id)
@@ -166,6 +168,7 @@ def approve_renewal(renewal_id):
 
 # Reject Renewal
 @agent_renewal_bp.route("/reject/<int:renewal_id>", methods=["POST"])
+@jwt_required()
 def reject_renewal(renewal_id):
 
     renewal = AgentRenewal.query.get(renewal_id)
@@ -179,6 +182,7 @@ def reject_renewal(renewal_id):
 
 # Get Renewal Status
 @agent_renewal_bp.route("/status/<int:renewal_id>", methods=["GET"])
+@jwt_required()
 def renewal_status(renewal_id):
 
     renewal = AgentRenewal.query.get(renewal_id)
@@ -192,6 +196,7 @@ def renewal_status(renewal_id):
     })
     
 @agent_renewal_bp.route("/agent-details/<application_no>", methods=["GET"])
+@jwt_required()
 def get_agent_details(application_no):
 
     try:
@@ -236,6 +241,7 @@ def get_agent_details(application_no):
 # Upload Documents (FIXED)
 # ===============================
 @agent_renewal_bp.route("/upload-doc", methods=["POST"])
+@jwt_required()
 def upload_doc():
 
     try:
@@ -283,6 +289,7 @@ def upload_doc():
         return {"error": "Internal server error"}, 500
     
 @agent_renewal_bp.route("/officer/list", methods=["GET"])
+@jwt_required()
 def officer_list():
 
     renewals = AgentRenewal.query.filter_by(renewal_status="SUBMITTED").all()
@@ -299,6 +306,7 @@ def officer_list():
 
     return {"data": data}
 @agent_renewal_bp.route("/query", methods=["POST"])
+@jwt_required()
 def raise_query():
 
     data = request.json
@@ -314,6 +322,7 @@ def raise_query():
 
     return {"message": "Query raised"}
 @agent_renewal_bp.route("/query/respond", methods=["POST"])
+@jwt_required() 
 def respond_query():
 
     data = request.json
@@ -332,6 +341,7 @@ def respond_query():
     return {"message": "Query responded"}
 
 @agent_renewal_bp.route("/query/<int:renewal_id>")
+@jwt_required()
 def get_queries(renewal_id):
 
     queries = AgentRenewalQuery.query.filter_by(renewal_id=renewal_id).all()
@@ -350,6 +360,7 @@ def get_queries(renewal_id):
 from sqlalchemy import text
 
 @agent_renewal_bp.route("/<int:renewal_id>/preview", methods=["GET"])
+@jwt_required()
 def get_preview(renewal_id):
 
     renewal = db.session.execute(
@@ -390,6 +401,7 @@ def get_preview(renewal_id):
 # Admin Renewal Dashboard Counts
 # ===============================
 @agent_renewal_bp.route("/admin/renewal-dashboard", methods=["GET","OPTIONS"])
+@jwt_required()
 def renewal_dashboard():
 
     data = get_renewal_dashboard_counts()
@@ -401,6 +413,7 @@ def renewal_dashboard():
 # Admin Renewals By Status
 # ===============================
 @agent_renewal_bp.route("/admin/renewals/<status>", methods=["GET","OPTIONS"])
+@jwt_required()
 def renewals_by_status(status):
 
     rows = get_renewals_by_status(status.upper())
@@ -424,6 +437,7 @@ def renewals_by_status(status):
 # Renewal Detail
 # ===============================
 @agent_renewal_bp.route("/admin/renewal/<int:renewal_id>", methods=["GET"])
+@jwt_required()
 def renewal_detail(renewal_id):
 
     data = get_renewal_detail(renewal_id)
@@ -438,6 +452,7 @@ def renewal_detail(renewal_id):
 
 
 @agent_renewal_bp.route("/admin/renewal/update/<int:renewal_id>", methods=["PUT"])
+@jwt_required()
 def update_status(renewal_id):
 
     try:

@@ -12,6 +12,7 @@ from app.utils.mail_service import (
     send_agent_change_request_rejection_email
 )
 from app.utils.validation_schemas import validate_registration
+from flask_jwt_extended import jwt_required
 
 agent_change_request_bp = Blueprint("agent_change_request_bp", __name__)
 
@@ -253,6 +254,7 @@ def send_admin_change_request_mail(change_request, status):
 # =========================
 
 @agent_change_request_bp.route("/change-request/get-applications", methods=["POST"])
+@jwt_required()
 def get_application_numbers():
 
     try:
@@ -302,6 +304,7 @@ def get_application_numbers():
     "/change-request/get-application-details/<application_no>",
     methods=["GET"]
 )
+
 def get_application_details(application_no):
 
     try:
@@ -331,6 +334,7 @@ def get_application_details(application_no):
 
 
 @agent_change_request_bp.route("/admin/change-requests/full", methods=["GET"])
+@jwt_required()
 def get_full_change_requests():
     try:
         requests = db.session.query(AgentChangeRequest) \
@@ -399,6 +403,7 @@ def get_full_change_requests():
     "/admin/change-requests/<int:request_id>/approve",
     methods=["PUT"]
 )
+@jwt_required()
 def approve_change_request(request_id):
     try:
         change_request = AgentChangeRequest.query.get(request_id)
@@ -436,6 +441,7 @@ def approve_change_request(request_id):
     "/admin/change-requests/<int:request_id>/status",
     methods=["PUT"]
 )
+@jwt_required()
 def update_change_request_status(request_id):
     try:
         data = request.get_json(silent=True) or {}
@@ -484,6 +490,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 @agent_change_request_bp.route("/change-request/save", methods=["POST"])
+@jwt_required()
 def save_change_request():
 
     try:
@@ -660,6 +667,7 @@ def save_change_request():
     "/admin/change-requests/<int:request_id>/send-status-mail",
     methods=["POST"]
 )
+@jwt_required()
 def send_change_request_status_mail_api(request_id):
     try:
         data = request.get_json(silent=True) or {}

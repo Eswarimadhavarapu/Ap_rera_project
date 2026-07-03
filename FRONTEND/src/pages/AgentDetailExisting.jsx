@@ -52,25 +52,54 @@ const AgentDetailExisting = () => {
       return;
     }
 
-    try {
-          const res = await apiPost("api/otp/verify", {
-      panNumber: pan,
-      otp,
-    });
-     // ✅ SAVE PAN FOR DASHBOARD
-    sessionStorage.setItem("agent_pan", pan);
+  //   try {
+  //         const res = await apiPost("api/otp/verify", {
+  //     panNumber: pan,
+  //     otp,
+  //   });
+  //    // ✅ SAVE PAN FOR DASHBOARD
+  //   sessionStorage.setItem("agent_pan", pan);
 
-    // ✅ redirect
+  //   // ✅ redirect
+  //   navigate("/agent-dashboard");
+  //   // ✅ SAVE PAN FOR DASHBOARD
+  //   sessionStorage.setItem("agent_pan", pan);
+  //   } catch (error) {
+  //     alert(
+  //       error?.error ||
+  //       error?.message ||
+  //       "Invalid or expired OTP"
+  //     );
+  //   }
+  // };
+  const handleVerifyOtp = async () => {
+  if (!otp) {
+    alert("Please enter OTP");
+    return;
+  }
+
+  try {
+    const res = await apiPost("api/agent/verify-otp", {
+    panNumber: pan,
+    otp,
+});
+console.log("LOGIN RESPONSE:", res);
+
+const token = res.token;
+
+localStorage.setItem("token", token);
+
+console.log("Saved token =", localStorage.getItem("token"));
+
+if (res.success) {
+    localStorage.setItem("token", res.token);
     navigate("/agent-dashboard");
-    // ✅ SAVE PAN FOR DASHBOARD
-    sessionStorage.setItem("agent_pan", pan);
-    } catch (error) {
-      alert(
-        error?.error ||
-        error?.message ||
-        "Invalid or expired OTP"
-      );
-    }
+}
+
+  } catch (error) {
+    alert(error?.message || "Invalid or expired OTP");
+  }
+}
   };
 
   return (

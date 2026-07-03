@@ -5,7 +5,9 @@ from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 from sqlalchemy import text
 from app.models.database import db
-
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from app.utils.role_required import roles_required
 from app.models.scrutiny_projectregistation_model import (
     create_verification_remark,
     create_scrutiny_file as create_scrutiny_file_record,
@@ -49,6 +51,21 @@ def _parse_bool(value):
 
 
 @scrutiny_bp.route("/scrutiny/project-registrations", methods=["GET", "OPTIONS"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def scrutiny_project_registrations():
     try:
         dept = request.args.get("dept")   # 👈 ADD THIS LINE
@@ -96,6 +113,21 @@ AP RERA Authority
 """
 
 @scrutiny_bp.route("/scrutiny/final-submit", methods=["POST"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def final_submit():
     try:
         data = request.get_json()
@@ -160,6 +192,21 @@ def final_submit():
 
 
 @scrutiny_bp.route("/scrutiny/chairman-decision", methods=["POST"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def chairman_decision():
     try:
         data = request.get_json() or {}
@@ -239,6 +286,21 @@ AP RERA Authority
         return jsonify({"error": "Internal server error"}), 500
 
 @scrutiny_bp.route("/scrutiny/final-status", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def get_final_status():
     try:
         application_no = request.args.get("application_no")
@@ -272,6 +334,21 @@ def get_final_status():
     "/scrutiny/project-registrations/details",
     methods=["GET", "OPTIONS"],
 )
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def scrutiny_project_registration_detail():
     try:
         application_no = request.args.get("application_no")
@@ -298,6 +375,21 @@ def scrutiny_project_registration_detail():
 
 
 @scrutiny_bp.route("/scrutiny/create-file", methods=["POST"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def create_scrutiny_file_api():
     try:
         payload = request.form if request.form else (request.get_json(silent=True) or {})
@@ -373,6 +465,21 @@ def create_scrutiny_file_api():
 
 
 @scrutiny_bp.route("/scrutiny/fpms-dashboard", methods=["GET", "OPTIONS"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def scrutiny_fpms_dashboard():
     try:
         data = get_scrutiny_fpms_dashboard_data()
@@ -386,6 +493,21 @@ def scrutiny_fpms_dashboard():
 
 
 @scrutiny_bp.route("/scrutiny/verification-remarks", methods=["POST"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def create_verification_remark_api():
     try:
         payload = request.form if request.form else (request.get_json(silent=True) or {})
@@ -472,6 +594,21 @@ def create_verification_remark_api():
 
 
 @scrutiny_bp.route("/scrutiny/verification-remarks", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def get_verification_remark_api():
     try:
         application_no = request.args.get("application_no") or request.args.get("applicationNo")

@@ -9,6 +9,9 @@ import json
 
 from app.models.agent_registration_model import AgentModel
 from app.utils.validation_schemas import validate_registration
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from app.utils.role_required import roles_required
+from flask_jwt_extended import create_access_token
 
 agent_bp = Blueprint("agent", __name__)
 UPLOAD_FOLDER = "uploads/agents"
@@ -200,6 +203,22 @@ def register_agent_step2():
 
 # ================= PREVIEW =================
 @agent_bp.route("/preview/<int:agent_id>", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT",
+    "AGENT"
+)
 def agent_preview(agent_id):
     result = AgentModel.get_agent_preview(agent_id)
 
@@ -262,25 +281,61 @@ def verify_otp():
     try:
         data = request.get_json()
 
-        agent_id = data.get("agent_id")
+        pan = data.get("panNumber")
         otp = data.get("otp")
 
-        if not agent_id or not otp:
+        if not pan or not otp:
             return jsonify({
                 "success": False,
-                "message": "agent_id and otp required"
+                "message": "PAN and OTP required"
             }), 400
 
-        result = AgentModel.verify_otp(agent_id, otp)
-        return jsonify(result), 200
+        result = AgentModel.verify_otp_by_pan(
+        pan.strip().upper(),
+        otp
+)
+
+        if not result["success"]:
+            return jsonify(result), 401
+
+        access_token = create_access_token(
+            identity=str(result["agent_id"]),
+            additional_claims={
+                "role": "AGENT"
+            }
+        )
+
+        return jsonify({
+            "success": True,
+            "message": "OTP verified successfully",
+            "token": access_token,
+            "pan": result["pan"],
+            "agent_name": result["agent_name"],
+            "application_no": result["application_no"]
+        }), 200
 
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
-    
 @agent_bp.route("/payment-details/<int:agent_id>", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT",
+    "AGENT"
+)
 def get_payment_details(agent_id):
     query = text("""
         SELECT p.application_no,p.transaction_id,p.amount,p.payment_for,p.status,p.created_at,
@@ -306,24 +361,28 @@ def create_payment(agent_id):
         return jsonify(result), 200
 
     return jsonify(result), 500
-@agent_bp.route("/partial-applications/<string:pan>", methods=["GET"])
-def partial_applications(pan):
+@agent_bp.route("/partial-applications", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT",
+    "AGENT"
+)
+def partial_applications():
     try:
-        if not pan:
-            return jsonify({
-                "success": False,
-                "message": "PAN is required"
-            }), 400
+        agent_id = int(get_jwt_identity())
 
-        pan = pan.strip().upper()
-        validation_error = validate_registration({
-            "pan": pan
-        })
-        
-        if validation_error:
-            return validation_error
-
-        data = AgentModel.get_partial_applications(pan)
+        data = AgentModel.get_partial_applications(agent_id)
 
         return jsonify({
             "success": True,
@@ -333,11 +392,26 @@ def partial_applications(pan):
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": "Internal server error"
+            "message": str(e)
         }), 500
-    
 
 @agent_bp.route("/resume-application/<application_no>", methods=["GET"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT",
+    "AGENT"
+)
 def resume_application(application_no):
     try:
         result = AgentModel.agent_details_application_no(application_no)

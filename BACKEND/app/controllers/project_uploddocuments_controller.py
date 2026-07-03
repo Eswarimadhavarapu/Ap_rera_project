@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from app.models.database import db
 from app.models.project_upload_documents import ProjectRegistrationDocument
 from app.models.project_registration_consultant import ProjectRegistrationConsultant
-
+from flask_jwt_extended import jwt_required
 logger = logging.getLogger(__name__)
 
 project_upload_documents_bp = Blueprint(
@@ -23,6 +23,7 @@ project_upload_documents_bp = Blueprint(
     "/project/documents-consultant/get",
     methods=["POST"]
 )
+@jwt_required()
 def get_documents_consultant():
     try:
         data = request.json
@@ -99,6 +100,7 @@ def get_documents_consultant():
     "/project/documents/upload",
     methods=["POST"]
 )
+@jwt_required()
 def upload_documents():
     try:
         application_number = request.form.get("application_number")
@@ -202,6 +204,7 @@ def upload_documents():
     "/project/consultant-declaration/save",
     methods=["POST"]
 )
+@jwt_required()
 def save_consultant_declaration():
     try:
         data = request.json
@@ -263,6 +266,7 @@ def save_consultant_declaration():
     "/project/consultant-declaration/update",
     methods=["PUT"]
 )
+@jwt_required()
 def update_consultant_declaration():
     try:
         data = request.json

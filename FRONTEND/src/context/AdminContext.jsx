@@ -4,17 +4,18 @@ export const AdminProvider = ({ children }) => {
   const [admin, setAdmin] = useState(() => {
     try {
       const stored = localStorage.getItem("admin");
-      const parsed = stored ? JSON.parse(stored) : null;
+      // const parsed = stored ? JSON.parse(stored) : null;
+      return stored ? JSON.parse(stored) : null;
 
       // ✅ LOG 1 — fires on every page load / refresh
-      if (parsed) {
-        console.log("%c📦 AdminContext — Loaded from localStorage", "color: #6b804b; font-weight: bold;");
-        console.table(parsed);
-      } else {
-        console.log("%c📦 AdminContext — No admin found in localStorage", "color: gray;");
-      }
+      // if (parsed) {
+      //   console.log("%c📦 AdminContext — Loaded from localStorage", "color: #6b804b; font-weight: bold;");
+      //   console.table(parsed);
+      // } else {
+      //   console.log("%c📦 AdminContext — No admin found in localStorage", "color: gray;");
+      // }
 
-      return parsed;
+      // return parsed;
     } catch {
       console.error("❌ AdminContext — Failed to parse localStorage data");
       return null;

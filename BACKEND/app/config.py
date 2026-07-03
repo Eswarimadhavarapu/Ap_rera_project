@@ -1,5 +1,8 @@
 import os
 from dotenv import load_dotenv
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
+from flask_cors import CORS
 
 # Load environment variables from .env
 load_dotenv()
@@ -32,14 +35,34 @@ class Config:
 
     DEBUG = str_to_bool(os.getenv("FLASK_DEBUG"), False)
     PORT = int(os.getenv("PORT", 8080))
+    
+    # ========================
+# JWT Configuration
+# ========================
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+
+# If using cookies (recommended)
+    JWT_TOKEN_LOCATION = ["cookies"]
+
+    JWT_COOKIE_SECURE = False  # True in production HTTPS
+
+    JWT_COOKIE_HTTPONLY = True
+
+    JWT_COOKIE_SAMESITE = "Strict"
+
+    JWT_COOKIE_CSRF_PROTECT = False  # Enable later if needed
+
+    # ========================
     # ========================
     # CORS
     # ========================
     # Comma-separated string (safe for flask-cors)
     ALLOWED_ORIGINS = os.getenv(
         "ALLOWED_ORIGINS",
-        "http://localhost:5173,"
-        "http://127.0.0.1:5173,"
+        "http://localhost:5174,"
+        "http://127.0.0.1:5174,"
         "https://n7vxv3pg-8081.inc1.devtunnels.ms"
     )
     # https://0jv8810n-5173.inc1.devtunnels.ms/

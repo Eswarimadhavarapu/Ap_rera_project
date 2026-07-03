@@ -6,7 +6,7 @@ import secrets
 import string
 import os
 from datetime import datetime, timedelta
-from flask import Blueprint, current_app, request, jsonify
+from flask import Blueprint, current_app, request,jsonify
 from app.models.database import db
 from app.utils.mail_utils import send_otp_email
 from app.models.admin_model import Admin
@@ -28,9 +28,14 @@ from app.utils.mail_service import (
     send_admin_credentials_email
 )
 from flask_jwt_extended import (
-    create_access_token
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
 )
-from flask_jwt_extended import jwt_required
+
+
+
+
 admin_bp = Blueprint("admin_bp", __name__)
 
 SECRET_KEY = "aprera_secret_key"
@@ -211,8 +216,10 @@ def create_admin():
         
 @admin_bp.route("/admin/login", methods=["POST"])
 @limiter.limit(
-    "3 per 15 minutes",
-    key_func=lambda: request.get_json().get("username")
+    "10 per hour",
+    key_func=lambda: (
+        request.get_json(silent=True) or {}
+    ).get("username", request.remote_addr)
 )
 def admin_login():
     
@@ -345,10 +352,17 @@ def verify_otp():
         token = create_access_token(
     identity=str(admin.id)
 )
-
+# Create JWT Token
+        access_token = create_access_token(
+    identity=str(result["id"]),
+    additional_claims={
+        "username": result["username"],
+        "role": result["role"]
+    }
+)
         return jsonify({
     "message": "Login successful",
-    "access_token": token,
+    "access_token": access_token,
     "admin": admin_response(admin)
 }), 200
 

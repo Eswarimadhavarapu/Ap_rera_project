@@ -41,10 +41,18 @@ const DepartmentLogin = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    // try {
+    //   const data = await apiPost("/api/admin/verify-otp", { username, otp });
+    //   saveAdmin(data.admin);
     try {
       const data = await apiPost("/api/admin/verify-otp", { username, otp });
-      saveAdmin(data.admin);
+      console.log("VERIFY OTP RESPONSE =", data);
+      saveAdmin(
+  data.admin,
+  data.access_token
+);
 
+      localStorage.setItem("admin_login_event", Date.now());
       const dept = normalizeAdminDepartment(data.admin);
       const nextRoute = getDepartmentDashboardRoute(dept, data.admin);
 

@@ -121,7 +121,13 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
           >
             📑 Exemption
           </button>
-         
+         <button
+            onClick={() =>
+              navigate("/scrutiny/exemption")
+            }
+          >
+            📑 Complaints
+          </button>
 
         </div>
       )}

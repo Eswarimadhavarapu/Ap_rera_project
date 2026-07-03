@@ -29,6 +29,7 @@ export async function apiFetch(path, options = {}) {
   const isFormData = options.body instanceof FormData;
 
    const token = localStorage.getItem("token");
+  console.log("TOKEN SENT =", token);
 
   // 👇 REPLACE FETCH BLOCK
   const res = await fetch(url, {

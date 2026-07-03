@@ -9,6 +9,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from app.utils.validation_schemas import validate_registration
 quarterly_bp = Blueprint("quarterly_bp", __name__)
+from flask_jwt_extended import jwt_required
 
 UPLOAD_FOLDER = "uploads/quarterly"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -34,6 +35,7 @@ def generate_quarter_id(registration_date):
 
 
 @quarterly_bp.route("/quarterly-update", methods=["POST"])
+@jwt_required()
 def create_quarterly():
 
     pan_number = request.form.get("panNumber")
@@ -111,6 +113,7 @@ def create_quarterly():
 # GET CURRENT QUARTER
 # =========================
 @quarterly_bp.route("/current-quarter", methods=["GET"])
+@jwt_required()
 def get_current_quarter():
 
     pan_number = request.args.get("panNumber")

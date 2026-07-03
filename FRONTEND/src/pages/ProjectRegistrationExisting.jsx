@@ -62,7 +62,7 @@ const ProjectRegistrationExisting = () => {
         pan_number: pan,
         otp: otp,
       });
-
+localStorage.setItem("token", data.token);
       sessionStorage.setItem("loginResponse", JSON.stringify(data));
 
       navigate("/prexistingtable", {

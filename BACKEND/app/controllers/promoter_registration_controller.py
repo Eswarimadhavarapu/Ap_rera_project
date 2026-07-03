@@ -9,7 +9,8 @@ from app.utils.validation_schemas import validate_registration
 promoter_registration_bp = Blueprint(
     "promoter_registration_bp", __name__
 )
-
+from flask_jwt_extended import jwt_required
+from app.utils.role_required import roles_required
 # ============================
 # LOGGER SETUP (SAFE VERSION)
 # ============================
@@ -141,6 +142,21 @@ def promoter_registration():
     "/promoter/registration/<int:promoter_id>",
     methods=["GET"]
 )
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
 def get_promoter(promoter_id):
     logger.info(f"Incoming GET request | promoter_id={promoter_id}")
 
@@ -164,6 +180,21 @@ def get_promoter(promoter_id):
 
 @promoter_registration_bp.route(
     "/check-promoter/<promoter_register_id>", methods=["GET"]
+)
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
 )
 def check_promoter(promoter_register_id):
     try:

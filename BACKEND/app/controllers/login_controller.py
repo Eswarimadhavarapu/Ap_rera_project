@@ -16,6 +16,7 @@ from app.utils.mail_utils import send_otp_email
 from app.utils.otp_utils import generate_otp, hash_otp
 
 
+
 # =====================================================
 # LOGGER SETUP (LOGIN CONTROLLER)
 # =====================================================
@@ -232,6 +233,15 @@ def verify_login_otp():
             }), 401
 
         logger.info(f"OTP VERIFIED SUCCESSFULLY for PAN {pan}")
+        projects = get_projects_by_pan(pan)
+
+        access_token = create_access_token(
+            identity=str(pan),
+    additional_claims={
+        "pan_number": pan,
+        "role": "promoter"
+    }
+)
 
         # Optional: Fetch projects after login
         db.session.execute(
@@ -254,6 +264,7 @@ def verify_login_otp():
         return jsonify({
             "message": "OTP verified successfully",
             "pan_number": pan,
+            "token": access_token,
             "projects": projects
         }),200
         response.set_cookie(

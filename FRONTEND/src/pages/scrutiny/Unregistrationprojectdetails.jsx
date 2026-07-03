@@ -49,10 +49,25 @@ const S1Modal = ({ data, onClose, onSuccess, user }) => {
       fd.append("s1_remarks", remarks.trim());
       fd.append("s1_authority_id", user?.id);
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
-        method: "PATCH",
-        body: fd,
-      });
+      // const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+      //   method: "PATCH",
+      //   body: fd,
+      // });
+      // const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+      const token = localStorage.getItem("token");
+      //   method: "PATCH",
+      //   body: fd,
+      // });
+      
+      const res = await fetch(
+  `${BASE_URL}/api/project-unregistered/${data.id}`,
+  {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: fd,
+  });
       
       if (!res.ok) throw new Error("Server error");
       onSuccess("Authority informed successfully.");

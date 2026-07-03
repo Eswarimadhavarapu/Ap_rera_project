@@ -369,7 +369,8 @@ class AgentModel:
             return {
                 "success": True,
                 "application_no": row.application_no,
-                "agent_name": row.agent_name
+                "agent_name": row.agent_name,
+                "pan": row.pan
             }
 
         except Exception as e:
@@ -519,7 +520,7 @@ AP RERA
     # PARTIAL APPLICATIONS
     # ===============================
     @staticmethod
-    def get_partial_applications(pan):
+    def get_partial_applications(agent_id):
         query = text("""
             SELECT
                 id AS agent_id,
@@ -529,10 +530,10 @@ AP RERA
                 'Individual' AS name_type,
                 'Yet To Pay Reg Fee' AS status
             FROM agentregistration_details_t
-            WHERE UPPER(pan) = :pan
+            WHERE id = :agent_id
         """)
 
-        rows = db.session.execute(query, {"pan": pan}).fetchall()
+        rows = db.session.execute(query, {"agent_id": agent_id}).fetchall()
 
         return [dict(r._mapping) for r in rows]
     
@@ -714,4 +715,46 @@ AP RERA
             return {
                 "success": False,
                 "message": "Internal server error"
+            }
+    @staticmethod
+    def verify_otp_by_pan(pan, otp):
+        try:
+            query = text("""
+                SELECT
+                    a.id,
+                    a.pan,
+                    a.agent_name,
+                    a.application_no
+                FROM agentregistration_details_t a
+                JOIN agent_otp_t o
+                    ON a.id = o.agent_id
+                WHERE UPPER(a.pan)=:pan
+                AND o.otp=:otp
+                AND o.created_at >= NOW() - INTERVAL '5 minutes'
+                LIMIT 1
+            """)
+
+            row = db.session.execute(query,{
+                "pan":pan,
+                "otp":otp
+            }).fetchone()
+
+            if not row:
+                return {
+                    "success":False,
+                    "message":"Invalid or expired OTP"
+                }
+
+            return {
+                "success":True,
+                "agent_id":row.id,
+                "pan":row.pan,
+                "agent_name":row.agent_name,
+                "application_no":row.application_no
+            }
+
+        except Exception as e:
+            return {
+                "success":False,
+                "message":str(e)
             }

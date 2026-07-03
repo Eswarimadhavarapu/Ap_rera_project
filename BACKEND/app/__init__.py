@@ -375,5 +375,12 @@ def create_app():
     app.register_blueprint(project_rating_bp, url_prefix="/api")
     app.register_blueprint(project_gallery_bp, url_prefix="/api")
     app.register_blueprint(project_extention_bp, url_prefix="/api")
+    
+    @app.route("/auth/me", methods=["GET"])
+    @jwt_required()
+    def auth_me():
+        return jsonify({
+            "authenticated": True
+    }), 200
 
     return app

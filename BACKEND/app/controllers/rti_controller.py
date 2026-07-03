@@ -12,6 +12,7 @@ from datetime import datetime
 from app import mail
 from flask_mail import Message
 from app import limiter
+from flask_jwt_extended import jwt_required
 import os
 import uuid
 import random
@@ -275,6 +276,7 @@ def create_rti():
 # =========================================================
 
 @rti_bp.route("/rti/assign", methods=["POST"])
+@jwt_required()
 def assign_rti():
 
     try:
@@ -349,6 +351,7 @@ def assign_rti():
 # GET COMPLETE RTI DETAILS WITH ALL DEPARTMENTS
 # =========================================================
 @rti_bp.route("/rti/<int:id>", methods=["GET"])
+@jwt_required()
 def get_rti(id):
 
     try:
@@ -553,6 +556,7 @@ def get_rti(id):
 # =========================================================
 
 @rti_bp.route("/rti/list", methods=["GET"])
+@jwt_required()
 def list_rti():
 
     try:
@@ -760,6 +764,7 @@ def verify_email_otp():
             "message": str(e)
         }), 500
 @rti_bp.route("/rti/updates/<int:id>", methods=["PATCH"])
+@jwt_required()
 def update_rti(id):
 
     try:
@@ -975,6 +980,7 @@ def update_rti(id):
             "message": str(e)
         }), 500
 @rti_bp.route("/rti/send-return_application/<int:id>", methods=["PATCH"])
+@jwt_required()
 def send_rti_reply(id):
 
     try:
@@ -1072,6 +1078,7 @@ RTI Department
         }), 500
 
 @rti_bp.route("/rti/assignment/create", methods=["POST"])
+@jwt_required()
 def create_assignments():
 
     try:
@@ -1175,6 +1182,7 @@ def create_assignments():
         }), 500
         
 @rti_bp.route("/rti/assignment/update/<int:id>", methods=["PATCH"])
+@jwt_required()
 def update_assignment(id):
 
     try:
@@ -1343,6 +1351,7 @@ def update_assignment(id):
     "/rti/assignments/<int:rti_application_id>",
     methods=["GET"]
 )
+@jwt_required()
 def get_assignments_by_rti_id(rti_application_id):
 
     try:
@@ -1423,6 +1432,7 @@ def get_assignments_by_rti_id(rti_application_id):
     "/rti/assignments/department/<string:department>",
     methods=["GET"]
 )
+@jwt_required()
 def get_assignments_by_department(department):
 
     try:
