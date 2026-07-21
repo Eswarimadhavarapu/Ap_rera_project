@@ -149,14 +149,15 @@ import PromoterOtpLogin from "./pages/PromoterOtpLogin.jsx";
 import Changerequest from "./pages/Changerequest.jsx";
 import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
 import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail.jsx";
-import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
+// import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
 import ComplaintStatusForm from "./pages/ComplaintStatusForm.jsx";
 import ComplaintDetails from "./pages/ComplaintDetails.jsx";
 // import AdminComplaintDetails from "./pages/admin/Admincomplaintsdetails.jsx";
-import AdminComplaintsDetailss from "./pages/admin/Admincomplaintsdetails.jsx";
+// import AdminComplaintsDetailss from "./pages/admin/Admincomplaintsdetails.jsx";
 import AdminProjectDetails from "./pages/admin/AdminProjectDetails.jsx";
 import ProtectedRoute from "./components/admin/ProtectedRoute.jsx";
 import AdminAgentChangeRequest from "./pages/admin/admin_agentchangerequest";
+import ComplaintDetailsView from "./pages/LegalSideComplaint/ComplaintDetailsView.jsx";
 
 
 
@@ -459,7 +460,7 @@ function App() {
               }
             />
             // Admin Complaint Detail
-            <Route
+            {/* <Route
               path="/admin/complaint/:id"
               element={
                 <ProtectedRoute>
@@ -467,8 +468,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} />
+            <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} /> */}
             <Route path="/complaintstatus" element={<ComplaintStatusForm />} />
+            <Route
+              path="/scrutiny/complaint/:id"
+              element={
+                <ScrutinyLayout>
+                  <ComplaintDetailsView />
+                </ScrutinyLayout>
+              }
+            />
             // Admin Renewal Dashboard
             <Route
               path="/admin/renewal"
@@ -573,6 +582,31 @@ function App() {
                 </ScrutinyLayout>
               }
             />
+          <Route
+    path="/scrutiny/UnregisterList"
+    element={
+        <ScrutinyLayout>
+            <UnregisterList />
+        </ScrutinyLayout>
+    }
+/>
+            <Route path="/scrutiny/project-unregistered/:id" element={<ScrutinyLayout><UnregistrationProjectDetails /></ScrutinyLayout>} />
+           <Route
+    path="/scrutiny/RTI_list"
+    element={
+        <ScrutinyLayout>
+            <RTI_List />
+        </ScrutinyLayout>
+    }
+/>
+           <Route
+    path="/scrutiny/RTI_Details_Page"
+    element={
+        <ScrutinyLayout>
+            <RTI_Details_Page />
+        </ScrutinyLayout>
+    }
+/>
             <Route
               path="/scrutiny/project-extension"
               element={
@@ -602,8 +636,7 @@ function App() {
               <Route path="view-files" element={<ScrutinyViewFiles />} />
             </Route>
             <Route path="/department" element={<DepartmentLogin />} />
-            <Route path="/scrutiny/UnregisterList" element={<UnregisterList />} />
-            <Route path="/scrutiny/project-unregistered/:id" element={<UnregistrationProjectDetails />} />
+           
              <Route path="/extensionprocess" element={<ExtensionProcess />} />
    <Route path="/scrutiny/exemption" element={<AdminExemptionPage />} />
    <Route path="/adminexemption" element={<AdminExemptionPage/>} />
@@ -614,7 +647,9 @@ function App() {
  <Route path="/apreatapplication" element={<ApreatApplication />} />
 
 <Route path="/legal/legaldashboard" element={<LegalDashboard />} />
-<Route path="/legalcomplaintlist" element={<ComplaintList />} />
+<Route path="/scrutiny/legalcomplaintlist" element={<ScrutinyLayout>
+      <ComplaintList />
+    </ScrutinyLayout>} />
 
  
  
@@ -697,12 +732,7 @@ function App() {
   path="/hearings"
   element={<HearingHistory />}
 />
-<Route path="/RTI_list" element={<RTI_List />}
-            />
-            <Route
-              path="/rti_Details_page"
-              element={<RTI_Details_Page />}
-            />
+
             <Route path="/Rtilogin" element={<RtiUserLogin />} />
            <Route path="/RtireqForm" element={<RtiRequestForm/>}/>
             <Route path="/RtiPaymentPage" element={<RtiPaymentPage/>}/>

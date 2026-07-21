@@ -203,22 +203,6 @@ def register_agent_step2():
 
 # ================= PREVIEW =================
 @agent_bp.route("/preview/<int:agent_id>", methods=["GET"])
-@jwt_required()
-@roles_required(
-    "SCRUTINY",
-    "LEGAL_L1",
-    "LEGAL_L2",
-    "PLANNING",
-    "AUDIT",
-    "ENGINEER",
-    "AD",
-    "DIRECTOR",
-    "CHAIRMAN",
-    "ADMIN",
-    "SUPER_ADMIN",
-    "SENIARADIT",
-    "AGENT"
-)
 def agent_preview(agent_id):
     result = AgentModel.get_agent_preview(agent_id)
 
@@ -309,6 +293,7 @@ def verify_otp():
             "success": True,
             "message": "OTP verified successfully",
             "token": access_token,
+            "agent_id": result["agent_id"],   # ✅ Add this
             "pan": result["pan"],
             "agent_name": result["agent_name"],
             "application_no": result["application_no"]
@@ -320,22 +305,6 @@ def verify_otp():
             "message": str(e)
         }), 500
 @agent_bp.route("/payment-details/<int:agent_id>", methods=["GET"])
-@jwt_required()
-@roles_required(
-    "SCRUTINY",
-    "LEGAL_L1",
-    "LEGAL_L2",
-    "PLANNING",
-    "AUDIT",
-    "ENGINEER",
-    "AD",
-    "DIRECTOR",
-    "CHAIRMAN",
-    "ADMIN",
-    "SUPER_ADMIN",
-    "SENIARADIT",
-    "AGENT"
-)
 def get_payment_details(agent_id):
     query = text("""
         SELECT p.application_no,p.transaction_id,p.amount,p.payment_for,p.status,p.created_at,

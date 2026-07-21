@@ -85,8 +85,61 @@ const handleDeleteDocument = (id) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-    
+     // ==========================
+  // FORM VALIDATION  <-- PASTE HERE
+  // ==========================
+const validateForm = () => {
 
+  if (!formData.name.trim()) {
+    alert("Please enter Name");
+    return false;
+  }
+
+  if (!formData.gender) {
+    alert("Please select Gender");
+    return false;
+  }
+
+  if (!formData.address.trim()) {
+    alert("Please enter Address");
+    return false;
+  }
+
+  if (formData.pincode.length !== 6) {
+    alert("Please enter valid Pincode");
+    return false;
+  }
+
+  if (!formData.location) {
+    alert("Please select Location");
+    return false;
+  }
+
+  if (!formData.education) {
+    alert("Please select Education");
+    return false;
+  }
+
+  if (!formData.infoMode) {
+    alert("Please select Mode of Information");
+    return false;
+  }
+
+  if (!formData.bpl) {
+    alert("Please select Below Poverty Line");
+    return false;
+  }
+
+  if (!formData.requestDetails.trim()) {
+    alert("Please enter RTI Request Details");
+    return false;
+  }
+
+  return true;
+};
+  // ==========================
+  // HANDLE SUBMIT
+  // ==========================
  const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -626,15 +679,21 @@ apiFormData.append("address_line2", formData.address2);
   <button
     type="button"
     className="rtireq-submit-btn"
-    onClick={() => {
-      navigate("/RtiPaymentPage", {
-        state: {
-          formData,
-          userData,
-          documents,
-        },
-      });
-    }}
+  onClick={() => {
+
+  if (!validateForm()) {
+    return;
+  }
+
+  navigate("/RtiPaymentPage", {
+    state: {
+      formData,
+      userData,
+      documents,
+    },
+  });
+
+}}
   >
     Proceed to Payment
   </button>

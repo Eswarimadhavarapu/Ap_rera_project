@@ -30,7 +30,8 @@ const AgentDetailExisting = () => {
 
       await apiPost("api/otp/send-email", {
         panNumber: pan,
-      });
+      }, true
+    );
 
       setOtpSent(true);
       alert("OTP sent to registered email");
@@ -45,33 +46,7 @@ const AgentDetailExisting = () => {
     }
   };
 
-  /* VERIFY OTP */
-  const handleVerifyOtp = async () => {
-    if (!otp) {
-      alert("Please enter OTP");
-      return;
-    }
-
-  //   try {
-  //         const res = await apiPost("api/otp/verify", {
-  //     panNumber: pan,
-  //     otp,
-  //   });
-  //    // ✅ SAVE PAN FOR DASHBOARD
-  //   sessionStorage.setItem("agent_pan", pan);
-
-  //   // ✅ redirect
-  //   navigate("/agent-dashboard");
-  //   // ✅ SAVE PAN FOR DASHBOARD
-  //   sessionStorage.setItem("agent_pan", pan);
-  //   } catch (error) {
-  //     alert(
-  //       error?.error ||
-  //       error?.message ||
-  //       "Invalid or expired OTP"
-  //     );
-  //   }
-  // };
+  
   const handleVerifyOtp = async () => {
   if (!otp) {
     alert("Please enter OTP");
@@ -82,24 +57,24 @@ const AgentDetailExisting = () => {
     const res = await apiPost("api/agent/verify-otp", {
     panNumber: pan,
     otp,
-});
+},
+true
+);
 console.log("LOGIN RESPONSE:", res);
 
-const token = res.token;
-
-localStorage.setItem("token", token);
-
-console.log("Saved token =", localStorage.getItem("token"));
 
 if (res.success) {
     localStorage.setItem("token", res.token);
+    localStorage.setItem("agent_pan", pan); // Store agent_pan in localStorage
     navigate("/agent-dashboard");
+}else {
+    alert(res.message || "otp verification failed");
 }
 
   } catch (error) {
     alert(error?.message || "Invalid or expired OTP");
   }
-}
+
   };
 
   return (

@@ -121,19 +121,31 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
           >
             📑 Exemption
           </button>
-         <button
-            onClick={() =>
-              navigate("/scrutiny/exemption")
-            }
-          >
-            📑 Complaints
-          </button>
 
         </div>
       )}
-        <button onClick={() => navigate("/scrutiny/project-extension")}>
-        Project Extention
-      </button>
+        {dept === "planning" && (
+  <button
+    onClick={() =>
+      navigate("/scrutiny/project-extension")
+    }
+  >
+    Project Extension
+  </button>
+)}
+
+{/* COMPLAINTS - ONLY LEGAL */}
+{dept === "l1" && (
+  <button
+    onClick={() =>
+      navigate("/scrutiny/legalcomplaintlist")
+    }
+  >
+    Complaints
+  </button>
+)}
+
+{dept === "audit" && ( <button onClick={() => navigate("/scrutiny/quarterly") } > Quarterly Update </button> )}
       {/* UNREGISTERED PROJECTS */}
       <button
         onClick={() =>
@@ -147,6 +159,8 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
       <button onClick={() => navigate("/scrutiny/RTI_list")}>
         RTI
       </button>
+       
+{canManageProjects && (
        <button
             onClick={() =>
               navigate("/add-user")
@@ -154,7 +168,7 @@ const ScrutinySidebar = ({ sidebarOpen }) => {
           >
             Add New User
           </button>
-        
+          )}
 
       {/* DIRECTOR / CHAIRMAN ONLY */}
       {canManageProjects && (

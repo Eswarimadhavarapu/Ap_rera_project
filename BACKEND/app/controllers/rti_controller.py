@@ -5,14 +5,12 @@ from flask import Blueprint, request, jsonify, send_from_directory
 from app.models.database import db
 
 from app.models.rti_application import RTIApplication
-from flask_jwt_extended import jwt_required
+
 from app.models.rti_application_assignments import RTIAssignment
-from app.utils.validation_schemas import validate_registration
+
 from datetime import datetime
 from app import mail
 from flask_mail import Message
-from app import limiter
-from flask_jwt_extended import jwt_required
 import os
 import uuid
 import random
@@ -37,14 +35,7 @@ def create_rti():
     try:
 
         data = request.form
-        validation_error = validate_registration({
-            "mobile": data.get("phone_number"),
-            "email": data.get("email_id")
-        })
 
-        if validation_error:
-            return validation_error
-        
         # =====================================================
         # SUPPORTING DOCUMENTS
         # =====================================================
@@ -268,7 +259,7 @@ def create_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -276,7 +267,6 @@ def create_rti():
 # =========================================================
 
 @rti_bp.route("/rti/assign", methods=["POST"])
-@jwt_required()
 def assign_rti():
 
     try:
@@ -344,14 +334,13 @@ def assign_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
 # GET COMPLETE RTI DETAILS WITH ALL DEPARTMENTS
 # =========================================================
 @rti_bp.route("/rti/<int:id>", methods=["GET"])
-@jwt_required()
 def get_rti(id):
 
     try:
@@ -548,7 +537,7 @@ def get_rti(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -556,7 +545,6 @@ def get_rti(id):
 # =========================================================
 
 @rti_bp.route("/rti/list", methods=["GET"])
-@jwt_required()
 def list_rti():
 
     try:
@@ -619,44 +607,34 @@ def list_rti():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 
+# =========================================================
+# DOCUMENT VIEW
+# =========================================================
+
 @rti_bp.route("/rti/document/<path:filename>", methods=["GET"])
-@jwt_required()
 def view_document(filename):
 
-    full_path = os.path.join(UPLOAD_DIR, filename)
-
-    if not os.path.exists(full_path):
-        return jsonify({
-            "status": "error",
-            "message": "File not found"
-        }), 404
-
     return send_from_directory(
+
         UPLOAD_DIR,
+
         filename,
+
         as_attachment=False
     )
-    
-    
+
+
 @rti_bp.route("/rti/send-email-otp", methods=["POST"])
-@limiter.limit(
-    "3 per 15 minutes",
-    key_func=lambda: request.get_json().get("email")
-)
 def send_email_otp():
+
     try:
 
         data = request.get_json()
-        validation_error = validate_registration({
-            "email": data.get("email")
-        })
 
-        if validation_error:
-            return validation_error
         email = data.get("email")
 
         if not email:
@@ -702,12 +680,17 @@ RTI Department
         })
 
     except Exception as e:
+        import traceback
+
+        traceback.print_exc() 
 
         return jsonify({
 
-            "status": "error",
-
-            "message": str(e)
+             "status": "error",
+             "message": str(e),
+             "error_type": type(e).__name__
+         
+           
         }), 500
 
 
@@ -761,10 +744,9 @@ def verify_email_otp():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 @rti_bp.route("/rti/updates/<int:id>", methods=["PATCH"])
-@jwt_required()
 def update_rti(id):
 
     try:
@@ -977,10 +959,9 @@ def update_rti(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 @rti_bp.route("/rti/send-return_application/<int:id>", methods=["PATCH"])
-@jwt_required()
 def send_rti_reply(id):
 
     try:
@@ -995,14 +976,7 @@ def send_rti_reply(id):
             }), 404
 
         data = request.form
-        
-        validation_error = validate_registration({
-            "email": data.get("email")
-        })
 
-        if validation_error:
-            return validation_error
-        
         email = data.get("email")
 
         rti_replaid_person_id = data.get(
@@ -1074,11 +1048,10 @@ RTI Department
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 @rti_bp.route("/rti/assignment/create", methods=["POST"])
-@jwt_required()
 def create_assignments():
 
     try:
@@ -1178,11 +1151,10 @@ def create_assignments():
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
         
 @rti_bp.route("/rti/assignment/update/<int:id>", methods=["PATCH"])
-@jwt_required()
 def update_assignment(id):
 
     try:
@@ -1340,7 +1312,7 @@ def update_assignment(id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -1351,7 +1323,6 @@ def update_assignment(id):
     "/rti/assignments/<int:rti_application_id>",
     methods=["GET"]
 )
-@jwt_required()
 def get_assignments_by_rti_id(rti_application_id):
 
     try:
@@ -1421,7 +1392,7 @@ def get_assignments_by_rti_id(rti_application_id):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500
 
 # =========================================================
@@ -1432,7 +1403,6 @@ def get_assignments_by_rti_id(rti_application_id):
     "/rti/assignments/department/<string:department>",
     methods=["GET"]
 )
-@jwt_required()
 def get_assignments_by_department(department):
 
     try:
@@ -1504,5 +1474,5 @@ def get_assignments_by_department(department):
 
             "status": "error",
 
-            "message": str(e)
+            "message": "Internal server error"
         }), 500

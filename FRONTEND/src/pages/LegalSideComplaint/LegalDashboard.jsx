@@ -20,7 +20,7 @@ import LegalHeader from "./LegalHeader";
 import "../../styles/legal.css";
 import ComplaintList from "./ComplaintList";
 import HearingHistory from "./HearingHistory";
-import AdminComplaintsDetailss from "../admin/Admincomplaintsdetails";
+// import AdminComplaintsDetailss from "../admin/Admincomplaintsdetails";
 
 const LegalDashboard = () => {
 
@@ -237,14 +237,14 @@ const LegalDashboard = () => {
 {activeTab ===
   "complaint-details" && (
 
-  <AdminComplaintsDetailss
+  
+ <ComplaintDetailsView
     complaint={
       selectedComplaint
     }
   />
 
 )}
-
         </div>
 
       </div>

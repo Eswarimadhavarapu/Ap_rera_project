@@ -8,20 +8,20 @@ import memberImage from "../assets/images/member.jpeg";
 import registrarImage from "../assets/images/registrar.jpg";
 
 const openCauseListPdf = () => {
-  window.open("/pdfs/APRERAT_CAUSE_LIST.pdf", "_blank");
+  window.open("/assets/pdfs/APRERAT_CAUSE_LIST.pdf", "_blank");
 };
 const openProceedingListPdf = () => {
-  window.open("/pdfs/PROCEEDING_LIST.pdf", "_blank");
+  window.open("/assets/pdfs/PROCEEDING_LIST.pdf", "_blank");
 };
 const openAppearancePdf = () => {
-  window.open("/pdfs/APPEARANCE.pdf", "_blank");
+  window.open("/assets/pdfs/APPEARANCE.pdf", "_blank");
 };
 const openSpecialHospitalPdf = () => {
-  window.open("/pdfs/SPECIAL_HOSPITAL.pdf", "_blank");
+  window.open("/assets/pdfs/APRERAT_SpecialHoliday.pdf", "_blank");
 };
 
 const openRegulationsPdf = () => {
-  window.open("/pdfs/REGULATIONS_2023.pdf", "_blank");
+  window.open("/assets/pdfs/REGULATIONS_2023.pdf", "_blank");
 };
 import { FaDownload } from "react-icons/fa";
 
@@ -567,65 +567,49 @@ else if (item === "Regulations 2023") {
         
 
       )}
-      <div className="apreat_status-complaint-wrapper">
+      {selectedPage === "" && (
+  <div className="apreat_status-complaint-wrapper">
 
-  <div className="apreat_status-complaint-section">
+    <div className="apreat_status-complaint-section">
 
-    <h1>Status Of Complaint</h1>
+      <h1>Status Of Complaint</h1>
 
-    <table className="apreat_status-complaint-table">
-
-      <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Name Of Complaint</th>
-          <th>Name Of Respondent</th>
-          <th>Complaint Description</th>
-          <th>Date Of Complaint</th>
-          <th>1st Hearing Date</th>
-          <th>2nd Hearing Date</th>
-          <th>Status</th>
-          <th>Remaining Days</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        {complaintStatusData.map((item) => (
-
-          <tr key={item.id}>
-
-            <td>{item.id}</td>
-
-            <td>{item.complaintName}</td>
-
-            <td>{item.respondent}</td>
-
-            <td>{item.description}</td>
-
-            <td>{item.complaintDate}</td>
-
-            <td>{item.firstHearing}</td>
-
-            <td>{item.secondHearing}</td>
-
-            <td>{item.status}</td>
-
-            <td>
-              {getRemainingDays(item.complaintDate)} Days
-            </td>
-
+      <table className="apreat_status-complaint-table">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Name Of Complaint</th>
+            <th>Name Of Respondent</th>
+            <th>Complaint Description</th>
+            <th>Date Of Complaint</th>
+            <th>1st Hearing Date</th>
+            <th>2nd Hearing Date</th>
+            <th>Status</th>
+            <th>Remaining Days</th>
           </tr>
+        </thead>
 
-        ))}
+        <tbody>
+          {complaintStatusData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.complaintName}</td>
+              <td>{item.respondent}</td>
+              <td>{item.description}</td>
+              <td>{item.complaintDate}</td>
+              <td>{item.firstHearing}</td>
+              <td>{item.secondHearing}</td>
+              <td>{item.status}</td>
+              <td>{getRemainingDays(item.complaintDate)} Days</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      </tbody>
-
-    </table>
+    </div>
 
   </div>
-
-</div>
+)}
 
     </>
   );

@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from app.models.project_registration_model import (
     insert_project_registration,
     get_project_registration,
-    get_project_basic_details_by_pan
+    get_project_basic_details_by_pan    
 )
 # from app.models.extension_project_application_details_models import (
 #     get_project_basic_details_by_pan,
@@ -310,15 +310,11 @@ def update_project_registration_new():
             "error": "Internal server error"
         }), 500
 
-# ------------------------------vamsi anna apis --------------------------------
-
-    
 
     
 @project_registration_bp.route("/project/basic-details-by-pan", methods=["GET"])
 @jwt_required()
 def get_project_basic_details_by_pan_controller():
-    from app.models.extension_project_application_details_models import get_project_basic_details_by_pan
     pan_number = request.args.get("pan")
 
     if not pan_number:

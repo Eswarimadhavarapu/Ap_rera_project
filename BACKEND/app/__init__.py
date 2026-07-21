@@ -83,7 +83,7 @@ def create_app():
         SESSION_COOKIE_SAMESITE="Strict",
     )
 
-    # mail.init_app(app)
+     # mail.init_app(app)
 
     csp = {
         "default-src": "'self'",
@@ -138,7 +138,7 @@ def create_app():
     app.config["MAIL_PASSWORD"] = os.getenv("SMTP_PASSWORD")
     app.config["MAIL_DEFAULT_SENDER"] = os.getenv("FROM_EMAIL")
 
-
+    mail.init_app(app)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -215,7 +215,7 @@ def create_app():
     # ---------------------------------------------------------
 
     @app.route("/uploads/<path:filename>")
-    @jwt_required()
+    # @jwt_required()
     def serve_uploaded_file(filename):
 
         print("🔥 FILE ROUTE HIT")

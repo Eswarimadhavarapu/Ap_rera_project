@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/RTI/RtiUserLogin.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { sendRTIOTP, verifyRTIOTP } from "../../api/api"; // 👈 adjust this path to wherever your api.js actually lives
 
 const RtiUserLogin = () => {
 
   const navigate = useNavigate();
-
-  
 
   // EMAIL & MOBILE STATES
   const [email, setEmail] = useState("");
@@ -142,16 +140,10 @@ const RtiUserLogin = () => {
 
       setLoading(true);
 
-      // SEND EMAIL OTP API
-      const response = await axios.post(
-        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/send-email-otp",
-        {
-          email,
-          mobile,
-        }
-      );
+      // SEND EMAIL OTP API (via api.js)
+      const response = await sendRTIOTP(email);
 
-      console.log(response.data);
+      console.log(response);
 
       setShowOtpSuccessPopup(true);
 
@@ -160,7 +152,7 @@ const RtiUserLogin = () => {
       console.log(error);
 
       alert(
-        error?.response?.data?.message ||
+        error?.message ||
         "Failed to send OTP"
       );
 
@@ -230,16 +222,10 @@ const RtiUserLogin = () => {
 
       setLoading(true);
 
-      // VERIFY OTP API
-      const response = await axios.post(
-        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/verify-email-otp",
-        {
-          email,
-          otp,
-        }
-      );
+      // VERIFY OTP API (via api.js)
+      const response = await verifyRTIOTP(email, otp);
 
-      console.log(response.data);
+      console.log(response);
 
       setShowSuccessPopup(true);
 
@@ -259,7 +245,7 @@ const RtiUserLogin = () => {
       console.log(error);
 
       alert(
-        error?.response?.data?.message ||
+        error?.message ||
         "Invalid OTP"
       );
 
@@ -287,15 +273,9 @@ const RtiUserLogin = () => {
 
       setLoading(true);
 
-      const response = await axios.post(
-        "https://n7vxv3pg-8081.inc1.devtunnels.ms/api/rti/send-email-otp",
-        {
-          email,
-          mobile,
-        }
-      );
+      const response = await sendRTIOTP(email);
 
-      console.log(response.data);
+      console.log(response);
 
       alert("OTP Resent Successfully");
 
@@ -308,7 +288,7 @@ const RtiUserLogin = () => {
       console.log(error);
 
       alert(
-        error?.response?.data?.message ||
+        error?.message ||
         "Failed to resend OTP"
       );
 

@@ -1,10 +1,18 @@
-
+import hmac
 import base64
 import json
 import os
+import secrets
+import smtplib
+from datetime import datetime, timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from werkzeug.utils import secure_filename
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
+from sqlalchemy import text
+from app import limiter
+from app.utils.otp_utils import hash_otp, generate_otp, verify_otp as otp_utils_verify
 from app.models.database import db
 from app.models.agent_change_request_model import AgentRegistrationDetails, AgentChangeRequest
 from app.utils.mail_service import (
@@ -16,8 +24,77 @@ from flask_jwt_extended import jwt_required
 
 agent_change_request_bp = Blueprint("agent_change_request_bp", __name__)
 
+OTP_TTL_SECONDS = 300
+OTP_LOCK_SECONDS = 900
+OTP_MAX_ATTEMPTS = 5
+
 UPLOAD_FOLDER = "uploads/change_requests"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def agent_change_otp_rate_limit_key():
+    data = request.get_json(silent=True) or {}
+    identifier = data.get("panNumber") or request.remote_addr or "anonymous"
+    return str(identifier).strip().upper()
+
+
+def get_latest_agent_change_request_by_pan(pan):
+    return db.session.execute(
+        text("""
+            SELECT *
+            FROM agent_change_requests_t
+            WHERE UPPER(TRIM(pan_number)) = UPPER(TRIM(:pan))
+            ORDER BY id DESC
+            LIMIT 1
+        """),
+        {"pan": pan}
+    ).mappings().fetchone()
+
+
+def get_agent_registered_email(application_no):
+    return db.session.execute(
+        text("""
+            SELECT email
+            FROM agentregistration_details_t
+            WHERE application_no = :application_no
+            LIMIT 1
+        """),
+        {"application_no": application_no}
+    ).mappings().fetchone()
+
+
+def send_agent_change_request_otp_email(to_email, otp):
+    config = current_app.config
+
+    msg = MIMEMultipart()
+    msg["From"] = config["FROM_EMAIL"]
+    msg["To"] = to_email
+    msg["Subject"] = "AP RERA OTP Verification"
+
+    msg.attach(MIMEText(f"""
+Dear Applicant,
+
+Your OTP for Agent Change Request verification is:
+
+{otp}
+
+This OTP is valid for 5 minutes.
+
+Regards,
+AP RERA
+""", "plain"))
+
+    server = None
+    try:
+        server = smtplib.SMTP(config["SMTP_HOST"], config["SMTP_PORT"])
+
+        if config["SMTP_USE_TLS"]:
+            server.starttls()
+
+        server.login(config["SMTP_USER"], config["SMTP_PASSWORD"])
+        server.sendmail(config["FROM_EMAIL"], to_email, msg.as_string())
+    finally:
+        if server:
+            server.quit()
 
 INDIVIDUAL_REPLACEMENT_LABELS = {
     "photograph",
@@ -250,6 +327,196 @@ def send_admin_change_request_mail(change_request, status):
 
 
 # =========================
+
+# AGENT CHANGE REQUEST OTP
+# =========================
+
+@agent_change_request_bp.route("/agent-change/send-email", methods=["POST"])
+@limiter.limit("3 per 15 minutes", key_func=agent_change_otp_rate_limit_key)
+def send_agent_change_request_email_otp():
+    try:
+        data = request.get_json(silent=True) or {}
+        pan = (data.get("panNumber") or "").strip()
+
+        if not pan:
+            return jsonify({"error": "PAN number required"}), 400
+
+        agent_row = db.session.execute(
+            text("""
+                SELECT id, application_no, email
+                FROM agentregistration_details_t
+                WHERE UPPER(TRIM(pan)) = UPPER(TRIM(:pan))
+                LIMIT 1
+            """),
+            {"pan": pan}
+        ).mappings().fetchone()
+
+        if not agent_row:
+            return jsonify({"error": "Agent not found"}), 404
+
+        email = (agent_row["email"] or "").strip() if agent_row["email"] else ""
+
+        if not email:
+            return jsonify({"error": "Registered email not found"}), 404
+
+        otp_row = db.session.execute(
+            text("""
+                SELECT otp_locked_until
+                FROM agent_otp_t
+                WHERE agent_id = :agent_id
+            """),
+            {"agent_id": agent_row["id"]}
+        ).mappings().fetchone()
+
+        now = datetime.utcnow()
+        if otp_row and otp_row["otp_locked_until"] and now < otp_row["otp_locked_until"]:
+            return jsonify({
+                "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
+            }), 403
+
+        otp = str(secrets.randbelow(900000) + 100000)
+        otp_hash = hash_otp(otp)
+
+        update_res = db.session.execute(
+            text("""
+                UPDATE agent_otp_t
+                SET otp_hash = :otp_hash,
+                    created_at = NOW(),
+                    otp_attempts = 0,
+                    otp_locked_until = NULL,
+                    is_verified = FALSE
+                WHERE agent_id = :agent_id
+            """),
+            {
+                "otp_hash": otp_hash,
+                "agent_id": agent_row["id"]
+            }
+        )
+        
+        if update_res.rowcount == 0:
+            db.session.execute(
+                text("""
+                    INSERT INTO agent_otp_t (agent_id, otp_hash, created_at, otp_attempts, otp_locked_until, is_verified)
+                    VALUES (:agent_id, :otp_hash, NOW(), 0, NULL, FALSE)
+                """),
+                {
+                    "agent_id": agent_row["id"],
+                    "otp_hash": otp_hash
+                }
+            )
+        
+        db.session.commit()
+        send_agent_change_request_otp_email(email, otp)
+
+        return jsonify({"message": "OTP sent successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Internal server error"}), 500
+
+
+@agent_change_request_bp.route("/agent-change/verify", methods=["POST"])
+def verify_agent_change_request_email_otp():
+    try:
+        data = request.get_json(silent=True) or {}
+        pan = (data.get("panNumber") or "").strip()
+        otp = (data.get("otp") or "").strip()
+
+        if not pan or not otp:
+            return jsonify({"error": "PAN number and OTP required"}), 400
+
+        agent_row = db.session.execute(
+            text("""
+                SELECT id, application_no, email
+                FROM agentregistration_details_t
+                WHERE UPPER(TRIM(pan)) = UPPER(TRIM(:pan))
+                LIMIT 1
+            """),
+            {"pan": pan}
+        ).mappings().fetchone()
+
+        if not agent_row:
+            return jsonify({"error": "Agent not found"}), 404
+
+        otp_row = db.session.execute(
+            text("""
+                SELECT otp_hash, created_at, otp_attempts, otp_locked_until, is_verified
+                FROM agent_otp_t
+                WHERE agent_id = :agent_id
+            """),
+            {"agent_id": agent_row["id"]}
+        ).mappings().fetchone()
+
+        if not otp_row:
+            return jsonify({"error": "No OTP request found"}), 404
+
+        now = datetime.utcnow()
+
+        if otp_row["otp_locked_until"] and now < otp_row["otp_locked_until"]:
+            return jsonify({"error": "Account locked for 15 minutes due to 5 invalid OTP attempts"}), 403
+
+        if not otp_row["otp_hash"] or not otp_row["created_at"]:
+            return jsonify({"error": "OTP expired"}), 400
+            
+        expiry_time = otp_row["created_at"] + timedelta(seconds=OTP_TTL_SECONDS)
+        if expiry_time < now:
+            return jsonify({"error": "OTP expired"}), 400
+
+        entered_hash = hash_otp(otp)
+
+        if not hmac.compare_digest(entered_hash, otp_row["otp_hash"]):
+            attempts = (otp_row["otp_attempts"] or 0) + 1
+
+            if attempts >= OTP_MAX_ATTEMPTS:
+                db.session.execute(
+                    text("""
+                        UPDATE agent_otp_t
+                        SET otp_attempts = :attempts, otp_locked_until = :lock_until
+                        WHERE agent_id = :agent_id
+                    """),
+                    {
+                        "attempts": attempts,
+                        "lock_until": now + timedelta(seconds=OTP_LOCK_SECONDS),
+                        "agent_id": agent_row["id"]
+                    }
+                )
+                db.session.commit()
+                return jsonify({"error": "Account locked for 15 minutes due to 5 invalid OTP attempts"}), 403
+
+            db.session.execute(
+                text("""
+                    UPDATE agent_otp_t
+                    SET otp_attempts = :attempts
+                    WHERE agent_id = :agent_id
+                """),
+                {"attempts": attempts, "agent_id": agent_row["id"]}
+            )
+            db.session.commit()
+            return jsonify({"error": f"Invalid OTP. Attempt {attempts} of {OTP_MAX_ATTEMPTS}"}), 401
+
+        db.session.execute(
+            text("""
+                UPDATE agent_otp_t
+                SET is_verified = TRUE,
+                    otp_attempts = 0,
+                    otp_locked_until = NULL
+                WHERE agent_id = :agent_id
+            """),
+            {"agent_id": agent_row["id"]}
+        )
+        db.session.commit()
+
+        return jsonify({
+            "message": "OTP verified successfully",
+            "application_no": agent_row["application_no"]
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Internal server error"}), 500
+
+
+# =========================
 # GET APPLICATION NUMBERS
 # =========================
 
@@ -296,7 +563,8 @@ def get_application_numbers():
        )
 
     return jsonify({
-        "error": "Internal server error"
+        "error": "Internal server error",
+        "details": str(e)
     }), 500
 
 
@@ -327,7 +595,8 @@ def get_application_details(application_no):
 )
 
     return jsonify({
-    "error": "Internal server error"
+    "error": "Internal server error",
+    "details": str(e)
     }), 500
 
 

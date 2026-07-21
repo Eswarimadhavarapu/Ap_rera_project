@@ -203,7 +203,7 @@ def verify_login_otp():
         if not hmac.compare_digest(hash_otp(otp), row["otp_hash"]):
             attempts = (row["otp_attempts"] or 0) + 1
             lock_until = (
-                datetime.utcnow() + timedelta(hours=9)
+                datetime.utcnow() + timedelta(minutes=15)
                 if attempts >= 5
                 else None
             )

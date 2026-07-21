@@ -316,49 +316,91 @@ class AgentModel:
 
             email = row.email
 
+            import hmac
+            import hashlib
+
+            SECRET_KEY = "AP_RERA_SECRET_KEY"
+
             otp = str(random.randint(100000, 999999))
 
-            # delete old otp
+            otp_hash = hmac.new(
+                SECRET_KEY.encode(),
+                otp.encode(),
+                hashlib.sha256
+            ).hexdigest()
+
+            # Delete old OTP
             db.session.execute(text("""
-                DELETE FROM agent_otp_t WHERE agent_id = :agent_id
+                DELETE FROM agent_otp_t
+                WHERE agent_id = :agent_id
             """), {"agent_id": agent_id})
 
-            # insert otp
+            # Store hashed OTP
             db.session.execute(text("""
-                INSERT INTO agent_otp_t (agent_id, otp, created_at)
-                VALUES (:agent_id, :otp, NOW())
-            """), {"agent_id": agent_id, "otp": otp})
+                INSERT INTO agent_otp_t (agent_id, otp_hash, created_at)
+                VALUES (:agent_id, :otp_hash, NOW())
+            """), {
+                "agent_id": agent_id,
+                "otp_hash": otp_hash
+            })
 
             db.session.commit()
 
-            # ✅ HERE YOU MUST KEEP THIS LINE
+            # Send plain OTP to email
             send_email_otp(email, otp)
 
             return {"success": True, "message": "OTP sent to registered email"}
 
         except Exception as e:
             db.session.rollback()
-            return {"success": False, "message": "Internal server error"}
+            print("=" * 80)
+            print("ERROR IN send_otp()")
+            print("Exception:", str(e))
+            import traceback
+            traceback.print_exc()
+            return {
+        "success": False,
+        "message": str(e)
+    }
 
     
     @staticmethod
     def verify_otp(agent_id, otp):
         try:
+            import hmac
+            import hashlib
+
+            SECRET_KEY = "AP_RERA_SECRET_KEY"
+
+            # Hash the entered OTP
+            otp_hash = hmac.new(
+                SECRET_KEY.encode(),
+                otp.encode(),
+                hashlib.sha256
+            ).hexdigest()
+
             query = text("""
-                SELECT a.application_no, a.agent_name
+                SELECT
+                    a.application_no,
+                    a.agent_name,
+                    a.pan
                 FROM agent_otp_t o
                 JOIN agentregistration_details_t a
-                ON a.id = o.agent_id
+                    ON a.id = o.agent_id
                 WHERE o.agent_id = :agent_id
-                AND o.otp = :otp
+                AND o.otp_hash = :otp_hash
                 AND o.created_at >= NOW() - INTERVAL '5 minutes'
+                ORDER BY o.created_at DESC
                 LIMIT 1
             """)
 
-            row = db.session.execute(query, {
-                "agent_id": agent_id,
-                "otp": otp
-            }).fetchone()
+            row = db.session.execute(
+                query,
+                {
+                    "agent_id": agent_id,
+                    "otp_hash": otp_hash
+                }
+            ).fetchone()
 
             if not row:
                 return {
@@ -374,7 +416,10 @@ class AgentModel:
             }
 
         except Exception as e:
-            return {"success": False, "message": "Internal server error"}
+            return {
+                "success": False,
+                "message": str(e)
+            }
 
     @staticmethod
     def create_payment(agent_id):
@@ -719,6 +764,24 @@ AP RERA
     @staticmethod
     def verify_otp_by_pan(pan, otp):
         try:
+            import hmac
+            import hashlib
+
+            SECRET_KEY = "AP_RERA_SECRET_KEY"
+
+            def hash_otp(otp):
+                return hmac.new(
+                    SECRET_KEY.encode(),
+                    otp.encode(),
+                    hashlib.sha256
+                ).hexdigest()
+
+            otp_hash = hash_otp(otp)
+
+            print("PAN Received:", repr(pan))
+            print("OTP Received:", repr(otp))
+            print("OTP Hash:", otp_hash)
+
             query = text("""
                 SELECT
                     a.id,
@@ -728,33 +791,39 @@ AP RERA
                 FROM agentregistration_details_t a
                 JOIN agent_otp_t o
                     ON a.id = o.agent_id
-                WHERE UPPER(a.pan)=:pan
-                AND o.otp=:otp
+                WHERE UPPER(TRIM(a.pan)) = UPPER(TRIM(:pan))
+                AND o.otp_hash = :otp_hash
                 AND o.created_at >= NOW() - INTERVAL '5 minutes'
+                ORDER BY o.created_at DESC
                 LIMIT 1
             """)
 
-            row = db.session.execute(query,{
-                "pan":pan,
-                "otp":otp
-            }).fetchone()
+            row = db.session.execute(
+                query,
+                {
+                    "pan": pan,
+                    "otp_hash": otp_hash
+                }
+            ).fetchone()
+
+            print("DB Row:", row)
 
             if not row:
                 return {
-                    "success":False,
-                    "message":"Invalid or expired OTP"
+                    "success": False,
+                    "message": "Invalid or expired OTP"
                 }
 
             return {
-                "success":True,
-                "agent_id":row.id,
-                "pan":row.pan,
-                "agent_name":row.agent_name,
-                "application_no":row.application_no
+                "success": True,
+                "agent_id": row.id,
+                "pan": row.pan,
+                "agent_name": row.agent_name,
+                "application_no": row.application_no
             }
 
         except Exception as e:
             return {
-                "success":False,
-                "message":str(e)
+                "success": False,
+                "message": str(e)
             }

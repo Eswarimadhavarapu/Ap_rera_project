@@ -54,7 +54,7 @@ const S1Modal = ({ data, onClose, onSuccess, user }) => {
       //   body: fd,
       // });
       // const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
-      const token = localStorage.getItem("token");
+     
       //   method: "PATCH",
       //   body: fd,
       // });
@@ -524,21 +524,31 @@ const S3Modal = ({ data, onClose, onSuccess }) => {
     fd.append("subject", "AP RERA Notice");
 
     // ✅ FIX HERE
-    const fileResponse = await fetch(
-      `${BASE_URL}/api/project-unregistered/view-file/${data.first_notice_doc_path}`
-    );
+   
 
+const fileResponse = await fetch(
+  `${BASE_URL}/api/project-unregistered/view-file/${data.first_notice_doc_path}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
     const blob = await fileResponse.blob();
 
     fd.append("notice1", blob, "notice.pdf");
 
-    const res = await fetch(
-      `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
-      {
-        method: "POST",
-        body: fd,
-      }
-    );
+  
+const res = await fetch(
+  `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: fd,
+  }
+);
 
     if (!res.ok) throw new Error("Mail failed");
 
@@ -603,10 +613,15 @@ const S4Modal = ({ data, onClose, onSuccess, user }) => {
       fd.append("s4_remarks", remarks.trim());
       fd.append("s4_authority_id", user?.id);
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
-        method: "PATCH",
-        body: fd,
-      });
+  
+
+const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  body: fd,
+});
 
       if (!res.ok) throw new Error("Server error");
 
@@ -680,10 +695,15 @@ const S5Modal = ({ data, onClose, onSuccess, user }) => {
       fd.append("s5_remarks", remarks.trim());
       fd.append("rera_notice", noticePdfBlob);
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
-        method: "PATCH",
-        body: fd,
-      });
+     
+
+const res = await fetch(`${BASE_URL}/api/project-unregistered/${data.id}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  body: fd,
+});
 
       if (!res.ok) throw new Error("Server error");
 
@@ -841,9 +861,15 @@ const S6Modal = ({ data, onClose, onSuccess }) => {
       fd.append("subject", "AP RERA 2nd Notice");
 
       // ✅ IMPORTANT: fetch 2nd notice (rera_notice)
-      const fileResponse = await fetch(
-        `${BASE_URL}/api/project-unregistered/view-file/${data.rera_personal_notice_doc_path}`
-      );
+    
+const fileResponse = await fetch(
+  `${BASE_URL}/api/project-unregistered/view-file/${data.rera_personal_notice_doc_path}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       const blob = await fileResponse.blob();
 
@@ -851,13 +877,18 @@ const S6Modal = ({ data, onClose, onSuccess }) => {
       fd.append("notice2", blob, "rera_notice.pdf");
       fd.append("approval_status", "s7");
       // ✅ SEND MAIL
-      const res = await fetch(
-        `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
-        {
-          method: "POST",
-          body: fd,
-        }
-      );
+   
+
+const res = await fetch(
+  `${BASE_URL}/api/project-unregistered/send-notice-mail/${data.id}`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: fd,
+  }
+);
 
       if (!res.ok) throw new Error("Mail failed");
 
@@ -928,10 +959,21 @@ export default function UnregistrationProjectDetails() {
   const [authorityMap, setAuthorityMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token = localStorage.getItem("token");
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/project-unregistered/${id}`);
+     
+
+const res = await fetch(
+    `${BASE_URL}/api/project-unregistered/${id}`,
+    {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+);
       const json = await res.json();
 
       console.log("API RESPONSE:", json);
@@ -959,7 +1001,7 @@ export default function UnregistrationProjectDetails() {
   const record = location.state?.record;
   const openProtectedDocument = async (filePath) => {
   try {
-    const token = localStorage.getItem("token");
+    
 
     const response = await fetch(
       `${BASE_URL}/${filePath}`,
@@ -1007,7 +1049,13 @@ export default function UnregistrationProjectDetails() {
 
     for (let id of uniqueIds) {
       try {
-        const res = await fetch(`${BASE_URL}/api/userDetails/${id}`);
+    
+
+const res = await fetch(`${BASE_URL}/api/userDetails/${id}`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
         const json = await res.json();
 
         if (json.success) {

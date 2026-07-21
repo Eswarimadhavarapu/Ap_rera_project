@@ -245,6 +245,8 @@ def admin_login():
                 "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
             }), 403
             
+            
+            
         print("DB HASH:", admin.password)
         print("PASSWORD MATCH:", check_password_hash(admin.password, password))
         if not check_password_hash(
@@ -260,6 +262,8 @@ def admin_login():
         print("LOGIN SUCCESS")
         otp = str(random.randint(100000, 999999))
         otp_hash = hash_otp(otp)
+        print("GENERATED OTP:", otp)
+        
         otp_expiry = datetime.now() + timedelta(minutes=5)
 
         Admin.query.filter_by(id=admin.id).update({
@@ -290,29 +294,32 @@ def admin_login():
 
       print(e)
       return jsonify({"error": "Internal server error"}), 500
+  
+  
 
-# -------------------------------
-# VERIFY OTP → RETURN FULL DATA
-# -------------------------------
 @admin_bp.route("/admin/verify-otp", methods=["POST"])
 def verify_otp():
     try:
+
         data = request.get_json()
 
         username = data.get("username")
-        otp = data.get("otp")
-
+        otp = str(data.get("otp")).strip()
         if not username or not otp:
+            print("ERROR: Username or OTP missing")
             return jsonify({"error": "Username and OTP required"}), 400
 
         admin = Admin.query.filter_by(username=username).first()
 
         if not admin:
+            print("ERROR: Admin not found")
             return jsonify({"error": "Admin not found"}), 404
-        
-       
+
+        if admin.locked_until:
+            print("LOCKED UNTIL:", admin.locked_until)
 
         if admin.locked_until and datetime.now() < admin.locked_until:
+            print("ERROR: Account locked")
             return jsonify({
                 "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
             }), 403
@@ -320,24 +327,46 @@ def verify_otp():
         if not admin.otp_hash or not admin.otp_expiry:
             return jsonify({"error": "Invalid OTP"}), 401
 
-        if datetime.now() > admin.otp_expiry:
+        current_time = datetime.now()
+        if current_time > admin.otp_expiry:
+            print("ERROR: OTP EXPIRED")
             return jsonify({"error": "OTP expired"}), 401
 
-        if not hmac.compare_digest(hash_otp(otp), admin.otp_hash):
+        generated_hash = hash_otp(otp)
+        otp_match = hmac.compare_digest(
+            generated_hash,
+            admin.otp_hash
+        )
+
+        if not otp_match:
 
             admin.failed_otp_attempts = (
                 admin.failed_otp_attempts or 0
             ) + 1
 
+            print(
+                "INVALID OTP. FAILED ATTEMPTS:",
+                admin.failed_otp_attempts
+            )
+
             if admin.failed_otp_attempts >= 5:
-                admin.locked_until = datetime.now() + timedelta(hours=9)
+                admin.locked_until = (
+                    datetime.now() + timedelta(minutes=15)
+                )
+
                 db.session.commit()
+
+                print("ACCOUNT LOCKED FOR 15 MINUTES")
+
                 return jsonify({
                     "error": "Account locked for 15 minutes due to 5 invalid OTP attempts"
                 }), 403
+
             db.session.commit()
 
-            return jsonify({"error": "Invalid OTP"}), 401
+            return jsonify({
+                "error": "Invalid OTP"
+            }), 401
 
         Admin.query.filter_by(id=admin.id).update({
             "otp_hash": None,
@@ -349,24 +378,20 @@ def verify_otp():
         db.session.commit()
         db.session.refresh(admin)
 
-        token = create_access_token(
-    identity=str(admin.id)
-)
-# Create JWT Token
         access_token = create_access_token(
-    identity=str(result["id"]),
-    additional_claims={
-        "username": result["username"],
-        "role": result["role"]
-    }
-)
+            identity=str(admin.id),
+            additional_claims={
+                "username": admin.username,
+                "role": admin.role
+            }
+        )
         return jsonify({
-    "message": "Login successful",
-    "access_token": access_token,
-    "admin": admin_response(admin)
-}), 200
+            "message": "Login successful",
+            "access_token": access_token,
+            "admin": admin_response(admin)
+        }), 200
 
     except Exception as e:
         db.session.rollback()
-        print(e)
-        return jsonify({"error": "Internal server error"}), 500
+
+        return jsonify({"error": "Internal server error"}),500

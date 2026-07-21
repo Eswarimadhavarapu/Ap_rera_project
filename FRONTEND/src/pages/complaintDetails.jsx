@@ -287,7 +287,9 @@ const handleAddRespondentToTable = () => {
   //           : value,
   //   }));
   // };
-
+const handleDeleteRespondent = (index) => {
+    setRespondents((prev) => prev.filter((_, i) => i !== index));  
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -1920,6 +1922,7 @@ if (
         <th>State</th>
         <th>District</th>
         <th>Pincode</th>
+        <th>Action</th>
       </tr>
     </thead>
 
@@ -1936,6 +1939,13 @@ if (
           <td>{resp.rState}</td>
           <td>{resp.rDistrict}</td>
           <td>{resp.rPincode}</td>
+          <td><button
+                          type="button"
+                          className="delete-btn"
+                          onClick={() => handleDeleteRespondent(index)}     
+                        >
+                          Delete
+                        </button></td>
         </tr>
       ))}
     </tbody>
@@ -2691,14 +2701,14 @@ if (
 
       <span>I</span>
 
-      <input
-        type="text"
-        name="verificationName"
-        placeholder="Enter Full Name"
-        value={form.verificationName || ""}
-        onChange={handleChange}
-        className="verification-inline-input"
-      />
+<input
+              type="text"
+              name="verificationName"
+              placeholder="Enter Full Name"
+              value={form.declarantName || ""}                 
+              readOnly
+              className="verification-inline-input"
+            />
 
       <span>
         (name in full block letters), son/daughter of
@@ -2728,24 +2738,25 @@ if (
         <div className="verification-field">
           <label>Place :</label>
 
-          <input
-            type="text"
-            name="verificationPlace"
-            placeholder="Enter Place"
-            value={form.verificationPlace || ""}
-            onChange={handleChange}
-          />
-        </div>
+         
+      <input
+                  type="text"
+                  name="verificationPlace"
+                  placeholder="Enter Place"
+                  value={respondents[0]?.rAddress1 || ""}             //new
+                  readOnly
+                />
+              </div>
 
         <div className="verification-field">
           <label>Date :</label>
 
-          <input
-            type="date"
-            name="verificationDate"
-            value={form.verificationDate || ""}
-            onChange={handleChange}
-          />
+         <input
+                  type="date"
+                  name="verificationDate"
+                  value={new Date().toISOString().split("T")[0]}              
+                  readOnly
+                />
         </div>
 
       </div>

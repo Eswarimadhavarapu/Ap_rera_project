@@ -148,7 +148,7 @@ class AgentRegistrationDetails(db.Model):
         except Exception as e:
             return {
                 "success": False,
-                "message": "Internal server error"
+                "message": str(e)
             }
 
     @staticmethod
@@ -279,7 +279,7 @@ class AgentRegistrationDetails(db.Model):
         except Exception as e:
             return {
                 "success": False,
-                "message": "Internal server error"
+                "message": str(e)
             }
 
     @staticmethod
@@ -317,7 +317,7 @@ class AgentRegistrationDetails(db.Model):
             return {
                 "success": False,
                 "status_code": 500,
-                "message": "Internal server error"
+                "message": str(e)
             }
        
        
@@ -362,6 +362,11 @@ class AgentChangeRequest(db.Model):
     organization_field_documents = db.Column(JSONB)
 
     status = db.Column(db.String(50), default="PENDING")
+    otp_hash = db.Column(db.String(255))
+    otp_expires = db.Column(db.DateTime)
+    otp_attempts = db.Column(db.Integer, default=0)
+    otp_locked_until = db.Column(db.DateTime)
+    otp_verified = db.Column(db.Boolean, default=False)
 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
@@ -405,7 +410,7 @@ class AgentChangeRequest(db.Model):
             return {
                 "success": False,
                 "status_code": 500,
-                "message": "Internal server error"
+                "message": str(exc)
             }
 
     @staticmethod
@@ -556,7 +561,7 @@ class AgentChangeRequest(db.Model):
             return {
                 "success": False,
                 "status_code": 500,
-                "message": "Internal server error"
+                "message": str(e)
             }
 
     @staticmethod

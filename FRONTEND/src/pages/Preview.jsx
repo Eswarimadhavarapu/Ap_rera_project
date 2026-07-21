@@ -86,9 +86,16 @@ useEffect(() => {
           setError(res.message || "Failed to load preview");
         }
       })
-      .catch(() => {
-        setError("Error fetching preview details");
-      })
+     .catch((err) => {
+  console.error("Preview API Error:", err);
+
+  if (err.response) {
+    console.log("Status:", err.response.status);
+    console.log("Data:", err.response.data);
+  }
+
+  setError(err.response?.data?.message || "Error fetching preview details");
+})
       .finally(() => {
         setLoading(false);
       });
@@ -115,32 +122,47 @@ useEffect(() => {
   };
 
   // ================= VERIFY OTP =================
-  const verifyOtp = async () => {
-    if (!otp) {
-      alert("Please enter OTP");
-      return;
-    }
+ const verifyOtp = async () => {
+  if (!otp) {
+    alert("Please enter OTP");
+    return;
+  }
 
-    setVerifying(true);
+  setVerifying(true);
 
-    try {
-      const res = await apiPost("/api/agent/verify-otp", {
-        agent_id: data.agent_details.agent_id,
+  try {
+    const res = await apiPost(
+      "/api/agent/verify-otp",
+      {
+        panNumber: data.agent_details.pan,
         otp,
-      });
+      },
+      true // skipAuth because user doesn't have a token yet
+    );
 
-      if (res.success) {
-        alert("OTP verified successfully");
-        setOtpVerified(true);
-      } else {
-        alert(res.message || "Invalid OTP");
-      }
-    } catch {
-      alert("OTP verification failed");
+    if (res.success) {
+      // Save JWT token
+      localStorage.setItem("token", res.token);
+
+      // Save agent details
+      localStorage.setItem("agentId", res.agent_id);
+      localStorage.setItem("agent_pan", res.pan);
+
+      console.log("Saved Token:", localStorage.getItem("token"));
+      console.log("Agent ID:", res.agent_id);
+
+      alert("OTP verified successfully");
+      setOtpVerified(true);
+    } else {
+      alert(res.message || "Invalid OTP");
     }
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "OTP verification failed");
+  }
 
-    setVerifying(false);
-  };
+  setVerifying(false);
+};
 
   if (loading) return <div className="agentpreview-loading">Loading preview...</div>;
   if (error) return <div className="agentpreview-error">{error}</div>;
@@ -609,6 +631,7 @@ useEffect(() => {
               disabled={!otpVerified}
               onClick={async () => {
                 const agentId = localStorage.getItem("agentId");
+                console.log("Agent ID:", agentId);
                 await apiPost(`/api/agent/create-payment/${agentId}`);
                 navigate("/agent-payment");
               }}
