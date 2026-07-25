@@ -22,6 +22,28 @@ const firstFilled = (...values) => {
   return "";
 };
 
+const parseMaybeJson = (value) => {
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch (_) {
+    return value;
+  }
+};
+
+const normalizeRows = (value) => {
+  const parsed = parseMaybeJson(value);
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && typeof parsed === "object") {
+    if (Array.isArray(parsed.projects)) return parsed.projects;
+    if (Array.isArray(parsed.project_details)) return parsed.project_details;
+    if (Array.isArray(parsed.last_five_years_projects_details)) {
+      return parsed.last_five_years_projects_details;
+    }
+  }
+  return [];
+};
+
 const formatDateTime = (value) => {
   if (!value) return "N/A";
   const date = new Date(value);
@@ -64,10 +86,23 @@ function Section({ title, children }) {
 }
 
 const formatBoolean = (value) => {
-  const normalized = String(value || "").toLowerCase();
+  const parsed = parseMaybeJson(value);
+
+  if (Array.isArray(parsed)) return parsed.length ? "Yes" : "No";
+  if (parsed && typeof parsed === "object") {
+    if (Object.prototype.hasOwnProperty.call(parsed, "value")) {
+      return formatBoolean(parsed.value);
+    }
+    if (Object.prototype.hasOwnProperty.call(parsed, "has_projects")) {
+      return formatBoolean(parsed.has_projects);
+    }
+    return Object.keys(parsed).length ? "Yes" : "No";
+  }
+
+  const normalized = String(parsed || "").trim().toLowerCase();
   if (["yes", "y", "true", "1"].includes(normalized)) return "Yes";
   if (["no", "n", "false", "0"].includes(normalized)) return "No";
-  return displayText(value);
+  return displayText(parsed);
 };
 
 const getFileUrl = (value) => {
@@ -99,6 +134,39 @@ const getFileUrl = (value) => {
   return "";
 };
 
+const getRemarkAuthority = (admin) => {
+  const loginKey = `${String(admin?.department || "").toLowerCase()} ${String(admin?.role || "").toLowerCase()}`;
+
+  if (loginKey.includes("assistant director") || loginKey.includes(" ad")) {
+    return { verificationTeam: "ad", authorityLabel: "Assistant Director" };
+  }
+  if (loginKey.includes("deputy director") || loginKey.includes(" dd")) {
+    return { verificationTeam: "dd", authorityLabel: "Deputy Director" };
+  }
+  if (loginKey.includes("planning")) return { verificationTeam: "planning", authorityLabel: "Planning Team" };
+  if (loginKey.includes("legal")) return { verificationTeam: "legal", authorityLabel: "Legal Team" };
+  if (loginKey.includes("audit")) return { verificationTeam: "audit", authorityLabel: "Audit Team" };
+  if (loginKey.includes("engineer")) return { verificationTeam: "engineer", authorityLabel: "Scrutiny Engineer" };
+  if (loginKey.includes("verification")) return { verificationTeam: "verification", authorityLabel: "Verification Team" };
+  if (loginKey.includes("director") || loginKey.includes("directory")) return { verificationTeam: "directory", authorityLabel: "Director" };
+  if (loginKey.includes("chairman")) return { verificationTeam: "chairman", authorityLabel: "Chairman" };
+
+  return { verificationTeam: "verification", authorityLabel: admin?.department || "Verification Team" };
+};
+const normalizeLockDepartment = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return "";
+  if (normalized.includes("assistant director") || normalized === "ad") return "ad";
+  if (normalized.includes("deputy director") || normalized === "dd") return "dd";
+  if (normalized.includes("director") || normalized.includes("directory")) return "director";
+  if (normalized.includes("chairman")) return "chairman";
+  if (normalized.includes("verification")) return "verification";
+  if (normalized.includes("planning")) return "planning";
+  if (normalized.includes("legal")) return "legal";
+  if (normalized.includes("audit")) return "audit";
+  if (normalized.includes("engineer")) return "engineer";
+  return normalized;
+};
 function DocumentCell({ path, title, openModal, label = "View Document" }) {
   const href = getFileUrl(path);
 
@@ -151,7 +219,6 @@ function DataTable({ className = "", columns, rows, emptyText = "No data availab
 export default function AgentScrutinyRegistrationDetail() {
   const navigate = useNavigate();
   const { admin } = useAdmin();
-  const dept = admin?.department?.toLowerCase();
 
   const location = useLocation();
 
@@ -161,7 +228,12 @@ export default function AgentScrutinyRegistrationDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState(null);
-  const [remarks, setRemarks] = useState("");
+  const [profileShortfall, setProfileShortfall] = useState("");
+  const [profileRemarks, setProfileRemarks] = useState("");
+  const [profileDraftRemark, setProfileDraftRemark] = useState(null);
+  const [profileSavedRemarks, setProfileSavedRemarks] = useState([]);
+  const [finalSubmitted, setFinalSubmitted] = useState(false);
+  const [savingProfileRemark, setSavingProfileRemark] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -210,6 +282,31 @@ export default function AgentScrutinyRegistrationDetail() {
     loadData();
   }, [applicationNumber]);
 
+  useEffect(() => {
+    const loadRemarkState = async () => {
+      if (!applicationNumber) return;
+
+      try {
+        const encodedApplicationNo = encodeURIComponent(applicationNumber);
+        const [finalResponse, profileResponse] = await Promise.all([
+          apiGet(`/api/agent-scrutiny/final-status?application_no=${encodedApplicationNo}`),
+          apiGet(`/api/agent-scrutiny/verification-remarks?application_no=${encodedApplicationNo}&document_name=${encodeURIComponent("Agent Profile")}`),
+        ]);
+
+        const currentDept = normalizeLockDepartment(admin?.department);
+        setFinalSubmitted(
+          (finalResponse?.rows || []).some(
+            (row) => normalizeLockDepartment(row.verified_by) === currentDept
+          )
+        );
+        setProfileSavedRemarks(profileResponse?.rows || []);
+      } catch (err) {
+        console.error("Error loading profile remarks:", err);
+      }
+    };
+
+    loadRemarkState();
+  }, [applicationNumber, admin?.department]);
   const summaryData = useMemo(() => {
     if (!summary) return {};
 
@@ -225,22 +322,75 @@ export default function AgentScrutinyRegistrationDetail() {
     };
   }, [summary]);
 
-  const submitFinalRemarks = async () => {
+  const handleAddProfileRemark = () => {
+    const trimmedRemarks = profileRemarks.trim();
+    if (finalSubmitted) {
+      alert("Final submit is already completed. Remarks are locked.");
+      return;
+    }
+
+    if (profileDraftRemark) return;
+
+    if (!profileShortfall || !trimmedRemarks) {
+      alert("Please select shortfall and enter remarks");
+      return;
+    }
+
+    const authority = getRemarkAuthority(admin);
+    setProfileDraftRemark({
+      document_name: "Agent Profile",
+      verification_team: authority.verificationTeam,
+      is_shortfall: profileShortfall === "yes",
+      remarks: trimmedRemarks,
+      verified_by: authority.authorityLabel,
+      verified_at: new Date().toISOString(),
+    });
+  };
+
+  const handleRemoveProfileRemark = () => {
+    setProfileDraftRemark(null);
+  };
+
+  const saveProfileDraftRemark = async () => {
+    if (finalSubmitted || !profileDraftRemark) return true;
+
     try {
-      await apiPost("/api/agent-scrutiny/final-submit", {
+      setSavingProfileRemark(true);
+      await apiPost("/api/agent-scrutiny/verification-remarks", {
         application_no: applicationNumber,
-        is_shortfall: "no",
-        department: dept,
-        remarks: remarks
+        document_name: profileDraftRemark.document_name,
+        verification_team: profileDraftRemark.verification_team,
+        is_shortfall: profileDraftRemark.is_shortfall,
+        status: "pending",
+        remarks: profileDraftRemark.remarks,
+        verified_by: profileDraftRemark.verified_by,
       });
-      alert("Remarks submitted successfully!");
-      navigate("/agent-scrutiny/registrations");
+      setProfileDraftRemark(null);
+      setProfileShortfall("");
+      setProfileRemarks("");
+      return true;
     } catch (err) {
       console.error(err);
       alert("Error submitting remarks");
+      return false;
+    } finally {
+      setSavingProfileRemark(false);
     }
   };
 
+  const handleProfileSaveAndContinue = async () => {
+    const saved = await saveProfileDraftRemark();
+    if (!saved) return;
+
+    navigate("/agent-scrutiny/registration_2", {
+      state: { applicationNumber, agentType: location.state?.agentType }
+    });
+  };
+
+  const profileDisplayedRemarks = profileDraftRemark
+    ? [profileDraftRemark, ...profileSavedRemarks]
+    : profileSavedRemarks;
+  const profileLocked = finalSubmitted || Boolean(profileDraftRemark);
   const fullData = summary?.full_data || {};
   const agentDetails = fullData.agent_details || {};
   const projects = fullData.projects || [];
@@ -248,10 +398,12 @@ export default function AgentScrutinyRegistrationDetail() {
   const otherStateRera = fullData.other_state_rera || [];
   const entities = fullData.entities || [];
   const authorizedPersons = fullData.authorized_persons || [];
+  const agentProjectRows = normalizeRows(agentDetails.last_five_years_projects_details);
 
   // Detect agent type
   const isOtherThanIndividual = (summary?.promoter_type || "").toLowerCase().includes("other") ||
     (agentDetails.agent_type || "").toLowerCase().includes("other");
+  const individualHasProjectDetails = formatBoolean(agentDetails.last_five_years_project_details) === "Yes" || projects.length > 0;
 
   const formatDate = (value) => {
     if (!value) return "N/A";
@@ -396,17 +548,17 @@ export default function AgentScrutinyRegistrationDetail() {
                       </Section>
 
                       <Section title="Projects Launched In The Past 5 Years">
-                        {(agentDetails.last_five_years_projects_details || []).length > 0 ? (
+                        {agentProjectRows.length > 0 ? (
                           <DataTable
                             className="spr-green-head"
                             columns={[
                               { key: "serial", label: "S.No.", render: (_, i) => i + 1 },
-                              { key: "projectName", label: "Project Name" },
-                              { key: "projectType", label: "Project Type" },
-                              { key: "currentStatus", label: "Current Status" },
-                              { key: "projectAddress", label: "Address" },
+                              { key: "projectName", label: "Project Name", render: (row) => displayText(firstFilled(row.projectName, row.project_name, row.name)) },
+                              { key: "projectType", label: "Project Type", render: (row) => displayText(firstFilled(row.projectType, row.project_type, row.type)) },
+                              { key: "currentStatus", label: "Current Status", render: (row) => displayText(firstFilled(row.currentStatus, row.current_status, row.status)) },
+                              { key: "projectAddress", label: "Address", render: (row) => displayText(firstFilled(row.projectAddress, row.project_address, row.address)) },
                             ]}
-                            rows={agentDetails.last_five_years_projects_details || []}
+                            rows={agentProjectRows}
                           />
                         ) : (
                           <div className="spr-inline-summary"><DisplayItem label="Last five years project details" value="No" /></div>
@@ -478,14 +630,14 @@ export default function AgentScrutinyRegistrationDetail() {
 
                       <Section title="Projects Launched In The Past 5 Years">
                         <div className="spr-inline-summary">
-                          <DisplayItem label="Last five years project details" value={formatBoolean(agentDetails.last_five_years_project_details)} />
+                          <DisplayItem label="Last five years project details" value={individualHasProjectDetails ? "Yes" : "No"} />
                         </div>
-                        {formatBoolean(agentDetails.last_five_years_project_details) === "Yes" && (
+                        {individualHasProjectDetails && (
                           <DataTable
                             className="spr-green-head"
                             columns={[
                               { key: "serial", label: "S.No.", render: (_, i) => i + 1 },
-                              { key: "project_name", label: "Project Name" }
+                              { key: "project_name", label: "Project Name", render: (row) => displayText(firstFilled(row.project_name, row.projectName, row.name)) }
                             ]}
                             rows={projects}
                           />
@@ -534,16 +686,107 @@ export default function AgentScrutinyRegistrationDetail() {
                     </>
                   )}
                 </div>
+                <section className="spr-panel" style={{ marginTop: "20px" }}>
+                  <div className="spr-panel-head">
+                    <h2>ACTION TO BE TAKEN</h2>
+                  </div>
 
+                  <div className="spr-shortfall-row" style={{ display: "flex", gap: "20px", margin: "20px 0" }}>
+                    <label className="spr-label" style={{ fontWeight: "bold" }}>
+                      Is there any shortfall in agent profile
+                    </label>
+
+                    <label className="spr-radio">
+                      <input
+                        type="radio"
+                        name="profileShortfall"
+                        value="yes"
+                        checked={profileShortfall === "yes"}
+                        disabled={profileLocked}
+                        onChange={(e) => setProfileShortfall(e.target.value)}
+                      />
+                      <span style={{ marginLeft: "5px" }}>Yes</span>
+                    </label>
+
+                    <label className="spr-radio">
+                      <input
+                        type="radio"
+                        name="profileShortfall"
+                        value="no"
+                        checked={profileShortfall === "no"}
+                        disabled={profileLocked}
+                        onChange={(e) => setProfileShortfall(e.target.value)}
+                      />
+                      <span style={{ marginLeft: "5px" }}>No</span>
+                    </label>
+                  </div>
+
+                  <textarea
+                    className="spr-textarea"
+                    placeholder="Enter agent profile remarks..."
+                    rows={4}
+                    value={profileRemarks}
+                    disabled={profileLocked}
+                    onChange={(e) => setProfileRemarks(e.target.value)}
+                    style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+                  />
+
+                  <div className="spr-submit-row" style={{ marginTop: "15px", textAlign: "right" }}>
+                    <button
+                      type="button"
+                      className="spr-btn spr-btn-primary"
+                      onClick={handleAddProfileRemark}
+                      disabled={savingProfileRemark || profileLocked}
+                    >
+                      {finalSubmitted ? "Locked" : profileDraftRemark ? "Remark Added" : "Add Remark"}
+                    </button>
+                  </div>
+
+                  {profileDisplayedRemarks.length > 0 && (
+                    <div className="spr-table-wrap" style={{ marginTop: "15px" }}>
+                      <table className="spr-table">
+                        <thead>
+                          <tr>
+                            <th>SNo</th>
+                            <th>Description</th>
+                            <th>Is Shortfall</th>
+                            <th>Remarks</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {profileDisplayedRemarks.map((item, index) => (
+                            <tr key={item.id || item.verified_at || index}>
+                              <td>{index + 1}</td>
+                              <td>{item.document_name} - {item.verified_by}</td>
+                              <td>{item.is_shortfall ? "Yes" : "No"}</td>
+                              <td>{item.remarks}</td>
+                              <td>{new Date(item.verified_at || item.created_at || item.updated_at).toLocaleString()}</td>
+                              <td>
+                                {item === profileDraftRemark && !finalSubmitted ? (
+                                  <button type="button" className="spr-secondary-btn" onClick={handleRemoveProfileRemark}>
+                                    Remove
+                                  </button>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </section>
 
                 <div style={{ marginTop: "30px", textAlign: "right" }}>
                   <button
                     className="spr-btn"
-                    onClick={() => navigate("/agent-scrutiny/registration_2", {
-                      state: { applicationNumber, agentType: location.state?.agentType }
-                    })}
+                    onClick={handleProfileSaveAndContinue}
+                    disabled={savingProfileRemark}
                   >
-                    Save And Continue
+                    {savingProfileRemark ? "Saving..." : "Save And Continue"}
                   </button>
                 </div>
               </>
@@ -557,6 +800,7 @@ export default function AgentScrutinyRegistrationDetail() {
         onClose={() => setModalOpen(false)}
         applicationNo={applicationNumber}
         apiPrefix="/api/agent-scrutiny"
+        readOnly={finalSubmitted}
       />
     </ScrutinyLayout>
   );

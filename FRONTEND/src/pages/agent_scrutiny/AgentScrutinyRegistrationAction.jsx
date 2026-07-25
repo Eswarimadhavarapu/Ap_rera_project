@@ -33,6 +33,41 @@ const getDaysFromDate = (value) => {
   return Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
 };
 
+const normalizeDepartmentValue = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return "";
+  if (normalized.includes("assistant director") || normalized === "ad") return "ad";
+  if (normalized.includes("deputy director") || normalized === "dd") return "dd";
+  if (normalized.includes("chairman")) return "chairman";
+  if (normalized.includes("director") || normalized.includes("directory")) return "director";
+  if (normalized.includes("verification")) return "verification";
+  if (normalized.includes("planning")) return "planning";
+  if (normalized.includes("legal")) return "legal";
+  if (normalized.includes("audit")) return "audit";
+  if (normalized.includes("engineer")) return "engineer";
+  return normalized;
+};
+
+const departmentLabelMap = {
+  verification: "Verification Team",
+  planning: "Planning Team",
+  legal: "Legal Team",
+  audit: "Audit Team",
+  engineer: "Scrutiny Engineer",
+  ad: "Assistant Director",
+  dd: "Deputy Director",
+  director: "Director",
+  chairman: "Chairman",
+};
+
+const getDepartmentLabel = (value) => {
+  const key = normalizeDepartmentValue(value);
+  return departmentLabelMap[key] || displayText(value, "Department");
+};
+
+const formatShortfall = (value) =>
+  value === true || String(value || "").toLowerCase() === "yes" ? "Yes" : "No";
+
 function DataTable({ className = "", columns, rows, emptyText = "No data available." }) {
   return (
     <div className="spr-table-wrap">
@@ -89,49 +124,50 @@ export default function AgentScrutinyRegistration_Action() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState(null);
-  const [remarks, setRemarks] = useState("");
-  
   const [remarksList, setRemarksList] = useState([]);
+  const [draftRemark, setDraftRemark] = useState(null);
+  const [finalSubmitted, setFinalSubmitted] = useState(false);
   const [shortfall, setShortfall] = useState("");
   const [finalRemarks, setFinalRemarks] = useState("");
 
   const loadRemarks = async () => {
     try {
-      const response = await apiGet(
-        `/api/agent-scrutiny/final-status?application_no=${applicationNumber}`
+      const encodedApplicationNo = encodeURIComponent(applicationNumber);
+      const [finalResponse, documentResponse] = await Promise.all([
+        apiGet(`/api/agent-scrutiny/final-status?application_no=${encodedApplicationNo}`),
+        apiGet(`/api/agent-scrutiny/verification-remarks?application_no=${encodedApplicationNo}`),
+      ]);
+
+      const finalStatusRows = finalResponse?.rows || [];
+      setFinalSubmitted(
+        finalStatusRows.some((item) => normalizeDepartmentValue(item.verified_by) === dept)
       );
 
-      const rows = response?.rows || [];
+      const finalRows = finalStatusRows.map((item) => ({
+        ...item,
+        source: "final",
+        description: getDepartmentLabel(item.verified_by),
+        sortDate: item.verified_at,
+      }));
 
-      // 👇 current user department
-      const currentDept = (admin?.department || "").toLowerCase();
+      const documentRows = (documentResponse?.rows || []).map((item) => ({
+        ...item,
+        source: "document",
+        description: `${displayText(item.document_name, "Document")} - ${getDepartmentLabel(
+          item.verified_by || item.verification_team
+        )}`,
+        verified_at: item.created_at || item.updated_at,
+        sortDate: item.created_at || item.updated_at,
+      }));
 
-      const filtered = rows.filter((item) => {
-        const rowDept = (item.verified_by || "").toLowerCase();
-
-        // ✅ Verification → ONLY own
-        if (currentDept.includes("verification")) {
-          return rowDept === "verification";
-        }
-
-        // ✅ Audit → verification + own
-        if (currentDept === "audit") {
-          return rowDept === "verification" || rowDept === "audit";
-        }
-
-        // ✅ Directory → verification + audit + own
-        if (dept === "director" || dept === "chairman") {
-          return true;
-        }
-
-        // ✅ Other departments → verification + own
-        return (
-          rowDept === "verification" ||
-          rowDept.includes(currentDept)
+      const combinedRows = [...finalRows, ...documentRows]
+        .sort(
+          (a, b) =>
+            new Date(b.sortDate || b.verified_at || 0).getTime() -
+            new Date(a.sortDate || a.verified_at || 0).getTime()
         );
-      });
 
-      setRemarksList(filtered);
+      setRemarksList(combinedRows);
     } catch (error) {
       console.error("Error loading remarks:", error);
     }
@@ -187,25 +223,52 @@ export default function AgentScrutinyRegistration_Action() {
     };
   }, [summary]);
 
+  const actionLocked = finalSubmitted;
+  const draftLocked = actionLocked || Boolean(draftRemark);
+
+  const displayedRemarksList = useMemo(
+    () => (draftRemark ? [draftRemark, ...remarksList] : remarksList),
+    [draftRemark, remarksList]
+  );
+
   const handleAddRemark = () => {
-    if (!finalRemarks || shortfall === "") {
+    if (actionLocked) {
+      alert("Final submit is already completed. Remarks are locked.");
+      return;
+    }
+
+    if (draftRemark) return;
+
+    if (!finalRemarks.trim() || shortfall === "") {
       alert("Please select shortfall and enter remarks");
       return;
     }
 
     const newRemark = {
-      verified_by: admin?.department || "Verification",
+      id: "draft-action-remark",
+      source: "actionDraft",
+      verified_by: admin?.department || dept || "Verification",
+      description: getDepartmentLabel(admin?.department || dept || "Verification"),
       is_shortfall: shortfall,
-      remarks: finalRemarks,
-      verified_at: new Date().toISOString()
+      remarks: finalRemarks.trim(),
+      verified_at: new Date().toISOString(),
     };
 
-    setRemarksList((prev) => [newRemark, ...prev]);
+    setDraftRemark(newRemark);
+  };
+
+  const handleRemoveDraftRemark = () => {
+    setDraftRemark(null);
   };
 
   const handleFinalSubmit = async () => {
-    if (!finalRemarks || shortfall === "") {
-      alert("Please fill shortfall and remarks");
+    if (actionLocked) {
+      alert("Final submit is already completed.");
+      return;
+    }
+
+    if (!draftRemark) {
+      alert("Please add remarks before final submit");
       return;
     }
 
@@ -213,12 +276,13 @@ export default function AgentScrutinyRegistration_Action() {
       const submitResult = await apiPost("/api/agent-scrutiny/final-submit", {
         application_no: applicationNumber,
         department: dept,
-        is_shortfall: shortfall,
-        remarks: finalRemarks
+        is_shortfall: draftRemark.is_shortfall,
+        remarks: draftRemark.remarks
       });
 
       await loadRemarks();
 
+      setDraftRemark(null);
       setFinalRemarks("");
       setShortfall("");
 
@@ -240,7 +304,7 @@ export default function AgentScrutinyRegistration_Action() {
       const result = await apiPost("/api/agent-scrutiny/chairman-decision", {
         application_no: applicationNumber,
         decision,
-        remarks: finalRemarks,
+        remarks: finalRemarks.trim(),
       });
 
       await loadRemarks();
@@ -326,6 +390,7 @@ export default function AgentScrutinyRegistration_Action() {
                         name="shortfall"
                         value="yes"
                         checked={shortfall === "yes"}
+                        disabled={draftLocked}
                         onChange={(e) => setShortfall(e.target.value)}
                       />
                       <span style={{ marginLeft: "5px" }}>Yes</span>
@@ -337,6 +402,7 @@ export default function AgentScrutinyRegistration_Action() {
                         name="shortfall"
                         value="no"
                         checked={shortfall === "no"}
+                        disabled={draftLocked}
                         onChange={(e) => setShortfall(e.target.value)}
                       />
                       <span style={{ marginLeft: "5px" }}>No</span>
@@ -349,6 +415,7 @@ export default function AgentScrutinyRegistration_Action() {
                       placeholder="Enter remarks..."
                       rows={4}
                       value={finalRemarks}
+                      disabled={draftLocked}
                       onChange={(e) => setFinalRemarks(e.target.value)}
                       style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
                     />
@@ -359,8 +426,9 @@ export default function AgentScrutinyRegistration_Action() {
                       type="button"
                       className="spr-btn spr-btn-primary"
                       onClick={handleAddRemark}
+                      disabled={draftLocked}
                     >
-                      Add Remark
+                      {actionLocked ? "Locked" : draftRemark ? "Remark Added" : "Add Remark"}
                     </button>
                   </div>
                 </section>
@@ -378,6 +446,7 @@ export default function AgentScrutinyRegistration_Action() {
                         placeholder="Enter chairman remarks..."
                         rows={4}
                         value={finalRemarks}
+                        disabled={actionLocked}
                         onChange={(e) => setFinalRemarks(e.target.value)}
                         style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
                       />
@@ -387,6 +456,7 @@ export default function AgentScrutinyRegistration_Action() {
                       <button
                         type="button"
                         className="spr-btn spr-btn-primary"
+                        disabled={actionLocked}
                         onClick={() => handleChairmanDecision("approved")}
                       >
                         Approve
@@ -394,6 +464,7 @@ export default function AgentScrutinyRegistration_Action() {
                       <button
                         type="button"
                         className="spr-btn spr-btn-secondary"
+                        disabled={actionLocked}
                         onClick={() => handleChairmanDecision("rejected")}
                       >
                         Reject
@@ -415,26 +486,40 @@ export default function AgentScrutinyRegistration_Action() {
                           <th style={{ padding: "10px", border: "1px solid #ddd" }}>Description</th>
                           <th style={{ padding: "10px", border: "1px solid #ddd" }}>Is there any Shortfall in data/Payment</th>
                           <th style={{ padding: "10px", border: "1px solid #ddd" }}>Remarks</th>
-                          <th style={{ padding: "10px", border: "1px solid #ddd" }}>Upload Observations Document</th>
+
                           <th style={{ padding: "10px", border: "1px solid #ddd" }}>Date</th>
+                          <th style={{ padding: "10px", border: "1px solid #ddd" }}>Action</th>
                         </tr>
                       </thead>
 
                       <tbody>
-                        {remarksList && remarksList.length > 0 ? (
-                          remarksList.map((item, index) => (
+                        {displayedRemarksList && displayedRemarksList.length > 0 ? (
+                          displayedRemarksList.map((item, index) => (
                             <tr key={index}>
                               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{index + 1}</td>
-                              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.verified_by}</td>
+                              <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.description || getDepartmentLabel(item.verified_by || item.verification_team)}</td>
                               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                {item.is_shortfall === true || item.is_shortfall === "yes" ? "Yes" : "No"}
+                                {formatShortfall(item.is_shortfall)}
                               </td>
                               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{item.remarks}</td>
-                              <td style={{ padding: "10px", border: "1px solid #ddd" }}>NA</td>
+
                               <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                                 {item.verified_at
                                   ? new Date(item.verified_at).toLocaleString()
                                   : "N/A"}
+                              </td>
+                              <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                {item.source === "actionDraft" && !actionLocked ? (
+                                  <button
+                                    type="button"
+                                    className="spr-secondary-btn"
+                                    onClick={handleRemoveDraftRemark}
+                                  >
+                                    Remove
+                                  </button>
+                                ) : (
+                                  "-"
+                                )}
                               </td>
                             </tr>
                           ))
@@ -456,8 +541,9 @@ export default function AgentScrutinyRegistration_Action() {
                     type="button"
                     className="spr-btn spr-btn-primary"
                     onClick={handleFinalSubmit}
+                    disabled={actionLocked}
                   >
-                    Final Submit
+                    {actionLocked ? "Submitted" : "Final Submit"}
                   </button>
                 </div>
                 )}

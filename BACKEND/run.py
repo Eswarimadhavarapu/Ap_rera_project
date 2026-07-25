@@ -11,8 +11,8 @@ def test():
     return 10 / 0
 
 if __name__ == "__main__":
-    host = "127.0.0.1"   # localhost only
-    port = int(os.getenv("PORT", 8081))
+    host = "0.0.0.0"   # localhost only
+    port = int(os.getenv("PORT", 8080))
 
     print(f"Server starting at {host}:{port}")
 

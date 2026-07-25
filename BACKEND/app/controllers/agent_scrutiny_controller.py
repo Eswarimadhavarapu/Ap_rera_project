@@ -38,6 +38,30 @@ def _save_scrutiny_file(file_obj):
 
     return f"uploads/agent_scrutiny_files/{filename}"
 
+
+def _normalize_department(value):
+    normalized = str(value or "").strip().lower()
+    if not normalized:
+        return ""
+    if "assistant director" in normalized or normalized == "ad":
+        return "ad"
+    if "deputy director" in normalized or normalized == "dd":
+        return "dd"
+    if "director" in normalized or "directory" in normalized:
+        return "director"
+    if "chairman" in normalized:
+        return "chairman"
+    if "verification" in normalized:
+        return "verification"
+    if "planning" in normalized:
+        return "planning"
+    if "legal" in normalized:
+        return "legal"
+    if "audit" in normalized:
+        return "audit"
+    if "engineer" in normalized:
+        return "engineer"
+    return normalized
 def _parse_bool(value):
     if isinstance(value, bool):
         return value
@@ -260,6 +284,11 @@ def final_submit():
         if not payload["application_no"]:
             return jsonify({"error": "application_no required"}), 400
 
+        current_department = _normalize_department(payload["verified_by"])
+        existing_rows = get_agent_final_status(payload["application_no"])
+        if any(_normalize_department(row.get("verified_by")) == current_department for row in existing_rows):
+            return jsonify({"error": "Final submit already completed for this department"}), 409
+
         result = create_agent_final_verification(payload)
 
         response_payload = {
@@ -317,6 +346,10 @@ def chairman_decision():
             return jsonify({"error": "decision must be approved or rejected"}), 400
         if not remarks:
             return jsonify({"error": "remarks required"}), 400
+
+        existing_rows = get_agent_final_status(application_no)
+        if any(_normalize_department(row.get("verified_by")) == "chairman" for row in existing_rows):
+            return jsonify({"error": "Chairman decision already completed"}), 409
 
         contact = None
         if decision == "approved":

@@ -104,6 +104,8 @@ export default function ScrutinyDocumentRemarkModal({
   documentItem,
   onClose,
   applicationNo,
+  apiPrefix = "/api/scrutiny",
+  readOnly = false,
   verificationTeam,
   authorityLabel,
 }) {
@@ -208,7 +210,7 @@ export default function ScrutinyDocumentRemarkModal({
       remarks: row.remarks || "",
       remarksDate: formatRemarkDate(row.created_at || row.updated_at || Date.now()),
       documentName:
-  documentItem?.title ||   // ✅ THIS IS IMPORTANT
+  documentItem?.title ||   // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ THIS IS IMPORTANT
   row.document_name ||
   documentName,
       documentUrl: row.document_path || documentItem?.url || "",
@@ -230,12 +232,12 @@ export default function ScrutinyDocumentRemarkModal({
       const getAllowedTeams = (team) => {
   if (team === "verification") return ["verification"];
 
-  // ✅ AD & DD special case
+  // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ AD & DD special case
   if (team === "ad" || team === "dd") {
     return ["verification", "planning", team];
   }
 
-  // ✅ others
+  // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ others
   return ["verification", team];
 };
 
@@ -244,7 +246,7 @@ const teams = getAllowedTeams(activeVerificationTeam);
 const responses = await Promise.all(
   teams.map((t) =>
     apiGet(
-      `/api/scrutiny/verification-remarks?application_no=${encodeURIComponent(
+      `${apiPrefix}/verification-remarks?application_no=${encodeURIComponent(
         String(applicationNo).trim()
       )}&document_name=${encodeURIComponent(
         documentName
@@ -278,7 +280,7 @@ setHistory(combined.map(mapRemarkRow));
         setHistoryLoading(false);
       }
     }
-  }, [activeVerificationTeam, applicationNo, documentName, mapRemarkRow]);
+  }, [activeVerificationTeam, apiPrefix, applicationNo, documentName, mapRemarkRow]);
 
   useEffect(() => {
     if (!isOpen || !documentItem) return;
@@ -290,6 +292,11 @@ setHistory(combined.map(mapRemarkRow));
   }
 
   const handleSubmit = async () => {
+    if (readOnly) {
+      setFeedback({ type: "error", text: "Remarks are locked after final submit." });
+      return;
+    }
+
     const trimmedRemark = remarkText.trim();
 
     if (!String(applicationNo || "").trim()) {
@@ -320,7 +327,7 @@ setHistory(combined.map(mapRemarkRow));
       setSubmitting(true);
       setFeedback({ type: "", text: "" });
 
-      const response = await apiPost("/api/scrutiny/verification-remarks", {
+      const response = await apiPost(`${apiPrefix}/verification-remarks`, {
         application_no: String(applicationNo).trim(),
         document_name: documentName,
         verification_team: activeVerificationTeam,
@@ -421,6 +428,7 @@ setHistory(combined.map(mapRemarkRow));
                   name={`shortfall-${documentKey}`}
                   value="yes"
                   checked={shortfall === "yes"}
+                  disabled={readOnly}
                   onChange={(event) => {
                     setShortfall(event.target.value);
                     if (feedback.text) {
@@ -436,6 +444,7 @@ setHistory(combined.map(mapRemarkRow));
                   name={`shortfall-${documentKey}`}
                   value="no"
                   checked={shortfall === "no"}
+                  disabled={readOnly}
                   onChange={(event) => {
                     setShortfall(event.target.value);
                     if (feedback.text) {
@@ -452,6 +461,7 @@ setHistory(combined.map(mapRemarkRow));
             className="sdrm-remarks-box"
             maxLength={3000}
             value={remarkText}
+            disabled={readOnly}
             onChange={(event) => {
               setRemarkText(event.target.value);
               if (feedback.text) {
@@ -473,9 +483,9 @@ setHistory(combined.map(mapRemarkRow));
               type="button"
               className="sdrm-submit-btn"
               onClick={handleSubmit}
-              disabled={submitting}
+              disabled={submitting || readOnly}
             >
-              {submitting ? "Submitting..." : "Submit"}
+              {readOnly ? "Locked" : submitting ? "Submitting..." : "Submit"}
             </button>
           </div>
 
