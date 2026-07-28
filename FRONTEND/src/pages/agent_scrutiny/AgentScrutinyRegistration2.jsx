@@ -358,7 +358,7 @@ export default function AgentScrutinyRegistration_2() {
                       onClick={handleAddUploadRemark}
                       disabled={submittingRemarks || uploadLocked}
                     >
-                      {finalSubmitted ? "Locked" : uploadDraftRemark ? "Remark Added" : "Add Remark"}
+                      {uploadDraftRemark ? "Remark Added" : "Add Remark"}
                     </button>
                   </div>
 

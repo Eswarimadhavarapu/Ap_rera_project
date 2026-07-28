@@ -12,6 +12,7 @@ from app.models.agent_scrutiny_model import (
     get_agent_scrutiny_fpms_dashboard_data,
     create_agent_verification_remark,
     get_agent_verification_remarks,
+    delete_agent_verification_remark,
     create_agent_final_verification,
     get_agent_final_status,
     get_agent_final_shortfall_remarks,
@@ -263,6 +264,42 @@ def get_verification_remark_api():
         )
 
         return jsonify({"rows": rows}), 200
+    except Exception as exc:
+        return jsonify({"error": "Internal server error"}), 500
+
+@agent_scrutiny_bp.route("/agent-scrutiny/verification-remarks/<int:remark_id>", methods=["DELETE"])
+@jwt_required()
+def delete_verification_remark_api(remark_id):
+    try:
+        application_no = request.args.get("application_no") or request.args.get("applicationNo")
+
+        if not str(application_no or "").strip():
+            return jsonify({"error": "application_no is required"}), 400
+
+        application_no = str(application_no).strip()
+        existing_remarks = get_agent_verification_remarks(application_no=application_no)
+        target_remark = next(
+            (row for row in existing_remarks if int(row.get("id") or 0) == remark_id),
+            None,
+        )
+
+        if not target_remark:
+            return jsonify({"error": "Remark not found"}), 404
+
+        final_rows = get_agent_final_status(application_no)
+        target_team = _normalize_department(target_remark.get("verification_team"))
+        if any(_normalize_department(row.get("verified_by")) == target_team for row in final_rows):
+            return jsonify({"error": "Final submit already completed. Remarks are locked."}), 409
+
+        deleted_row = delete_agent_verification_remark(
+            remark_id=remark_id,
+            application_no=application_no,
+        )
+
+        if not deleted_row:
+            return jsonify({"error": "Remark not found"}), 404
+
+        return jsonify({"message": "Remark removed successfully"}), 200
     except Exception as exc:
         return jsonify({"error": "Internal server error"}), 500
 

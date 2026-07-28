@@ -1816,18 +1816,6 @@ function Publicnotice() {
 
   return (
     <section className="homepublic-notice-section">
-      <div className="homepublic-notice-grid">
-        {notices.map((notice, index) => (
-          <div className="homepublic-notice-card" key={index}>
-            <div className={`homepublic-notice-icon icon-${index}`}>
-              {notice.icon}
-            </div>
-            {/* <h3 className="homepublic-notice-title">{notice.title}</h3> */}
-            <p className="homepublic-notice-text">{notice.description}</p>
-          </div>
-        ))}
-      </div>
-      
       <div className="homepublic-notice-container">
 
 

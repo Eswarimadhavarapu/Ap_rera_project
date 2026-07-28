@@ -738,7 +738,7 @@ export default function AgentScrutinyRegistrationDetail() {
                       onClick={handleAddProfileRemark}
                       disabled={savingProfileRemark || profileLocked}
                     >
-                      {finalSubmitted ? "Locked" : profileDraftRemark ? "Remark Added" : "Add Remark"}
+                      {profileDraftRemark ? "Remark Added" : "Add Remark"}
                     </button>
                   </div>
 

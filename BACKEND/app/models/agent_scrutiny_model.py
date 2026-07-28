@@ -369,6 +369,26 @@ def get_agent_verification_remarks(application_no, document_name=None, verificat
     return results
 
 
+def delete_agent_verification_remark(remark_id, application_no=None):
+    query = text(
+        """
+        DELETE FROM agent_verification_remarks_t
+        WHERE id = :remark_id
+          AND (:application_no IS NULL OR TRIM(application_no) = TRIM(:application_no))
+        RETURNING *
+        """
+    )
+    row = db.session.execute(
+        query,
+        {
+            "remark_id": remark_id,
+            "application_no": _clean_optional(application_no),
+        },
+    ).mappings().first()
+    db.session.commit()
+    return dict(row) if row else None
+
+
 def get_agent_final_shortfall_remarks(application_no):
     query = text(
         """

@@ -40,7 +40,7 @@ export default function SearchPanel() {
   return (
     <div className="search-ecosystem-wrapper">
       <div className="search-panel-card">
-        <h2>Public Search & Ratings</h2>
+        <h2>Project Search</h2>
         <div className="search-fields-grid">
           <input name="project_name" value={params.project_name} onChange={handleChange} placeholder="Project Name" className="sp-input" />
           <input name="area" value={params.area} onChange={handleChange} placeholder="Area / District" className="sp-input" />

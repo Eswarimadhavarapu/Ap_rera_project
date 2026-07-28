@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { apiGet, apiPost } from "../api/api";
+import { apiDelete, apiGet, apiPost } from "../api/api";
 import { useAdmin } from "../context/AdminContext";
 import "../styles/ScrutinyDocumentRemarkModal.css";
 
@@ -214,6 +214,7 @@ export default function ScrutinyDocumentRemarkModal({
   row.document_name ||
   documentName,
       documentUrl: row.document_path || documentItem?.url || "",
+      raw: row,
     }),
     [activeAuthorityLabel, documentItem?.url, documentName]
   );
@@ -290,6 +291,34 @@ setHistory(combined.map(mapRemarkRow));
   if (!isOpen || !documentItem) {
     return null;
   }
+
+  const canRemoveRemarks = !readOnly && String(apiPrefix || "").includes("agent-scrutiny");
+
+  const handleRemoveHistory = async (row) => {
+    if (readOnly || !row?.id) return;
+
+    const confirmed = window.confirm("Remove this remark?");
+    if (!confirmed) return;
+
+    try {
+      setSubmitting(true);
+      setFeedback({ type: "", text: "" });
+      await apiDelete(
+        `${apiPrefix}/verification-remarks/${row.id}?application_no=${encodeURIComponent(
+          String(applicationNo || "").trim()
+        )}`
+      );
+      setFeedback({ type: "success", text: "Remark removed successfully." });
+      await loadHistory({ showLoader: false });
+    } catch (error) {
+      setFeedback({
+        type: "error",
+        text: error.message || "Unable to remove remark.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (readOnly) {
@@ -485,7 +514,7 @@ setHistory(combined.map(mapRemarkRow));
               onClick={handleSubmit}
               disabled={submitting || readOnly}
             >
-              {readOnly ? "Locked" : submitting ? "Submitting..." : "Submit"}
+              {submitting ? "Submitting..." : "Submit"}
             </button>
           </div>
 
@@ -502,6 +531,7 @@ setHistory(combined.map(mapRemarkRow));
                     <th>Remarks</th>
                     <th>Remarks Date</th>
                     <th>Document</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -514,22 +544,36 @@ setHistory(combined.map(mapRemarkRow));
                         <td>{row.remarks}</td>
                         <td>{row.remarksDate}</td>
                         <td>
-  {row.documentUrl ? (
-    <span
-      style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
-      onClick={() => window.open(row.documentUrl, "_blank")}
-    >
-      View
-    </span>
-  ) : (
-    "NA"
-  )}
-</td>
+                          {row.documentUrl ? (
+                            <span
+                              style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+                              onClick={() => window.open(row.documentUrl, "_blank")}
+                            >
+                              View
+                            </span>
+                          ) : (
+                            "NA"
+                          )}
+                        </td>
+                        <td>
+                          {canRemoveRemarks ? (
+                            <button
+                              type="button"
+                              className="sdrm-remove-btn"
+                              onClick={() => handleRemoveHistory(row.raw)}
+                              disabled={submitting}
+                            >
+                              Remove
+                            </button>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="sdrm-empty-history">
+                      <td colSpan="7" className="sdrm-empty-history">
                         {historyLoading ? "Loading remarks..." : "No remarks yet"}
                       </td>
                     </tr>

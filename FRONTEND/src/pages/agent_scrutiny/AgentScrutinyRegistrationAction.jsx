@@ -428,7 +428,7 @@ export default function AgentScrutinyRegistration_Action() {
                       onClick={handleAddRemark}
                       disabled={draftLocked}
                     >
-                      {actionLocked ? "Locked" : draftRemark ? "Remark Added" : "Add Remark"}
+                      {draftRemark ? "Remark Added" : "Add Remark"}
                     </button>
                   </div>
                 </section>
@@ -543,7 +543,7 @@ export default function AgentScrutinyRegistration_Action() {
                     onClick={handleFinalSubmit}
                     disabled={actionLocked}
                   >
-                    {actionLocked ? "Submitted" : "Final Submit"}
+                    Final Submit
                   </button>
                 </div>
                 )}
