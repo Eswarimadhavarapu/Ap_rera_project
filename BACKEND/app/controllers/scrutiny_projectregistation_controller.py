@@ -10,6 +10,7 @@ from flask_jwt_extended import jwt_required
 from app.utils.role_required import roles_required
 from app.models.scrutiny_projectregistation_model import (
     create_verification_remark,
+    delete_verification_remark,
     create_scrutiny_file as create_scrutiny_file_record,
     get_document_shortfall_remarks,
     get_final_shortfall_remarks,
@@ -112,6 +113,67 @@ Regards,
 AP RERA Authority
 """
 
+@scrutiny_bp.route("/scrutiny/verification-remarks/<int:remark_id>", methods=["DELETE"])
+@jwt_required()
+@roles_required(
+    "SCRUTINY",
+    "LEGAL_L1",
+    "LEGAL_L2",
+    "PLANNING",
+    "AUDIT",
+    "ENGINEER",
+    "AD",
+    "DIRECTOR",
+    "CHAIRMAN",
+    "ADMIN",
+    "SUPER_ADMIN",
+    "SENIARADIT"
+)
+def delete_verification_remark_api(remark_id):
+    try:
+        application_no = request.args.get("application_no") or request.args.get("applicationNo")
+
+        if not str(application_no or "").strip():
+            return jsonify({"error": "application_no is required"}), 400
+
+        application_no = str(application_no).strip()
+        existing_remarks = get_verification_remarks(application_no=application_no)
+        target_remark = next(
+            (row for row in existing_remarks if int(row.get("id") or 0) == remark_id),
+            None,
+        )
+
+        if not target_remark:
+            return jsonify({"error": "Remark not found"}), 404
+
+        target_team = str(target_remark.get("verification_team") or "").strip().lower()
+        if target_team == "scrutiny":
+            target_team = "verification"
+
+        final_query = text("""
+            SELECT verified_by
+            FROM verification_final_status
+            WHERE TRIM(application_no) = TRIM(:application_no)
+        """)
+        final_rows = db.session.execute(final_query, {"application_no": application_no}).mappings().all()
+        for row in final_rows:
+            verified_by = str(row.get("verified_by") or "").strip().lower()
+            if verified_by == "scrutiny":
+                verified_by = "verification"
+            if verified_by == target_team:
+                return jsonify({"error": "Final submit already completed. Remarks are locked."}), 409
+
+        deleted_row = delete_verification_remark(
+            remark_id=remark_id,
+            application_no=application_no,
+        )
+
+        if not deleted_row:
+            return jsonify({"error": "Remark not found"}), 404
+
+        return jsonify({"message": "Remark removed successfully"}), 200
+    except Exception as exc:
+        return jsonify({"error": "Internal server error"}), 500
 @scrutiny_bp.route("/scrutiny/final-submit", methods=["POST"])
 @jwt_required()
 @roles_required(
@@ -545,7 +607,7 @@ def create_verification_remark_api():
                 400,
             )
 
-        allowed_teams = {"verification", "audit", "planning", "legal", "engineer"}
+        allowed_teams = {"verification", "audit", "planning", "legal", "engineer", "ad", "dd", "director"}
         allowed_statuses = {"pending", "approved", "rejected"}
 
         data["verification_team"] = str(data["verification_team"]).strip().lower()

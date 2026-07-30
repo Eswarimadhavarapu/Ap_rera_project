@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiGet, BASE_URL } from "../../api/api";
+import { apiDelete, apiGet, apiPost, BASE_URL } from "../../api/api";
 import ProjectWizard from "../../components/scrutiny/scrutiny_steper";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import "../../styles/scrutiny/scrutiny_projectregistation_1.css";
@@ -84,6 +84,32 @@ const formatBoolean = (value) => {
   if (["no", "n", "false", "0"].includes(normalized)) return "No";
   return displayText(value);
 };
+
+const normalizeDepartment = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized === "scrutiny" ? "verification" : normalized;
+};
+
+const getDepartmentLabel = (value) => {
+  const labels = {
+    verification: "Verification Team",
+    planning: "Planning Team",
+    legal: "Legal Team",
+    audit: "Audit Team",
+    engineer: "Scrutiny Engineer",
+    director: "Director",
+    chairman: "Chairman",
+  };
+  return labels[normalizeDepartment(value)] || displayText(value, "Verification Team");
+};
+
+const formatShortfall = (value) => {
+  if (value === true) return "Yes";
+  if (value === false) return "No";
+  return formatBoolean(value);
+};
+
+const PROJECT_PAGE_1_REMARK_DOCUMENT = "Project Registration Page 1";
 
 const normalizePromoterType = (value) => {
   const normalized = String(value || "").toLowerCase();
@@ -228,9 +254,10 @@ export default function ScrutinyProjectRegistrationDetail() {
   const navigate = useNavigate();
   const { admin } = useAdmin();
 const dept = admin?.department?.toLowerCase();
+const activeVerificationTeam = normalizeDepartment(dept || "verification");
 
 // ✅ NEW LINE ADD
-const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
+const isRestrictedDept = ["planning", "ad", "dd"].includes(activeVerificationTeam);
 
   const location = useLocation();
 
@@ -249,6 +276,11 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState(summaryFromState);
   const [remarks, setRemarks] = useState("");
+  const [shortfall, setShortfall] = useState("");
+  const [savedRemarks, setSavedRemarks] = useState([]);
+  const [finalSubmitted, setFinalSubmitted] = useState(false);
+  const [remarksSaving, setRemarksSaving] = useState(false);
+  const [remarksMessage, setRemarksMessage] = useState("");
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [reraEntries, setReraEntries] = useState([]);
   const [projectEntries, setProjectEntries] = useState([]);
@@ -402,6 +434,95 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
     loadData();
   }, [applicationNumber, promoterTypeFromState, summaryFromState, dept]);
 
+  const loadPageRemarks = async () => {
+    if (!String(applicationNumber || "").trim()) return;
+
+    try {
+      const encodedApplicationNo = encodeURIComponent(String(applicationNumber).trim());
+      const [remarksResponse, finalStatusResponse] = await Promise.all([
+        apiGet(`/api/scrutiny/verification-remarks?application_no=${encodedApplicationNo}&document_name=${encodeURIComponent(PROJECT_PAGE_1_REMARK_DOCUMENT)}&verification_team=${activeVerificationTeam}`),
+        apiGet(`/api/scrutiny/final-status?application_no=${encodedApplicationNo}`),
+      ]);
+
+      setSavedRemarks(Array.isArray(remarksResponse?.rows) ? remarksResponse.rows : []);
+      setFinalSubmitted(
+        Array.isArray(finalStatusResponse?.rows) &&
+          finalStatusResponse.rows.some(
+            (row) => normalizeDepartment(row.verified_by) === activeVerificationTeam
+          )
+      );
+    } catch (loadRemarksError) {
+      console.error("Project page 1 remarks fetch failed", loadRemarksError);
+    }
+  };
+
+  useEffect(() => {
+    loadPageRemarks();
+  }, [applicationNumber, activeVerificationTeam]);
+
+  const savedPageRemark = savedRemarks[0] || null;
+  const remarksLocked = finalSubmitted || Boolean(savedPageRemark);
+
+  const handleAddRemark = async () => {
+    if (remarksLocked) return;
+
+    const trimmedRemarks = remarks.trim();
+    if (!String(applicationNumber || "").trim()) {
+      alert("Application number is missing.");
+      return;
+    }
+
+    if (!shortfall) {
+      alert("Please select whether there is any shortfall.");
+      return;
+    }
+
+    if (!trimmedRemarks) {
+      alert("Please enter remarks before adding.");
+      return;
+    }
+
+    try {
+      setRemarksSaving(true);
+      setRemarksMessage("");
+      await apiPost("/api/scrutiny/verification-remarks", {
+        application_no: String(applicationNumber).trim(),
+        document_name: PROJECT_PAGE_1_REMARK_DOCUMENT,
+        verification_team: activeVerificationTeam,
+        is_shortfall: shortfall === "yes",
+        status: "pending",
+        remarks: trimmedRemarks,
+        verified_by: getDepartmentLabel(activeVerificationTeam),
+      });
+      setRemarks("");
+      setShortfall("");
+      setRemarksMessage("Remark added successfully.");
+      await loadPageRemarks();
+    } catch (saveRemarkError) {
+      alert(saveRemarkError.message || "Unable to save remarks.");
+    } finally {
+      setRemarksSaving(false);
+    }
+  };
+
+  const handleRemoveRemark = async (remarkId) => {
+    if (finalSubmitted || !remarkId) return;
+
+    if (!window.confirm("Remove this remark?")) return;
+
+    try {
+      setRemarksSaving(true);
+      await apiDelete(
+        `/api/scrutiny/verification-remarks/${remarkId}?application_no=${encodeURIComponent(String(applicationNumber).trim())}`
+      );
+      setRemarksMessage("Remark removed successfully.");
+      await loadPageRemarks();
+    } catch (removeRemarkError) {
+      alert(removeRemarkError.message || "Unable to remove remark.");
+    } finally {
+      setRemarksSaving(false);
+    }
+  };
   const isOther = normalizePromoterType(formData.promoterType || promoterTypeFromState) === "other";
 
   const summaryData = useMemo(() => {
@@ -756,19 +877,102 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(dept);
                     )}
                   </Section>
                 </div>
-                {dept === "verification" && (
+                {activeVerificationTeam === "verification" && (
                 <div className="spr-remarks-card">
                   <div className="spr-remarks-head">
                     <h3>Enter Remarks (Data Shortfall Remarks if any)<span>*</span></h3>
                     <span>{5000 - remarks.length}</span>
                   </div>
+
+                  <div className="spr-shortfall-row" style={{ display: "flex", gap: "20px", margin: "10px 0 14px" }}>
+                    <label className="spr-radio">
+                      <input
+                        type="radio"
+                        name="projectPage1Shortfall"
+                        value="yes"
+                        checked={shortfall === "yes"}
+                        disabled={remarksLocked}
+                        onChange={(event) => setShortfall(event.target.value)}
+                      />
+                      <span style={{ marginLeft: "5px" }}>Yes</span>
+                    </label>
+                    <label className="spr-radio">
+                      <input
+                        type="radio"
+                        name="projectPage1Shortfall"
+                        value="no"
+                        checked={shortfall === "no"}
+                        disabled={remarksLocked}
+                        onChange={(event) => setShortfall(event.target.value)}
+                      />
+                      <span style={{ marginLeft: "5px" }}>No</span>
+                    </label>
+                  </div>
+
                   <textarea
                     className="spr-remarks-box"
                     maxLength={5000}
                     value={remarks}
+                    disabled={remarksLocked}
                     onChange={(event) => setRemarks(event.target.value)}
                     placeholder="Maximum of 5000 Characters"
                   />
+
+                  <div className="spr-submit-row" style={{ marginTop: "15px", textAlign: "right" }}>
+                    {remarksMessage ? (
+                      <span style={{ marginRight: "12px", color: "#166534", fontWeight: 600 }}>{remarksMessage}</span>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="spr-btn spr-btn-primary"
+                      onClick={handleAddRemark}
+                      disabled={remarksSaving || remarksLocked}
+                    >
+                      {savedPageRemark ? "Remark Added" : "Add Remark"}
+                    </button>
+                  </div>
+
+                  {savedRemarks.length > 0 && (
+                    <div className="spr-table-wrap" style={{ marginTop: "15px" }}>
+                      <table className="spr-table">
+                        <thead>
+                          <tr>
+                            <th>SNo</th>
+                            <th>Description</th>
+                            <th>Is Shortfall</th>
+                            <th>Remarks</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {savedRemarks.map((item, index) => (
+                            <tr key={item.id || index}>
+                              <td>{index + 1}</td>
+                              <td>{getDepartmentLabel(item.verified_by || item.verification_team)}</td>
+                              <td>{formatShortfall(item.is_shortfall)}</td>
+                              <td>{item.remarks || "N/A"}</td>
+                              <td>{formatDateTime(item.created_at || item.updated_at)}</td>
+                              <td>
+                                {!finalSubmitted ? (
+                                  <button
+                                    type="button"
+                                    className="spr-secondary-btn"
+                                    onClick={() => handleRemoveRemark(item.id)}
+                                    disabled={remarksSaving}
+                                  >
+                                    Remove
+                                  </button>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
                 )}
               </>
