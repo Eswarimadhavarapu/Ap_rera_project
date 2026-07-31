@@ -404,7 +404,7 @@ export default function RTI_List() {
   // ── navigate ──────────────────────────────────────────────────────────────
   const handleView = (appId) => {
     console.log(`%c👁 RTI_List — view application_id=${appId}`, "color:#5a4fcf;");
-    navigate("/rti_Details_page", { state: { application_id: appId } });
+    navigate("/scrutiny/RTI_Details_Page", { state: { application_id: appId } });
   };
 
   const handleBack = () => {
@@ -436,25 +436,14 @@ export default function RTI_List() {
       {/* ── Header ── */}
       <div className="RTI_List__header">
         <div className="RTI_List__headerLeft">
-          <div className="RTI_List__breadcrumb">
-            <span className="RTI_List__breadcrumb--dim">Dashboard</span>
-            <span className="RTI_List__breadcrumb--sep">›</span>
-            <span className="RTI_List__breadcrumb--active">RTI Applications</span>
-          </div>
+         
           <h1 className="RTI_List__title">RTI Applications</h1>
-          <p className="RTI_List__subtitle">Right to Information — Application Management</p>
+         
         </div>
 
         <div className="RTI_List__userBadge">
-          <div className="RTI_List__userAvatar">
-            {initials(admin?.name || admin?.username || "A")}
-          </div>
-          <div className="RTI_List__userInfo">
-            <span className="RTI_List__userName">
-              {admin?.name || admin?.username || "Admin"}
-            </span>
-            <span className="RTI_List__userRole">{admin?.role || "—"}</span>
-          </div>
+          
+         
           <span className="RTI_List__userOnline" title="Online" />
         </div>
       </div>
@@ -682,7 +671,7 @@ export default function RTI_List() {
   </td>
 
   <td className="RTI_List__td RTI_List__td--email">
-    {row.email || "—"}
+    {row.email_id || "—"}
   </td>
 
   <td className="RTI_List__td">
@@ -693,7 +682,7 @@ export default function RTI_List() {
   </td>
 
   <td className="RTI_List__td RTI_List__td--date">
-    {formatDate(row.application_submitted_date)}
+    {formatDate(row.submitted_date)}
   </td>
 
   {/* NEW SLA COUNTDOWN COLUMN */}

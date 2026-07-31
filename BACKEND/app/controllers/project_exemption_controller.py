@@ -369,7 +369,7 @@ def send_certificate_email(record: ProjectExemption, cert_path: str):
 
 # ── CREATE ──
 @project_exemption_bp.route("/project_exemption/create", methods=["POST"])
-@jwt_required()
+
 def create_project_exemption():
     try:
         data = request.form

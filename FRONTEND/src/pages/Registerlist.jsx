@@ -5,7 +5,7 @@ import "../styles/Registerlist.css";
 import { useAdmin } from "../context/AdminContext";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { BASE_URL } from "../api/api";
+import { BASE_URL, apiGet, apiFetch } from "../api/api";
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
@@ -91,36 +91,41 @@ function UploadModal({ onClose, onSuccess }) {
     if (f) setFile(f);
   };
 
-  const handleSubmit = async (e) => {
-    e?.preventDefault();
-    if (!projectType || !file) return;
-    setUploading(true);
-    setError(null);
-    try {
-      const formData = new FormData();
-      formData.append("project_type", projectType);
-      formData.append("file", file);
+const handleSubmit = async (e) => {
+  e?.preventDefault();
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered/upload-excel`, {
+  if (!projectType || !file) return;
+
+  setUploading(true);
+  setError(null);
+
+  try {
+    const formData = new FormData();
+    formData.append("project_type", projectType);
+    formData.append("file", file);
+
+    const json = await apiFetch(
+      "/api/project-unregistered/upload-excel",
+      {
         method: "POST",
         body: formData,
-      });
+      }
+    );
 
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.message || "Upload failed");
+    setResult({
+      inserted: json.inserted ?? 0,
+      skipped: json.skipped ?? 0,
+      sheet_used: json.sheet_used ?? "Sheet1",
+    });
 
-      setResult({
-        inserted: json.inserted ?? 0,
-        skipped: json.skipped ?? 0,
-        sheet_used: json.sheet_used ?? "Sheet1",
-      });
-      onSuccess?.();
-    } catch (err) {
-      setError(err.message || "Upload failed. Please try again.");
-    } finally {
-      setUploading(false);
-    }
-  };
+    onSuccess?.();
+
+  } catch (err) {
+    setError(err.message || "Upload failed. Please try again.");
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleReset = () => {
     setProjectType("");
@@ -468,9 +473,11 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
 
       while (currentPage <= totalPagesLocal) {
         const params = new URLSearchParams({ page: currentPage, per_page: 50 });
-        const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
-        if (!res.ok) throw new Error("API failed");
-        const json = await res.json();
+       const token = localStorage.getItem("token");
+
+const json = await apiGet(
+  `/api/project-unregistered?${params.toString()}`
+);
         allData = [...allData, ...(json.data || [])];
         totalPagesLocal = json.total_pages || 1;
         currentPage++;
@@ -502,8 +509,9 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
   let totalPages = 1;
 
   while (currentPage <= totalPages) {
-    const res = await fetch(`${BASE_URL}/api/project-unregistered?page=${currentPage}&per_page=50`);
-    const json = await res.json();
+    const json = await apiGet(
+`/api/project-unregistered?page=${currentPage}&per_page=50`
+);
 
     allData = [...allData, ...(json.data || [])];
     totalPages = json.total_pages || 1;
@@ -546,10 +554,11 @@ const [allNoticeRecords, setAllNoticeRecords] = useState([]);
       if (filterBy === "type"     && filterType) params.append("project_type", filterType);
       if (filterBy === "fileno"   && debounced)  params.append("search", debounced);
 
-      const res = await fetch(`${BASE_URL}/api/project-unregistered?${params}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      let data = json.data || [];
+      const json = await apiGet(
+  `/api/project-unregistered?${params.toString()}`
+);
+
+let data = json.data || [];
 
       // BUG FIX #2: S.No filter — client-side exact match
       if (filterBy === "sno" && filterSno) {

@@ -569,8 +569,7 @@ function App() {
              <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
              <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
              <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
-                <Route path="/scrutiny/RTI_list" element={<RTI_List />} />
-            <Route path="/scrutiny/RTI_Details_Page" element={<RTI_Details_Page />}
+               
             />
 
             {/*project extention*/}

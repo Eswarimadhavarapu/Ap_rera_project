@@ -26,22 +26,16 @@ from app.utils.mail_service import send_email
 
 
 scrutiny_bp = Blueprint("scrutiny_bp", __name__)
-
-
 def _save_scrutiny_file(file_obj):
     if not file_obj or not getattr(file_obj, "filename", ""):
         return None
-
     upload_dir = os.path.join(current_app.config["UPLOAD_FOLDER"], "scrutiny_files")
     os.makedirs(upload_dir, exist_ok=True)
-
     original_name = secure_filename(file_obj.filename)
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S%f")
     filename = f"{timestamp}_{original_name}" if original_name else timestamp
-
     absolute_path = os.path.join(upload_dir, filename)
     file_obj.save(absolute_path)
-
     return f"uploads/scrutiny_files/{filename}"
 
 
@@ -75,9 +69,6 @@ def scrutiny_project_registrations():
     except Exception as exc:
         return jsonify({"error": "Internal server error"}), 500
 
-
-
-# ✅ ADD THIS API BELOW project-registrations API
 
 from app.models.scrutiny_projectregistation_model import create_final_verification
 
@@ -450,7 +441,8 @@ def scrutiny_project_registration_detail():
     "CHAIRMAN",
     "ADMIN",
     "SUPER_ADMIN",
-    "SENIARADIT"
+    "SENIARADIT",
+    "STAFF"
 )
 def create_scrutiny_file_api():
     try:
@@ -540,7 +532,8 @@ def create_scrutiny_file_api():
     "CHAIRMAN",
     "ADMIN",
     "SUPER_ADMIN",
-    "SENIARADIT"
+    "SENIARADIT",
+    "STAFF"
 )
 def scrutiny_fpms_dashboard():
     try:

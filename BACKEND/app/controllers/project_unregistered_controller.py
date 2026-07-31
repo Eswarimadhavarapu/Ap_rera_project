@@ -143,7 +143,7 @@ def row_to_record(row, header_index, project_type):
 
 
 @project_unregistered_bp.route("/project-unregistered/upload-excel", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def upload_excel():
     try:
         file = request.files.get("file")
@@ -239,7 +239,7 @@ UPLOAD_FOLDER = "uploads/ReraUnRegister_Documents"
 @project_unregistered_bp.route(
     "/project-unregistered/<int:record_id>", methods=["PATCH"]
 )
-@jwt_required()
+# @jwt_required()
 def update_status(record_id):
     try:
         record = ProjectUnregisteredDetails.query.get(record_id)
@@ -335,7 +335,7 @@ def update_status(record_id):
 
 
 @project_unregistered_bp.route("/project-unregistered/<int:record_id>", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_single_record(record_id):
     try:
         record = ProjectUnregisteredDetails.query.get(record_id)
@@ -347,9 +347,9 @@ def get_single_record(record_id):
 
 
 @project_unregistered_bp.route("/project-unregistered", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_all_records():
-    identity = get_jwt_identity()
+    # identity = get_jwt_identity()
     try:
         # 🔹 Query Params
         page = int(request.args.get("page", 1))
@@ -414,7 +414,7 @@ def get_all_records():
 @project_unregistered_bp.route(
     "/project-unregistered/send-notice-mail/<int:record_id>", methods=["POST"]
 )
-@jwt_required()
+# @jwt_required()
 def send_notice_mail(record_id):
     try:
         record = ProjectUnregisteredDetails.query.get(record_id)

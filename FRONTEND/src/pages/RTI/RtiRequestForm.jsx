@@ -129,6 +129,7 @@ const validateForm = () => {
     alert("Please select Below Poverty Line");
     return false;
   }
+   // At least one supporting document is required
 
   if (!formData.requestDetails.trim()) {
     alert("Please enter RTI Request Details");

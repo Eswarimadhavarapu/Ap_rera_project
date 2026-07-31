@@ -143,14 +143,22 @@ def register_agent():
         entities_data = json.loads(form.get("entities", "[]"))
 
         for index, e in enumerate(entities_data):
-            validation_error = validate_registration({
-                "pan": e.get("pan"),
-                "aadhaar": e.get("aadhaar"),
-                "mobile": e.get("mobile")
-            })
-            
-            if validation_error:
-                return validation_error
+            if e.get("nationality") == "Indian":
+                validation_error = validate_registration({
+                    "pan": e.get("pan"),
+                    "aadhaar": e.get("aadhaar"),
+                    "mobile": e.get("mobile")
+                })
+
+                if validation_error:
+                    return validation_error
+            else:
+                validation_error = validate_registration({
+                    "mobile": e.get("mobile")
+                })
+
+                if validation_error:
+                    return validation_error
             
             entity = AgentOtherThanIndividualEntity(
                 designation=e.get("designation"),
