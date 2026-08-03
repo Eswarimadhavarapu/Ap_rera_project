@@ -292,7 +292,7 @@ setHistory(combined.map(mapRemarkRow));
     return null;
   }
 
-  const canRemoveRemarks = !readOnly && String(apiPrefix || "").includes("agent-scrutiny");
+  const canRemoveRemarks = !readOnly && ["/api/agent-scrutiny", "/api/scrutiny"].includes(String(apiPrefix || ""));
 
   const handleRemoveHistory = async (row) => {
     if (readOnly || !row?.id) return;

@@ -1,0 +1,319 @@
+/* Shared project scrutiny UI polish. Scoped to project scrutiny screens only. */
+.scrutiny-main :is(
+  .spr-page,
+  .project-details-container-scrutiny,
+  .vdd-page-shell,
+  .scrutiny-associate-container,
+  .scrutiny-upload-container,
+  .sra-page,
+  .sr-page
+) {
+  --ps-bg: #f4f7fb;
+  --ps-surface: #ffffff;
+  --ps-border: #d6e0eb;
+  --ps-border-strong: #b9c9d9;
+  --ps-text: #172b3f;
+  --ps-muted: #5d7186;
+  --ps-primary: #174a7c;
+  --ps-primary-hover: #123c65;
+  --ps-secondary: #1f7a68;
+  --ps-danger: #b42318;
+  --ps-warning: #b45309;
+  --ps-row: #f8fbff;
+  color: var(--ps-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.scrutiny-main :is(
+  .spr-page,
+  .project-details-container-scrutiny,
+  .vdd-page-shell,
+  .scrutiny-associate-container,
+  .scrutiny-upload-container,
+  .sra-page
+) {
+  background: var(--ps-bg) !important;
+}
+
+.scrutiny-main :is(
+  .spr-shell,
+  .spr-card,
+  .spr-section,
+  .spr-panel,
+  .spr-remarks-card,
+  .form-section-scrutiny,
+  .scrutiny-remarks-card,
+  .scrutiny-upload-section,
+  .scrutiny-associate-section,
+  .view-development-details-card,
+  .sra-panel,
+  .sra-state-card,
+  .sra-metric-card,
+  .sra-review-card
+) {
+  border: 1px solid var(--ps-border) !important;
+  border-radius: 8px !important;
+  background: var(--ps-surface) !important;
+  box-shadow: 0 8px 24px rgba(20, 43, 66, 0.07) !important;
+}
+
+.scrutiny-main :is(
+  .spr-title,
+  .spr-section-title,
+  .page-title-scrutiny,
+  .scrutiny-page-title,
+  .scrutiny-upload-title,
+  .sra-title
+) {
+  color: var(--ps-primary) !important;
+  letter-spacing: 0 !important;
+}
+
+.scrutiny-main :is(
+  .spr-section-title,
+  .subheading-scrutiny,
+  .scrutiny-upload-heading,
+  .scrutiny-associate-title,
+  .vdd-section-title,
+  .sra-panel-head h2,
+  .scrutiny-remarks-head h3,
+  .spr-remarks-head h3
+) {
+  color: var(--ps-primary) !important;
+  font-weight: 750 !important;
+  letter-spacing: 0 !important;
+}
+
+.scrutiny-main :is(
+  .spr-subtitle,
+  .sra-subtitle,
+  .sra-panel-head p,
+  .scrutiny-breadcrumb,
+  .scrutiny-upload-muted,
+  .vdd-message-box
+) {
+  color: var(--ps-muted) !important;
+}
+
+.scrutiny-main :is(
+  .spr-btn,
+  .spr-secondary-btn,
+  .btn-scrutiny,
+  .projwizard-save-btn,
+  .scrutiny-save-button,
+  .scrutiny-upload-button,
+  .sra-btn,
+  .sra-link-btn,
+  .scrutiny-view-btn
+) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 40px !important;
+  min-width: 118px;
+  padding: 9px 16px !important;
+  border-radius: 6px !important;
+  border: 1px solid transparent !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+  box-shadow: none !important;
+}
+
+.scrutiny-main :is(
+  .spr-btn-primary,
+  .btn-primary-scrutiny,
+  .projwizard-save-btn,
+  .scrutiny-save-button,
+  .scrutiny-upload-button,
+  .sra-btn-primary,
+  .scrutiny-view-btn
+) {
+  background: var(--ps-primary) !important;
+  border-color: var(--ps-primary) !important;
+  color: #ffffff !important;
+}
+
+.scrutiny-main :is(
+  .spr-btn-primary,
+  .btn-primary-scrutiny,
+  .projwizard-save-btn,
+  .scrutiny-save-button,
+  .scrutiny-upload-button,
+  .sra-btn-primary,
+  .scrutiny-view-btn
+):hover:not(:disabled) {
+  background: var(--ps-primary-hover) !important;
+  border-color: var(--ps-primary-hover) !important;
+}
+
+.scrutiny-main :is(
+  .spr-secondary-btn,
+  .btn-secondary-scrutiny,
+  .sra-btn-secondary,
+  .sra-link-btn
+) {
+  background: #ffffff !important;
+  border-color: var(--ps-border-strong) !important;
+  color: var(--ps-primary) !important;
+}
+
+.scrutiny-main :is(
+  .spr-secondary-btn,
+  .btn-secondary-scrutiny,
+  .sra-btn-secondary,
+  .sra-link-btn
+):hover:not(:disabled) {
+  background: #eef5fb !important;
+  border-color: var(--ps-primary) !important;
+}
+
+.scrutiny-main :is(button, .spr-btn, .btn-scrutiny, .sra-btn, .scrutiny-save-button, .scrutiny-upload-button):disabled {
+  cursor: not-allowed !important;
+  opacity: 0.58 !important;
+  filter: none !important;
+}
+
+.scrutiny-main :is(
+  .spr-submit-row,
+  .form-section-scrutiny,
+  .scrutiny-button-row,
+  .scrutiny-upload-actions,
+  .sra-submit-row,
+  .sra-footer,
+  .projwizard-save-container
+) {
+  gap: 10px !important;
+}
+
+.scrutiny-main :is(
+  .spr-table,
+  .vdd-data-table,
+  .scrutiny-data-table,
+  .scrutiny-upload-table,
+  .sra-table,
+  .table.table-bordered
+) {
+  width: 100%;
+  border-collapse: collapse !important;
+  border: 1px solid var(--ps-border) !important;
+  background: #ffffff !important;
+}
+
+.scrutiny-main :is(
+  .spr-table,
+  .vdd-data-table,
+  .scrutiny-data-table,
+  .scrutiny-upload-table,
+  .sra-table,
+  .table.table-bordered
+) th {
+  background: var(--ps-primary) !important;
+  border: 1px solid #285f93 !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  text-align: left !important;
+  vertical-align: top !important;
+  line-height: 1.35 !important;
+  padding: 10px !important;
+}
+
+.scrutiny-main :is(
+  .spr-table,
+  .vdd-data-table,
+  .scrutiny-data-table,
+  .scrutiny-upload-table,
+  .sra-table,
+  .table.table-bordered
+) td {
+  border: 1px solid var(--ps-border) !important;
+  color: var(--ps-text) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.45 !important;
+  vertical-align: top !important;
+  padding: 10px !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  background: #ffffff !important;
+}
+
+.scrutiny-main :is(
+  .spr-table,
+  .vdd-data-table,
+  .scrutiny-data-table,
+  .scrutiny-upload-table,
+  .sra-table,
+  .table.table-bordered
+) tbody tr:nth-child(even) td {
+  background: var(--ps-row) !important;
+}
+
+.scrutiny-main .vdd-units-table {
+  min-width: 1320px;
+}
+
+.scrutiny-main .vdd-units-table :is(th, td) {
+  font-size: 10px !important;
+  padding: 7px 6px !important;
+}
+
+.scrutiny-main :is(.spr-table-wrap, .vdd-table-wrap, .scrutiny-table-shell, .scrutiny-upload-table-wrap, .sra-table-wrapper, .table-responsive) {
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.scrutiny-main :is(
+  .spr-remarks-box,
+  .scrutiny-remarks-box,
+  .sra-textarea,
+  textarea
+) {
+  border: 1px solid var(--ps-border-strong) !important;
+  border-radius: 6px !important;
+  color: var(--ps-text) !important;
+  font: 600 14px/1.5 "Segoe UI", Arial, sans-serif !important;
+  min-height: 104px;
+  outline: none;
+  padding: 10px 12px !important;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.scrutiny-main :is(.spr-remarks-box, .scrutiny-remarks-box, .sra-textarea, textarea):focus {
+  border-color: var(--ps-primary) !important;
+  box-shadow: 0 0 0 3px rgba(23, 74, 124, 0.14) !important;
+}
+
+.scrutiny-main :is(input[type="radio"], input[type="checkbox"]) {
+  accent-color: var(--ps-primary);
+}
+
+.scrutiny-main :is(.alert-scrutiny, .scrutiny-upload-alert, .sra-banner, .vdd-message-box, .scrutiny-loading) {
+  border-radius: 8px !important;
+}
+
+@media (max-width: 768px) {
+  .scrutiny-main :is(
+    .spr-btn,
+    .spr-secondary-btn,
+    .btn-scrutiny,
+    .projwizard-save-btn,
+    .scrutiny-save-button,
+    .scrutiny-upload-button,
+    .sra-btn,
+    .sra-link-btn
+  ) {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .scrutiny-main :is(.sra-footer, .sra-submit-row, .scrutiny-button-row, .scrutiny-upload-actions, .projwizard-save-container) {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+}

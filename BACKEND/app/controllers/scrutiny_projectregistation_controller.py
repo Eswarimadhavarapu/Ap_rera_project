@@ -165,6 +165,7 @@ def delete_verification_remark_api(remark_id):
         return jsonify({"message": "Remark removed successfully"}), 200
     except Exception as exc:
         return jsonify({"error": "Internal server error"}), 500
+
 @scrutiny_bp.route("/scrutiny/final-submit", methods=["POST"])
 @jwt_required()
 @roles_required(
@@ -196,6 +197,27 @@ def final_submit():
 
         if not payload["application_no"]:
             return jsonify({"error": "application_no required"}), 400
+
+        current_department = str(payload["verified_by"] or "").strip().lower()
+        if current_department == "scrutiny":
+            current_department = "verification"
+
+        existing_query = text("""
+            SELECT verified_by
+            FROM verification_final_status
+            WHERE TRIM(application_no) = TRIM(:application_no)
+        """)
+        existing_rows = db.session.execute(
+            existing_query,
+            {"application_no": payload["application_no"]},
+        ).mappings().all()
+
+        for row in existing_rows:
+            verified_by = str(row.get("verified_by") or "").strip().lower()
+            if verified_by == "scrutiny":
+                verified_by = "verification"
+            if verified_by == current_department:
+                return jsonify({"error": "Final submit already completed for this department"}), 409
 
         result = create_final_verification(payload)
 

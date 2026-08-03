@@ -2,6 +2,7 @@ import { useState } from "react";
 import ScrutinitySidebar from "./ScrutinitySidebar";
 import TopHeader from "./TopHeader";
 import "../../styles/scrutiny/scrutinydashboard.css";
+import "../../styles/scrutiny/project_scrutiny_ui.css";
 
 export default function ScrutinyLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);

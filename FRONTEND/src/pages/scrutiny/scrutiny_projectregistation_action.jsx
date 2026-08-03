@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiGet, apiPost } from "../../api/api";
 import ScrutinyPageHeader from "../../components/scrutiny/ScrutinyPageHeader";
 import ProjectWizard from "../../components/scrutiny/scrutiny_steper";
-import ScrutinyRemarksField from "../../components/scrutiny/ScrutinyRemarksField";
 import ScrutinyLayout from "../../components/scrutiny/ScrutinyLayout";
 import "../../styles/scrutiny/scrutiny_projectregistation_action.css";
 import { useAdmin } from "../../context/AdminContext";
@@ -91,6 +90,45 @@ const formatDateTime = (value) => {
   });
 };
 
+const normalizeDepartment = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized.includes("planning")) return "planning";
+  if (normalized.includes("legal")) return "legal";
+  if (normalized.includes("audit")) return "audit";
+  if (normalized.includes("engineer")) return "engineer";
+  if (normalized.includes("assistant director")) return "ad";
+  if (normalized.includes("deputy director")) return "dd";
+  if (normalized.includes("chairman")) return "chairman";
+  if (normalized.includes("director")) return "director";
+  if (normalized.includes("scrutiny")) return "verification";
+  if (normalized.includes("verification")) return "verification";
+  return normalized;
+};
+
+const getDepartmentLabel = (value) => {
+  const labels = {
+    verification: "Verification Team",
+    planning: "Planning Team",
+    legal: "Legal Team",
+    audit: "Audit Team",
+    engineer: "Scrutiny Engineer",
+    ad: "Assistant Director",
+    dd: "Deputy Director",
+    director: "Director",
+    chairman: "Chairman",
+  };
+  return labels[normalizeDepartment(value)] || displayText(value, "Verification Team");
+};
+
+const formatShortfall = (value) => {
+  if (value === true) return "Yes";
+  if (value === false) return "No";
+  const normalized = String(value || "").trim().toLowerCase();
+  if (["yes", "y", "true", "1"].includes(normalized)) return "Yes";
+  if (["no", "n", "false", "0"].includes(normalized)) return "No";
+  return "N/A";
+};
+
 const getDaysFromDate = (value) => {
   if (!value) return "N/A";
   const date = new Date(value);
@@ -126,18 +164,9 @@ export default function ScrutinyProjectRegistrationAction() {
   const navigate = useNavigate();
   const location = useLocation();
   const { admin } = useAdmin();
-let dept = admin?.department?.toLowerCase();
+let dept = normalizeDepartment(admin?.department);
 
-if (dept?.includes("planning")) dept = "planning";
-else if (dept?.includes("legal")) dept = "legal";
-else if (dept?.includes("audit")) dept = "audit";
-else if (dept?.includes("engineer")) dept = "engineer";
-else if (dept?.includes("assistant director")) dept = "ad";
-else if (dept?.includes("deputy director")) dept = "dd";
-else if (dept?.includes("director")) dept = "director";
-else if (dept?.includes("chairman")) dept = "chairman";
-else if (dept?.includes("verification")) dept = "verification";
-
+if (!dept) dept = "verification";
 console.log("FINAL DEPT:", dept);
 
 // ✅ ADD THIS
@@ -175,37 +204,59 @@ console.log("APPLICATION NUMBER:", applicationNumber);
   const [finalRemarks, setFinalRemarks] = useState("");
   
   const [remarksList, setRemarksList] = useState([]);
+  const [draftRemark, setDraftRemark] = useState(null);
+  const [finalSubmitted, setFinalSubmitted] = useState(false);
 const loadRemarks = async () => {
   try {
-    const response = await apiGet(
-      `/api/scrutiny/final-status?application_no=${applicationNumber}`
+    if (!applicationNumber) return;
+
+    const encodedApplicationNo = encodeURIComponent(applicationNumber);
+    const [verificationResponse, finalStatusResponse] = await Promise.all([
+      apiGet(`/api/scrutiny/verification-remarks?application_no=${encodedApplicationNo}`),
+      apiGet(`/api/scrutiny/final-status?application_no=${encodedApplicationNo}`),
+    ]);
+
+    const verificationRows = Array.isArray(verificationResponse?.rows)
+      ? verificationResponse.rows
+      : [];
+    const finalRows = Array.isArray(finalStatusResponse?.rows)
+      ? finalStatusResponse.rows
+      : [];
+
+    const shouldShowDepartment = (value) => {
+      const rowDept = normalizeDepartment(value);
+      if (dept === "verification") return rowDept === "verification";
+      if (dept === "director" || dept === "chairman") return true;
+      return rowDept === "verification" || rowDept === dept;
+    };
+
+    const pageRemarks = verificationRows
+      .filter((item) => shouldShowDepartment(item.verification_team || item.verified_by))
+      .map((item) => ({
+        ...item,
+        source: "pageRemark",
+        description: item.document_name || getDepartmentLabel(item.verification_team || item.verified_by),
+        displayDate: item.created_at || item.updated_at,
+      }));
+
+    const finalRemarksRows = finalRows
+      .filter((item) => shouldShowDepartment(item.verified_by))
+      .map((item) => ({
+        ...item,
+        source: "finalStatus",
+        description: getDepartmentLabel(item.verified_by),
+        displayDate: item.verified_at,
+      }));
+
+    setFinalSubmitted(
+      finalRows.some((item) => normalizeDepartment(item.verified_by) === dept)
     );
 
-    const rows = response?.rows || []; 
-
-    // 👇 current user department
-    const currentDept = (admin?.department || "").toLowerCase();
-
-const filtered = rows.filter((item) => {
-  const rowDept = (item.verified_by || "").toLowerCase();
-
-  // ✅ Verification → ONLY own
-  if (dept === "verification") {
-    return rowDept === "verification";
-  }
-
-  if (dept === "director" || dept === "chairman") {
-    return true;
-  }
-
-  // ✅ Other departments → verification + own
-  return (
-    rowDept === "verification" ||
-    rowDept.includes(currentDept)   
-  );
-});
-
-    setRemarksList(filtered); // ✅ USE FILTERED DATA
+    setRemarksList(
+      [...pageRemarks, ...finalRemarksRows].sort(
+        (a, b) => new Date(b.displayDate || 0) - new Date(a.displayDate || 0)
+      )
+    );
   } catch (error) {
     console.error("Error loading remarks:", error);
   }
@@ -221,7 +272,7 @@ const [shortfall, setShortfall] = useState("");
     if (applicationNumber) sessionStorage.setItem("applicationNumber", applicationNumber);
     if (panNumber) sessionStorage.setItem("panNumber", panNumber);
     if (promoterType) sessionStorage.setItem("promoterType", promoterType);
-  }, [applicationNumber, panNumber, promoterType]);
+  }, [applicationNumber, panNumber, promoterType, dept]);
 
   useEffect(() => {
     if (!applicationNumber) return;
@@ -237,7 +288,7 @@ const [shortfall, setShortfall] = useState("");
     } catch (draftError) {
       console.error("Unable to parse scrutiny action draft", draftError);
     }
-  }, [applicationNumber]);
+  }, [applicationNumber, dept]);
 
   useEffect(() => {
     const loadContext = async () => {
@@ -314,14 +365,14 @@ const [shortfall, setShortfall] = useState("");
     };
 
     loadContext();
-  }, [applicationNumber, panNumber, promoterType]);
+  }, [applicationNumber, panNumber, promoterType, dept]);
   // ✅ ADD THIS NEW BLOCK JUST BELOW
 useEffect(() => {
   if (applicationNumber) {
     console.log("Calling loadRemarks for:", applicationNumber);
     loadRemarks();
   }
-}, [applicationNumber]);
+}, [applicationNumber, dept]);
 
   const promoterDetails = normalizeObject(previewData?.promoter_details);
   const projectDetails = normalizeObject(previewData?.project_details);
@@ -412,6 +463,9 @@ useEffect(() => {
 
   const checklistCompleted = Object.values(reviewChecklist).every(Boolean);
   const canSubmit = remarks.trim().length >= 10 && checklistCompleted && !submitting;
+  const actionLocked = finalSubmitted;
+  const draftLocked = actionLocked || Boolean(draftRemark);
+  const displayedRemarksList = draftRemark ? [draftRemark, ...remarksList] : remarksList;
   // const selectedAction = getActionOption(decision);
 
   const persistDraft = (message) => {
@@ -434,49 +488,58 @@ useEffect(() => {
   };
 
 const handleAddRemark = () => {
+  if (draftLocked) return;
 
-  if (!finalRemarks || shortfall === "") {
+  if (!finalRemarks.trim() || shortfall === "") {
     alert("Please select shortfall and enter remarks");
     return;
   }
 
-  const newRemark = {
-    verified_by: admin?.department || "Verification",
-    is_shortfall: shortfall,
-    remarks: finalRemarks,
-    verified_at: new Date().toISOString()
-  };
-
-  setRemarksList((prev) => [newRemark, ...prev]);
-
-  // ❌ DO NOT CLEAR HERE
+  setDraftRemark({
+    source: "actionDraft",
+    description: getDepartmentLabel(dept),
+    verified_by: dept,
+    is_shortfall: shortfall === "yes",
+    remarks: finalRemarks.trim(),
+    displayDate: new Date().toISOString(),
+  });
 };
 
+const handleRemoveDraftRemark = () => {
+  if (actionLocked) return;
+  setDraftRemark(null);
+  setShortfall("");
+  setFinalRemarks("");
+};
 
 const handleFinalSubmit = async () => {
+  if (actionLocked) return;
 
-  if (!finalRemarks || shortfall === "") {
-    alert("Please fill shortfall and remarks");
+  if (!draftRemark) {
+    alert("Please add remarks before final submit");
     return;
   }
 
   try {
+    setSubmitting(true);
     const submitResult = await apiPost("/api/scrutiny/final-submit", {
-  application_no: applicationNumber,
-  department: dept,   // 👈 ADD THIS LINE
-  is_shortfall: shortfall,
-  remarks: finalRemarks
-});
+      application_no: applicationNumber,
+      department: dept,
+      is_shortfall: draftRemark.is_shortfall ? "yes" : "no",
+      remarks: draftRemark.remarks,
+    });
 
+    setDraftRemark(null);
+    setFinalRemarks("");
+    setShortfall("");
     await loadRemarks();
 
-    setFinalRemarks("");   // reset here
-    setShortfall("");
-
     alert(submitResult?.message || "Final Verification Completed");
-
   } catch (err) {
     console.error(err);
+    alert(err.message || "Unable to complete final submit");
+  } finally {
+    setSubmitting(false);
   }
 };
 
@@ -700,6 +763,7 @@ const handleChairmanDecision = async (decision) => {
       name="shortfall"
       value="yes"
       checked={shortfall === "yes"}
+      disabled={draftLocked}
       onChange={(e) => setShortfall(e.target.value)}
     />
     <span>Yes</span>
@@ -711,6 +775,7 @@ const handleChairmanDecision = async (decision) => {
       name="shortfall"
       value="no"
       checked={shortfall === "no"}
+      disabled={draftLocked}
       onChange={(e) => setShortfall(e.target.value)}
     />
     <span>No</span>
@@ -724,6 +789,7 @@ const handleChairmanDecision = async (decision) => {
   placeholder="Enter remarks..."
   rows={4}
   value={finalRemarks}
+  disabled={draftLocked}
   onChange={(e) => setFinalRemarks(e.target.value)}
 />
   </div>
@@ -734,8 +800,9 @@ const handleChairmanDecision = async (decision) => {
   type="button"
   className="sra-btn sra-btn-primary"
   onClick={handleAddRemark}
+  disabled={draftLocked}
 >
-  Add Remark
+  {draftRemark ? "Remark Added" : "Add Remark"}
 </button>
   </div>
 </section>
@@ -753,6 +820,7 @@ const handleChairmanDecision = async (decision) => {
         placeholder="Enter chairman remarks..."
         rows={4}
         value={finalRemarks}
+        disabled={actionLocked}
         onChange={(e) => setFinalRemarks(e.target.value)}
       />
     </div>
@@ -762,6 +830,7 @@ const handleChairmanDecision = async (decision) => {
         type="button"
         className="sra-btn sra-btn-primary"
         onClick={() => handleChairmanDecision("approved")}
+        disabled={actionLocked}
       >
         Approve
       </button>
@@ -770,6 +839,7 @@ const handleChairmanDecision = async (decision) => {
         type="button"
         className="sra-btn sra-btn-secondary"
         onClick={() => handleChairmanDecision("rejected")}
+        disabled={actionLocked}
       >
         Reject
       </button>
@@ -790,24 +860,32 @@ const handleChairmanDecision = async (decision) => {
           <th>Description</th>
           <th>Is there any Shortfall in data/Payment</th>
           <th>Remarks</th>
-          <th>Upload Observations Document</th>
           <th>Date</th>
+          <th>Action</th>
         </tr>
       </thead>
 
       <tbody>
-  {remarksList && remarksList.length > 0 ? (
-    remarksList.map((item, index) => (
+  {displayedRemarksList && displayedRemarksList.length > 0 ? (
+    displayedRemarksList.map((item, index) => (
       <tr key={index}>
         <td>{index + 1}</td>
-        <td>{item.verified_by}</td>
-        <td>{item.is_shortfall ? "Yes" : "No"}</td>
+        <td>{item.description || getDepartmentLabel(item.verified_by || item.verification_team)}</td>
+        <td>{formatShortfall(item.is_shortfall)}</td>
         <td>{item.remarks}</td>
-        <td>NA</td>
+        <td>{formatDateTime(item.displayDate || item.verified_at || item.created_at || item.updated_at)}</td>
         <td>
-          {item.verified_at
-            ? new Date(item.verified_at).toLocaleString()
-            : "N/A"}
+          {item.source === "actionDraft" && !actionLocked ? (
+            <button
+              type="button"
+              className="sra-btn sra-btn-secondary"
+              onClick={handleRemoveDraftRemark}
+            >
+              Remove
+            </button>
+          ) : (
+            "-"
+          )}
         </td>
       </tr>
     ))
@@ -852,6 +930,7 @@ const handleChairmanDecision = async (decision) => {
     type="button"
     className="sra-btn sra-btn-primary"
     onClick={handleFinalSubmit}
+    disabled={actionLocked || submitting}
   >
     Final Submit
   </button>

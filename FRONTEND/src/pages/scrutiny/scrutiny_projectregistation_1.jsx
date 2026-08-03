@@ -877,7 +877,7 @@ const isRestrictedDept = ["planning", "ad", "dd"].includes(activeVerificationTea
                     )}
                   </Section>
                 </div>
-                {activeVerificationTeam === "verification" && (
+                {Boolean(activeVerificationTeam) && (
                 <div className="spr-remarks-card">
                   <div className="spr-remarks-head">
                     <h3>Enter Remarks (Data Shortfall Remarks if any)<span>*</span></h3>
