@@ -1,0 +1,849 @@
+/* =========================================================
+   PROJECT EXTENSION DETAILS PAGE
+========================================================= */
+
+:root {
+    --ped-blue-1: #0284c7;
+    --ped-blue-2: #2563eb;
+    --ped-red-1: #dc2626;
+    --ped-red-2: #b91c1c;
+    --ped-green-1: #16a34a;
+    --ped-green-2: #15803d;
+    --ped-bg: #f1f5f9;
+    --ped-border: #dbe4f0;
+    --ped-text: #0f172a;
+    --ped-muted: #64748b;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   ROOT
+========================================================= */
+.ped-root {
+    width: 100%;
+    min-height: 100vh;
+    background: #f4f7fb;
+    padding: 25px;
+    padding-bottom: 120px;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+.ped-page-header__title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 20px;
+}
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+.ped-badge {
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.ped-badge--pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.ped-badge--approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.ped-badge--rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.ped-badge--under-ad {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.ped-badge--under-dd {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.ped-badge--under-director {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ped-badge--under-chairman {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.ped-badge--unknown {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+.ped-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: ped-slide-in 0.3s ease;
+    max-width: 420px;
+}
+
+.ped-toast--success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.ped-toast--error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+@keyframes ped-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+.ped-single-table-card {
+    width: 100%;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--ped-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 30px;
+}
+
+.ped-single-table-header {
+    background: linear-gradient(135deg, #030404, #2563eb);
+    color: white;
+    padding: 26px 35px;
+    font-size: 22px;
+    font-weight: 100;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+.ped-single-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.ped-single-table tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ped-single-table th {
+    width: 20%;
+    background: #d7e3ef;
+    color: #020408;
+    padding: 20px 24px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-right: 1px solid #d6dee8;
+}
+
+.ped-single-table td {
+    width: 30%;
+    padding: 20px 24px;
+    font-size: 16px;
+    color: #1e293b;
+    background: white;
+    border-right: 1px solid #edf2f7;
+    word-break: break-word;
+}
+
+.ped-single-table td:last-child {
+    border-right: none;
+}
+
+.ped-single-table tr:hover td {
+    background: #f8fbff;
+}
+
+.ped-single-table tr:hover th {
+    background: #7f97b2;
+}
+
+/* =========================================================
+   DOCUMENTS CARD
+========================================================= */
+.ped-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--ped-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.ped-card__header {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    color: white;
+    padding: 22px 30px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.ped-card__body {
+    padding: 20px;
+}
+
+.ped-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.ped-doc-item {
+    background: #f8fbff;
+    border: 1px solid #dbe4f0;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ped-doc-icon {
+    font-size: 22px;
+}
+
+.ped-doc-label {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.ped-doc-btn {
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ped-doc-btn:hover {
+    background: #1d4ed8;
+}
+
+.ped-doc-na {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* =========================================================
+   ACTION BAR
+========================================================= */
+.ped-action-bar {
+    margin-top: 24px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ped-action-bar__right {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+.ped-btn-back {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #e2e8f0;
+    color: #0f172a;
+    transition: background 0.2s;
+}
+
+.ped-btn-back:hover {
+    background: #cbd5e1;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   --ad        → planning1  → Inform AD      (blue)
+   --dd        → planning2  → Inform DD      (indigo)
+   --director  → AD/DD      → Inform Director (sky)
+   --chairman  → director   → Inform Chairman (teal)
+   --approve   → chairman   → Approve         (green)
+   --generate  → chairman approve modal → Generate Cert (amber)
+   --reject    → all roles  → Reject          (red)
+========================================================= */
+.ped-btn-action {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+    color: white;
+    white-space: nowrap;
+}
+
+.ped-btn-action:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.ped-btn-action:active {
+    transform: translateY(0);
+}
+
+.ped-btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ped-btn-action--ad {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.ped-btn-action--dd {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
+}
+
+.ped-btn-action--director {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.ped-btn-action--chairman {
+    background: linear-gradient(135deg, #0891b2, #0e7490);
+    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.35);
+}
+
+.ped-btn-action--approve {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+}
+
+.ped-btn-action--generate {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+}
+
+.ped-btn-action--reject {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+.ped-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.52);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+    padding: 16px;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+.ped-modal {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    animation: ped-modal-in 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+/* Wide modal for approve (certificate) */
+.ped-modal--wide {
+    max-width: 860px;
+}
+
+@keyframes ped-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Modal Header */
+.ped-modal-header {
+    padding: 22px 28px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ped-modal-header--primary {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+}
+
+.ped-modal-header--danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.ped-modal-header--approve {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.ped-modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ped-modal-close {
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 18px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.ped-modal-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Modal Body */
+.ped-modal-body {
+    padding: 28px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ped-modal-body--scroll {
+    overflow-y: auto;
+}
+
+.ped-modal-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.ped-required {
+    color: #dc2626;
+    margin-left: 2px;
+}
+
+.ped-modal-textarea {
+    width: 100%;
+    min-height: 110px;
+    resize: vertical;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    font-family: "Segoe UI", sans-serif;
+    color: #1e293b;
+    transition: border-color 0.2s;
+}
+
+.ped-modal-textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.ped-modal-hint {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+/* Certificate generate row */
+.ped-cert-generate-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 14px;
+}
+
+.ped-cert-generated-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: #16a34a;
+    background: #d1fae5;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+/* Certificate preview wrapper inside modal */
+.ped-cert-preview-wrap {
+    border: 2px solid #dbe4f0;
+    border-radius: 12px;
+    padding: 20px;
+    background: #f8fbff;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+/* Modal Footer */
+.ped-modal-footer {
+    padding: 18px 28px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #f8fafc;
+    flex-shrink: 0;
+}
+
+.ped-btn-cancel {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.ped-btn-cancel:hover {
+    background: #cbd5e1;
+}
+
+.ped-btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ped-btn-submit {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    white-space: nowrap;
+}
+
+.ped-btn-submit--primary {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+}
+
+.ped-btn-submit--danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.ped-btn-submit--approve {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.ped-btn-submit:hover {
+    opacity: 0.88;
+}
+
+.ped-btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Inline spinner */
+.ped-spinner-sm {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: ped-spin 0.7s linear infinite;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+@keyframes ped-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   CERTIFICATE (inline in modal)
+========================================================= */
+.ped-cert-paper {
+    width: 100%;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #000;
+}
+
+.ped-cert-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.ped-cert-logo {
+    width: 75px;
+    margin-bottom: 8px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ped-cert-title {
+    font-weight: bold;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ped-cert-date-row {
+    text-align: right;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.ped-cert-hr {
+    border: none;
+    border-top: 1.5px solid #000;
+    margin: 10px 0 16px;
+}
+
+.ped-cert-reg-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.ped-cert-reg-text {
+    flex: 1;
+    min-width: 200px;
+    font-size: 13px;
+}
+
+.ped-cert-reg-box {
+    display: inline-flex;
+    border: 1px solid #000;
+    flex-shrink: 0;
+}
+
+.ped-cert-reg-box span {
+    padding: 5px 8px;
+    border-right: 1px solid #000;
+    font-size: 13px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.ped-cert-reg-box span:last-child {
+    border-right: none;
+}
+
+.ped-cert-para {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.ped-cert-main-list {
+    padding-left: 22px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.ped-cert-main-list>li {
+    margin-bottom: 12px;
+}
+
+.ped-cert-roman-list {
+    list-style-type: lower-roman;
+    padding-left: 30px;
+    margin-top: 8px;
+}
+
+.ped-cert-roman-list li {
+    margin-bottom: 8px;
+}
+
+.ped-cert-sign {
+    margin-top: 36px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+.ped-loading-screen,
+.ped-error-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 60vh;
+    color: var(--ped-muted);
+    font-size: 17px;
+}
+
+.ped-loading-ring {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: ped-spin 0.8s linear infinite;
+}
+
+.ped-error-icon {
+    font-size: 40px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media screen and (max-width: 992px) {
+    .ped-root {
+        padding: 15px;
+    }
+
+    .ped-single-table,
+    .ped-single-table tbody,
+    .ped-single-table tr,
+    .ped-single-table th,
+    .ped-single-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .ped-single-table tr {
+        margin-bottom: 18px;
+    }
+
+    .ped-single-table th {
+        border-right: none;
+        border-bottom: 1px solid #dbe4f0;
+    }
+
+    .ped-single-table td {
+        border-right: none;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .ped-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ped-action-bar__right {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .ped-btn-back,
+    .ped-btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ped-modal--wide {
+        max-width: 100%;
+    }
+
+    .ped-cert-reg-row {
+        flex-direction: column;
+    }
+
+    .ped-cert-generate-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

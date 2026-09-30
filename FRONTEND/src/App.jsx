@@ -1,0 +1,748 @@
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Layout from "./layouts/Layout.jsx";
+
+// pages
+
+import About from "./pages/About.jsx";
+// import Aprea from "./pages/Aprea.jsx";
+import Notifications from "./pages/Notification.jsx";
+import Registration from "./pages/Registration.jsx";
+import Reports from "./pages/Reports.jsx";
+import Registered from "./pages/Registered.jsx";
+import Judgements from "./pages/Judgement.jsx";
+import KnowledgeHub from "./pages/KnowledgeHub.jsx";
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Apreat from "./pages/Apreat.jsx";
+import Recruitment from "./pages/Recruitment.jsx";
+import Rti from "./pages/Rti.jsx";
+import Promotregistration from "./pages/Promotregistration.jsx";
+import GuidelinesRegistration from "./pages/GuidelinesRegistration.jsx";
+import FeeCalculator from "./pages/FeeCalculater.jsx";
+import CidcandAPRERAJointNotifications from "./pages/CidcandAPRERAJointNotifications.jsx";
+import Usermanual from "./pages/Usermanual.jsx";
+import VideoTutorial from "./pages/VideoTutorial.jsx";
+import MobileApp from "./pages/Mobileapp.jsx";
+import ProjectRegistration from "./pages/ProjectRegistration.jsx";
+import Guidelines from "./pages/Guidelines.jsx";
+import ProjectWizard from "./pages/ProjectWizard.jsx";
+import Race from "./pages/Race.jsx";
+import JudgementHub from "./pages/JudgementHub.jsx";
+import PressRelease from "./pages/PressRelease.jsx";
+import Testimonials from "./pages/Testimonials.jsx";
+import GradingOfAgents from "./pages/GradingOfAgents.jsx";
+import ChronologyOfEvents from "./pages/ChronologyOfEvents.jsx"
+import AdvertisementGuidelines from "./pages/AdvertisementGuidelines.jsx";
+import OurLeadership from "./pages/OurLeadership.jsx";
+import Footer from "./components/Footer.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import HyperlinkingPolicy from "./pages/HyperlinkingPolicy.jsx";
+import CopyrightPolicy from "./pages/CopyrightPolicy.jsx";
+import Disclaimer from "./pages/Disclaimer.jsx";
+import Accessibility from "./pages/Accessibility.jsx";
+import TermsConditions from "./pages/TermsConditions.jsx";
+import RateWebsite from "./pages/RateWebsite.jsx";
+import AgentRegistration from "./pages/AgentRegistration.jsx";
+import Guidelines2 from "./pages/Guidelines2.jsx";
+import AgentDetailNew from "./pages/AgentDetailNew.jsx";
+import AgentDetailExisting from "./pages/AgentDetailExisting.jsx";
+import ApplicantDetails from "./pages/ApplicantDetails.jsx";
+import Aprera from "./pages/Aprea.jsx";
+import Organogram from "./pages/Organogram.jsx";
+import OurServices from "./pages/Ourservices.jsx";
+import Statistics from "./pages/Statistics.jsx";
+import GOINotifications from "./pages/GOINotifications.jsx";
+import GoapNotifications from "./pages/GoapNotifications.jsx";
+import AuthorityNotifications from "./pages/AuthorityNotifications.jsx";
+import Project from "./pages/Projects.jsx";
+import Agents from "./pages/Agents.jsx";
+import ComplaintOrders from "./pages/ComplaintOrders.jsx";
+import EvolutionOfRera from "./pages/Evolutionofrera.jsx";
+import AudioVisualGallery from "./pages/AudioVisualGallery.jsx";
+import TaskVsTime from "./pages/Taskvstime.jsx";
+import VendorDataBase from "./pages/Vendordatabase.jsx";
+import Acf from "./pages/ACF.jsx";
+import ComplaintRegistration from "./pages/ComplaintRegistration.jsx";
+import GradingOfPromoters from "./pages/GradingOfPromotors.jsx";
+import FormsDownload from "./pages/Formsdownload.jsx";
+import AgentUploadDocuments from "./pages/AgentUploadDocuments.jsx";
+import Preview from "./pages/Preview.jsx";
+import Payment from "./pages/Payment.jsx";
+import ContactUs from "./pages/Contactus.jsx";
+import Promoter_Profile from "./pages/Promoter_Profile";
+import ProjectDetails from "./pages/ProjectDetails.jsx";
+import DevelopmentDetails from "./pages/DevelopmentDetails.jsx";
+import AssociateDetails from "./pages/AssociateDetails.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import BuildingInformationModelling from "./pages/BuildingInformationModelling.jsx";
+import VRInnovation from "./pages/VRInnovation.jsx";
+import RealTimeContextCapture from "./pages/RealTimeContextCapture.jsx";
+import AnnouncementPopup from "./pages/AnnouncementPopup.jsx";
+import ProjectUploadDocuments1 from "./pages/ProjectUploadDocuments1.jsx";
+import { useEffect, useState } from "react";
+import ProjectApplicationDetails from "./pages/Projectapplicationdetails.jsx";
+import ExtensionProcess from "./pages/ExtensionProcess.jsx";
+import ExtensionPaymentPage from "./pages/ExtensionPaymentPage.jsx";
+import Certificate from "./pages/Certificate.jsx";
+import OTPLogin from "./pages/Otplogin.jsx";
+import InformProject from "./pages/InformProject.jsx";
+import ProjectPreview from "./pages/ProjectPreview.jsx";
+import AgentDashboard from "./pages/AgentDashboard.jsx";
+import PaymentPage from "./pages/Paymentpage.jsx";
+import ProjectRegistrationExisting from "./pages/ProjectRegistrationExisting.jsx";
+import PRExistingStarting from "./pages/PRExistingStarting.jsx";
+import PRExistingtable from "./pages/PRExistingtable.jsx";
+import ExistingDevelopmentDetails from "./pages/ExistingDevelopmentDetails.jsx";
+import UploadDocumentsWithApi from "./pages/UploadDocumentsWithApi.jsx";
+import ExistingProjectDetails from "./pages/ExistingProjectDetails.jsx";
+// import AgentDetails from "./pages/AgentDetails.jsx"; 
+// import AgentUploadDocuments from "./pages/AgentUploadDocuments.jsx";
+import PreviewOther from "./pages/Agentpreviewother.jsx";
+import AgentPaymentpage from "./pages/AgentPayment.jsx";
+import AgentUploadDocumentOtherthan from "./pages/AgentUploadDocumentOtherthan.jsx";
+import AgentDetailsOther from "./pages/AgentDetails.jsx";
+import ExistingAssociateDetails from "./pages/Existing_AssociateDetails";
+import OtherthanIndividualDD from "./pages/OtherthanIndividualDD.jsx";
+import OtherThanIndividual_ProjectPreview from "./pages/OtherThanIndividual_projectPreview";
+import OtherThanIndividualProjectDetails from "./pages/OtherThanIndividualprojectDetails.jsx";
+import OtherThanIndividualDevelopmentDetails from "./pages/other-than-individual_DevelopmentDetails";
+import OtherThanIndividualAssociateDetails from "./pages/other-than-individual_AssociateDetails";
+import OtherThanIndividualUploadDocument from "./pages/other-than-individual_UploadDocument";
+import QuarterlyUpdate from "./pages/QuarterlyUpdate.jsx";
+import QuarterlyUpdateExisting from "./pages/QuarterlyUpdateExisting.jsx";
+import QuarterlyExistingtable from "./pages/QuarterlyExistingtable.jsx";
+import { AgentFormProvider } from "./pages/AgentFormContext.jsx";
+import ProjectBlockVillaDetails from "./pages/ProjectBlockVillaDetails.jsx";
+import ChangeRequestForm from "./pages/ChangeRequestForm.jsx";
+import ChangeRequestVerify from "./pages/ChangeRequestVerify.jsx";
+import ProjectClosure from "./pages/ProjectClosure.jsx";
+import ClosureProcess from "./pages/ClosureProcess.jsx";
+import PromoterLogin from "./pages/PromoterLogin.jsx";
+import PromoterData from "./pages/PromoterData.jsx";
+import ClosureTable from "./pages/ClosureTable.jsx";
+
+import AgentRenewal from "./pages/AgentRenewal.jsx";
+import RenewalUploadDocuments from "./pages/RenewalUploadDocuments.jsx";
+import RenewalQueries from "./pages/RenewalQueries.jsx";
+import RenewalPreview from "./pages/RenewalPreview.jsx";
+import RenewalPayment from "./pages/RenewalPayment.jsx";
+import RenewalStatus from "./pages/RenewalStatus.jsx";
+import RenewalReceipt from "./pages/RenewalReceipt.jsx";
+import "./styles/renewal.css";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminRequests from "./pages/admin/AdminRequests.jsx";
+import AdminProjects from "./pages/admin/AdminProjects.jsx";
+import AdminAgents from "./pages/admin/AdminAgents.jsx";
+import AdminComplaints from "./pages/admin/AdminComplaints.jsx";
+import Add_User from "./pages/admin/Add_User.jsx";
+import AdminRenewal from "./pages/admin/AdminRenewal.jsx";
+import AdminRenewalList from "./pages/admin/AdminRenewalList.jsx";
+import AdminRenewalDetail from "./pages/admin/AdminRenewalDetail.jsx";
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import ApplyForRenewalOTP from "./pages/ApplyForRenewalOTP.jsx";
+import RenewalNewCertificate from "./pages/RenewalNewCertificate.jsx";
+import AgentChangeRequest1 from "./pages/agent_change_request_1";
+import Agentchangerequest from "./pages/Agent_change_request2";
+import AgentChangeRequestPayment from "./pages/AgentChangeRequestPayment.jsx";
+import PromoterOtpLogin from "./pages/PromoterOtpLogin.jsx";
+import Changerequest from "./pages/Changerequest.jsx";
+import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
+import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail.jsx";
+// import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
+import ComplaintStatusForm from "./pages/ComplaintStatusForm.jsx";
+import ComplaintDetails from "./pages/ComplaintDetails.jsx";
+// import AdminComplaintDetails from "./pages/admin/Admincomplaintsdetails.jsx";
+// import AdminComplaintsDetailss from "./pages/admin/Admincomplaintsdetails.jsx";
+import AdminProjectDetails from "./pages/admin/AdminProjectDetails.jsx";
+import ProtectedRoute from "./components/admin/ProtectedRoute.jsx";
+import AdminAgentChangeRequest from "./pages/admin/admin_agentchangerequest";
+import ComplaintDetailsView from "./pages/LegalSideComplaint/ComplaintDetailsView.jsx";
+
+
+
+import ScrutinyProjectRegistration from "./pages/scrutiny/scrutiny_projectregistation";
+ import ScrutinyProjectRegistration_1 from "./pages/scrutiny/scrutiny_projectregistation_1";
+ import ScrutinyProjectRegistration_2 from "./pages/scrutiny/scrutiny_projectregistation_2";
+ import ScrutinyProjectRegistration_3 from "./pages/scrutiny/scrutiny_projectregistation_3";
+ import ScrutinyProjectRegistration_4 from "./pages/scrutiny/scrutiny_projectregistation_4";
+ import ScrutinyProjectRegistration_5 from "./pages/scrutiny/scrutiny_projectregistation_5";
+ import ScrutinyProjectRegistration_action from "./pages/scrutiny/scrutiny_projectregistation_action";
+import AgentScrutinyRegistration from "./pages/agent_scrutiny/AgentScrutinyRegistration.jsx";
+import AgentScrutinyRegistration_1 from "./pages/agent_scrutiny/AgentScrutinyRegistration1.jsx";
+import AgentScrutinyRegistration_2 from "./pages/agent_scrutiny/AgentScrutinyRegistration2.jsx";
+import AgentScrutinyRegistration_Action from "./pages/agent_scrutiny/AgentScrutinyRegistrationAction.jsx";
+import ScrutinyDashboard from "./pages/scrutiny/ScrutinityDashboard.jsx";
+import ScrutinyRegistration from "./pages/scrutiny/ScrutinyRegistration.jsx";
+import ScrutinyFpmsDashboard from "./pages/scrutiny/ScrutinyFpmsDashboard.jsx";
+import ScrutinyCreateFile from "./pages/scrutiny/ScrutinyCreateFile.jsx";
+import ScrutinyViewFiles from "./pages/scrutiny/ScrutinyViewFiles.jsx";
+import ScrutinyLayout from "./components/scrutiny/ScrutinyLayout.jsx";
+import DepartmentLogin from "./pages/DepartmentLogin.jsx";
+import Chatbot from "./components/Chatbot.jsx";
+import AdminChangeRequestList from "./pages/admin/AdminChangeRequestList.jsx";
+import UnregisterList from "./pages/scrutiny/Unregisterlist .jsx";
+import UnregistrationProjectDetails from "./pages/scrutiny/Unregistrationprojectdetails.jsx";
+
+//// new imports for mis reports
+//// new imports for mis reports
+import MisReports from './pages/MisReports';
+import R1_1_Report from './pages/R1_1_Report';
+import AgentStatusReport from './pages/AgentStatusReport';
+import ApartmentsReport from './pages/ApartmentsReport';
+import CommercialReport from './pages/CommercialReport';
+import MixedReport from './pages/MixedReport';
+import LayoutForPlotsReport from './pages/LayoutForPlotsReport';
+import LayoutForPlotsBuildingsReport from './pages/LayoutForPlotsBuildingsReport';
+import ApprovedProjectReport from './pages/ApprovedProjectReport';
+import ApprovedAgentReport from './pages/ApprovedAgentReport';
+import ApcrdaReport from './pages/ApcrdaReport';
+import UdaReport from './pages/UdaReport';
+import UlbReport from './pages/UlbReport';
+import DtcpReport from './pages/DtcpReport';
+import OfficerPendingReport from './pages/OfficerPendingReport';
+import ApprovedProjectReportSheet from './pages/ApprovedProjectReportSheet';
+import R9_2_Report from './pages/R9_2_Report';
+import R9_3_Report from './pages/R9_3_Report';
+import DistrictFinancialAgentReport from './pages/DistrictFinancialAgentReport';
+import DistrictFinancialProjectReport from './pages/DistrictFinancialProjectReport';
+import ExemptionFileUpload from "./pages/exemption.jsx";
+import ExemptionUserDetails from "./pages/exemptionUserDetails.jsx"
+import R15_2 from './pages/R15_2';
+import R17_1 from './pages/R17_1';
+import R17_2 from './pages/R17_2';
+import R20_1 from './pages/R20_1';
+import R20_2 from './pages/R20_2';
+import R20_3 from './pages/R20_3';
+import R21_2 from './pages/R21_2';
+import R22_2 from './pages/R22_2';
+import R23_1 from './pages/R23_1';
+import R24_1 from './pages/R24_1';
+import R1_3 from './pages/R1_3';
+import R2_1 from './pages/R2_1';
+import R2_2 from './pages/R2_2';
+import R2_3 from './pages/R2_3';
+import R3_2 from './pages/R3_2';
+import R3_3 from './pages/R3_3';
+import R6_1 from './pages/R6_1';
+import R6_2_1 from './pages/R6_2_1';
+import R6_2_2 from './pages/R6_2_2';
+import R6_2_3 from './pages/R6_2_3';
+import R6_3 from './pages/R6_3';
+import R7_1 from './pages/R7_1';
+import R7_3 from './pages/R7_3';
+import R7_2 from './pages/R7_2';
+import R8_1 from './pages/R8_1';
+import R8_2 from './pages/R8_2';
+import R10_1 from './pages/R10_1';
+import R10_2 from './pages/R10_2';
+import R10_3 from './pages/R10_3';
+import R11_1 from './pages/R11_1';
+import R13_1 from './pages/R13_1';
+import R13_2 from './pages/R13_2';
+import R13_3 from './pages/R13_3';
+import R13_4 from './pages/R13_4';
+import R14_1 from './pages/R14_1';
+import R14_2 from './pages/R14_2';
+import R14_3 from './pages/R14_3';
+import R18_1 from './pages/R18_1';
+import R18_2 from './pages/R18_2';
+import R16_1 from './pages/R16_1';
+import R12_1 from './pages/R12_1';
+import R12_2 from './pages/R12_2';
+import R12_3 from './pages/R12_3';
+import R12_4 from './pages/R12_4';
+import R25_1 from "./pages/R25_1";
+import R25_2 from "./pages/R25-2";
+import R25_3 from "./pages/R25_3";
+import R15_1 from "./pages/R15_1";
+import R19_1 from "./pages/R19_1";
+import FPMSLayout from "./pages/scrutiny/FPMSLayout.jsx";
+import AdminExemptionPage from "./pages/scrutiny/admin_exemption.jsx";
+import UserDetails from "./pages/exemptionUserDetails.jsx";
+import ApreatApplication from "./pages/ApreatApplication.jsx";
+import LegalDashboard from "./pages/LegalSideComplaint/LegalDashboard.jsx";
+import ComplaintList from "./pages/LegalSideComplaint/ComplaintList.jsx";
+import CaseStatus from "./pages/CaseStatus.jsx";
+import RtiPage from "./pages/RtiPage.jsx";
+import HearingHistory from "./pages/LegalSideComplaint/HearingHistory.jsx";
+import Welcome from "./pages/Welcome";
+import RTI_Details_Page from "./pages/RTI/RTI_Details_Page.jsx";
+import RtiRequestForm from "./pages/RTI/RtiRequestForm.jsx";
+import RtiUserLogin from "./pages/RTI/RtiUserLogin.jsx";
+import RtiPaymentPage from "./pages/RTI/RtiPaymentPage.jsx";
+import RTI_List from "./pages/RTI/RTI_LIst.jsx";
+import Registerlist from "./pages/Registerlist";
+import CauseList from "./pages/CauseList.jsx";
+import ProjectExtentionList from "./pages/scrutiny/Project_extention_list.jsx";
+import ProjectExtentionDetails from "./pages/scrutiny/Project_extention_details.jsx";
+import { AdminProvider } from "./context/AdminContext";
+
+function App() {
+  const [showPopup, setShowPopup] = useState(false);
+
+  // ✅ Show popup automatically on first load
+  useEffect(() => {
+    setTimeout(() => {
+      setShowPopup(true);
+    }, 800);
+  }, []);
+  return (
+    <BrowserRouter>
+    <AdminProvider>
+      <AgentFormProvider>
+        {/* ✅ Popup should be OUTSIDE Routes */}
+        {showPopup && <AnnouncementPopup onClose={() => setShowPopup(false)} />}
+        <Layout>
+          <Routes>
+            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="about" element={<About />} />
+            {/* <Route path="apreat" element={<Aprea />} /> */}
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="registration" element={<Registration />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="registered" element={<Registered />} />
+            <Route path="judgements" element={<Judgements />} />
+            <Route path="knowledge-hub" element={<KnowledgeHub />} />
+            <Route path="login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/apreat" element={<Apreat />} />
+            <Route path="/recruitment" element={<Recruitment />} />
+            <Route path="/rti" element={<Rti />} />
+            <Route path="/promotregistration" element={<Promotregistration />} />
+            <Route path="/guidelinesRegistration" element={<GuidelinesRegistration />} />
+            <Route path="/feecalculater" element={<FeeCalculator />} />
+            <Route path="/cidcandaprerajoint" element={<CidcandAPRERAJointNotifications />} />
+            <Route path="/usermanual" element={<Usermanual />} />
+            <Route path="/videoTutorial" element={<VideoTutorial />} />
+            <Route path="/mobileapp" element={<MobileApp />} />
+            <Route path="/project-registration" element={<ProjectWizard />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/project-registration-wizard" element={<ProjectWizard />} />
+            <Route path="/race" element={<Race />} />
+            <Route path="/JudgementHub" element={<JudgementHub />} />
+            <Route path="/PressRelease" element={<PressRelease />} />
+            <Route path="/Testimonials" element={<Testimonials />} />
+            <Route path="/GradingOfAgents" element={<GradingOfAgents />} />
+            <Route path="/ChronologyOfEvents" element={<ChronologyOfEvents />} />
+            <Route path="/AdvertisementGuidelines" element={<AdvertisementGuidelines />} />
+            <Route path="/our-leadership" element={<OurLeadership />} />
+            <Route path="/contact-us/aprera" element={<ContactUs />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/hyperlinking-policy" element={<HyperlinkingPolicy />} />
+            <Route path="/copyrightPolicy" element={< CopyrightPolicy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/termsConditions" element={< TermsConditions />} />
+            <Route path="/rateWebsite" element={<RateWebsite />} />
+            <Route path="/agent-registration" element={<AgentRegistration />} />
+            <Route path="/Guidelines" element={<Guidelines />} />
+            <Route path="/agent-detail-new" element={<AgentDetailNew />} />
+            <Route path="/agent-detail-existing" element={<AgentDetailExisting />} />
+            <Route path="/applicant-details" element={<ApplicantDetails />} />
+            <Route path="/aprera" element={<Aprera />} />
+            <Route path="/organogram" element={<Organogram />} />
+            <Route path="/ourservices" element={<OurServices />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/goinotifications" element={<GOINotifications />} />
+            <Route path="/goapnotifications" element={<GoapNotifications />} />
+            <Route path="/authoritynotifications" element={<AuthorityNotifications />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/registered/projects" element={<Project />} />
+            <Route path="/complaint-orders" element={<ComplaintOrders />} />
+            <Route path="evolutionofrera" element={<EvolutionOfRera />} />
+            <Route path="taskvstime" element={<TaskVsTime />} />
+            <Route path="vendordatabase" element={<VendorDataBase />} />
+            <Route path="gradingofpromotors" element={<GradingOfPromoters />} />
+            <Route path="ACF" element={<Acf />} />
+            <Route path="AudioVisualGallery" element={<AudioVisualGallery />} />
+            <Route path="/complaintregistration" element={<ComplaintRegistration />} />
+            <Route path="/formsdownload" element={<FormsDownload />} />
+            <Route path="/promoter-profile" element={<Promoter_Profile />} />
+            <Route path="/project-Details" element={<ProjectDetails />} />
+            <Route path="/Development-Details" element={<DevelopmentDetails />} />
+            <Route
+              path="project-upload-documents"
+              element={<ProjectUploadDocuments1 />}
+            />
+            <Route path="preview" element={<ProjectPreview />} />
+            <Route path="/Associate-Details" element={<AssociateDetails />} />
+            <Route path="/agent-upload-documents" element={<AgentUploadDocuments />} />
+            <Route path="/agent-preview" element={<Preview />} />
+            <Route path="/agent-payment" element={<Payment />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/bim" element={<BuildingInformationModelling />} />
+            <Route path="/vr" element={<VRInnovation />} />
+            <Route path="/rtc" element={<RealTimeContextCapture />} />
+            <Route path="/projectapplicationdetails" element={<ProjectApplicationDetails />} />
+            <Route path="/extensionprocess" element={<ExtensionProcess />} />
+            <Route path="/extensionpaymentpage" element={<ExtensionPaymentPage />} />
+            <Route path="/certificate" element={<Certificate />} />
+            <Route path="/otplogin" element={<OTPLogin />} />
+            <Route path="/InformProject" element={<InformProject />} />
+            <Route path="/agent-dashboard" element={<AgentDashboard />} />
+            <Route path="/paymentpage" element={<PaymentPage />} />
+            <Route path="/projectregistrationexisting" element={<ProjectRegistrationExisting />} />
+            <Route path="/prexisting" element={<PRExistingStarting />} />
+            <Route path="/prexistingtable" element={<PRExistingtable />} />
+            <Route path="/existing-development-details" element={<ExistingDevelopmentDetails />} />
+            <Route path="/AgentDetails" element={<AgentDetailsOther />} />
+            <Route path="/AgentUploadDocumentotherthan" element={<AgentUploadDocumentOtherthan />} />
+            <Route path="/preview-other" element={<PreviewOther />} />
+            <Route path="/agent-paymentpage" element={<AgentPaymentpage />} />
+            <Route path="/existing-associate-details" element={<ExistingAssociateDetails />} />
+            <Route path="/otherthanindividualdd" element={<OtherthanIndividualDD />} />
+            <Route path="/existing-development-details-upload-docs/:id" element={<UploadDocumentsWithApi />} />
+            <Route path="/existing-project-details" element={<ExistingProjectDetails />} />
+            <Route path="/other-than-individual-project-details" element={<OtherThanIndividualProjectDetails />} />
+            <Route path="/othertheninduvidual-preview" element={<OtherThanIndividual_ProjectPreview />} />
+            <Route path="/other-than-individual-development-details" element={<OtherThanIndividualDevelopmentDetails />} />
+            <Route path="/other-than-individual-associate-details" element={<OtherThanIndividualAssociateDetails />}/>
+            <Route path="/other-than-individual-upload-documents" element={<OtherThanIndividualUploadDocument />} />
+            <Route path="/quarterlyupdateexisting" element={<QuarterlyUpdateExisting />} />
+            <Route path="/quarterlyexistingtable" element={<QuarterlyExistingtable />} />
+            <Route path="/quarterlyupdate" element={<QuarterlyUpdate />} />
+            <Route path="/project-blockvilla-details" element={<ProjectBlockVillaDetails />} />
+            <Route path="/changerequest" element={<ChangeRequestForm />} />
+            <Route path="/changerequestverify" element={<ChangeRequestVerify />} />
+            <Route path="/project-closure" element={<ProjectClosure />} />
+            <Route path="/closureprocess" element={<ClosureProcess />} />
+            <Route path="/promoter" element={<PromoterLogin />} />
+            <Route path="/promoterData" element={<PromoterData />} />
+            <Route path="/closure" element={<ClosureTable />} />
+
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/agent-renewal" element={<AgentRenewal />} />
+
+            <Route path="/renewal/upload/:renewalId" element={<RenewalUploadDocuments />} />
+            <Route path="/renewal/queries/:renewalId" element={<RenewalQueries />} />
+            <Route path="/renewal/preview/:renewalId" element={<RenewalPreview />} />
+            <Route path="/renewal/payment/:renewalId" element={<RenewalPayment />} />
+
+            <Route path="/renewal/status" element={<RenewalStatus />} />
+
+            <Route path="/renewal/receipt/:renewalId" element={<RenewalReceipt />} />
+            // Admin Dashboard
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Requests
+            <Route
+              path="/admin/requests"
+              element={
+                <ProtectedRoute>
+                  <AdminRequests />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Projects
+            <Route
+              path="/admin/projects"
+              element={
+                <ProtectedRoute>
+                  <AdminProjects />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin/agents" element={<AdminAgents />} />
+            // Admin Complaints
+            <Route
+              path="/admin/complaints"
+              element={
+                <ProtectedRoute>
+                  <AdminComplaints />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Complaint Detail
+            {/* <Route
+              path="/admin/complaint/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminComplaintDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} /> */}
+            <Route path="/complaintstatus" element={<ComplaintStatusForm />} />
+            <Route
+              path="/scrutiny/complaint/:id"
+              element={
+                <ScrutinyLayout>
+                  <ComplaintDetailsView />
+                </ScrutinyLayout>
+              }
+            />
+            // Admin Renewal Dashboard
+            <Route
+              path="/admin/renewal"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewal />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Renewal List
+            <Route
+              path="/admin/renewals/:status"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewalList />
+                </ProtectedRoute>
+              }
+            />
+// Admin Renewal Detail
+            <Route
+              path="/admin/renewal/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminRenewalDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin/renewal/:id" element={<AdminRenewalDetail />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/apply-for-renewal-otp" element={<ApplyForRenewalOTP />} />
+            <Route path="/renewal/certificate/:renewalId" element={<RenewalNewCertificate />} />
+            <Route path="/promoter-otp-login" element={<PromoterOtpLogin />} />
+
+// Admin Change Requests List
+            <Route
+              path="/admin/change-requests"
+              element={
+                <ProtectedRoute>
+                  <AdminChangeRequestList />
+                </ProtectedRoute>
+              }
+            />
+            // Admin Change Request Detail
+            <Route
+              path="/admin/change-request/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminChangeRequestDetail />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+          path="/agent_change_request_1"
+            element={<AgentChangeRequest1 />}
+           />
+            <Route path="/Agentchangerequest2" element={<Agentchangerequest />} />
+            <Route
+              path="/agent-change-request-payment"
+              element={<AgentChangeRequestPayment />}
+            />
+            <Route path="/ChangeRequestProcess" element={<ChangeRequestProcess />} />
+            <Route path="/Changerequest1" element={<Changerequest />} />
+            <Route path="/admin/project/:id" element={<AdminProjectDetails />} />
+            <Route path="/admin/agent-change-request" element={<AdminAgentChangeRequest />} />
+            <Route path="/" element={<Welcome />} />
+
+{/* ---------------------------------------------------------------------------------------------------- */}
+
+
+
+            <Route path="/scrutiny/scrutiny-engineer" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/planning/planning-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/legal/legal-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/audit/audit-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/directory/directory-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/verification/verification-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/ad/ad-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/dd/dd-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/it/it-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/director/director-dashboard" element={<ScrutinyDashboard />} />
+            <Route path="/scrutiny/chairman/chairman-dashboard" element={<ScrutinyDashboard />} />
+             <Route path="/scrutiny/scrutiny-registration" element={<ScrutinyRegistration />} />
+           {/* <Route path="/scrutiny/scrutiny-fpms" element={<ScrutinyFpmsDashboard/>} /> */}
+             <Route path="/scrutiny/project-registration" element={<ScrutinyProjectRegistration />} />
+             <Route path="/scrutiny/project-registration_1" element={<ScrutinyProjectRegistration_1 />} />
+             <Route path="/scrutiny/project-registration_2" element={<ScrutinyProjectRegistration_2 />} />
+             <Route path="/scrutiny/project-registration_3" element={<ScrutinyProjectRegistration_3 />} />
+             <Route path="/scrutiny/project-registration_4" element={<ScrutinyProjectRegistration_4 />} />
+             <Route path="/scrutiny/project-registration_5" element={<ScrutinyProjectRegistration_5 />} />
+             <Route path="/scrutiny/project-registration_action" element={<ScrutinyProjectRegistration_action />} />
+               
+            />
+
+            {/*project extention*/}
+             <Route
+              path="/add-user"
+              element={
+                <ScrutinyLayout>
+                  <Add_User />
+                </ScrutinyLayout>
+              }
+            />
+          <Route
+    path="/scrutiny/UnregisterList"
+    element={
+        <ScrutinyLayout>
+            <UnregisterList />
+        </ScrutinyLayout>
+    }
+/>
+            <Route path="/scrutiny/project-unregistered/:id" element={<ScrutinyLayout><UnregistrationProjectDetails /></ScrutinyLayout>} />
+           <Route
+    path="/scrutiny/RTI_list"
+    element={
+        <ScrutinyLayout>
+            <RTI_List />
+        </ScrutinyLayout>
+    }
+/>
+           <Route
+    path="/scrutiny/RTI_Details_Page"
+    element={
+        <ScrutinyLayout>
+            <RTI_Details_Page />
+        </ScrutinyLayout>
+    }
+/>
+            <Route
+              path="/scrutiny/project-extension"
+              element={
+                <ScrutinyLayout>
+                  <ProjectExtentionList />
+                </ScrutinyLayout>
+              }
+            />
+
+            <Route
+              path="/scrutiny/project-extension-details/:id"
+              element={
+                <ScrutinyLayout>
+                  <ProjectExtentionDetails />
+                </ScrutinyLayout>
+              }
+            />
+            {/* Agent Scrutiny */}
+            <Route path="/scrutiny/agent-scrutiny/registrations" element={<AgentScrutinyRegistration />} />
+            <Route path="/agent-scrutiny/registration_1" element={<AgentScrutinyRegistration_1 />} />
+            <Route path="/agent-scrutiny/registration_2" element={<AgentScrutinyRegistration_2 />} />
+            <Route path="/agent-scrutiny/registration_action" element={<AgentScrutinyRegistration_Action />} />
+
+            <Route path="/scrutiny/fpms" element={<FPMSLayout />}>
+              <Route path="dashboard" element={<ScrutinyFpmsDashboard />} />
+              <Route path="create-files" element={<ScrutinyCreateFile />} />
+              <Route path="view-files" element={<ScrutinyViewFiles />} />
+            </Route>
+            <Route path="/department" element={<DepartmentLogin />} />
+           
+             <Route path="/extensionprocess" element={<ExtensionProcess />} />
+   <Route path="/scrutiny/exemption" element={<AdminExemptionPage />} />
+   <Route path="/adminexemption" element={<AdminExemptionPage/>} />
+   <Route path="/adminexemption" element={<UserDetails/>} />
+   <Route path="/exemption" element={<ExemptionFileUpload />} />
+   <Route path="/scrutiny/L1/L1-dashboard" element={<ScrutinyDashboard />} />
+ <Route path="/scrutiny/L2/L2-dashboard" element={<ScrutinyDashboard />} />
+ <Route path="/apreatapplication" element={<ApreatApplication />} />
+
+<Route path="/legal/legaldashboard" element={<LegalDashboard />} />
+<Route path="/scrutiny/legalcomplaintlist" element={<ScrutinyLayout>
+      <ComplaintList />
+    </ScrutinyLayout>} />
+
+ 
+ 
+            <Route path="/mis-reports" element={<MisReports />} />
+             <Route path="/reports/R1.1" element={<R1_1_Report />} />
+             <Route path="/reports/R1.2" element={<AgentStatusReport />} />
+             <Route path="/reports/R3.1" element={<ApartmentsReport />} />
+             <Route path="/reports/R3.4" element={<CommercialReport />} />
+             <Route path="/reports/R3.5" element={<MixedReport />} />
+             <Route path="/reports/R3.6" element={<LayoutForPlotsReport />} />
+             <Route path="/reports/R3.7" element={<LayoutForPlotsBuildingsReport />} />
+             <Route path="/reports/R4.1" element={<ApprovedProjectReport />} />
+             <Route path="/reports/R4.2" element={<ApprovedAgentReport />} />
+             <Route path="/reports/R5.1" element={<ApcrdaReport />} />
+             <Route path="/reports/R5.2" element={<UdaReport />} />
+             <Route path="/reports/R5.3" element={<UlbReport />} />
+             <Route path="/reports/R5.4" element={<DtcpReport />} />
+             <Route path="/reports/R6.4" element={<OfficerPendingReport />} />
+             <Route path="/reports/approved-detailed" element={<ApprovedProjectReportSheet />} />
+             <Route path="/reports/R9.2" element={<R9_2_Report />} />
+             <Route path="/reports/R9.3" element={<R9_3_Report />} />
+             <Route path="/reports/R13.5" element={<DistrictFinancialAgentReport />} />
+             <Route path="/reports/R13.6" element={<DistrictFinancialProjectReport />} />
+             <Route path="/reports/R15.2" element={<R15_2 />} />
+             <Route path="/reports/R17.1" element={<R17_1 />} />
+             <Route path="/reports/R17.2" element={<R17_2 />} />
+             <Route path="/reports/R20.1" element={<R20_1 />} />
+             <Route path="/reports/R20.2" element={<R20_2 />} />
+             <Route path="/reports/R20.3" element={<R20_3 />} />
+             <Route path="/reports/R21.2" element={<R21_2 />} />
+             <Route path="/reports/R22.2" element={<R22_2 />} />
+             <Route path="/reports/R23.1" element={<R23_1 />} />
+             <Route path="/reports/R24.1" element={<R24_1 />} />
+             <Route path="/reports/R1.3" element={<R1_3 />} />
+             <Route path="/reports/R2.1" element={<R2_1 />} />
+             <Route path="/reports/R2.2" element={<R2_2 />} />
+             <Route path="/reports/R2.3" element={<R2_3 />} />
+             <Route path="/reports/R3.2" element={<R3_2 />} />
+             <Route path="/reports/R3.3" element={<R3_3 />} />
+             <Route path="/reports/R6.1" element={<R6_1 />} />
+             <Route path="/reports/R6.2.1" element={<R6_2_1 />} />
+             <Route path="/reports/R6.2.2" element={<R6_2_2 />} />
+             <Route path="/reports/R6.2.3" element={<R6_2_3 />} />
+             <Route path="/reports/R6.3" element={<R6_3 />} />
+             <Route path="/reports/R7.3" element={<R7_3 />} />
+             <Route path="/reports/R7.2" element={<R7_2 />} />
+             <Route path="/reports/R7.1" element={<R7_1 />} />
+             <Route path="/reports/R8.1" element={<R8_1 />} />
+             <Route path="/reports/R8.2" element={<R8_2 />} />
+             <Route path="/reports/R10.2" element={<R10_2 />} />
+             <Route path="/reports/R10.3" element={<R10_3 />} />
+             <Route path="/reports/R11.1" element={<R11_1 />} />
+             <Route path="/reports/R10.1" element={<R10_1 />} />
+             <Route path="/reports/R13.1" element={<R13_1 />} />
+             <Route path="/reports/R13.2" element={<R13_2 />} />
+             <Route path="/reports/R13.4" element={<R13_4 />} />
+             <Route path="/reports/R13.3" element={<R13_3 />} />
+             <Route path="/reports/R14.1" element={<R14_1 />} />
+             <Route path="/reports/R14.2" element={<R14_2 />} />
+             <Route path="/reports/R14.3" element={<R14_3 />} />
+             <Route path="/reports/R18.1" element={<R18_1 />} />
+             <Route path="/reports/R18.2" element={<R18_2 />} />
+             <Route path="/reports/R16.1" element={<R16_1 />} />
+             <Route path="/reports/R12.1" element={<R12_1 />} />
+             <Route path="/reports/R12.2" element={<R12_2 />} />
+             <Route path="/reports/R12.3" element={<R12_3 />} />
+             <Route path="/reports/R12.4" element={<R12_4 />} />
+             <Route path="/reports/R25.1" element={<R25_1 />} />
+             <Route path="/reports/R25.2" element={<R25_2 />} />
+             <Route path="/reports/R25.3" element={<R25_3 />} />
+             <Route path="/reports/R15.1" element={<R15_1 />} />
+             <Route path="/reports/R19.1" element={<R19_1 />} />
+             <Route path="/exemptiondetails/:id" element={<ExemptionUserDetails />} />
+             <Route
+  path="/case-status"
+  element={<CaseStatus />}
+/>
+<Route path="/admin/rti" element={<RtiPage />} />
+<Route
+  path="/hearings"
+  element={<HearingHistory />}
+/>
+
+            <Route path="/Rtilogin" element={<RtiUserLogin />} />
+           <Route path="/RtireqForm" element={<RtiRequestForm/>}/>
+            <Route path="/RtiPaymentPage" element={<RtiPaymentPage/>}/>
+            <Route path="/Registerlist" element={<Registerlist />} />
+            <Route path="/cause-list" element={<CauseList />} />
+          </Routes>
+          {window.location.pathname !== "/" && <Chatbot />}
+        </Layout></AgentFormProvider>
+        </AdminProvider>
+    </BrowserRouter>
+  );
+}
+
+export default App;

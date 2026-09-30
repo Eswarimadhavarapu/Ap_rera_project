@@ -1,0 +1,46 @@
+# Dependency folders
+node_modules/
+FRONTEND/node_modules/
+BACKEND/node_modules/
+
+# Upload folders
+BACKEND/uploads/
+BACKEND/app/uploads/
+uploads/
+
+# Generated archives
+*.zip
+
+# Python virtual environment
+venv/
+env/
+Lib/
+site-packages/
+BACKEND/venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Build output
+dist/
+build/
+FRONTEND/dist/
+.next/
+out/
+.vercel/
+
+# Logs
+logs/
+*.log
+
+# Env files
+.env
+.env.local
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.dbs

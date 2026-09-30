@@ -1,0 +1,434 @@
+/* ===============================
+   PAGE WRAPPER (SAFE)
+================================ */
+.admin-agent-layout {
+  display: flex;
+}
+
+.admin-agent-main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  transition: 0.3s;
+}
+
+.admin-agent-main.full {
+  margin-left: 0;
+  width: 100%;
+}
+
+.admin-agent-content {
+  margin-top: 80px;
+  padding: 50px;
+  background: #f5f7fb;
+  min-height: 100vh;
+
+}
+
+/* ===============================
+   HEADER AREA
+================================ */
+.admin-change-request-page {
+  background: transparent;
+}
+
+.admin-change-request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.admin-change-request-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #4d96a3;
+}
+
+.placeholder-text {
+  color: #64748B;
+  font-size: 14px;
+}
+
+.search-area input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  width: 260px;
+}
+
+/* ===============================
+   STATUS CARDS (PROFESSIONAL)
+================================ */
+.admin-status-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.status-card {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border-radius: 14px;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.status-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  border-radius: 14px 14px 0 0;
+}
+
+/* Colors */
+.status-card:nth-child(1)::before { background: #5A2D0C; }
+.status-card:nth-child(2)::before { background: #C68A2D; }
+.status-card:nth-child(3)::before { background: #16A34A; }
+.status-card:nth-child(4)::before { background: #DC2626; }
+
+.status-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+}
+
+.status-card-active {
+  border: 2px solid #4d96a3;
+}
+
+.status-card-label {
+  font-size: 13px;
+  color: #64748B;
+}
+
+.status-card-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4d96a3;
+}
+
+/* ===============================
+   FILTER
+================================ */
+.admin-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 15px;
+}
+
+/* hide label */
+.admin-filter-row > span {
+  display: none;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 30px;
+}
+
+/* tab style */
+.filter-pill {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #64748B;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* count badge */
+.tab-count {
+  background: #e2e8f0;
+  color: #1e293b;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* active tab */
+.filter-pill-active {
+  color: #4d96a3;
+  font-weight: 600;
+}
+
+/* underline */
+.filter-pill-active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #4d96a3;
+  border-radius: 2px;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.admin-request-table .table-wrapper {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.admin-request-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-request-table th {
+  background: #4d96a3;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.admin-request-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-request-table tr:hover {
+  background: #f8fafc;
+}
+
+/* ===============================
+   STATUS CHIP
+================================ */
+.status-chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fff4e5;
+  color: #b45309;
+}
+
+.status-completed,
+.status-approved {
+  background: #e6f7ec;
+  color: #15803d;
+}
+
+.status-rejected {
+  background: #ffe4e4;
+  color: #b91c1c;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.action-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.subtle-secondary {
+  background: #4d96a3;
+  color: white;
+}
+
+.success {
+  background: #16A34A;
+  color: white;
+}
+
+.danger {
+  background: #DC2626;
+  color: white;
+}
+
+.action-buttons button:hover {
+  opacity: 0.85;
+}
+
+/* ===============================
+   MODAL (IMPORTANT)
+================================ */
+.full-details-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+
+  z-index: 2000; /* 🔥 higher than sidebar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* Modal panel */
+.full-details-panel {
+  position: relative;
+  z-index: 2100;
+
+  background: #fff;
+  border-radius: 16px;
+
+  width: 96%;            /* 🔥 take more width */
+  max-width: 1400px;     /* 🔥 bigger modal */
+
+  height: 92vh;          /* 🔥 increase height */
+  max-height: 92vh;
+
+  padding: 30px;
+  overflow-y: auto;
+}
+.full-details-panel section {
+  margin-top: 20px;
+}
+
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+/* ===============================
+   DETAILS GRID
+================================ */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.details-grid div {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   FIELD CHANGES
+================================ */
+.field-change-row {
+  background: #fafafa;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.field-values span {
+  display: block;
+  font-size: 13px;
+  color: #444;
+}
+
+/* ===============================
+   PANEL
+================================ */
+.admin-request-panel {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.panel-details {
+  display: flex;
+  gap: 10px;
+}
+
+.panel-details div {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  flex: 1;
+}
+.modal-action-buttons {
+  display: flex;
+  justify-content: center;   /* ✅ center horizontally */
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+
+/* ===============================
+   MODAL HEADINGS COLOR FIX
+================================ */
+
+/* Main title */
+.full-details-panel h2 {
+  color: #4d96a3;
+  font-weight: 600;
+}
+
+/* Section headings */
+.full-details-panel h3 {
+  color: #4d96a3;
+  font-weight: 600;
+}
+
+/* Field labels (Application No, PAN etc.) */
+.details-grid strong {
+  color: #4d96a3;
+}
+
+/* Optional: sub text headings */
+.field-label {
+  color: #4d96a3;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .admin-agent-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .admin-change-request-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

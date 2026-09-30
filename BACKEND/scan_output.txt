@@ -1,0 +1,210 @@
+COUNT 209
+app\controllers\admin_controller.py 294 print(e)
+app\controllers\admin_controller.py 361 print(e)
+app\controllers\admin_controller.py 402 print(e)
+app\controllers\agent_other_than_individual_registration_controller.py 243 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\agent_other_than_individual_registration_controller.py 367 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\agent_other_than_individual_registration_controller.py 380 return jsonify({"exists": False, "error": str(e)}), 500
+app\controllers\agent_registration_controller.py 154 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\agent_registration_controller.py 189 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\agent_registration_controller.py 220 "message": str(e)
+app\controllers\agent_registration_controller.py 241 "message": str(e)
+app\controllers\agent_registration_controller.py 264 "message": str(e)
+app\controllers\agent_registration_controller.py 314 "message": str(e)
+app\controllers\agent_registration_controller.py 331 "message": str(e)
+app\controllers\agent_registration_controller.py 346 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\agent_renewal_controller.py 233 return jsonify({"error": str(e)}), 500
+app\controllers\agent_renewal_controller.py 282 print("UPLOAD ERROR:", str(e))
+app\controllers\agent_renewal_controller.py 283 return {"error": str(e)}, 500
+app\controllers\agent_renewal_controller.py 506 print("ERROR OCCURRED:", str(e))
+app\controllers\agent_renewal_controller.py 508 return {"error": str(e)}, 500
+app\controllers\agent_scrutiny_controller.py 86 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 107 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 158 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 166 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 215 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 238 return jsonify({"error": str(exc)}), 500
+app\controllers\agent_scrutiny_controller.py 296 return jsonify({"error": str(e)}), 500
+app\controllers\agent_scrutiny_controller.py 364 return jsonify({"error": str(e)}), 500
+app\controllers\agent_scrutiny_controller.py 373 return jsonify({"error": str(e)}), 500
+app\controllers\application_associate_controller.py 68 "message": str(e)
+app\controllers\application_associate_controller.py 140 "message": str(e)
+app\controllers\associate_controller.py 143 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 177 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 189 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 234 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 246 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 303 "message": str(e)
+app\controllers\associate_controller.py 378 "message": str(e)
+app\controllers\associate_controller.py 421 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 433 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 492 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\associate_controller.py 505 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\change_request_controller.py 140 logger.error(str(e))
+app\controllers\change_request_controller.py 141 return jsonify({"error": str(e)}), 500
+app\controllers\change_request_controller.py 185 return jsonify({"error": str(e)}), 500
+app\controllers\change_request_controller.py 227 print("ERROR:", str(e))
+app\controllers\change_request_controller.py 228 return {"error": str(e)}, 500
+app\controllers\change_request_controller.py 270 return {"error": str(e)}, 500
+app\controllers\complint_controller.py 1336 "message": str(e)
+app\controllers\complint_controller.py 1477 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\complint_controller.py 1621 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\complint_controller.py 1661 logger.error(f"❌ Date parsing failed: {str(e)}")
+app\controllers\complint_controller.py 1796 logger.error(f"❌ ERROR in add_hearing → {str(e)}")
+app\controllers\complint_controller.py 1801 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\complint_controller.py 1840 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\complint_controller.py 1982 "message": str(e)
+app\controllers\complint_controller.py 2049 print("NOTICE ERROR:", str(e))
+app\controllers\complint_controller.py 2053 "message": str(e)
+app\controllers\complint_controller.py 2148 "message": str(e)
+app\controllers\complint_controller.py 2234 "message": str(e)
+app\controllers\development_details_controller.py 249 "error": str(e)
+app\controllers\development_details_controller.py 283 "error": str(e)
+app\controllers\development_details_controller.py 324 {"status": "error", "message": "Internal Server Error", "error": str(e)}
+app\controllers\litigation_other_t_indv_controller.py 31 return jsonify({"error": str(e)}), 400
+app\controllers\login_controller.py 95 "error": str(e)
+app\controllers\login_controller.py 142 "error": str(e)
+app\controllers\occupation_controller.py 27 "error": str(e)
+app\controllers\org_member_other_t_indv_controller.py 40 return jsonify({"error": str(e)}), 400
+app\controllers\othertheninduvidual_project_preview_controller.py 65 print("❌ PREVIEW CONTROLLER ERROR:", str(e))
+app\controllers\othertheninduvidual_project_preview_controller.py 68 "message": str(e)
+app\controllers\othertheninduvidual_project_preview_controller.py 102 print("❌ REGISTRATION FETCH ERROR:", str(e))
+app\controllers\othertheninduvidual_project_preview_controller.py 105 "message": str(e)
+app\controllers\othertheninduvidual_project_registration_controller.py 149 return jsonify({"error": str(e)}), 500
+app\controllers\othertheninduvidual_project_registration_controller.py 192 return jsonify({"error": str(e)}), 500
+app\controllers\othertheninduvidual_project_registration_controller.py 232 "error": str(e)
+app\controllers\othertheninduvidual_project_registration_controller.py 378 "error": str(e)
+app\controllers\otp_controller.py 127 "error": str(e)
+app\controllers\otp_controller.py 195 "error": str(e)
+app\controllers\past_project_other_t_indv_controller.py 33 return jsonify({"error": str(e)}), 400
+app\controllers\project_closure_controller.py 196 "message": str(e)
+app\controllers\project_exemption_controller.py 419 return jsonify({"error": str(e)}), 500
+app\controllers\project_exemption_controller.py 575 "error": str(e),
+app\controllers\project_exemption_controller.py 613 "error": str(e),
+app\controllers\project_exemption_controller.py 695 "error": str(e),
+app\controllers\project_extention_controller.py 220 "message": str(e)
+app\controllers\project_extention_controller.py 271 "message": str(e)
+app\controllers\project_extention_controller.py 301 "message": str(e)
+app\controllers\project_extention_controller.py 460 "message": str(e)
+app\controllers\project_extention_controller.py 500 "message": str(e)
+app\controllers\project_gallery_controller.py 72 return jsonify({"success": False, "error": str(e)}), 500
+app\controllers\project_gallery_controller.py 89 return jsonify({"success": False, "error": str(e)}), 500
+app\controllers\project_gallery_controller.py 114 return jsonify({"success": False, "error": str(e)}), 500
+app\controllers\project_preview_controller.py 50 return jsonify({"error": str(e)}), 500
+app\controllers\project_quarterly_plot_controller.py 53 return {"success": False, "message": str(e)}
+app\controllers\project_rating_controller.py 47 return jsonify({"success": False, "error": str(e)}), 500
+app\controllers\project_registration_controller.py 118 return jsonify({"error": str(e)}), 500
+app\controllers\project_registration_controller.py 166 return jsonify({"error": str(e)}), 500
+app\controllers\project_registration_controller.py 199 "error": str(e)
+app\controllers\project_registration_controller.py 346 "error": str(e)
+app\controllers\project_unregistered_controller.py 248 return jsonify({"error": str(e)}), 500
+app\controllers\project_unregistered_controller.py 383 print("ERROR:", str(e))
+app\controllers\project_unregistered_controller.py 385 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\project_unregistered_controller.py 396 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\project_unregistered_controller.py 475 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\project_unregistered_controller.py 600 print("ERROR:", str(e))
+app\controllers\project_unregistered_controller.py 601 return jsonify({"success": False, "message": str(e)}), 500
+app\controllers\project_uploddocuments_controller.py 87 "message": str(e)
+app\controllers\project_uploddocuments_controller.py 190 "message": str(e)
+app\controllers\project_uploddocuments_controller.py 251 "message": str(e)
+app\controllers\project_uploddocuments_controller.py 303 "message": str(e)
+app\controllers\project_uploddocuments_controller.py 379 return jsonify({"status": "error", "message": str(e)}), 500
+app\controllers\project_wizard_controller.py 153 return jsonify({"error": str(e)}), 500
+app\controllers\project_wizard_controller.py 178 return jsonify({"error": str(e)}), 500
+app\controllers\project_wizard_controller.py 259 return jsonify({"error": str(e)}), 500
+app\controllers\promoter2_other_t_indv_controller.py 36 return jsonify({"error": str(e)}), 400
+app\controllers\promoter_other_t_indv_controller.py 251 return jsonify({"error": str(e)}), 400
+app\controllers\promoter_other_t_indv_controller.py 385 return jsonify({"error": str(e)}), 400
+app\controllers\promoter_other_t_indv_controller.py 556 return jsonify({"error": str(e)}), 400
+app\controllers\promoter_registration_controller.py 127 return jsonify({"error": str(e)}), 500
+app\controllers\promoter_registration_controller.py 168 return jsonify({"exists": False, "error": str(e)}), 500
+app\controllers\rera_other_t_indv_controller.py 27 return jsonify({"error": str(e)}), 400
+app\controllers\rti_controller.py 262 "message": str(e)
+app\controllers\rti_controller.py 337 "message": str(e)
+app\controllers\rti_controller.py 540 "message": str(e)
+app\controllers\rti_controller.py 610 "message": str(e)
+app\controllers\rti_controller.py 688 "message": str(e)
+app\controllers\rti_controller.py 742 "message": str(e)
+app\controllers\rti_controller.py 957 "message": str(e)
+app\controllers\rti_controller.py 1046 "message": str(e)
+app\controllers\rti_controller.py 1149 "message": str(e)
+app\controllers\rti_controller.py 1310 "message": str(e)
+app\controllers\rti_controller.py 1390 "message": str(e)
+app\controllers\rti_controller.py 1472 "message": str(e)
+app\controllers\scrutiny_projectregistation_controller.py 58 return jsonify({"error": str(exc)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 159 return jsonify({"error": str(e)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 239 return jsonify({"error": str(e)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 270 return jsonify({"error": str(e)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 293 return jsonify({"error": str(exc)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 366 return jsonify({"error": str(exc)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 381 return jsonify({"error": str(exc)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 468 return jsonify({"error": str(exc)}), 500
+app\controllers\scrutiny_projectregistation_controller.py 495 return jsonify({"error": str(exc)}), 500
+app\controllers\search_controller.py 33 return jsonify({"success": False, "error": str(e)}), 500
+app\models\agent_change_request_model.py 702 "message": str(e)
+app\models\agent_change_request_model.py 833 "message": str(e)
+app\models\agent_change_request_model.py 871 "message": str(e)
+app\models\agent_change_request_model.py 959 "message": str(exc)
+app\models\agent_change_request_model.py 1110 "message": str(exc)
+app\models\agent_model.py 39 "message": str(e)
+app\models\agent_registration_model.py 830 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 857 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 988 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1020 "message": str(e)
+app\models\agent_registration_model.py 1061 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1096 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1145 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1236 "message": str(e)
+app\models\agent_registration_model.py 1306 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1328 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1371 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1401 return {"success": False, "message": str(e)}
+app\models\agent_registration_model.py 1436 "message": str(e)
+app\models\agent_scrutiny_model.py 238 return {"success": False, "message": str(e)}
+app\models\project_quarterly_plot_model.py 64 return {"success": False, "message": str(e)}
+app\utils\mail_service.py 887 print("EMAIL ERROR:", str(e))
+app\utils\mail_service.py 984 print("PROJECT APPROVAL EMAIL ERROR:", str(e))
+app\utils\mail_service.py 1036 print("PROJECT REJECTION EMAIL ERROR:", str(e))
+app\utils\mail_service.py 1067 print("❌ Reminder email error:", str(e))
+app\utils\mail_service.py 1192 print("EMAIL ERROR:", str(e))
+app\utils\mail_service.py 1644 print("❌ Email attachment error:", str(e))
+app\utils\renewal_certificate_utils.py 89 print("Certificate generation error:", str(e))
+app\utils\renewal_certificate_utils.py 306 print("❌ Error:", str(e))
+rera\Lib\site-packages\greenlet\tests\test_version.py 34 self.skipTest("Unable to find setup.py; must be out of tree. " + str(e))
+rera\Lib\site-packages\jinja2\lexer.py 657 msg = str(e).split(":")[-1].strip()
+rera\Lib\site-packages\pip\_internal\cli\base_command.py 116 logger.critical(str(exc))
+rera\Lib\site-packages\pip\_internal\cli\base_command.py 125 logger.critical(str(exc))
+rera\Lib\site-packages\pip\_internal\cli\cmdoptions.py 756 raise_option_error(parser, option=option, msg=str(exc))
+rera\Lib\site-packages\pip\_internal\index\collector.py 369 reason += str(exc)
+rera\Lib\site-packages\pip\_internal\network\auth.py 280 str(exc),
+rera\Lib\site-packages\pip\_internal\resolution\legacy\resolver.py 81 raise NoneMetadataError(dist, str(e))
+rera\Lib\site-packages\pip\_internal\resolution\resolvelib\candidates.py 234 raise MetadataInvalid(self._ireq, str(e))
+rera\Lib\site-packages\pip\_vendor\distlib\util.py 1281 raise ValueError(str(exc))
+rera\Lib\site-packages\pip\_vendor\packaging\markers.py 298 raise InvalidMarker(str(e)) from e
+rera\Lib\site-packages\pip\_vendor\packaging\requirements.py 38 raise InvalidRequirement(str(e)) from e
+rera\Lib\site-packages\pip\_vendor\pkg_resources\__init__.py 2755 raise ImportError(str(exc)) from exc
+rera\Lib\site-packages\pip\_vendor\urllib3\contrib\appengine.py 161 if "too large" in str(e):
+rera\Lib\site-packages\pip\_vendor\urllib3\contrib\appengine.py 170 if "Too many redirects" in str(e):
+rera\Lib\site-packages\pip\_vendor\urllib3\contrib\pyopenssl.py 307 raise SocketError(str(e))
+rera\Lib\site-packages\pip\_vendor\urllib3\contrib\pyopenssl.py 332 raise SocketError(str(e))
+rera\Lib\site-packages\pip\_vendor\urllib3\contrib\pyopenssl.py 360 raise SocketError(str(e))
+rera\Lib\site-packages\pip\_vendor\urllib3\response.py 447 if "read operation timed out" not in str(e):
+rera\Lib\site-packages\sqlalchemy\connectors\pyodbc.py 154 ) or "Attempt to use a closed connection." in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\mssql\base.py 3171 r".*\b111214\b", str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\mssql\pymssql.py 108 if msg in str(e):
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\aiomysql.py 236 str_e = str(e).lower()
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\asyncmy.py 215 str_e = str(e).lower()
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\base.py 2986 return "(0, '')" in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\mariadbconnector.py 191 str_e = str(e).lower()
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\mysqlconnector.py 249 or "MySQL Connection not available." in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\mysqlconnector.py 250 or "Connection to MySQL is not available" in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\mysql\pymysql.py 145 str_e = str(e).lower()
+rera\Lib\site-packages\sqlalchemy\dialects\oracle\cx_oracle.py 1464 ) and "not connected" in str(e):
+rera\Lib\site-packages\sqlalchemy\dialects\oracle\cx_oracle.py 1484 if re.match(r"^(?:DPI-1010|DPI-1080|DPY-1001|DPY-4011)", str(e)):
+rera\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py 1178 ) and "connection is closed" in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\postgresql\pg8000.py 517 return "connection is closed" in str(e)
+rera\Lib\site-packages\sqlalchemy\dialects\postgresql\psycopg2.py 852 str_e = str(e).partition("\n")[0]
+rera\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py 435 ) and "no active connection" in str(e):
+rera\Lib\site-packages\sqlalchemy\dialects\sqlite\pysqlite.py 635 ) and "Cannot operate on a closed database." in str(e)
+rera\Lib\site-packages\sqlalchemy\exc.py 707 text = "Error in str() of DB-API-generated exception: " + str(e)
+rera\Lib\site-packages\sqlalchemy\util\concurrency.py 25 greenlet_error = str(e)

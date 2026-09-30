@@ -1,0 +1,25 @@
+from flask import Blueprint, jsonify
+from app.models.database import db
+from sqlalchemy import text
+from flask_jwt_extended import jwt_required
+admin_requests_bp = Blueprint("admin_requests_bp", __name__)
+
+# Get all pending requests
+@admin_requests_bp.route("/admin/requests", methods=["GET"])
+@jwt_required()
+def get_requests():
+
+    result = db.session.execute(
+        text("SELECT id, pan_number, status FROM change_requests")
+    )
+
+    requests = []
+
+    for row in result:
+        requests.append({
+            "id": row.id,
+            "pan_number": row.pan_number,
+            "status": row.status
+        })
+
+    return jsonify(requests)

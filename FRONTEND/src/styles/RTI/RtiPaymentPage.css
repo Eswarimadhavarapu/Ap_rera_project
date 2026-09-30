@@ -1,0 +1,211 @@
+/* =========================================
+   RTI PAYMENT PAGE
+========================================= */
+
+.rti-payment-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f3f3;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.rti-payment-container {
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  border: 2px solid #1f7ae0;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.rti-payment-header {
+  width: 100%;
+  background: #2c86dc;
+  padding: 14px 18px;
+  box-sizing: border-box;
+  margin-bottom: 25px;
+}
+
+.rti-payment-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* =========================================
+   TOP DETAILS
+========================================= */
+
+.rti-payment-top-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.rti-payment-left-details p,
+.rti-payment-right-details p {
+  margin: 6px 0;
+  font-size: 18px;
+  color: #1d1d1d;
+  line-height: 1.5;
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.rti-payment-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.rti-payment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.rti-payment-table tr td {
+  border: 1px solid #d8d8d8;
+  padding: 18px 16px;
+  font-size: 17px;
+  color: #222222;
+}
+
+.rti-payment-table tr td:first-child {
+  width: 45%;
+  font-weight: 600;
+  background: #fafafa;
+}
+
+/* =========================================
+   TOTAL SECTION
+========================================= */
+
+.rti-payment-total-section {
+  width: 100%;
+  border: 2px solid #1f7ae0;
+  padding: 15px 18px;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+
+  margin-bottom: 30px;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.rti-payment-btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rti-payment-proceed-btn {
+  background: #2c86dc;
+  color: #ffffff;
+
+  border: 2px solid #ffffff;
+  outline: 2px solid #2c86dc;
+
+  padding: 14px 40px;
+
+  font-size: 20px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.rti-payment-proceed-btn:hover {
+  background: #166ec4;
+}
+
+.rti-payment-proceed-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media screen and (max-width: 768px) {
+
+  .rti-payment-header h2 {
+    font-size: 24px;
+  }
+
+  .rti-payment-left-details p,
+  .rti-payment-right-details p {
+    font-size: 16px;
+  }
+
+  .rti-payment-table tr td {
+    font-size: 15px;
+    padding: 14px;
+  }
+
+  .rti-payment-total-section {
+    font-size: 20px;
+  }
+
+  .rti-payment-proceed-btn {
+    width: 100%;
+    font-size: 18px;
+  }
+}
+.rti-payment-btn-container {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.rti-bank-select-wrapper {
+
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+}
+
+.rti-bank-select-wrapper label {
+
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.rti-bank-select {
+
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+}
+
+.rti-payment-proceed-btn {
+
+  min-width: 220px;
+}

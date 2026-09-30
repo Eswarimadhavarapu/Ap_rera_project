@@ -1,0 +1,36 @@
+.changerequest-form-container {
+  width: 500px;
+  margin: auto;
+  margin-top: 40px;
+  font-family: Arial;
+}
+
+.changerequest-form-form-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.changerequest-form-form-box label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.changerequest-form-form-box input,
+.changerequest-form-form-box select,
+.changerequest-form-form-box textarea {
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.changerequest-form-button {
+  margin-top: 20px;
+  padding: 10px;
+  background: #0b4da2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.changerequest-form-button:hover {
+  background: #083a7a;
+}

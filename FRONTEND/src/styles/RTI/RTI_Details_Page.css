@@ -1,0 +1,939 @@
+/* ============================================================
+   RTI_Details_Page.css  —  Updated for table styling (image style)
+   All class names prefixed: RTI_Details_Page__
+   ============================================================ */
+
+@keyframes RTI_Details_Page__spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes RTI_Details_Page__fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes RTI_Details_Page__modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes RTI_Details_Page__slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ── Page ───────────────────────────────────────────────────── */
+.RTI_Details_Page__page {
+    min-height: 100vh;
+    background: #f1f5f9;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    padding: 24px 32px 60px;
+    animation: RTI_Details_Page__fadeIn 0.22s ease;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.RTI_Details_Page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+    margin-left: 40%;
+}
+
+.RTI_Details_Page__headerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.RTI_Details_Page__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.RTI_Details_Page__breadcrumb--dim {
+    color: #94a3b8;
+}
+
+.RTI_Details_Page__breadcrumb--sep {
+    color: #cbd5e1;
+}
+
+.RTI_Details_Page__breadcrumb--active {
+    color: #475569;
+    font-weight: 600;
+}
+
+.RTI_Details_Page__title {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+}
+
+.RTI_Details_Page__subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ── Header right ────────────────────────────────────────────── */
+.RTI_Details_Page__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ── Status Bar ─────────────────────────────────────────────── */
+.RTI_Details_Page__statusBar {
+
+
+
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+
+}
+
+.RTI_Details_Page__statusBarLeft {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.RTI_Details_Page__statusItem {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.RTI_Details_Page__statusLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.RTI_Details_Page__statusValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.RTI_Details_Page__statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid;
+    letter-spacing: 0.3px;
+}
+
+.RTI_Details_Page__statusDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* action buttons row */
+.RTI_Details_Page__actionRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.RTI_Details_Page__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: 1.5px solid;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.RTI_Details_Page__btn--return {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+.RTI_Details_Page__btn--return:hover {
+    background: #c2410c;
+    color: #fff;
+    border-color: #c2410c;
+    box-shadow: 0 4px 12px rgba(194, 65, 12, 0.3);
+}
+
+.RTI_Details_Page__btn--assign {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.RTI_Details_Page__btn--assign:hover {
+    background: #1d4ed8;
+    color: #fff;
+    border-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+.RTI_Details_Page__btn--apio {
+    background: #fdf4ff;
+    color: #7e22ce;
+    border-color: #e9d5ff;
+}
+
+.RTI_Details_Page__btn--apio:hover {
+    background: #7e22ce;
+    color: #fff;
+    border-color: #7e22ce;
+    box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3);
+}
+
+.RTI_Details_Page__btn--reply {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #86efac;
+}
+
+.RTI_Details_Page__btn--reply:hover {
+    background: #15803d;
+    color: #fff;
+    border-color: #15803d;
+    box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3);
+}
+
+.RTI_Details_Page__btn--back {
+    background: #fff;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+
+.RTI_Details_Page__btn--back:hover {
+    background: #1e293b;
+    color: #fff;
+    border-color: #1e293b;
+    transform: translateX(-2px);
+    box-shadow: 0 4px 14px rgba(30, 41, 59, 0.2);
+}
+
+.RTI_Details_Page__btn--submit {
+    background: #6366f1;
+    color: #fff;
+    border-color: #6366f1;
+}
+
+.RTI_Details_Page__btn--submit:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.RTI_Details_Page__btn--submit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.RTI_Details_Page__btn--danger {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.RTI_Details_Page__btn--danger:hover {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
+}
+
+.RTI_Details_Page__btn--ghost {
+    background: transparent;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+.RTI_Details_Page__btn--ghost:hover {
+    background: #f1f5f9;
+}
+
+
+
+.RTI_Details_Page__gridFull {
+    grid-column: 1 / -1;
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+
+.RTI_Details_Page__cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #0f89ca;
+    text-align: center;
+}
+
+.RTI_Details_Page__cardIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.RTI_Details_Page__cardTitle {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+/* ── TABLE STYLING for Field rows ─────────────────────────────── */
+/* Each field row behaves like a table row with two cells */
+.RTI_Details_Page__fieldRow {
+    display: grid;
+    grid-template-columns: 32% 68%;
+    background: transparent;
+    border-bottom: 1px solid #edf2f7;
+    transition: background 0.1s;
+    margin: 0;
+    padding: 0;
+}
+
+.RTI_Details_Page__fieldLabel {
+    background-color: #fafcff;
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1e405e;
+    letter-spacing: -0.2px;
+    border-right: 1px solid #f0f4fa;
+    text-transform: uppercase;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.RTI_Details_Page__fieldValue {
+    background-color: #ffffff;
+    padding: 1rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1f2d3d;
+    word-break: break-word;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.RTI_Details_Page__fieldValue--muted {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* Remove border from last row for clean finish */
+.RTI_Details_Page__fieldRow:last-child {
+    border-bottom: none;
+}
+
+/* ── text area / block value (full width) ───────────────────── */
+.RTI_Details_Page__textBox {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #334155;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 16px 24px 20px 24px;
+}
+
+/* ── Document list ──────────────────────────────────────────── */
+.RTI_Details_Page__docList {
+    list-style: none;
+    padding: 0;
+    margin: 16px 24px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.RTI_Details_Page__docItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 16px;
+}
+
+.RTI_Details_Page__docName {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.RTI_Details_Page__docLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.RTI_Details_Page__docLink:hover {
+    background: #1d4ed8;
+    color: #fff;
+    border-color: #1d4ed8;
+}
+
+/* ── Review section (keep existing table styles) ───────────── */
+.RTI_Details_Page__reviewSection {
+    margin-top: 4px;
+}
+
+.RTI_Details_Page__reviewTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.RTI_Details_Page__reviewTh {
+    background: #f8fafc;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.RTI_Details_Page__reviewTr {
+    transition: background 0.12s;
+}
+
+.RTI_Details_Page__reviewTr:hover {
+    background: #f8fafc;
+}
+
+.RTI_Details_Page__reviewTd {
+    padding: 11px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    vertical-align: middle;
+}
+
+/* ── Modal overlay ──────────────────────────────────────────── */
+.RTI_Details_Page__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.RTI_Details_Page__modal {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+    animation: RTI_Details_Page__modalIn 0.22s ease;
+}
+
+.RTI_Details_Page__modal--wide {
+    max-width: 780px;
+}
+
+.RTI_Details_Page__modalHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    border-radius: 20px 20px 0 0;
+}
+
+.RTI_Details_Page__modalTitle {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.RTI_Details_Page__modalSubtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 2px 0 0;
+}
+
+.RTI_Details_Page__modalClose {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.RTI_Details_Page__modalClose:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+.RTI_Details_Page__modalBody {
+    padding: 20px 24px;
+}
+
+.RTI_Details_Page__modalFooter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* ── Form fields ────────────────────────────────────────────── */
+.RTI_Details_Page__formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.RTI_Details_Page__formGroup:last-child {
+    margin-bottom: 0;
+}
+
+.RTI_Details_Page__formLabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.RTI_Details_Page__formInput,
+.RTI_Details_Page__formTextarea,
+.RTI_Details_Page__formSelect {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    color: #1e293b;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.RTI_Details_Page__formInput:focus,
+.RTI_Details_Page__formTextarea:focus,
+.RTI_Details_Page__formSelect:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.RTI_Details_Page__formTextarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.55;
+}
+
+/* file upload */
+.RTI_Details_Page__fileWrap {
+    border: 2px dashed #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+}
+
+.RTI_Details_Page__fileWrap:hover {
+    border-color: #6366f1;
+    background: #f5f3ff;
+}
+
+.RTI_Details_Page__fileInput {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.RTI_Details_Page__fileHint {
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin: 4px 0 0;
+}
+
+.RTI_Details_Page__fileChosen {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6366f1;
+    margin-top: 6px;
+}
+
+/* ── Assign table inside modal ──────────────────────────────── */
+.RTI_Details_Page__assignTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 14px;
+}
+
+.RTI_Details_Page__assignTh {
+    background: #f8fafc;
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.RTI_Details_Page__assignTr:hover {
+    background: #f8fafc;
+}
+
+.RTI_Details_Page__assignTd {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    vertical-align: middle;
+    font-size: 13px;
+}
+
+.RTI_Details_Page__assignDivider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 18px 0;
+}
+
+.RTI_Details_Page__assignSectionTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px;
+    padding: 0 24px;
+}
+
+/* ── Toast / alert ──────────────────────────────────────────── */
+.RTI_Details_Page__toast {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.RTI_Details_Page__toast--success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.RTI_Details_Page__toast--error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+/* ── Loading / error page states ────────────────────────────── */
+.RTI_Details_Page__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 14px;
+}
+
+.RTI_Details_Page__spinner {
+    width: 44px;
+    height: 44px;
+    border: 3.5px solid #e2e8f0;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: RTI_Details_Page__spin 0.75s linear infinite;
+}
+
+.RTI_Details_Page__stateText {
+    font-size: 15px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.RTI_Details_Page__stateSubText {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ── Tag pill ────────────────────────────────────────────────── */
+.RTI_Details_Page__tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid;
+}
+
+/* ── Footer back ────────────────────────────────────────────── */
+.RTI_Details_Page__footer {
+    display: flex;
+    align-items: center;
+    padding-top: 24px;
+    padding-left: 0;
+    margin-top: 8px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .RTI_Details_Page__page {
+        padding: 16px 16px 40px;
+    }
+
+    .RTI_Details_Page__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .RTI_Details_Page__gridFull {
+        grid-column: 1;
+    }
+
+    .RTI_Details_Page__statusBar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .RTI_Details_Page__fieldRow {
+        grid-template-columns: 1fr;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .RTI_Details_Page__fieldLabel {
+        border-right: none;
+        border-bottom: 1px solid #f0f4fa;
+        padding: 0.8rem 1rem;
+    }
+
+    .RTI_Details_Page__fieldValue {
+        padding: 0.8rem 1rem;
+    }
+
+    .RTI_Details_Page__actionRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .RTI_Details_Page__btn {
+        justify-content: center;
+    }
+
+    .RTI_Details_Page__cardHeader {
+        padding: 16px 16px 10px 16px;
+    }
+
+    .RTI_Details_Page__textBox,
+    .RTI_Details_Page__docList {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .RTI_Details_Page__assignSectionTitle {
+        padding: 0 16px;
+    }
+}
+
+
+
+
+
+
+/* ── Applicant Details Table Layout ───────────────────────── */
+
+.RTI_Details_Page__twoColumnGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 0;
+}
+
+/* each cell */
+.RTI_Details_Page__twoColumnGrid .RTI_Details_Page__fieldRow {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* left side label */
+.RTI_Details_Page__fieldLabel {
+    background: #9db4cb;
+    padding: 18px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #03080e;
+    border-right: 1px solid #1058e8;
+    text-transform: uppercase;
+    line-height: 1.5;
+}
+
+/* right side value */
+.RTI_Details_Page__fieldValue {
+    background: #fff;
+    padding: 18px 22px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #040a15;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* middle vertical divider */
+.RTI_Details_Page__twoColumnGrid .RTI_Details_Page__fieldRow:nth-child(odd) {
+    border-right: 1px solid #dbe2ea;
+}
+
+/* card full width */
+.RTI_Details_Page__card {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+/* mobile */
+@media (max-width: 900px) {
+    .RTI_Details_Page__twoColumnGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .RTI_Details_Page__twoColumnGrid .RTI_Details_Page__fieldRow:nth-child(odd) {
+        border-right: none;
+    }
+}
+
+/* ── Gap between sections/cards ───────────────────────── */
+
+.RTI_Details_Page__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* extra spacing for cards */
+.RTI_Details_Page__card {
+    margin-bottom: 0;
+}

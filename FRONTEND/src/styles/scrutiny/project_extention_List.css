@@ -1,0 +1,451 @@
+/* =============================================
+   project_extention_List.css
+   Scoped styles for project_extention_List.jsx
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Root Variables ── */
+.pel-root {
+    --pel-bg: #f0f4f8;
+    --pel-surface: #ffffff;
+    --pel-border: #e2e8f0;
+    --pel-text-primary: #1a202c;
+    --pel-text-secondary: #64748b;
+    --pel-text-muted: #94a3b8;
+
+    --pel-today: #0ea5e9;
+    --pel-today-light: #e0f2fe;
+    --pel-today-dark: #0369a1;
+
+    --pel-pending: #f59e0b;
+    --pel-pending-light: #fef3c7;
+    --pel-pending-dark: #b45309;
+
+    --pel-approved: #10b981;
+    --pel-approved-light: #d1fae5;
+    --pel-approved-dark: #047857;
+
+    --pel-rejected: #ef4444;
+    --pel-rejected-light: #fee2e2;
+    --pel-rejected-dark: #b91c1c;
+
+    --pel-total: #8b5cf6;
+    --pel-total-light: #ede9fe;
+    --pel-total-dark: #6d28d9;
+
+    --pel-radius: 14px;
+    --pel-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.05);
+    --pel-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+    font-family: 'Sora', sans-serif;
+    background: var(--pel-bg);
+    min-height: 100vh;
+    padding: 28px 32px;
+    color: var(--pel-text-primary);
+}
+
+/* ── Page Header ── */
+.pel-header {
+    margin-bottom: 28px;
+}
+
+.pel-header h1 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--pel-text-primary);
+    margin: 0 0 40px 400px;
+    letter-spacing: -0.3px;
+}
+
+
+
+/* ── Cards Grid ── */
+.pel-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+@media (max-width: 1200px) {
+    .pel-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .pel-root {
+        padding: 16px;
+    }
+
+    .pel-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ── Stat Card ── */
+.pel-card {
+    background: var(--pel-surface);
+    border-radius: var(--pel-radius);
+    padding: 20px 22px;
+    box-shadow: var(--pel-shadow);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.pel-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--pel-radius) var(--pel-radius) 0 0;
+    background: var(--pel-card-accent);
+    transition: height 0.18s ease;
+}
+
+.pel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--pel-shadow-hover);
+}
+
+.pel-card:hover::before {
+    height: 5px;
+}
+
+.pel-card.pel-card--active {
+    border-color: var(--pel-card-accent);
+    background: var(--pel-card-light);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Card color variants */
+.pel-card--today {
+    --pel-card-accent: var(--pel-today);
+    --pel-card-light: var(--pel-today-light);
+    --pel-icon-color: var(--pel-today);
+}
+
+.pel-card--pending {
+    --pel-card-accent: var(--pel-pending);
+    --pel-card-light: var(--pel-pending-light);
+    --pel-icon-color: var(--pel-pending);
+}
+
+.pel-card--approved {
+    --pel-card-accent: var(--pel-approved);
+    --pel-card-light: var(--pel-approved-light);
+    --pel-icon-color: var(--pel-approved);
+}
+
+.pel-card--rejected {
+    --pel-card-accent: var(--pel-rejected);
+    --pel-card-light: var(--pel-rejected-light);
+    --pel-icon-color: var(--pel-rejected);
+}
+
+.pel-card--total {
+    --pel-card-accent: var(--pel-total);
+    --pel-card-light: var(--pel-total-light);
+    --pel-icon-color: var(--pel-total);
+}
+
+.pel-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--pel-card-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 1.2rem;
+}
+
+.pel-card__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--pel-text-secondary);
+    margin-bottom: 6px;
+}
+
+.pel-card__count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--pel-card-accent);
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Table Section ── */
+.pel-table-section {
+    background: var(--pel-surface);
+    border-radius: var(--pel-radius);
+    box-shadow: var(--pel-shadow);
+    overflow: hidden;
+}
+
+.pel-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--pel-border);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pel-table-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--pel-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pel-table-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: var(--pel-total-light);
+    color: var(--pel-total-dark);
+}
+
+.pel-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pel-bg);
+    border: 1px solid var(--pel-border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.83rem;
+    color: var(--pel-text-secondary);
+    min-width: 220px;
+}
+
+.pel-search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.83rem;
+    color: var(--pel-text-primary);
+    width: 100%;
+}
+
+.pel-search-bar input::placeholder {
+    color: var(--pel-text-muted);
+}
+
+/* ── Table ── */
+.pel-table-wrap {
+    overflow-x: auto;
+}
+
+.pel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.855rem;
+}
+
+.pel-table thead tr {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--pel-border);
+}
+
+.pel-table thead th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--pel-text-secondary);
+    white-space: nowrap;
+}
+
+.pel-table tbody tr {
+    border-bottom: 1px solid var(--pel-border);
+    transition: background 0.12s ease;
+}
+
+.pel-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.pel-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.pel-table td {
+    padding: 14px 20px;
+    color: var(--pel-text-primary);
+    vertical-align: middle;
+}
+
+.pel-td-name {
+    font-weight: 600;
+    color: var(--pel-text-primary);
+}
+
+.pel-td-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--pel-text-secondary);
+}
+
+.pel-td-email {
+    color: var(--pel-text-secondary);
+    font-size: 0.83rem;
+}
+
+.pel-td-date {
+    font-size: 0.8rem;
+    color: var(--pel-text-secondary);
+    white-space: nowrap;
+}
+
+/* ── Status Badge ── */
+.pel-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pel-status-badge--pending {
+    background: var(--pel-pending-light);
+    color: var(--pel-pending-dark);
+}
+
+.pel-status-badge--approved {
+    background: var(--pel-approved-light);
+    color: var(--pel-approved-dark);
+}
+
+.pel-status-badge--rejected {
+    background: var(--pel-rejected-light);
+    color: var(--pel-rejected-dark);
+}
+
+.pel-status-badge--unknown {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* ── View Button ── */
+.pel-btn-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    background: #1e293b;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+}
+
+.pel-btn-view:hover {
+    background: #0f172a;
+    transform: scale(1.03);
+}
+
+/* ── Empty / Loading States ── */
+.pel-state-row td {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--pel-text-muted);
+    font-size: 0.9rem;
+}
+
+.pel-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--pel-border);
+    border-top-color: var(--pel-total);
+    border-radius: 50%;
+    animation: pel-spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes pel-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Pagination ── */
+.pel-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-top: 1px solid var(--pel-border);
+    font-size: 0.82rem;
+    color: var(--pel-text-secondary);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pel-pagination-btns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pel-page-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    border: 1px solid var(--pel-border);
+    background: var(--pel-surface);
+    color: var(--pel-text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    font-family: 'Sora', sans-serif;
+}
+
+.pel-page-btn:hover:not(:disabled) {
+    background: var(--pel-total-light);
+    border-color: var(--pel-total);
+    color: var(--pel-total-dark);
+}
+
+.pel-page-btn--active {
+    background: #1e293b;
+    color: #fff;
+    border-color: #1e293b;
+}
+
+.pel-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

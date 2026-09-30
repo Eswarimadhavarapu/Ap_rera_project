@@ -1,0 +1,154 @@
+.hearing-history-page{
+  padding: 30px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.hearing-top-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.hearing-top-section h1{
+  font-size:32px;
+  font-weight:700;
+  color:#1e293b;
+}
+
+.hearing-top-section p{
+  color:#64748b;
+  margin-top:6px;
+}
+
+.hearing-count-card{
+  background:white;
+  padding:18px 24px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+
+.hearing-count-card h2{
+  margin:0;
+  font-size:28px;
+}
+
+.hearing-table-wrapper{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,0.05);
+}
+
+.hearing-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.hearing-table thead{
+  background:#0f172a;
+  color:white;
+}
+
+.hearing-table th,
+.hearing-table td{
+  padding:18px;
+  text-align:left;
+}
+
+.hearing-table tbody tr{
+  border-bottom:1px solid #e2e8f0;
+}
+
+.hearing-table tbody tr:hover{
+  background:#f8fafc;
+}
+
+.status-badge{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#16a34a;
+  font-weight:600;
+}
+
+.hearing-date,
+.hearing-venue{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#334155;
+}
+
+.case-no{
+  font-weight:700;
+  color:#2563eb;
+}
+
+.hearing-loading,
+.hearing-empty{
+  background:white;
+  padding:40px;
+  border-radius:12px;
+  text-align:center;
+  font-size:18px;
+}
+
+.hearing-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.hearing-modal{
+  width:600px;
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  animation:popup .2s ease;
+}
+
+.hearing-modal-header{
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #eee;
+}
+
+.hearing-modal-body{
+  padding:20px;
+}
+
+.hearing-detail-item{
+  display:flex;
+  justify-content:space-between;
+  padding:14px 0;
+  border-bottom:1px solid #f1f5f9;
+}
+
+.modal-close-btn{
+  border:none;
+  background:none;
+  font-size:20px;
+  cursor:pointer;
+}
+
+@keyframes popup{
+  from{
+    transform:scale(.9);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}

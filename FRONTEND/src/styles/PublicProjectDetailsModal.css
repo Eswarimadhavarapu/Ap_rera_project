@@ -1,0 +1,270 @@
+/* ─── Overlay & Modal shell ────────────────────────────────────────────────── */
+.ppdm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 9999;
+  padding: 24px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ppdm-modal {
+  background: #fff;
+  width: 96%;
+  max-width: 1200px;
+  max-height: 94vh;
+  margin: auto;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────────── */
+.ppdm-header {
+  padding: 14px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ppdm-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #2e3192;
+  font-weight: 700;
+}
+
+.ppdm-close {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+.ppdm-close:hover { color: #c00; }
+
+/* ─── Scrollable content area ────────────────────────────────────────────────── */
+.ppdm-content {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+  background: #f4f6fb;
+  overscroll-behavior: contain;
+}
+
+/* ─── Loading / Error ────────────────────────────────────────────────────────── */
+.ppdm-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 60px 20px;
+  color: #555;
+}
+.ppdm-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: #2e3192;
+  border-radius: 50%;
+  animation: ppdm-spin 0.8s linear infinite;
+}
+@keyframes ppdm-spin { to { transform: rotate(360deg); } }
+
+.ppdm-error {
+  text-align: center;
+  padding: 40px;
+  color: #c00;
+  font-size: 16px;
+}
+
+/* ─── Top info bar ───────────────────────────────────────────────────────────── */
+.ppdm-top-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff3f0;
+  border: 1px solid #fdd8cf;
+  border-radius: 6px;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.ppdm-top-info strong {
+  color: #2e3192;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 2px;
+}
+.ppdm-reg-val {
+  font-weight: 700;
+  font-size: 15px;
+  color: #222;
+}
+
+/* ─── Two-column layout ──────────────────────────────────────────────────────── */
+.ppdm-main-grid {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* ─── Sidebar ────────────────────────────────────────────────────────────────── */
+.ppdm-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ppdm-sb-block {
+  background: #367c9c;
+  color: #fff;
+  padding: 16px;
+  border-radius: 6px;
+}
+.ppdm-sb-block.ppdm-sb-light {
+  background: #4a90b8;
+}
+.ppdm-sb-block h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.ppdm-sb-block p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+/* ─── Main content ───────────────────────────────────────────────────────────── */
+.ppdm-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ─── Section card ───────────────────────────────────────────────────────────── */
+.ppdm-section {
+  background: #fff;
+  border: 1px solid #dde3ed;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ppdm-sec-header {
+  background: #f0f4ff;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #2e3192;
+  border-bottom: 1px solid #dde3ed;
+}
+
+.ppdm-sec-body {
+  padding: 14px 16px;
+}
+
+/* ─── Field row & field ──────────────────────────────────────────────────────── */
+.ppdm-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.ppdm-row:last-child { margin-bottom: 0; }
+
+.ppdm-field {
+  flex: 1;
+  min-width: 160px;
+  background: #f8f9fc;
+  border: 1px solid #e4e9f2;
+  border-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ppdm-field-label {
+  font-size: 11px;
+  color: #6b7a9d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.ppdm-field-value {
+  font-size: 13px;
+  color: #1a2340;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* ─── Tables ─────────────────────────────────────────────────────────────────── */
+.ppdm-table-wrap {
+  overflow-x: auto;
+}
+
+.ppdm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ppdm-table th {
+  background: #2e3192;
+  color: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ppdm-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.ppdm-table tbody tr:last-child td { border-bottom: none; }
+.ppdm-table tbody tr:hover { background: #f5f7ff; }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ppdm-overlay {
+    padding: 12px;
+  }
+
+  .ppdm-modal {
+    width: 100%;
+    max-height: 96vh;
+  }
+
+  .ppdm-main-grid { flex-direction: column; }
+  .ppdm-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .ppdm-sb-block { flex: 1; min-width: 140px; }
+  .ppdm-top-info { flex-direction: column; align-items: flex-start; }
+}
