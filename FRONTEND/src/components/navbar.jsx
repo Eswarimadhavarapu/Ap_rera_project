@@ -179,7 +179,7 @@ const isScrutinyRoute =
                 Authority Notificatoins
               </li>
               <li onClick={() => navigate("/cidcandaprerajoint")}>
-                CIDC and APRERA Joint Notifications
+                CIDC and JCRERA Joint Notifications
               </li>
 
               <li>
@@ -214,7 +214,7 @@ const isScrutinyRoute =
                 Task Vs Time
               </li>
               <li onClick={() => navigate("/ChronologyOfEvents")}>Chronology of Events</li>
-              <li onClick={() => window.open(legalpdf, "_blank")}> APRERA Presentation</li>
+              <li onClick={() => window.open(legalpdf, "_blank")}> JCRERA Presentation</li>
               <li onClick={() => navigate("/JudgementHub")}>Judgement</li>
               <li onClick={() => navigate("/vendordatabase")}>
                 VendorDatabase
@@ -243,7 +243,7 @@ const isScrutinyRoute =
 
           <li onClick={() =>
     window.open("/apreatapplication", "_blank")
-  }>APREAT</li>
+  }>JCREAT</li>
 {/* ABOUT US DROPDOWN */}
           <li className="dropdown">ABOUT US <span className="arrow"></span>
 
@@ -273,7 +273,7 @@ const isScrutinyRoute =
 
                 <ul className="contact-submenu-box">
                   <li onClick={() => navigate("/contact-us/aprera")}>
-                    APRERA
+                    JCRERA
                   </li>
                 </ul>
               </li>
@@ -329,7 +329,7 @@ const isScrutinyRoute =
       <li>
         <span className="new-inline">NEW</span>
         <div className="notice-text">
-          Promoters intending to obtain a project extension are advised to appear before the Authority at the office of APRERA on working days.
+          Promoters intending to obtain a project extension are advised to appear before the Authority at the office of JCRERA on working days.
         </div>
       </li>
 
@@ -343,7 +343,7 @@ const isScrutinyRoute =
       <li>
          <span className="new-inline">NEW</span>
         <div className="notice-text">
-          Promoters are requested to display the APRERA Registration Certificate / ID at the respective project site.
+          Promoters are requested to display the JCRERA Registration Certificate / ID at the respective project site.
         </div>
       </li>
 
@@ -353,7 +353,7 @@ const isScrutinyRoute =
       >
          <span className="new-inline">NEW</span>
         <div className="notice-text">
-          All the promoters are instructed to register themselves in the AP RERA web portal.
+          All the promoters are instructed to register themselves in the JCRERA web portal.
         </div>
       </li>
 

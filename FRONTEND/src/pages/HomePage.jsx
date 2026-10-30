@@ -1446,7 +1446,7 @@ function Navbar() {
               <span className="separator">|</span>
 
               <span>
-                Display APRERA Registration Certificate at site
+                Display JCRERA Registration Certificate at site
                 <span className="homenavbar-new-badge">NEW</span>
               </span>
 

@@ -4,7 +4,7 @@ import { apiGet, apiPut, BASE_URL } from "../../api/api";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import TopHeader from "../../components/admin/TopHeader";
 
-const BACKEND_BASE_URL = BASE_URL.replace(/\/$/, "");
+const BACKEND_BASE_URL = (BASE_URL || "").replace(/\/$/, "");
 
 const STATUS_FILTERS = ["All", "Pending", "Completed", "Rejected"];
 

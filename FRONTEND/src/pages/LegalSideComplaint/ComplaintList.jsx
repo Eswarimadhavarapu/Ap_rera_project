@@ -148,16 +148,15 @@ const ComplaintList = () => {
         <td>
 
           <button
-            className="btn btn-primary btn-sm"
-
-            onClick={() =>
-              navigate(
-                `/admin/complaint/${item.complaint_id}`
-              )
-            }
-          >
-            View
-          </button>
+  className="btn btn-primary btn-sm"
+  onClick={() =>
+    navigate(
+      `/scrutiny/legalcomplaint/${item.complaint_id}`
+    )
+  }
+>
+  View
+</button>
 
         </td>
 

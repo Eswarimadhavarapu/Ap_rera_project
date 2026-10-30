@@ -28,7 +28,7 @@ const announcements = [
   {
     title: "Quarterly Updates Status Report",
     description:
-      "APRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority).",
+      "JCRERA Registered Projects - Quarterly Updates Status Report (By order of the Authority).",
     pdf: QUStatus,
   },
   

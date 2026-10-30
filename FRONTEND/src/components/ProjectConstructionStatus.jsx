@@ -374,7 +374,7 @@ const ProjectConstructionStatus = ({
 
       {/* UPLOAD CERTIFICATES */}
       <h3 className="subheading">
-        Upload Certificates (As per APRERA Regulations)
+        Upload Certificates (As per JCRERA Regulations)
       </h3>
 
       <div className="row innerdivrow">

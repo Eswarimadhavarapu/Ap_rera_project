@@ -11,9 +11,14 @@ export async function apiFetch(path, options = {}) {
   const isFormData = options.body instanceof FormData;
 
   // 👇 REPLACE FETCH BLOCK
+
 const skipAuth = options.skipAuth || false;
-  const token = localStorage.getItem("token");
-  console.log("TOKEN SENT =", token);
+
+const token =
+  localStorage.getItem("token") ||
+  localStorage.getItem("access_token") ||
+  localStorage.getItem("accessToken");
+
 
   // 👇 REPLACE FETCH BLOCK
 const headers = {

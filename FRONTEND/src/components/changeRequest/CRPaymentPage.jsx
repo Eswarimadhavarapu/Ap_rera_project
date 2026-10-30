@@ -49,7 +49,7 @@ export default function CRPaymentPage({ appInfo = {}, onBack, onSuccess, onPayme
           <div className="crp-meta-left">
             <p><b>Application Number :</b> {appInfo.applicationNumber || "-"}</p>
             <p><b>Transaction Id :</b> {appInfo.refNo || "-"}</p>
-            <p><b>APRERA GST No :</b> 37AAAGA0918E1ZY</p>
+            <p><b>JCRERA GST No :</b> 37AAAGA0918E1ZY</p>
           </div>
           <div className="crp-meta-right">
             <p><b>Date :</b> {today}</p>

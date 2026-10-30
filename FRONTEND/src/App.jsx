@@ -149,7 +149,7 @@ import PromoterOtpLogin from "./pages/PromoterOtpLogin.jsx";
 import Changerequest from "./pages/Changerequest.jsx";
 import ChangeRequestProcess from "./pages/ChangeRequestProcess.jsx";
 import AdminChangeRequestDetail from "./pages/admin/AdminChangeRequestDetail.jsx";
-// import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
+import AdminComplaintDetail from "./pages/admin/AdminComplaintDetail.jsx";
 import ComplaintStatusForm from "./pages/ComplaintStatusForm.jsx";
 import ComplaintDetails from "./pages/ComplaintDetails.jsx";
 // import AdminComplaintDetails from "./pages/admin/Admincomplaintsdetails.jsx";
@@ -460,15 +460,11 @@ function App() {
               }
             />
             // Admin Complaint Detail
-            {/* <Route
-              path="/admin/complaint/:id"
-              element={
-                <ProtectedRoute>
-                  <AdminComplaintDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} /> */}
+             <Route
+  path="/scrutiny/legalcomplaint/:id"
+  element={<AdminComplaintDetail />}
+/>
+            {/*<Route path="/admin/complaintdetails" element={<AdminComplaintsDetailss />} /> */}
             <Route path="/complaintstatus" element={<ComplaintStatusForm />} />
             <Route
               path="/scrutiny/complaint/:id"

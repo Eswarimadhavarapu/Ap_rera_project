@@ -100,7 +100,7 @@ def get_documents_consultant():
     "/project/documents/upload",
     methods=["POST"]
 )
-@jwt_required()
+
 def upload_documents():
     try:
         application_number = request.form.get("application_number")
@@ -204,7 +204,6 @@ def upload_documents():
     "/project/consultant-declaration/save",
     methods=["POST"]
 )
-@jwt_required()
 def save_consultant_declaration():
     try:
         data = request.json

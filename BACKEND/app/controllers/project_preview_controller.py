@@ -17,7 +17,7 @@ preview_bp = Blueprint("preview", __name__)
 # Preview API (USED BY FRONTEND)
 # --------------------------------------------------
 @preview_bp.route("/project/preview", methods=["POST"])
-@jwt_required()
+
 def project_preview_controller():
     print("🔥 PREVIEW CONTROLLER HIT 🔥")
 

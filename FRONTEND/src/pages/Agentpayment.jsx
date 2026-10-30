@@ -83,7 +83,7 @@ const AgentPaymentpage = () => {
               </p>
 
               <p>
-                <b>APRERA GST No. :</b> {gstNo}
+                <b>JCRERA GST No. :</b> {gstNo}
               </p>
 
             </div>

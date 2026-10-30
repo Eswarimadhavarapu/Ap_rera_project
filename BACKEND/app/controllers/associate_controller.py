@@ -179,7 +179,7 @@ def add_project_agent():
 
 
 @associate_bp.route("/associate/project-agent/<int:agent_id>", methods=["DELETE"])
-@jwt_required()
+
 def delete_project_agent(agent_id):
     try:
         agent = AgentModel.query.get_or_404(agent_id)
@@ -195,7 +195,7 @@ def delete_project_agent(agent_id):
 # ARCHITECT
 # ===================================================
 @associate_bp.route("/associate/architect", methods=["POST"])
-@jwt_required()
+
 def add_architect():
 
     try:
@@ -238,7 +238,7 @@ def add_architect():
 
 
 @associate_bp.route("/associate/architect/<int:architect_id>", methods=["DELETE"])
-@jwt_required()
+
 def delete_architect(architect_id):
     try:
         architect = Architect.query.get_or_404(architect_id)
@@ -254,7 +254,7 @@ def delete_architect(architect_id):
 # STRUCTURAL ENGINEER
 # ===================================================
 @associate_bp.route("/associate/structural-engineer", methods=["POST"])
-@jwt_required()
+
 def add_structural_engineer():
     try:
         data = request.get_json()
@@ -313,7 +313,7 @@ def add_structural_engineer():
 # CONTRACTOR
 # ===================================================
 @associate_bp.route("/associate/contractor", methods=["POST"])
-@jwt_required()
+
 def add_contractor():
     try:
         data = request.get_json()
@@ -396,7 +396,6 @@ def add_contractor():
 # ACCOUNTANT
 # ===================================================
 @associate_bp.route("/associate/accountant", methods=["POST"])
-@jwt_required()
 def add_accountant():
     try:
         data = request.get_json()
@@ -437,7 +436,7 @@ def add_accountant():
 
 
 @associate_bp.route("/associate/accountant/<int:accountant_id>", methods=["DELETE"])
-@jwt_required()
+
 def delete_accountant(accountant_id):
     try:
         accountant = Accountant.query.get_or_404(accountant_id)
@@ -453,7 +452,7 @@ def delete_accountant(accountant_id):
 # PROJECT ENGINEER
 # ===================================================
 @associate_bp.route("/associate/project-engineer", methods=["POST"])
-@jwt_required()
+
 def add_project_engineer():
     try:
         data = request.get_json()
@@ -518,7 +517,7 @@ def add_project_engineer():
 
 
 @associate_bp.route("/associate/project-engineer/<int:engineer_id>", methods=["DELETE"])
-@jwt_required()
+
 def delete_project_engineer(engineer_id):
     try:
         engineer = ProjectEngineer.query.get_or_404(engineer_id)
@@ -534,7 +533,7 @@ def delete_project_engineer(engineer_id):
 # SAVE & CONTINUE
 # ---------------------------------------------------
 @associate_bp.route("/associate/save-and-continue", methods=["POST"])
-@jwt_required()
+
 def save_and_continue():
     return jsonify({
         "success": True,

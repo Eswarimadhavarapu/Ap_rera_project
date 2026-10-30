@@ -22,7 +22,7 @@ application_associate_bp = Blueprint(
 # POST: LINK ASSOCIATE TO APPLICATION (ALREADY WORKING)
 # ======================================================
 @application_associate_bp.route("/application/associate", methods=["POST"])
-@jwt_required()
+
 def link_associate_to_application():
     try:
         data = request.get_json()
@@ -47,8 +47,8 @@ def link_associate_to_application():
                     "message": f"{field} is required"
                 }), 400
         validation_error = validate_registration({
-            "pan": pan
-        })
+        "pan": data["pan_number"]
+    })
         
         if validation_error:
             return validation_error
@@ -80,7 +80,7 @@ def link_associate_to_application():
 # GET: FETCH ASSOCIATES FOR PREVIEW (🔥 NEW & REQUIRED)
 # ======================================================
 @application_associate_bp.route("/application/associates", methods=["GET"])
-@jwt_required()
+
 def get_application_associates():
     try:
         application_number = request.args.get("application_number")

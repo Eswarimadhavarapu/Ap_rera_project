@@ -23,14 +23,14 @@ export default function Acf() {
 
         <p>
           As per Section 32 (g) of the Real Estate (Regulation and Development)
-          Act 2016, APRERA Real Estate Regulatory Authority must take measures to
+          Act 2016, JCRERA Real Estate Regulatory Authority must take measures to
           facilitate amicable conciliation of disputes between the promoters
           and the allottees through dispute settlement forums set up by the
           consumer or promoter associations.
         </p>
 
         <p>
-          With this objective, it was proposed to establish APRERA - ACF
+          With this objective, it was proposed to establish JCRERA - ACF
           (Amicable Conciliation Forum) that shall facilitate resolution of
           disputes amicably, thereby saving cost and time of litigation to
           parties and State, promoting greater public satisfaction with legal
@@ -40,12 +40,12 @@ export default function Acf() {
         <p>
           Under the mechanism of the Forum, if the parties don’t reach a
           consensus, the allottee(s) will have the possibility to lodge a formal
-          complaint against the builder via APRERA Portal.
+          complaint against the builder via JCRERA Portal.
         </p>
 
         {/* Objectives */}
         <h3 className="acf-section-title">
-          The objectives of the APRERA - ACF (Amicable Conciliation Forum) shall
+          The objectives of the JCRERA - ACF (Amicable Conciliation Forum) shall
           be as follows:
         </h3>
 
